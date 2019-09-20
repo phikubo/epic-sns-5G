@@ -8,13 +8,15 @@ Todos las variables deben ser llamados siguiendo el estilo PEP8 (Ver https://www
 Overview:
 1. Seguir el estilo PEP8 en variables, y nombres de script (teniendo en cuenta el protocolo anterior)
 2. Todas las funciones, ¡TODAS! deben contener una breve explicación de que hace, y qué significa las variables internas.
+3. Seguir la estructura de carpetas. 
+4. Procurar agrupar scripts en una carpeta con un nombre que indique claramente su contenido.
 
 
 ### Prototipo
-Se generan por primera vez los scripts, se desarrolla hasta que sus funcionalidades más básicas esten completas de acuerdo al plan de diseño inicial. Las pruebas de funcionalidad básico son inherentes al prototipo.
+Se generan por primera vez los scripts, se desarrolla hasta que sus funcionalidades más básicas esten completas de acuerdo al plan de diseño inicial. Las pruebas de funcionalidad básica son inherentes al prototipo.
 
 Cuando el prototipo esté completo:
-1. Una vez terminado el script prototipo, copiar y pegar en la carpeta de pruebas cambiando el nombre como <<prueb_nombre>>.
+1. Una vez terminado el script prototipo, copiar y pegar en la carpeta de pruebas cambiando el nombre como <<prueb_nombre>> y ensamblar con los demás scripts.
 
 
 ### Pruebas
@@ -31,5 +33,5 @@ El script en producción es la versión final, por lo tanto no debe ser alterado
 El script en producción:
 1. El script no debe ser alterado en esta carpeta.
 1.1 Si el script necesita cambios, editar el mismo script en Pruebas.
-2. Copiar el script de producción y pegarlo en la carpeta Obsoleto. El nombre debe cambiarse siguiendo una numeración, e.g., prod_nombre_1
+2. Copiar el script de producción y pegarlo en la carpeta Obsoleto. El nombre debe cambiarse siguiendo una numeración, e.g., prod_nombre_1, prod_nombre_2, etc
 3. Cuando el scrip de pruebas sea satisfactorio, reemplazar en Producción con el cambio de nombre. 
