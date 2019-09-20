@@ -6,10 +6,11 @@ El desarrollo de cada script debe seguir las siguientes fases: prototipo, prueba
 Todos las variables deben ser llamados siguiendo el estilo PEP8 (Ver https://www.python.org/dev/peps/pep-0008/). Además el nombre de los scripts también deben seguir PEP8 y cada nombre debe corresponder con la carpeta donde se encuentra e.g., prot_nombre, prueb_nombre, prod_nombre.
 
 Overview:
-1. Seguir el estilo PEP8 en variables, y nombres de script (teniendo en cuenta el protocolo anterior)
-2. Todas las funciones, ¡TODAS! deben contener una breve explicación de que hace, y qué significa las variables internas.
-3. Seguir la estructura de carpetas. 
-4. Procurar agrupar scripts en una carpeta con un nombre que indique claramente su contenido.
+1. ANTES DE PROGRAMAR, REALIZAR PULL EN EL REPOSITORIO PARA ACTUALIZARO. Luego realizar commits periódicamente. Realizar PUSH solamente al terminar la jornada de programación.
+2. Seguir el estilo PEP8 en variables, y nombres de script (teniendo en cuenta el protocolo anterior)
+3. Todas las funciones, ¡TODAS! deben contener una breve explicación de que hace, y qué significa las variables internas.
+4. Seguir la estructura de carpetas. 
+5. Procurar agrupar scripts en una carpeta con un nombre que indique claramente su contenido.
 
 
 ### Prototipo
