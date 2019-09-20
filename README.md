@@ -31,5 +31,5 @@ El script en producción es la versión final, por lo tanto no debe ser alterado
 El script en producción:
 1. El script no debe ser alterado en esta carpeta.
 1.1 Si el script necesita cambios, editar el mismo script en Pruebas.
-2. Copiar el script de producción y pegarlo en la carpeta Obsoleto.
+2. Copiar el script de producción y pegarlo en la carpeta Obsoleto. El nombre debe cambiarse siguiendo una numeración, e.g., prod_nombre_1
 3. Cuando el scrip de pruebas sea satisfactorio, reemplazar en Producción con el cambio de nombre. 
