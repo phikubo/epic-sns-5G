@@ -23,6 +23,9 @@ Cuando el prototipo esté completo:
 ### Pruebas
 Siguiendo la metodología iterativa, en este script se desarrollan e implmentan nuevas funcionalidades en el script, también se experimenta dichas funcionalidades y se ajusta el script de acuerdo al diseño y a las estructuras nuevas de datos o la arquitectura que pudo haber cambiando en el desarrollo del prototipo. Este script debe contener un plan de validación explicito en el método if__name__. Esta debe ser la fase más extensa, pues todas las funcionalidades deben estar completas y probadas. También debe ser explicito los comentarios.
 
+Sobre las ramas:
+1: Crear RAMAS unicamente en esta carpeta, o de los scripts de esta carpeta. 
+
 Cuando las pruebas son satisfactorias: 
 1. Limpiar el código (borrar variables inncesarias, espacios innecesarios, comentarios innecearios)
 2. Copiar y pegar en la carpeta de pruebas cambiando el nombre como <<prod_nombre>>.
