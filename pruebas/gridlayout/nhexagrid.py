@@ -210,7 +210,31 @@ def crear_coordenadas_grilla_horizontal(coord, coef, nivel,radio):
 	return hcoord, vcoord
 	 
  	
+def crear_trisec(radio,agx,agy,ax):
+#funcion para plotear las celdas trisectorizadas parametros : radio celda trisector, cordenada X, coordenada Y, figure AX
+	colorpos=["Green","Blue","Red"]
+	for x,y,c in zip(agx, agy, colorpos):
+		
+		color = c.lower()  # matplotlib understands lower case words for colours
+		'''this radius fix the separation between the polygons.phikubo'''
+		hex = RegularPolygon((0.5*radio*x, 0.5*radio*y), numVertices=6, radius=radio*0.5*1, #0.67, 0.95
+                         orientation=np.radians(30), #con 60 grados funciona perfecto, pero las coordenadas cambian. Antes 30
+                         facecolor=color, alpha=0.2, edgecolor='k')
+                         #cambiar radius=2. / 3. , cuando se usa coord_0
+		ax.add_patch(hex)
+		intensity=0.4
+
+		#si quiero el mismo numero de puntos en todas las celdas debo usar un funcion extra del script ppp que genere primero ese numero ppp segun la intensidad, y luego con el numero, se calcula el area de ploteo.
+		#función de coordenadas ppp
+		xx,yy=ppp.maint(0.5*radio,0.5*radio*x, 0.5*radio*y, intensity)
+
+		#puntos x,y de ues, ya esta afectados por el 0.5*radio.
+		plt.plot(xx,yy, "r.")
+		#puntos rojos, centro de las celdas
+		plt.plot(0.5*radio*x,0.5*radio*y, 'r*')
+		plt.savefig("falta_pulir.png")
 	
+	pass
 			
 def plotear_grid(coef,radio, coord, nivel, azi):
 	'''Plotea graficas de celdas hexagonales. Parametros: radio celda a celda, radio, coordenadas y el nivel. Nivel=n*n, n=celdas.'''
@@ -271,34 +295,11 @@ def plotear_grid(coef,radio, coord, nivel, azi):
 	plt.plot(cx,cy, 'g')
 
 	#calculo coordenadas de angulo de azimutto
-	'''Aqui edito tosse: CAMBIO DE COORDENADAS, DE HEXAGONALES 3D A CORDENADAS ANGULARES. Siguiente paso, aislar el código que hace la tri-sectorizacion y  ajustar para que el angulo coincida y sea proporcional'''
-	colorpos=["Green","Blue","Red"]
-	for x,y,c in zip(angx, angy, colorpos):
-		
-		color = c.lower()  # matplotlib understands lower case words for colours
-		'''this radius fix the separation between the polygons.phikubo'''
-		hex = RegularPolygon((0.5*radio*x, 0.5*radio*y), numVertices=6, radius=radio*0.5*1, #0.67, 0.95
-                         orientation=np.radians(30), #con 60 grados funciona perfecto, pero las coordenadas cambian. Antes 30
-                         facecolor=color, alpha=0.2, edgecolor='k')
-                         #cambiar radius=2. / 3. , cuando se usa coord_0
-		ax.add_patch(hex)
-		intensity=0.4
-
-		#si quiero el mismo numero de puntos en todas las celdas debo usar un funcion extra del script ppp que genere primero ese numero ppp segun la intensidad, y luego con el numero, se calcula el area de ploteo.
-		#función de coordenadas ppp
-		xx,yy=ppp.maint(0.5*radio,0.5*radio*x, 0.5*radio*y, intensity)
-
-		#puntos x,y de ues, ya esta afectados por el 0.5*radio.
-		plt.plot(xx,yy, "r.")
-		#puntos rojos, centro de las celdas
-		plt.plot(0.5*radio*x,0.5*radio*y, 'r*')
-		
-		
+	'''Aqui edito tosse: CAMBIO DE COORDENADAS, DE HEXAGONALES 3D A CORDENADAS ANGULARES. Siguiente paso, aislar el código que hace la tri-sectorizacion y  ajustar para que el angulo coincida y sea proporcional'''	
+	crear_trisec(radio,angx,angy,ax)		
 
 
 
-
-	plt.savefig("falta_pulir.png")
 	plt.grid(True)
 	plt.show()
 
