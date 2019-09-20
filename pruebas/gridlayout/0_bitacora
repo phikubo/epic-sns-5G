@@ -1,0 +1,7 @@
+
+
+1) Crear los puntos dentro del hexagono, debe ser por sector.
+
+2) Guardar los puntos con https://www.pybonacci.org/2012/08/17/como-leer-y-escribir-datos-en-archivos-con-numpy/.
+
+3) Trabajar con los puntos guardados de modo que siempre sean los mismos y garantizar rapidez y todo lo demás.
