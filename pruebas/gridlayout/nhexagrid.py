@@ -316,7 +316,7 @@ def graficar(radio, nivel):
 if __name__ =="__main__":
 	print("How to implement hexagrid in modular ways.")
 	radio=100/10 #en decamentros, 10 u.
-	nivel=1
+	nivel=3
 	graficar(radio,nivel)
 	
 else:
