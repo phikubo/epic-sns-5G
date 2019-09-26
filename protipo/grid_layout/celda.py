@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import RegularPolygon
 import numpy as np
 import math
+import patron_hexagonal_circular as phc
 #
 def guardar_lista(lista,bd_coordenadas):
 	print(3)
@@ -21,60 +22,10 @@ def guardar_lista(lista,bd_coordenadas):
 	
 	return bd_coordenadas
 
-def generar_lista(num_cel, bd_coordenadas):
-	'''Crea una lista de coordenadas'''
-	print(2)
-	for j in range(num_cel):
-		if j==0:
-			for m in range(num_cel):
-				if m==0:
-					print(2.1)
-					jm=[j,m]
-					print(jm)
-					guardar_lista(jm, bd_coordenadas)
-				else:
-					for o in range(2):
-						if o==0:
-							jm=[j,-m]
-						else:
-							jm=[j,m]
-						print(jm)
-						guardar_lista(jm, bd_coordenadas)
-		
-		else:
-			for p in range(2):
-				if p==0:	
-					for m in range(num_cel):
-						if m==0:
-							pass
-							#jm=[j,m]
-								#guardar_lista(jm, bd_coordenadas)
-						else:
-							for o in range(2):
-								if o==0:
-									jm=[j,-m]
-								else:
-									jm=[j,m]
-								ljm=jm
-								#print(ljm)
-								guardar_lista(jm, bd_coordenadas)
-				else: 
-					for m in range(num_cel):
-						if m==0:
-							pass
-							#jm=[-j,m]
-							#guardar_lista(jm, bd_coordenadas)
-						else:
-							for o in range(2):
-								if o==0:
-									jm=[-j,-m]
-								else:
-									jm=[-j,m]
-								ljm=jm
-								#print(ljm)
-								'''Como el ultimo uso de la funcion es llamar a guardar, teniendo en cuenta que esta retorna bd_coordenadas, entonces no es necerio repetir el proceso'''
-								guardar_lista(jm, bd_coordenadas)
-	return bd_coordenadas
+def generar_coordenada_axial_malla(num_cel, bd_coordenadas):
+	'''Crea una lista de coordenadas axiales en malla'''
+	pass
+
 
 def mapear_coordenadas_cartesianas():
 	'''Funcion para crear coordenadas x,y,z en el plano cartesiando'''
@@ -97,7 +48,7 @@ def generar_patron_circular(nivel, patron):
 
 
 
-def dibujar_celda():
+def dibujar_celdas():
 	'''Funcion principal'''
 	pass
 
@@ -120,7 +71,8 @@ if __name__=="__main__":
 	numero_celdas,nivel,radio_ext, apotema, coordenada_patron =variables()
 
 	'''Task 1. generar patron circular-terminado'''
-	coordenada_patron = generar_patron_circular(nivel, coordenada_patron)
+	#coordenada_patron = generar_patron_circular(nivel, coordenada_patron)
+	coordenadas = phc.ensamblar(nivel)
 	'''Task 2. generar patron en malla'''
 	#test_coordenadas(nivel, coordenada_patron)
 	'''Task 3. generar numero de celdas deseadas'''
