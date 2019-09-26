@@ -140,6 +140,7 @@ def ensamblar(patron):
 
 def patron_circular_final(nivel):
 	total_celdas=nivel*6
+	print("celdas a dibujar: ",total_celdas)
 	patron=[[0,0,0] for i in range(total_celdas)]
 	#permite cambiar el slicing de cada for para ajustar al nivel deseado, y conformar una sola funcion
 
@@ -151,7 +152,6 @@ def patron_circular_final(nivel):
 		inicio=[0, nivel+2, 3*nivel+2]
 		final =[nivel+1, 3*nivel+1, len(patron)+1]
 
-	print("start of experimento circular grid")
 	#output should be: [1,0,-1],[0,1,-1],[-1,1,0],[-1,0,1],[0,-1,1],[1,-1,0]
 
 	if nivel > 0:
@@ -203,15 +203,18 @@ def patron_circular_final(nivel):
 			patron[len(patron)-1][2]=ultima_variable-1
 			patron[len(patron)-1][1]=patron_dado_ab(patron[len(patron)-1][0],patron[len(patron)-1][2])
 	elif nivel == 0:
-		return [0,0,0]
+		return [[0,0,0]]
 		
 	return(patron)
 
 def ensamblar(nivel):
-	pat_cir=[]
-	for nvl in range(nivel+1):
-		pat_cir.append(patron_circular_final(nvl))
-	return pat_cir
+	if nivel > 2:
+		print("Aun no implementado")
+	else:
+		pat_cir=[]
+		for nvl in range(nivel+1):
+			pat_cir.append(patron_circular_final(nvl))
+		return pat_cir
 if __name__=="__main__":
 	#Prototipo:
 	patron_cir=[]
@@ -224,6 +227,6 @@ if __name__=="__main__":
 
 	#patron_circular(nivel)
 else:
-	print("Modulo <escribir_nombre> importado")
+	print("Modulo <patron_hexagonal> importado")
 
 
