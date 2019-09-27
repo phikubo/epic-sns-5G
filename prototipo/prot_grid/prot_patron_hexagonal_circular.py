@@ -136,9 +136,7 @@ def patron_circular(nivel):
 		
 		print(patron)
 
-def ensamblar(patron):
-	'''d'''
-	pass
+
 
 def patron_circular_final(nivel):
 	'''Funcion. Genera dinamicamente el conjunto de coordenadas [a,b,c] axiales, 
@@ -232,10 +230,10 @@ if __name__=="__main__":
 	patron_cir=[]
 	#nivel=1
 	#a=patron_circular_final(nivel)
-	nivel=2
+	mi_nivel=2
 	#b=patron_circular_final(nivel)
 
-	print(len(ensamblar(nivel)))
+	print(len(ensamblar(mi_nivel)))
 
 	#patron_circular(nivel)
 else:

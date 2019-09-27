@@ -63,7 +63,7 @@ def distancia_entre_celdas(nivel, radio_ext):
 	#print(r_med, nivel)
 	return 3*(nivel)*r_med
 
-def mapear_coordenadas_cartesianas(coordenadas_axiales, radio_ext):
+def mapear_coordenadas_cartesianas(coordenadas_axiales, radio_ext, nivel):
 	'''Funcion para crear coordenadas x,y en el plano cartesiano a partir de coordenadas axiales'''
 	#task 1: crear x,y #terminado x
 	#task 2: dibjar puntos
@@ -119,26 +119,26 @@ def dibujar_celdas(cartesian_x, cartesian_y, radio_ext):
 def variables():
 	numero_celdas=1	#requerimiento: funciona como una ventana, un slicing es util para graficar el número deseado
 	nivel=1 #nivel corresponde al nivel de coordenada hexagonal, (1.0.1) nivel 1, (2.0.1) nivel 2, etc.
-	radio_ext=100/10 #radio de la celda hexagonal, igual en magnitud al lado.
-	apotema=math.sqrt(radio_ext**2 -(0.5*radio_ext)**2) #apotema
+	radio_externo=100/10 #radio de la celda hexagonal, igual en magnitud al lado.
+	apotema=math.sqrt(radio_externo**2 -(0.5*radio_externo)**2) #apotema
 	coordenada_patron=[] #inicialización de coordn
-	return numero_celdas,nivel, radio_ext, apotema, coordenada_patron
+	return numero_celdas, nivel, radio_externo, apotema, coordenada_patron
 
 if __name__=="__main__":
 	#Prototipo: palabras claves: mapear, generar, dibuajar
 	#variables
 	
-	numero_celdas,nivel,radio_ext, apotema, coordenada_patron =variables()
+	numero_celdas,mi_nivel,radio_externo, apotema, coordenada_patron =variables()
 
 	#Task 1. generar patron circular-terminado
 	#coordenada_patron = generar_patron_circular(nivel, coordenada_patron)
-	coordenadas_axiales = phc.ensamblar(nivel)
+	coordenadas_axiales = phc.ensamblar(mi_nivel)
 	##print(len(coordenadas_axiales))
 	#Task 2. generar patron en malla-terminado
 	#dec = distancia_entre_celdas(nivel, radio_ext)
-	cartesian_x, cartesian_y = mapear_coordenadas_cartesianas(coordenadas_axiales, radio_ext)
+	cartesian_x, cartesian_y = mapear_coordenadas_cartesianas(coordenadas_axiales, radio_externo, mi_nivel)
 	print(len(cartesian_x), len(cartesian_y))
-	dibujar_celdas(cartesian_x,cartesian_y, radio_ext)
+	dibujar_celdas(cartesian_x,cartesian_y, radio_externo)
 	#test_coordenadas(nivel, coordenada_patron)
 	#Task 3. generar numero de celdas deseadas-hint:slicing
 	numero_celdas=3
@@ -146,7 +146,7 @@ if __name__=="__main__":
 	#plt.savefig("protipo2.png")
 	#print(phc)
 	#print(dir(phc))
-	#plt.show()
+	plt.show()
 	
 	
 else:
