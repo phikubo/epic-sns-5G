@@ -7,11 +7,11 @@ import time #debug
 import os
 
 import pkg1.mod_celda
-import pkg1.blank
+import pkg1.mod_patron_circular
 def gestionar_celdas(nivel, radio_ext):
 	'''Main celdas. Gestiona tres elementos, celdas, distribucion de usuarios
 	 (ppp) y tri-sectorizacion.'''
-	coordenada_axial=pkg1.blank.ensamblar(nivel)
+	coordenada_axial=pkg1.mod_patron_circular.ensamblar(nivel)
 	cartx,carty=pkg1.mod_celda.mapear_coordenadas_cartesianas(coordenada_axial, radio_ext, nivel)
 	pkg1.mod_celda.dibujar_celdas(cartx,carty, radio_ext)
 	

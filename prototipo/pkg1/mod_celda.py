@@ -4,7 +4,7 @@ from matplotlib.patches import RegularPolygon
 import numpy as np
 import math
 import os
-import blank
+
 import time #debug
 #https://realpython.com/python-modules-packages/
 #https://realpython.com/python-testing/
