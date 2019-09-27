@@ -14,6 +14,10 @@ def calc_rango(x):
 	return math.ceil(y)
 
 def azimut_lista(angulo_inicial):
+	'''Dado un angulo, se calcula el azimut. Como resultado se obtiene una 
+	lista de 3 angulos, incluyendo el inicial. Esta funcion solo es util para obtener
+	3 angulos, por ello se usa para trisectorizar, es decir, a partir de un angulo, encontrar
+	los 2 siguientes que estan separados simetricamente entre si.'''
 	az=[math.radians(angulo_inicial)+i*120 for i in range(3)]
 	return az
 
@@ -29,4 +33,4 @@ if __name__ == "__main__":
 		#time.sleep(5)
 		print(i, " recta: ", calc_rango(i))
 else:
-	print("modulo <operacion> importado")
+	print("modulo ecuaciones importado")

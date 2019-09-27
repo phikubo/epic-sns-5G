@@ -234,7 +234,6 @@ def crear_trisec(radio,agx,agy,ax):
 		plt.plot(0.5*radio*x,0.5*radio*y, 'r*')
 		plt.savefig("falta_pulir.png")
 	
-	pass
 			
 def plotear_grid(coef,radio, coord, nivel, azi):
 	'''Plotea graficas de celdas hexagonales. Parametros: radio celda a celda, radio, coordenadas y el nivel. Nivel=n*n, n=celdas.'''
@@ -316,7 +315,7 @@ def graficar(radio, nivel):
 if __name__ =="__main__":
 	print("How to implement hexagrid in modular ways.")
 	radio=100/10 #en decamentros, 10 u.
-	nivel=3
+	nivel=1
 	graficar(radio,nivel)
 	
 else:
