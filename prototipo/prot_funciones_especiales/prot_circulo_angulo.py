@@ -31,8 +31,8 @@ def dibujar_circulo(radio,angulos):
 
 	
 def coordenadas_circulo(radio, angulos):
-	#no implementado
-	angx,angy=obtener_linea(angulos)
+	#si se implementa en trisecotrizar por alguna razon
+	#angx,angy=obtener_linea(angulos)
 	theta = np.linspace(-np.pi, np.pi, 200)
 	cx=radio*np.sin(theta)
 	cy=radio*np.cos(theta)

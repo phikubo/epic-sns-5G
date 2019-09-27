@@ -212,7 +212,7 @@ def crear_coordenadas_grilla_horizontal(coord, coef, nivel,radio):
  	
 def crear_trisec(radio,agx,agy,ax):
 #funcion para plotear las celdas trisectorizadas parametros : radio celda trisector, cordenada X, coordenada Y, figure AX
-	colorpos=["Green","Blue","Red"]
+	colorpos=["Red","Red","Red"]
 	for x,y,c in zip(agx, agy, colorpos):
 		
 		color = c.lower()  # matplotlib understands lower case words for colours
@@ -232,7 +232,7 @@ def crear_trisec(radio,agx,agy,ax):
 		plt.plot(xx,yy, "r.")
 		#puntos rojos, centro de las celdas
 		plt.plot(0.5*radio*x,0.5*radio*y, 'r*')
-		plt.savefig("falta_pulir.png")
+		#plt.savefig("falta_pulir.png")
 	
 			
 def plotear_grid(coef,radio, coord, nivel, azi):
