@@ -18,7 +18,7 @@ def azimut_lista(angulo_inicial):
 	lista de 3 angulos, incluyendo el inicial. Esta funcion solo es util para obtener
 	3 angulos, por ello se usa para trisectorizar, es decir, a partir de un angulo, encontrar
 	los 2 siguientes que estan separados simetricamente entre si.'''
-	az=[math.radians(angulo_inicial)+i*120 for i in range(3)]
+	az=[angulo_inicial +i*120 for i in range(3)]
 	return az
 
 def calcular_puntos(n_user, sector):
@@ -32,5 +32,7 @@ if __name__ == "__main__":
 		#print(i, type(i))
 		#time.sleep(5)
 		print(i, " recta: ", calc_rango(i))
+	nazgimut=azimut_lista(1)
+	print(nazgimut)
 else:
 	print("modulo ecuaciones importado")

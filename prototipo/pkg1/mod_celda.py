@@ -77,13 +77,14 @@ def dibujar_celdas(cartesian_x, cartesian_y, radio_ext):
 		ax.add_patch(malla_hexagonal) #si no no dibuja celdas
 		ax.scatter(0, 0, alpha=0.5)
 	return ax
+
 def tri_sectorizar(angulo_x,angulo_y, radio_ext, ax):
 	#ax = plt.subplots(1)
 	colores=["Red","Red","Red"]
 	for x,y,c in zip(angulo_x, angulo_y, colores):
 		color = c.lower()
 		hexagonal_trisec = RegularPolygon((0.5*radio_ext*x, 0.5*radio_ext*y), numVertices=6, radius=radio_ext*0.5*1,
-						 orientation=np.radians(30), facecolor=color, alpha=0.2, edgecolor='k')
+						 orientation=np.radians(60), facecolor=color, alpha=0.2, edgecolor='k')
 		ax.add_patch(hexagonal_trisec)
 
 def variables():

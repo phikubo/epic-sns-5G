@@ -19,11 +19,11 @@ def gestionar_celdas(nivel, radio_ext):
 	coordenada_axial=pkg1.mod_patron_circular.ensamblar(nivel)
 	cartx,carty=pkg1.mod_celda.mapear_coordenadas_cartesianas(coordenada_axial, radio_ext, nivel)
 	ax=pkg1.mod_celda.dibujar_celdas(cartx,carty, radio_ext)
-	azimuts=prot_funciones_especiales.prot_operaciones.azimut_lista(1.3)
+	azimuts=prot_funciones_especiales.prot_operaciones.azimut_lista(30)
 	print(azimuts)
-	radio_circular=12
+	radio_circular=10
 	cir_x,cir_y,angulo_x,angulo_y=prot_funciones_especiales.prot_circulo_angulo.coordenadas_circulo(radio_circular,azimuts)
-	plt.plot(cir_x,cir_y, 'g')
+	plt.plot(cir_x,cir_y, 'g') #np variables, contienen una circunferencia
 	pkg1.mod_celda.tri_sectorizar(angulo_x,angulo_y,radio_circular, ax)	
 	 
 if __name__=="__main__":
