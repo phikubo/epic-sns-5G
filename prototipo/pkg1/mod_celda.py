@@ -68,24 +68,32 @@ def dibujar_celdas(cartesian_x, cartesian_y, radio_ext):
 	color="green"
 	fig, ax = plt.subplots(1)
 	ax.set_aspect('equal')
+
 	for x,y in zip(cartesian_x, cartesian_y):
 		plt.plot(x,y, '*')
+		
 		malla_hexagonal = RegularPolygon((x, y), numVertices=6, radius=radio_ext,
                          orientation=np.radians(30), #con 60 grados funciona perfecto, pero las coordenadas cambian. Antes 30
                          facecolor=color, alpha=0.2, edgecolor='k')
                          #cambiar radius=2. / 3. , cuando se usa coord_0
 		ax.add_patch(malla_hexagonal) #si no no dibuja celdas
 		ax.scatter(0, 0, alpha=0.5)
+	
+
 	return ax
 
-def tri_sectorizar(angulo_x,angulo_y, radio_ext, ax):
+def tri_sectorizar(angulo_x,angulo_y, radio_ext, ax, cartesian_x, cartesian_y):
 	#ax = plt.subplots(1)
+	apotema_trisec= radio_ext/2 #relaciono el apotema tri con el radio celda grande
+	radio_trisec =2*apotema_trisec* math.sqrt((4/3)) #radio a partir del apotema
+	radio_circular=radio_trisec #paso extra, no necesario
 	colores=["Red","Red","Red"]
-	for x,y,c in zip(angulo_x, angulo_y, colores):
-		color = c.lower()
-		hexagonal_trisec = RegularPolygon((0.5*radio_ext*x, 0.5*radio_ext*y), numVertices=6, radius=radio_ext*0.5*1,
-						 orientation=np.radians(60), facecolor=color, alpha=0.2, edgecolor='k')
-		ax.add_patch(hexagonal_trisec)
+	for cartx,carty in zip(cartesian_x, cartesian_y):
+		for x,y in zip(angulo_x, angulo_y):
+			color = colores[0].lower()
+			hexagonal_trisec = RegularPolygon((0.5*radio_ext*x+cartx, 0.5*radio_ext*y+carty), numVertices=6, radius=radio_ext*0.5*1,
+							orientation=np.radians(60), facecolor=color, alpha=0.2, edgecolor='k')
+			ax.add_patch(hexagonal_trisec)
 
 def variables():
 	numero_celdas=1	#requerimiento: funciona como una ventana, un slicing es util para graficar el número deseado
