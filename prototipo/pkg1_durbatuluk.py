@@ -21,7 +21,17 @@ def gestionar_celdas(nivel, radio_ext):
 	ax=pkg1.mod_celda.dibujar_celdas(cartx,carty, radio_ext)
 	azimuts=prot_funciones_especiales.prot_operaciones.azimut_lista(30)
 	print(azimuts)
-	radio_circular=10
+	
+	apotema=math.sqrt(radio_ext**2 -(0.5*radio_ext)**2)
+	
+	#segmento_interno =2*apotema_tri
+	##pero segmento_interno = radio_ext, haciendo el cambio de variable:
+	apotema_trisec= radio_ext/2 #relaciono el apotema tri con el radio celda grande
+	radio_trisec =2*apotema_trisec* math.sqrt((4/3))
+	
+	#test_radio=radio_ext - apotema, aproximado pero no igual
+	#radio_circular=radio_ext+test_radio
+	radio_circular=radio_trisec
 	cir_x,cir_y,angulo_x,angulo_y=prot_funciones_especiales.prot_circulo_angulo.coordenadas_circulo(radio_circular,azimuts)
 	plt.plot(cir_x,cir_y, 'g') #np variables, contienen una circunferencia
 	pkg1.mod_celda.tri_sectorizar(angulo_x,angulo_y,radio_circular, ax)	
@@ -38,6 +48,7 @@ if __name__=="__main__":
 	gestionar_celdas(mi_nivel,mi_radio_ext)
 	mis_angulos=[0, 90]
 	#pca.dibujar_circulo(radio, angulos)
+	plt.savefig("pkg1durbatuluk_fix_radius_tri.pdf")
 	plt.show()
 else:
 	print("Modulo <ring of power> importado")
