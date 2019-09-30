@@ -19,7 +19,7 @@ def generar_coordenada_axial_malla(num_cel, bd_coordenadas):
 
 def distancia_entre_celdas(nivel, radio_ext):
 	'''Funcion que genera el valor de la distancia entre el origen y las celdas por nivel. Puede ser util para calcular el 
-	radio de todo el sistema'''
+	radio de todo el sistema. Calcula la distancia con la mitad del radio que genera patron 3nr'''
 	#print(radio_ext)
 	r_med=radio_ext/2
 	
