@@ -62,7 +62,7 @@ if __name__=="__main__":
 	gestionar_celdas(mi_nivel,mi_radio_ext)
 	mis_angulos=[0, 90]
 	#pca.dibujar_circulo(radio, angulos)
-	plt.savefig("pkg1durbatuluk_all_ppp_trisec_celdas2.pdf")
+	#plt.savefig("pkg1durbatuluk_all_ppp_trisec_celdas2.pdf")
 	plt.show()
 else:
 	print("Modulo <ring of power> importado")
