@@ -12,9 +12,9 @@ import pkg1.mod_patron_circular
 import prot_funciones_especiales.prot_circulo_angulo
 import prot_funciones_especiales.prot_operaciones
 import prot_funciones_especiales.prot_poissonpp
-import thrakatuluk
+import GUI_thrakatuluk as gth
 
-def gestionar_celdas(nivel, radio_ext):
+def gestionar_celdas(nivel, radio_ext,intensity):
 	'''Main celdas. Gestiona tres elementos, celdas, distribucion de usuarios
 	 (ppp) y tri-sectorizacion.'''
 	coordenada_axial=pkg1.mod_patron_circular.ensamblar(nivel) #genera coordenadas axiales en n niveles
@@ -40,7 +40,7 @@ def gestionar_celdas(nivel, radio_ext):
 	pkg1.mod_celda.tri_sectorizar(angulo_x,angulo_y,radio_circular, ax, cartx,carty)
 	'''fin trisectorizar'''
 	#Poisson tambien debe hacerse en prot_celda
-	intensity=0.1
+	#intensity=gth.get_dato()
 	#x_ppp,y_ppp=prot_funciones_especiales.prot_poissonpp.distribuir_circulo(0.5*radio_ext,0.5*radio_ext*x, 0.5*radio*y, intensity)
 	x_ppp,y_ppp=prot_funciones_especiales.prot_poissonpp.distribuir_circulo(apotema,0, 0, intensity)#puntero origen de la celda 
 	'''task 5. distribuir en cada celda, radio = apotema'''
@@ -48,7 +48,8 @@ def gestionar_celdas(nivel, radio_ext):
 
 	coordenada_np_x, coordenada_np_y=prot_funciones_especiales.prot_poissonpp.distribuir_en_celdas(apotema,cartx, carty, intensity)
 	plt.scatter(coordenada_np_x,coordenada_np_y, edgecolor='b', facecolor='none', alpha=0.5 )
-
+	plt.show()
+	#plt.savefig("all_ppp_trisec.jpg")
 	print("Terminado exitosamente")	
 	 
 if __name__=="__main__":
@@ -61,14 +62,15 @@ if __name__=="__main__":
 
 
 	#Interfaz.GUI.thrakatuluk.SimulatorApp().run()
-	mi_nivel=0
+	mi_nivel=2
 #	mi_nivel,radio_extq,inten=Interfaz.GUI.thrakatuluk.btn()
 #	print("nivel  ",mi_nivel,"radio  ",radio_extq,"intensidad PPP ",inten)
 	mi_radio_ext=100/10 #10 decametros
 	gestionar_celdas(mi_nivel,mi_radio_ext)
 	mis_angulos=[0, 90]
+
 	#pca.dibujar_circulo(radio, angulos)
-	#plt.savefig("pkg1durbatuluk_all_ppp_trisec_celdas2.pdf")
-	plt.show()
+
+	
 else:
 	print("Modulo <ring of power> importado")

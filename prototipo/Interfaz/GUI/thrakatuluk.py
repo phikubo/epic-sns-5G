@@ -5,6 +5,9 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty
 
+from 
+
+
 
 
 class tinput(TextInput):
@@ -23,14 +26,11 @@ class Backend(Widget):
 
 	def btn(self):
 		print("Nivel: ", self.nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
-	
+		return self.nivel.text,self.radiocell.text,self.intensidadPPP.text
 
 class SimulatorApp(App):
 	def build(self):
 		return Backend()
-
-
-
 
 if __name__ == "__main__":
 	print("--------------------------------------")

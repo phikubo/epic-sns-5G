@@ -41,7 +41,7 @@ class Backend(Widget):
 
 	def btn(self):
 		print("Nivel: ", self.nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
-	
+		
 
 #kv = Builder.load_file("Simulator.kv")
 
@@ -50,14 +50,6 @@ class Backend(Widget):
 class SimulatorApp(App):
 	def build(self):
 		return Backend()
-
-
-
-#	def ward_Backend():
-
-#		ward=Backend():
-#		print(ward.nivel())
-
 
 if __name__ == "__main__":
 	print("--------------------------------------")

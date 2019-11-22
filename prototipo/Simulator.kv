@@ -1,0 +1,185 @@
+#<backend_gridview>
+
+
+#	BoxLayout:
+
+
+
+
+#WindowManager:
+	
+
+
+
+
+
+
+
+
+<MainWindow>
+	name:"poche"
+	nivel: nivel
+	radiocell: radiocell
+	intensidadPPP: intensidadPPP	
+	
+
+
+	BoxLayout:
+
+
+		#orientation: 'vertical'
+		padding: 20
+
+		size: self.size 
+		#size_hint: (400, 200)  
+		
+		canvas:
+			Color:
+				rgba: (1, 1, 1, 1)
+				#rgba: 0,0,0.53,0.2
+			Rectangle:
+				pos:self.pos
+				size:self.size
+
+		
+	
+
+		BoxLayout:
+			padding: 5
+			orientation: 'vertical'
+			size: root.width, root.height
+
+			ActionBar:
+				pos_hint: {'top': 1}
+				ActionView:
+					ActionPrevious:
+						title: 'Simulador Tools'
+						with_previous: False
+					ActionOverflow:
+					ActionButton:
+						text: 'Guardar datos'
+					ActionButton:
+						text: 'Cobertura'
+					ActionButton:
+						text: 'resultados'
+			BoxLayout:
+				padding: 5	
+				orientation: 'horizontal'
+
+				BoxLayout:
+
+					padding: 10
+					orientation: 'vertical'
+
+
+					BoxLayout:
+						orientation: 'horizontal'			
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: "Nivel"
+						TextInput:
+							id: nivel
+							size_hint: ( .30, 1)
+							multiline: False
+
+
+					BoxLayout:
+						orientation: 'horizontal'
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: "Radio celdas"
+						TextInput:
+							id: radiocell
+							size_hint: ( .30, 1)
+							multiline: False
+					
+					BoxLayout:
+						orientation: 'horizontal'
+						size: self.size
+
+
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: "Intensidad puntos Poisson:"
+						TextInput:
+							id: intensidadPPP
+							size_hint: ( .30, 1)
+							multiline: False
+
+					AnchorLayout:
+						anchor_x: 'right'
+						anchor_y: 'bottom'
+
+						Button:
+							id: cal
+							canvas.before:
+								Color:
+									rgba: 0,0,1,0
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							background_color: 1, 1, 1, 1
+							text: "Calcular"
+
+							on_release: 
+								root.manager.transition.direction = "up" 		
+								root.btn()
+								app.root.current ="caz"
+
+					Button: 
+						id: back
+						canvas.before:
+							Color:
+								rgba: 0,0,1,0
+							Rectangle:
+								pos:self.pos
+								size:self.size
+						background_color: 1, 1, 1, 1
+						text: "Volver"
+				
+				BoxLayout:
+					orientation: 'horizontal'
+					padding: 5 
+				
+					Image:
+						size: self.texture_size
+						size_hint: 1, 1
+						#size: dp(56),dp(56)
+						source: 'Escudo_Unicauca1.png'
+<SecondWindow>
+	name:"caz"
+
+	BoxLayout:
+		orientation: 'vertical'
+
+		
+
+		Button:
+			canvas.before:
+				Color:
+					rgba: 0,0,1
+				Rectangle:
+					pos:self.pos
+					size:self.size
+			background_color: 1, 1, 1
+			text: "Isildur"
+
+			on_release:
+				root.manager.transition.direction = "down"
+				app.root.current = "poche"
+
