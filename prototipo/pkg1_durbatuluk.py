@@ -48,8 +48,10 @@ def gestionar_celdas(nivel, radio_ext,intensity):
 
 	coordenada_np_x, coordenada_np_y=prot_funciones_especiales.prot_poissonpp.distribuir_en_celdas(apotema,cartx, carty, intensity)
 	plt.scatter(coordenada_np_x,coordenada_np_y, edgecolor='b', facecolor='none', alpha=0.5 )
+	
+	plt.savefig("all_ppp_trisec.jpg")
 	plt.show()
-	#plt.savefig("all_ppp_trisec.jpg")
+	
 	print("Terminado exitosamente")	
 	 
 if __name__=="__main__":

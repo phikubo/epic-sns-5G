@@ -5,14 +5,268 @@
 
 
 
+#ESTA INTERFFAZ REALIZA EL MODELO DEL CANAL DE TIPO URBANO PARA EL SIMULADOR 5G
 
 #WindowManager:
+<ModelcanalUMI>
+	name: "sking"
+
+	BoxLayout:
+		orientation: 'vertical'
+		padding: 50
+		canvas:
+			Color:
+				rgba: (1, 1, 1, 1)
+			Rectangle:
+				pos:self.pos
+				size:self.size
+
+
+
+#TITULO UMA PARA LA INTERFAZ GRAFICA 
+		Label:
+			canvas.before:
+				Color:
+				
+					rgba: 0.5,0.5,0.3,1
+				Rectangle:
+					pos:self.pos
+					size:self.size
+					source: "modelcanal.PNG"
+
+			text: "URBANO CALLEJON ESTRECHO (STREET CANYON)"
+			font_size: 20
+
+
+		BoxLayout:			
+			#id: Vsector
+			orientation: 'horizontal'	
+			size_hint_y: 0.18		
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.4,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Distancia Intercelda (ISD) 200m"
+			TextInput:
+				id: ISD
+				size_hint: ( .15, 1)
+				multiline: False
+
+		BoxLayout:
+			orientation:'horizontal'
+			size_hint_y: 0.18
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.4,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Alto de la antena (HBs) 10m"
+			TextInput:
+				id: Hbs
+				size_hint: ( .15, 1)
+				multiline: False
+
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint_y: 0.18
+
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.4,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Distancia min BS-UE 10m"	
+			TextInput:
+				id: Dbs_ue
+				size_hint: ( .15, 1)
+				multiline: False
+
+		BoxLayout:
+			orientation:'horizontal'
+			size_hint_y: 0.18
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.4,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Altura Usuario (Hue) 2-3m"
+			TextInput:
+				id: Hue
+				size_hint: ( .15, 1)
+				multiline: False
+				
+		BoxLayout:
+			orientation: 'horizontal'
+			padding: [0, 30]
+			Button:
+				canvas.before:
+					Color:
+						rgba: 0,0,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				background_color: 1, 1, 1, 1
+				text: "calcular"
+
+				on_release: 
+					root.manager.transition.direction = "up" 		
+					app.root.current ="poche"
+
+			Button:
+				canvas.before:
+					Color:
+						rgba: 0,0,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				background_color: 1, 1, 1
+				text: "volver"
+
+				on_release: 
+					root.manager.transition.direction = "down" 		
+					app.root.current ="caz"
 	
 
 
+<ModelcanalUMA>
+	name:"king"
+#	nivel: nivel
+#	radiocell: radiocell
+#	intensidadPPP: intensidadPPP
+	#Vsector: Vsector	
+
+
+	BoxLayout:
+		orientation: 'vertical'
+		padding: 50
+		canvas:
+			Color:
+				rgba: (1, 1, 1, 1)
+			Rectangle:
+				pos:self.pos
+				size:self.size
 
 
 
+#TITULO UMA PARA LA INTERFAZ GRAFICA  URBANO MACRO CELDA
+		Label:
+			canvas.before:
+				Color:
+					rgba: 0.3,0.4,0.5,1
+				Rectangle:
+					pos:self.pos
+					size:self.size
+					source: "modelcanal.PNG"
+
+			text: "URBANO  MACRO CELDA"
+			font_size: 20
+
+
+		BoxLayout:			
+			#id: Vsector
+			orientation: 'horizontal'	
+			size_hint_y: 0.18		
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.3,0.4,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Distancia Intercelda (ISD) 500m"
+			TextInput:
+				id: ISD
+				size_hint: ( .15, 1)
+				multiline: False
+
+		BoxLayout:
+			orientation:'horizontal'
+			size_hint_y: 0.18
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.3,0.4,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Alto de la antena (HBs) 25m"
+			TextInput:
+				id: Hbs
+				size_hint: ( .15, 1)
+				multiline: False
+
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint_y: 0.18
+
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.3,0.4,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Distancia min BS-UE 35m"	
+			TextInput:
+				id: Dbs_ue
+				size_hint: ( .15, 1)
+				multiline: False
+
+		BoxLayout:
+			orientation:'horizontal'
+			size_hint_y: 0.18
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.3,0.4,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Altura Usuario (Hue) 2-3m"
+			TextInput:
+				id: Hue
+				size_hint: ( .15, 1)
+				multiline: False
+				
+		BoxLayout:
+			orientation: 'horizontal'
+			padding: [0, 80, 0, 20]
+			Button:
+				canvas.before:
+					Color:
+						rgba: 0,0,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				background_color: 1, 1, 1, 1
+				text: "calcular"
+
+				on_release: 
+					root.manager.transition.direction = "up" 		
+					app.root.current ="poche"
+
+			Button:
+				canvas.before:
+					Color:
+						rgba: 0,0,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				background_color: 1, 1, 1
+				text: "volver"
+
+				on_release: 
+					root.manager.transition.direction = "up" 		
+					app.root.current ="caz"
 
 
 
@@ -21,6 +275,7 @@
 	nivel: nivel
 	radiocell: radiocell
 	intensidadPPP: intensidadPPP	
+
 	
 
 
@@ -73,7 +328,8 @@
 
 
 					BoxLayout:
-						orientation: 'horizontal'			
+						orientation: 'horizontal'
+						size_hint_y: 0.15
 						Label:
 							canvas.before:
 								Color:
@@ -84,12 +340,13 @@
 							text: "Nivel"
 						TextInput:
 							id: nivel
-							size_hint: ( .30, 1)
+							size_hint: ( .20, 1)
 							multiline: False
 
 
 					BoxLayout:
 						orientation: 'horizontal'
+						size_hint_y: 0.15
 						Label:
 							canvas.before:
 								Color:
@@ -100,14 +357,13 @@
 							text: "Radio celdas"
 						TextInput:
 							id: radiocell
-							size_hint: ( .30, 1)
+							size_hint: ( .20, 1)
 							multiline: False
 					
 					BoxLayout:
 						orientation: 'horizontal'
-						size: self.size
-
-
+						size_hint_y: 0.15
+   
 						Label:
 							canvas.before:
 								Color:
@@ -118,13 +374,13 @@
 							text: "Intensidad puntos Poisson:"
 						TextInput:
 							id: intensidadPPP
-							size_hint: ( .30, 1)
+							size_hint: ( .20, 1)
 							multiline: False
 
-					AnchorLayout:
-						anchor_x: 'right'
-						anchor_y: 'bottom'
-
+					BoxLayout:
+						orientation: 'vertical'
+						padding: [0, 40]
+						
 						Button:
 							id: cal
 							canvas.before:
@@ -141,20 +397,20 @@
 								root.btn()
 								app.root.current ="caz"
 
-					Button: 
-						id: back
-						canvas.before:
-							Color:
-								rgba: 0,0,1,0
-							Rectangle:
-								pos:self.pos
-								size:self.size
-						background_color: 1, 1, 1, 1
-						text: "Volver"
+						Button: 
+							id: back
+							canvas.before:
+								Color:
+									rgba: 0,0,1,0
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							background_color: 1, 1, 1, 1
+							text: "Volver"
 				
 				BoxLayout:
 					orientation: 'horizontal'
-					padding: 5 
+					padding: [0,50] 
 				
 					Image:
 						size: self.texture_size
@@ -163,23 +419,61 @@
 						source: 'Escudo_Unicauca1.png'
 <SecondWindow>
 	name:"caz"
+	canvas.before:
+		Color:
+			rgba: (1, 1, 1, 1)
+			#rgba: 0,0,0.53,0.2
+		Rectangle:
+			pos:self.pos
+			size:self.size
+			source: "modelcanal.PNG"
+
+
 
 	BoxLayout:
-		orientation: 'vertical'
+		orientation: 'horizontal'
+	#	padding: 30
+		padding: [30, 120, 30, 120]
 
 		
+		
+			#source: 'all_ppp_trisec.jpg'
+		
+		
+		Button: 
+			canvas.before:
+				Color:
+					rgba: 0,0,1
+				Rectangle:
+			
+					pos:self.pos
+					size:self.size
+			text:'MODELO DEL CANAL TIPO UMa'
+			on_release:
+				#root.add_dato()
+				#source:'all_ppp_trisec.jpg'
+				root.manager.transition.direction = "down"
+				app.root.current = "king"
 
 		Button:
 			canvas.before:
 				Color:
 					rgba: 0,0,1
 				Rectangle:
+					
 					pos:self.pos
 					size:self.size
-			background_color: 1, 1, 1
-			text: "Isildur"
-
+			text: 'MODELO DEL CANAL TIPO UMi-Street Canyon'
 			on_release:
+				#root.add_dato()
+				#source:'all_ppp_trisec.jpg'
 				root.manager.transition.direction = "down"
-				app.root.current = "poche"
+				app.root.current = "sking"
+	
+#				source:root.sr
+				#source:'all_ppp_trisec.jpg'
 
+			
+#<contenedorgrilla>
+#	name:"ima"		
+	

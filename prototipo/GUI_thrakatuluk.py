@@ -5,37 +5,73 @@ from kivy.lang import Builder
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty
+from kivy.properties import StringProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.image import AsyncImage, Image
 
 import pkg1_durbatuluk as dk
 
+class ModelcanalUMI(Screen):
+	nivel = ObjectProperty(None)
+	radiocell = ObjectProperty(None)
+	intensidadPPP = ObjectProperty(None)
+	current= ""	
+
+
+class ModelcanalUMA(Screen):
+
+	nivel = ObjectProperty(None)
+	radiocell = ObjectProperty(None)
+	intensidadPPP = ObjectProperty(None)
+	current= ""
+
+#	def add_datoimport(nivel,radiocell,intensidadPPP,Vsec):
+
+
+
+
+
+	
+class contenedorgrilla(Screen):
+	pass
+
+
 
 class SecondWindow(Screen):
-
+	#sr = StringProperty('C:/Users/PIPE_PC/Documents/UNIVERSIDAD/TESIS/epic-sns-5G/prototipo/all_ppp_trisec.jpg')
 #	nivel = ObjectProperty(None)
 #	radiocell = ObjectProperty(None)
 	#intensidadPPP = ObjectProperty(None)
-
+	#self.add_widget(image)
+	#sr=Image(source='all_ppp_trisec.jpg')
+ 	#self.sr.reload()
 	#intensidadPPP=intensidadPPP.text
 #	current= ""
+	#sr=Image(source='all_ppp_trisec.jpg')
+#	sr.Image(source='all_ppp_trisec.jpg')
+#	add_widget(Boxlayout())
 
-	def add_dato(nivel,radiocell,intensidadPPP):
-		nvl=''
-		rcell=''
-		rcell=int(radiocell)
-		nvl=int(nivel)
-		inten=float(intensidadPPP)
-
-		dk.gestionar_celdas(nvl,rcell,inten)
-
+	#def add_dato(self):
+	#	sr = StringProperty('C:/Users/PIPE_PC/Documents/UNIVERSIDAD/TESIS/epic-sns-5G/prototipo/all_ppp_trisec.jpg')
+		#print('por aqui pase')
+		#Image(im)
+		
+	#	sr ='C:/Users/PIPE_PC/Documents/UNIVERSIDAD/TESIS/epic-sns-5G/prototipo/all_ppp_trisec.jpg'
+			#sr.reload()
+	#	sm.current= "caz"
+	#	return SecondWindow()
+		
+	
+		#dk.gestionar_celdas(nvl,rcell,inten)
+		
 		#dk.prot_funciones_especiales.prot_poissonpp.distribuir_circulo(dk.apotema,0,0,inten)
 		#		print("intensidadPPP:", intensidadPPP)
-
+	pass
 	
 
 class WindowManager(ScreenManager):
 	pass
+
 
 
 
@@ -50,6 +86,9 @@ class tinput(TextInput):
 		intext = TextInput(text = 'Button')
 		self.add_widget(intext)
 
+
+
+
 class MainWindow(Screen):
 	nivel = ObjectProperty(None)
 	radiocell = ObjectProperty(None)
@@ -59,17 +98,32 @@ class MainWindow(Screen):
 
 	#layout_instance.do_layout ()
 	#Widget.canvas.ask_update ()
+
 	#def on_enter(self, *args):
 	#	print("Nivel: ", self.nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
-	sr=Image(source='all_ppp_trisec.jpg')
+	#sr=Image(source='all_ppp_trisec.jpg') 
+
 	def btn(self):
 		#print("Nivel: ", self.nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
-		SecondWindow.add_dato(self.nivel.text, self.radiocell.text, self.intensidadPPP.text)
+		#SecondWindow.add_dato()
 		#get_dato(self.intensidadPPP.text)
-		sm.current = "caz"	
+		rcell=int(self.radiocell.text)
+		nvl=int(self.nivel.text)
+		inten=float(self.intensidadPPP.text)
+
+		dk.gestionar_celdas(nvl,rcell,inten)
+		im=Image(source='all_ppp_trisec.jpg')
+
+		#SecondWindow.add_dato(self)
+		
+
+		sm.current = "caz"
+
+		
+
 kv = Builder.load_file("Simulator.kv")
 sm = WindowManager()
-screens = [MainWindow(name="poche"),SecondWindow(name="caz")]
+screens = [MainWindow(name="poche"),SecondWindow(name="caz"),ModelcanalUMA(name="king"),ModelcanalUMI(name="sking")]
 for screen in screens:
 	sm.add_widget(screen)
   
