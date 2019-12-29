@@ -21,7 +21,7 @@ def patron_dado_ab(a,b):
 	#funcion que resume las anteriores
 	return -1*(a+b)
 	
-@decorador_rastrear
+#@decorador_rastrear
 def patron_circular_final(nivel):
 	'''Funcion. Genera dinamicamente el conjunto de coordenadas [a,b,c] axiales, 
 	de acuerdo al nivel deseado. Solo genera un conjunto. Las coordenadas se obtiene siguiendo contramanecillas del reloj
@@ -118,7 +118,7 @@ def distancia_entre_celdas(nivel, radio_ext):
 	return 3*(nivel)*r_med
 
 
-def mapear_coordenadas_cartesianas(coordenadas_axiales, radio_ext, nivel):
+def mapear_coordenadas_cartesianas(coordenadas_axiales, nivel,radio_ext):
 	'''Funcion para crear coordenadas x,y en el plano cartesiano a partir de coordenadas axiales'''
 	#task 1: crear x,y #terminado x
 	#task 2: dibjar puntos
@@ -151,7 +151,7 @@ def mapear_coordenadas_cartesianas(coordenadas_axiales, radio_ext, nivel):
 	return coordenadas_cartesianas_horizontal, coordenadas_cartesianas_vertical
 
 
-@decorador_rastrear	
+#@decorador_rastrear	
 def ensamblar(nivel, radio):
 	'''Funcion. Genera una sola lista que junta los n niveles, n={0,1,2,3,..}'''
 	if nivel > 2:
@@ -163,18 +163,18 @@ def ensamblar(nivel, radio):
 		#return pat_cir
 		#mapeo a coordenadas cartesianas.
 		#estos son los puntos de cada bs
-		cord_x,cord_y=mapear_coordenadas_cartesianas(pat_cir, radio, nivel)
-		return cord_x,cord_y
-		#return pat_cir
+		#cord_x,cord_y=mapear_coordenadas_cartesianas(pat_cir, radio, nivel)
+		#return cord_x,cord_y
+		return pat_cir
 
 
-def n_celdas(num):
+def celdas_deseadas(num,radio):
 	"""
 	Determina el nivel de celdas e imprime solo el numero de coordenadas cartesianas deseadas.
 	Tambien puedo programar logica adentro
 	>>> lista=[0,1,2,3,6,7,8,9,18,19,20]
 	>>> for i in lista:
-	... 	n_celdas(i),i
+	... 	celdas_deseadas(i),i
 	(-1, 0)
 	(0, 1)
 	(1, 2)
@@ -186,6 +186,8 @@ def n_celdas(num):
 	(2, 18)
 	(2, 19)
 	(-1, 20)
+	>>> celdas_deseadas(20)
+	-1
 	"""
 	#segun el numero determinar el nivel
 	#con el nivel ejectuar ensamblar
@@ -199,10 +201,22 @@ def n_celdas(num):
 		nivel=2
 	else:
 		pass
-	return nivel
+	#return nivel
+	print("nivel ", nivel)
+	pat_cir=ensamblar(nivel,radio)
+	cord_x,cord_y=mapear_coordenadas_cartesianas(pat_cir, nivel, radio)
+	print("test")
+	print(cord_x)
+	print(cord_y)
+	cord_x=cord_x[0:num]
+	cord_y=cord_y[0:num]
+	return cord_x,cord_y
 
-def prueba_interna():
-	import time
+def prueba_interna1():
+	print("-----------------------------")
+	print("inicio")
+	#prueba obsolote, ya no funciona
+	print("-----------------------------")
 	coordx,coordy=ensamblar(2,10)
 	print(len(coordx))
 	print(coordx)
@@ -210,16 +224,33 @@ def prueba_interna():
 	print(coordy)
 	#el numero de coordenadas debe ser igual
 	coordx,coordy=ensamblar(1,10)
+	plt.plot(coordx,coordy, "r*")
+	plt.grid(True)
 	coordx,coordy=ensamblar(0,10)
+	plt.plot(coordx,coordy, "go")
+	plt.show()
+def prueba_interna2():
+	print("-----------------------------")
+	print("inicio")
+	print("-----------------------------")
+	#solo modificar las celdas deseadas y
+	#el radio.
+	numero_de_celdas_deseadas=14
+	radio=10
+	coordx,coordy=celdas_deseadas(numero_de_celdas_deseadas,radio)
+	print("interna")
+	print(coordx)
+	print(coordy)
 	plt.plot(coordx,coordy, "r*")
 	plt.grid(True)
 	plt.show()
 		
 if __name__=="__main__":
+	#Prototipo:v2
 	import doctest
-	#Prototipo:
-	#prueba_interna()
-	doctest.testmod()
+	#doctest.testmod()
+	prueba_interna2()
+	
 	##coordx,coordy=ensamblar(nivel=2,radio=10)
 	
 	
