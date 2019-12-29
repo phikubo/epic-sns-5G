@@ -165,12 +165,41 @@ def ensamblar(nivel, radio):
 		#estos son los puntos de cada bs
 		cord_x,cord_y=mapear_coordenadas_cartesianas(pat_cir, radio, nivel)
 		return cord_x,cord_y
+		#return pat_cir
 
 
 def n_celdas(num):
+	"""
+	Determina el nivel de celdas e imprime solo el numero de coordenadas cartesianas deseadas.
+	Tambien puedo programar logica adentro
+	>>> lista=[0,1,2,3,6,7,8,9,18,19,20]
+	>>> for i in lista:
+	... 	n_celdas(i),i
+	(-1, 0)
+	(0, 1)
+	(1, 2)
+	(1, 3)
+	(1, 6)
+	(1, 7)
+	(2, 8)
+	(2, 9)
+	(2, 18)
+	(2, 19)
+	(-1, 20)
+	"""
 	#segun el numero determinar el nivel
 	#con el nivel ejectuar ensamblar
 	#con las cordenadas axiales, aquí ejecutar coordenadas_cartesianas
+	nivel=-1
+	if num==1:
+		nivel=0
+	elif num>1 and num < 8:
+		nivel=1
+	elif num>7 and num <= 19:
+		nivel=2
+	else:
+		pass
+	return nivel
 
 def prueba_interna():
 	import time
@@ -187,17 +216,12 @@ def prueba_interna():
 	plt.show()
 		
 if __name__=="__main__":
+	import doctest
 	#Prototipo:
 	#prueba_interna()
-	coordx,coordy=ensamblar(nivel=2,radio=10)
-	plt.plot(coordx,coordy, "r*")
-	plt.grid(True)
-	plt.show()
-	#coord=ensamblar(1,10)
-	#print(coord)
-	#coord=ensamblar(2,10)
-	#print(coord)
-	#coord=ensamblar(30,10)
-	#print(coord)
+	doctest.testmod()
+	##coordx,coordy=ensamblar(nivel=2,radio=10)
+	
+	
 else:
 	print("Modulo coordenadas importado")
