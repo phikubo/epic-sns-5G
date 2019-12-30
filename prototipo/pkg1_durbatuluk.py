@@ -41,6 +41,7 @@ def gestionar_celdas(nivel, radio_ext,intensity):
 	'''fin trisectorizar'''
 	#Poisson tambien debe hacerse en prot_celda
 	#intensity=gth.get_dato()
+	
 	#x_ppp,y_ppp=prot_funciones_especiales.prot_poissonpp.distribuir_circulo(0.5*radio_ext,0.5*radio_ext*x, 0.5*radio*y, intensity)
 	x_ppp,y_ppp=prot_funciones_especiales.prot_poissonpp.distribuir_circulo(apotema,0, 0, intensity)#puntero origen de la celda 
 	'''task 5. distribuir en cada celda, radio = apotema'''
@@ -49,7 +50,7 @@ def gestionar_celdas(nivel, radio_ext,intensity):
 	coordenada_np_x, coordenada_np_y=prot_funciones_especiales.prot_poissonpp.distribuir_en_celdas(apotema,cartx, carty, intensity)
 	plt.scatter(coordenada_np_x,coordenada_np_y, edgecolor='b', facecolor='none', alpha=0.5 )
 	
-	plt.savefig("all_ppp_trisec.jpg")
+	plt.savefig("all_ppp_trisec1.png")
 	plt.show()
 	
 	print("Terminado exitosamente")	
@@ -65,10 +66,11 @@ if __name__=="__main__":
 
 	#Interfaz.GUI.thrakatuluk.SimulatorApp().run()
 	mi_nivel=2
+	intensity=0.1
 #	mi_nivel,radio_extq,inten=Interfaz.GUI.thrakatuluk.btn()
 #	print("nivel  ",mi_nivel,"radio  ",radio_extq,"intensidad PPP ",inten)
 	mi_radio_ext=100/10 #10 decametros
-	gestionar_celdas(mi_nivel,mi_radio_ext)
+	gestionar_celdas(mi_nivel,mi_radio_ext, intensity)
 	mis_angulos=[0, 90]
 
 	#pca.dibujar_circulo(radio, angulos)

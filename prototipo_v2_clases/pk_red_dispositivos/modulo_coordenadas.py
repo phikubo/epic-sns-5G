@@ -168,13 +168,13 @@ def ensamblar(nivel, radio):
 		return pat_cir
 
 
-def celdas_deseadas(num,radio):
+def coordenadas_nceldas(num,radio):
 	"""
 	Determina el nivel de celdas e imprime solo el numero de coordenadas cartesianas deseadas.
 	Tambien puedo programar logica adentro
 	>>> lista=[0,1,2,3,6,7,8,9,18,19,20]
 	>>> for i in lista:
-	... 	celdas_deseadas(i),i
+	... 	coordenadas_nceldas(i),i
 	(-1, 0)
 	(0, 1)
 	(1, 2)
@@ -186,12 +186,17 @@ def celdas_deseadas(num,radio):
 	(2, 18)
 	(2, 19)
 	(-1, 20)
-	>>> celdas_deseadas(20)
+	>>> coordenadas_nceldas(20)
 	-1
 	"""
 	#segun el numero determinar el nivel
 	#con el nivel ejectuar ensamblar
 	#con las cordenadas axiales, aquí ejecutar coordenadas_cartesianas
+	try:
+		if num<=0 or num >19:
+			raise Exception(str(num)+" no es una cantidad de celdas aceptable. Ejecución terminada.")
+	except Exception as e:
+		print(e)
 	nivel=-1
 	if num==1:
 		nivel=0
@@ -202,12 +207,8 @@ def celdas_deseadas(num,radio):
 	else:
 		pass
 	#return nivel
-	print("nivel ", nivel)
 	pat_cir=ensamblar(nivel,radio)
 	cord_x,cord_y=mapear_coordenadas_cartesianas(pat_cir, nivel, radio)
-	print("test")
-	print(cord_x)
-	print(cord_y)
 	cord_x=cord_x[0:num]
 	cord_y=cord_y[0:num]
 	return cord_x,cord_y
@@ -235,9 +236,9 @@ def prueba_interna2():
 	print("-----------------------------")
 	#solo modificar las celdas deseadas y
 	#el radio.
-	numero_de_celdas_deseadas=14
+	numero_de_coordenadas_nceldas=14
 	radio=10
-	coordx,coordy=celdas_deseadas(numero_de_celdas_deseadas,radio)
+	coordx,coordy=coordenadas_nceldas(numero_de_coordenadas_nceldas,radio)
 	print("interna")
 	print(coordx)
 	print(coordy)
