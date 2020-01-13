@@ -8,7 +8,7 @@ import os
 
 import pkg1.mod_celda
 import pkg1.mod_patron_circular
-#
+#-------------------------------------------------->>>ABAJO ESTA LA DEFINICION DE PAQUETES
 import prot_funciones_especiales.prot_circulo_angulo
 import prot_funciones_especiales.prot_operaciones
 import prot_funciones_especiales.prot_poissonpp
@@ -78,3 +78,17 @@ if __name__=="__main__":
 	
 else:
 	print("Modulo <ring of power> importado")
+
+
+"""There are some important misconceptions that need to be addressed, specifically with terminology. First, usually, when you think that you are importing a package in python, what you are actually importing is a module. You should use the term package when you are thinking in terms of file system substructure that helps you organize your code. But from the code perspective, whenever you import a package, Python treats it as a module. All packages are modules. Not all modules are packages. A module with the __path__ attribute is considered a package.
+
+You can check that os is a module. To confirm this you can do:
+
+import os
+print(type(os)) # will print: <type 'module'>
+
+In your example, when you do import FooPackage, FooPackage is treated and considered to be a module too, and its attributes (functions, classes, etc.) are supposedly defined in __init__.py. Since your __init__.py is empty, it cannot find foo.
+
+Outside of import statements you cannot use '.' notation to address modules inside of modules. The only exception happens if a module is imported in the intended parent's package __init__.py file. To make it clear, let's do some examples here:
+
+Consider your original structure:"""

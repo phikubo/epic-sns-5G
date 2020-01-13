@@ -75,7 +75,8 @@ class Celdas:
 				color = colores[0].lower()
 				hexagonal_trisec = RegularPolygon((0.5*radio_ext*x+cartx, 0.5*radio_ext*y+carty), numVertices=6, radius=radio_ext*0.5*1,
 								orientation=np.radians(60), facecolor=color, alpha=0.2, edgecolor='k')
-				ax.add_patch(hexagonal_trisec)	
+				ax.add_patch(hexagonal_trisec)
+		return ax	
 
 
 def crear_n_objetos_lista(clase_madre, n):
