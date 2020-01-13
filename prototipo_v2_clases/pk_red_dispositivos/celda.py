@@ -3,8 +3,8 @@ from matplotlib.patches import RegularPolygon
 import numpy as np
 import math
 #
-import modulo_coordenadas as mc
-
+#import modulo_coordenadas as mc
+from . import modulo_coordenadas as mc
 class Celda:
 
 	def __init__(self, pos_x, pos_y, radio):
@@ -33,6 +33,8 @@ class Celdas:
 		#radio debe conocerse desde el pricipio desde que todas las celdas son simetricas
 		#y si por el numero de cedas, calculo el nivel
 		#self.nivel=nivel
+		#import modulo_coordenadas as mc
+		#from . import modulo_coordenadas as mc
 		self.num_celdas=num_celdas
 		self.celdas=[]
 		self.radio=radio
