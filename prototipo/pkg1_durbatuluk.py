@@ -36,7 +36,7 @@ def gestionar_celdas(nivel, radio_ext,intensity):
 	#radio_circular=radio_ext+test_radio
 	radio_circular=radio_trisec
 	cir_x,cir_y,angulo_x,angulo_y=prot_funciones_especiales.prot_circulo_angulo.coordenadas_circulo(radio_circular,azimuts)
-	plt.plot(cir_x,cir_y, 'g') #np variables, contienen una circunferencia
+	plt.plot(cir_x,cir_y, 'k') #np variables, contienen una circunferencia
 	pkg1.mod_celda.tri_sectorizar(angulo_x,angulo_y,radio_circular, ax, cartx,carty)
 	'''fin trisectorizar'''
 	#Poisson tambien debe hacerse en prot_celda
