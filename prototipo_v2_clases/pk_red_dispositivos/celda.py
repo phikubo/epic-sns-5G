@@ -5,6 +5,8 @@ import math
 #
 #import modulo_coordenadas as mc
 from . import modulo_coordenadas as mc
+from . import modulo_operaciones as mo
+
 class Celda:
 
 	def __init__(self, pos_x, pos_y, radio):
@@ -44,7 +46,7 @@ class Celdas:
 			self.celdas.append(self.obj)
 
 
-	def dibujar_celdas(self):
+	def ver_celdas(self):
 		'''Funcion principal que dibuja las celdas dadas las coordenadas x,y de su centro.'''
 		color="green"
 		fig, ax = plt.subplots(1)
@@ -76,7 +78,11 @@ class Celdas:
 				hexagonal_trisec = RegularPolygon((0.5*radio_ext*x+cartx, 0.5*radio_ext*y+carty), numVertices=6, radius=radio_ext*0.5*1,
 								orientation=np.radians(60), facecolor=color, alpha=0.2, edgecolor='k')
 				ax.add_patch(hexagonal_trisec)
-		return ax	
+		return ax
+
+	def ver_sectores(self):
+		azimuts=mo.azimut_lista(angulo_inicial=30)
+		
 
 
 def crear_n_objetos_lista(clase_madre, n):
@@ -100,7 +106,7 @@ def prueba1():
 def prueba2():
 	#crea una colmena con 4 macroceldas.
 	colmena=Celdas(19,10)
-	ax=colmena.dibujar_celdas()
+	ax=colmena.ver_celdas()
 	#plt.savefig("dibujar19.png") #para guardar en base de datos, llamar en un nivel de archivo superior y guardar.
 	#plt.show()
 if __name__=="__main__":
@@ -110,6 +116,8 @@ if __name__=="__main__":
 	print("------------")
 	#crear objeto celda
 	#clase celdas crea crea celdas internas
+	import modulo_coordenadas as mc
+	import modulo_operaciones as mo
 	prueba2()
 else:
 	print("Modulo celda.py importado")
