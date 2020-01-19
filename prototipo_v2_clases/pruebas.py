@@ -7,8 +7,13 @@ import pk_red_dispositivos.celda as pkcel
 
 
 def prueba_pk_dispositivos():
-	colmena=pkcel.Celdas(3,4)
-	ax=colmena.ver_celdas()
+	colmena=pkcel.Celdas(4,20)
+	colmena.ver_estaciones_base()
+	colmena.ver_celdas()
+	colmena.ver_sectores()
+	plt.axis("equal")
+	plt.grid(True)
+	#plt.savefig("base_datos/img_pruebas/test_4.png")
 	plt.show()
 
 

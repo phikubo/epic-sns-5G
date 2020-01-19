@@ -3,9 +3,12 @@ from matplotlib.patches import RegularPolygon
 import numpy as np
 import math
 #
-#import modulo_coordenadas as mc
-from . import modulo_coordenadas as mc
-from . import modulo_operaciones as mo
+try:
+	from . import modulo_coordenadas as mc
+	from . import modulo_circulos as mcir
+except:
+	print("ATENCION: Uno o mas modulos no pudo ser importado... ")
+	print("...desde un archivo externo. Ignorar si la ejecucion es interna. ")
 
 class Celda:
 
@@ -35,54 +38,51 @@ class Celdas:
 		#radio debe conocerse desde el pricipio desde que todas las celdas son simetricas
 		#y si por el numero de cedas, calculo el nivel
 		#self.nivel=nivel
-		#import modulo_coordenadas as mc
-		#from . import modulo_coordenadas as mc
+		self.cel_fig, self.cels_ax=plt.subplots(1)
 		self.num_celdas=num_celdas
 		self.celdas=[]
-		self.radio=radio
-		self.x, self.y=mc.coordenadas_nceldas(self.num_celdas, self.radio)
+		self.radio=radio #radio externo
+		self.x, self.y=mc.coordenadas_nceldas(self.num_celdas, self.radio) #cordenadas celdas internas
 		for x,y in zip(self.x, self.y):
 			self.obj=Celda(self.x, self.y, self.radio)
 			self.celdas.append(self.obj)
 
 
+	def ver_estaciones_base(self):
+		"""Permite ver las estaciones base de forma independiente"""
+		plt.plot(self.x,self.y, 'b^')
+
+
 	def ver_celdas(self):
 		'''Funcion principal que dibuja las celdas dadas las coordenadas x,y de su centro.'''
 		color="green"
-		fig, ax = plt.subplots(1)
-		ax.set_aspect('equal') 
-
 		for x,y in zip(self.x, self.y):
 			#pinta triangulos en los origenes de las estaciones base
-			plt.plot(x,y, 'b^')
+			#plt.plot(x,y, 'b^')
 			
 			malla_hexagonal = RegularPolygon((x, y), numVertices=6, radius=self.radio,
 							orientation=np.radians(30), #con 60 grados funciona perfecto, pero las coordenadas cambian. Antes 30
 							facecolor=color, alpha=0.2, edgecolor='k')
 							#cambiar radius=2. / 3. , cuando se usa coord_0
-			ax.add_patch(malla_hexagonal) #si no no dibuja celdas
-			ax.scatter(0, 0, alpha=0.1)
-		
+			self.cels_ax.add_patch(malla_hexagonal) #si no no dibuja celdas
+			#self.cels_ax.scatter(0, 0, alpha=0.1) 
 
-		return ax
-
-	def tri_sectorizar(angulo_x,angulo_y, radio_ext, ax, cartesian_x, cartesian_y):
-		#ax = plt.subplots(1)
-		apotema_trisec= radio_ext/2 #relaciono el apotema tri con el radio celda grande
-		radio_trisec =2*apotema_trisec* math.sqrt((4/3)) #radio a partir del apotema
-		radio_circular=radio_trisec #paso extra, no necesario
-		colores=["Red","Red","Red"]
-		for cartx,carty in zip(cartesian_x, cartesian_y):
-			for x,y in zip(angulo_x, angulo_y):
-				color = colores[0].lower()
-				hexagonal_trisec = RegularPolygon((0.5*radio_ext*x+cartx, 0.5*radio_ext*y+carty), numVertices=6, radius=radio_ext*0.5*1,
-								orientation=np.radians(60), facecolor=color, alpha=0.2, edgecolor='k')
-				ax.add_patch(hexagonal_trisec)
-		return ax
 
 	def ver_sectores(self):
-		azimuts=mo.azimut_lista(angulo_inicial=30)
+		"""Permite ver los sectores de forma independiente"""
+		azimuts=mcir.azimut_lista(angulo_inicial=30)
+
+		angulo_x, angulo_y =mcir.coordenadas_angulos(azimuts)
+
+		apotema=math.sqrt(self.radio**2 -(0.5*self.radio)**2)
+		apotema_trisec= self.radio/2 #relaciono el apotema tri con el radio celda grande
+		radio_trisec =2*apotema_trisec* math.sqrt((4/3)) #radio a partir del apotema
 		
+		mcir.tri_sectorizar(angulo_x,angulo_y, radio_trisec, self.x, self.y, self.cels_ax)
+		
+
+	def ver_usuario(self):
+		pass
 
 
 def crear_n_objetos_lista(clase_madre, n):
@@ -106,9 +106,12 @@ def prueba1():
 def prueba2():
 	#crea una colmena con 4 macroceldas.
 	colmena=Celdas(19,10)
-	ax=colmena.ver_celdas()
+	colmena.ver_celdas()
+	colmena.ver_sectores()
 	#plt.savefig("dibujar19.png") #para guardar en base de datos, llamar en un nivel de archivo superior y guardar.
-	#plt.show()
+	plt.axis("equal")
+	plt.grid(True)
+	plt.show()
 if __name__=="__main__":
 	#Prototipo:
 	print("------------")
@@ -117,7 +120,8 @@ if __name__=="__main__":
 	#crear objeto celda
 	#clase celdas crea crea celdas internas
 	import modulo_coordenadas as mc
-	import modulo_operaciones as mo
+	#import modulo_operaciones as mo
+	import modulo_circulos as mcir
 	prueba2()
 else:
 	print("Modulo celda.py importado")
