@@ -107,7 +107,11 @@ class Celdas:
 	
 
 	def ver_todo(self):
-		pass
+		"Funcion que retorna todaslas graficas."
+		self.ver_usuarios()
+		self.ver_celdas()
+		self.ver_estaciones_base()
+		self.ver_sectores()
 
 
 def crear_n_objetos_lista(clase_madre, n):
@@ -142,6 +146,15 @@ def prueba2():
 	plt.axis("equal")
 	plt.grid(True)
 	plt.show()
+def prueba3():
+	numero_celdas=1
+	radio=100
+	intensidad=5
+	colmena=Celdas(numero_celdas, radio, distribucion=("ppp",intensidad/radio**2))
+	colmena.ver_todo()
+	plt.axis("equal")
+	plt.grid(True)
+	plt.show()
 if __name__=="__main__":
 	#Prototipo:
 	print("------------")
@@ -154,6 +167,7 @@ if __name__=="__main__":
 	import modulo_circulos as mcir
 	import usuario as ues
 	import modulo_ppp as ppp
-	prueba2()
+	#prueba2()
+	prueba3()
 else:
 	print("Modulo celda.py importado")
