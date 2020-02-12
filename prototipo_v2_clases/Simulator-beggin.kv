@@ -1,6 +1,157 @@
 #<backend_gridview>
+
+<pruegab>
+	name: "prueba"
+	
+	BoxLayout:
+
+
+		#orientation: 'vertical'
+		padding: 20
+
+		size: self.size
+		#size: (.3 , .5) 
+		#size: (.4, .3)
+		canvas:
+
+			Color:
+				rgba: (1, 1, 1, 1)
+				#rgba: 0,0,0.53,0.2
+			Rectangle:
+				pos:self.pos
+				size:self.size
 			
+
+		
 #	BoxLayout:
+<umibox>
+	BoxLayout:
+		group: "modelos"
+		orientation: 'vertical'
+		padding: 50
+		width: 800 if root.noShownABG  else 0
+        height: self.height
+        size_hint: (None, 1)
+        opacity: 1 if root.noShownABG else 0
+
+		canvas:
+			Color:
+				rgba: (1, 1, 1, 1)
+			Rectangle:
+				pos:self.pos
+				size:self.size
+#TITULO UMA PARA LA INTERFAZ GRAFICA 
+
+		Label:
+			canvas.before:
+				Color:
+				
+					rgba: 0.5,0.5,0.3,1
+				Rectangle:
+					pos:self.pos
+					size:self.size
+					source: "modelcanal.PNG"
+
+			text: "URBANO CALLEJON ESTRECHO (STREET CANYON)Rappaport"
+			font_size: 20
+
+
+		BoxLayout:			
+			#id: Vsector
+			orientation: 'horizontal'	
+			size_hint_y: 0.18		
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.4,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Distancia Intercelda (ISD) 200m"
+			TextInput:
+				id: ISD
+				size_hint: ( .15, 1)
+				multiline: False
+
+		BoxLayout:
+			orientation:'horizontal'
+			size_hint_y: 0.18
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.4,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Alto de la antena (HBs) 10m"
+			TextInput:
+				id: Hbs
+				size_hint: ( .15, 1)
+				multiline: False
+
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint_y: 0.18
+
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.4,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Distancia min BS-UE 10m"	
+			TextInput:
+				id: Dbs_ue
+				size_hint: ( .15, 1)
+				multiline: False
+
+		BoxLayout:
+			orientation:'horizontal'
+			size_hint_y: 0.18
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.4,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Altura Usuario (Hue) 2-3m"
+			TextInput:
+				id: Hue
+				size_hint: ( .15, 1)
+				multiline: False
+				
+		BoxLayout:
+			orientation: 'horizontal'
+			padding: [0, 30]
+			Button:
+				canvas.before:
+					Color:
+						rgba: 0,0,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				background_color: 1, 1, 1, 1
+				text: "calcular"
+
+				on_release: 
+					root.manager.transition.direction = "up" 		
+					app.root.current ="poche"
+
+			Button:
+				canvas.before:
+					Color:
+						rgba: 0,0,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				background_color: 1, 1, 1
+				text: "volver"
+
+				on_release: 
+					root.manager.transition.direction = "down" 		
+					app.root.current ="caz"
 
 
 
@@ -8,63 +159,29 @@
 #WindowManager:
 <ModelcanalUMI>
 	name: "sking"
-	mrap :mrapapport
-
+	
 
 	BoxLayout:
 		orientation: 'vertical'
-		
-
 		BoxLayout:
-			id: "Plrappaport"
 			orientation: 'vertical'
-			padding: 50
-			
-
-			canvas:
-				Color:
-					rgba: (1, 1, 1, 1)
-				Rectangle:
-					pos:self.pos
-					size:self.size
-
-			BoxLayout:# Funcion del modelo de propagacion 
+			BoxLayout:
 				orientation: 'horizontal'
-				Button:
-					id:mrapapport
+				ToggleButton:
 					canvas.before:
 						Color:
 							rgba: 0,0,1
 						Rectangle:
 							pos:self.pos
 							size: self.size
-					background_color: 1, 1, 1, 1
+					background_color: 1, 1, 1
 					text: "Modelo CI"
 					group: "modelos"
-					on_press: 
-						mabg.disabled =False
-
-						if root.disabled==False: titulo_umi.text="URBANO CALLEJON ESTRECHO (STREET CANYON) CI" 
-						else: titulo_umi.text="URBANO CALLEJON ESTRECHO (STREET CANYON) ABG "
-
-						if root.disabled==False: fc_umi.text="Frecuencia central (GHz) 28GHz" 
-						else: fc_umi.text="Frecuencia central (GHz) 73GHz"
-
-
-						if root.disabled==False: d2d_umi.text="Distancia T_BS - R_UE (m) 150m" 
-						else: d2d_umi.text="Distancia T_BS - R_UE (m) 200m"
-						#d2d_umi.text="Frecuencia central"
-						root.reloaded()
-
-					on_release:
-						#mrapapport.disabled = True
-						mrapapport.disabled = True
-
-					#on_release:
+					#on_press: root.evaluar()
+					#on_release: 
 					#	root.noShownABG = not root.noShownABG
 
-				Button:
-					id: mabg
+				ToggleButton:
 					canvas.before:
 						Color:
 							rgba: 0,0,1
@@ -73,29 +190,31 @@
 							size: self.size
 					background_color: 1, 1, 1
 					text: "Modelo Rappaport"
-					on_press: 
-						mrapapport.disabled = False
 
-						if not root.disabled==False: titulo_umi.text="URBANO CALLEJON ESTRECHO (STREET CANYON) CI" 
-						else: titulo_umi.text="URBANO CALLEJON ESTRECHO (STREET CANYON) ABG "
+					#on_press: 
+					#	root.noShownABG =  not root.noShownABG
+					#on_release: 
+					#	root.evaluar()
+				
 
-						if not root.disabled==False: fc_umi.text="Frecuencia central (GHz) 28GHz" 
-						else: fc_umi.text="Frecuencia central (GHz) 73GHz"
+		BoxLayout:
+			id: "Plrappaport"
+			orientation: 'vertical'
+			padding: 50
+			width: 800 if root.noShownABG  else 0
+            height: self.height
+            size_hint: (None, 1)
+            opacity: 1 if root.noShownABG else 0
 
-
-						if not root.disabled==False: d2d_umi.text="Distancia T_BS - R_UE(m) 150m" 
-						else: d2d_umi.text="Distancia T_BS - R_UE (m) 200m"
-						#d2d_umi.text="Frecuencia central"
-						root.reloaded()
-						
-					on_release:
-						mabg.disabled = True
-
-
+			canvas:
+				Color:
+					rgba: (1, 1, 1, 1)
+				Rectangle:
+					pos:self.pos
+					size:self.size
 
 			#TITULO UMA PARA LA INTERFAZ GRAFICA 
 			Label:
-				id:titulo_umi 
 				canvas.before:
 					Color:
 					
@@ -109,21 +228,36 @@
 				font_size: 20
 
 
-			BoxLayout: # Frecuencia central sistema 
+			BoxLayout:			
 				#id: Vsector
 				orientation: 'horizontal'	
 				size_hint_y: 0.18		
 				Label:
-					id: fc_umi
 					canvas.before:
 						Color:
 							rgba: 0.5,0.5,0.4,1
 						Rectangle:
 							pos:self.pos
 							size:self.size
-					text:"frecuencia central del sistema"
+					text: "Distancia Intercelda (ISD) 200m"
 				TextInput:
-					id: fc
+					id: ISD
+					size_hint: ( .15, 1)
+					multiline: False
+
+			BoxLayout:
+				orientation:'horizontal'
+				size_hint_y: 0.18
+				Label:
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Alto de la antena (HBs) 10m"
+				TextInput:
+					id: Hbs
 					size_hint: ( .15, 1)
 					multiline: False
 
@@ -132,35 +266,33 @@
 				size_hint_y: 0.18
 
 				Label:
-					id: d2d_umi
 					canvas.before:
 						Color:
 							rgba: 0.5,0.5,0.4,1
 						Rectangle:
 							pos:self.pos
 							size:self.size
-					text: "Distancia entre Estacion base y Usuario"	
+					text: "Distancia min BS-UE 10m"	
 				TextInput:
 					id: Dbs_ue
 					size_hint: ( .15, 1)
-					multiline: False#distancia entre Estacion Base y usuario 
-			BoxLayout:
-				orientation: 'horizontal'
-				size_hint_y: 0.18
+					multiline: False
 
+			BoxLayout:
+				orientation:'horizontal'
+				size_hint_y: 0.18
 				Label:
-					id: desv_umi
 					canvas.before:
 						Color:
 							rgba: 0.5,0.5,0.4,1
 						Rectangle:
 							pos:self.pos
 							size:self.size
-					text: "Desviacion estandar (dB) PLC-n"	
+					text: "Altura Usuario (Hue) 2-3m"
 				TextInput:
-					id: plc_ci
+					id: Hue
 					size_hint: ( .15, 1)
-					multiline: False#distancia entre Estacion Base y usuario 
+					multiline: False
 					
 			BoxLayout:
 				orientation: 'horizontal'
@@ -173,7 +305,7 @@
 							pos:self.pos
 							size:self.size
 					background_color: 1, 1, 1, 1
-					text: "Volver"
+					text: "calcular"
 
 					on_release: 
 						root.manager.transition.direction = "up" 		
@@ -187,15 +319,141 @@
 							pos:self.pos
 							size:self.size
 					background_color: 1, 1, 1
-					text: "calcular"
+					text: "volver"
 
 					on_release: 
 						root.manager.transition.direction = "down" 		
-						app.root.current ="caz" #botones calcular volver s
+						app.root.current ="caz"
 
 
 
-		
+		BoxLayout:
+			id: "Plci"
+			orientation: 'vertical'
+			padding: 50
+			width: 800 if root.noShownCI else 0
+            height: self.height
+            size_hint: (None, 1)
+            opacity: 1 if root.noShownCI else 0
+			
+			canvas:
+				Color:
+					rgba: (1, 1, 1, 1)
+				Rectangle:
+					pos:self.pos
+					size:self.size
+
+			#TITULO UMA PARA LA INTERFAZ GRAFICA 
+			Label:
+				canvas.before:
+					Color:
+					
+						rgba: 0.5,0.5,0.3,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+						source: "modelcanal.PNG"
+
+				text: "URBANO CALLEJON ESTRECHO (STREET CANYON)CI"
+				font_size: 20
+
+
+			BoxLayout:			
+				#id: Vsector
+				orientation: 'horizontal'	
+				size_hint_y: 0.18		
+				Label:
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Distancia Intercelda (ISD) 200m"
+				TextInput:
+					id: ISD
+					size_hint: ( .15, 1)
+					multiline: False
+
+			BoxLayout:
+				orientation:'horizontal'
+				size_hint_y: 0.18
+				Label:
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Alto de la antena (HBs) 10m"
+				TextInput:
+					id: Hbs
+					size_hint: ( .15, 1)
+					multiline: False
+
+			BoxLayout:
+				orientation: 'horizontal'
+				size_hint_y: 0.18
+
+				Label:
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Distancia min BS-UE 10m"	
+				TextInput:
+					id: Dbs_ue
+					size_hint: ( .15, 1)
+					multiline: False
+
+			BoxLayout:
+				orientation:'horizontal'
+				size_hint_y: 0.18
+				Label:
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Altura Usuario (Hue) 2-3m"
+				TextInput:
+					id: Hue
+					size_hint: ( .15, 1)
+					multiline: False
+					
+			BoxLayout:
+				orientation: 'horizontal'
+				padding: [0, 30]
+				Button:
+					canvas.before:
+						Color:
+							rgba: 0,0,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					background_color: 1, 1, 1, 1
+					text: "calcular"
+
+					on_release: 
+						root.manager.transition.direction = "up" 		
+						app.root.current ="poche"
+
+				Button:
+					canvas.before:
+						Color:
+							rgba: 0,0,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					background_color: 1, 1, 1
+					text: "volver"
+
+					on_release: 
+						root.manager.transition.direction = "down" 		
+						app.root.current ="caz"
 
 		#umibox:
 			

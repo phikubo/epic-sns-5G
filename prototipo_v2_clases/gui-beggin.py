@@ -4,7 +4,6 @@ from kivy.lang import Builder
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
-from functools import partial
 from kivy.properties import ObjectProperty
 from kivy.properties import StringProperty
 from kivy.properties import BooleanProperty
@@ -25,22 +24,13 @@ class ModelcanalUMI(Screen):
 	nivel = ObjectProperty(None)
 	radiocell = ObjectProperty(None)
 	intensidadPPP = ObjectProperty(None)
-	mrapapport = ObjectProperty(None)
 	#ModelcanalUMI= Widget(None)
 	current= ""
 	#umibox=Widget()
 	#umibox.add_widget(BoxLayout())
 	
-	def disable(self, instance, *args):
-		instance.disabled= True
-	def reloaded(self):
-		print("aqui TOy ")
-		
 
-	def build(self):
-		mrappaport.bind(on_press=partial(self.disable,mrappaport))
-		mrappaport.bind(on_press=partial(self.reloaded,mrappaport))
-		return mrappaport
+
 	def evaluar(self, *ingore):
 		umibox()
 
@@ -173,7 +163,7 @@ for screen in screens:
 	
 
 
-sm.current="poche"
+sm.current="sking"
 
 class SimulatorApp(App):
 	def build(self):
