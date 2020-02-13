@@ -44,12 +44,6 @@ class ModelcanalUMI(Screen):
 	def evaluar(self, *ingore):
 		umibox()
 
-		if self.noShownABG==True:  
-			self.remove_widget(umibox)	
-
-		else:
-			pass
-
 		#if noShowABG
 
 
@@ -173,7 +167,7 @@ for screen in screens:
 	
 
 
-sm.current="poche"
+sm.current="sking"
 
 class SimulatorApp(App):
 	def build(self):

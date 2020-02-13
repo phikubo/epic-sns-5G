@@ -11,6 +11,7 @@
 	mrap :mrapapport
 
 
+
 	BoxLayout:
 		orientation: 'vertical'
 		
@@ -32,13 +33,14 @@
 				orientation: 'horizontal'
 				Button:
 					id:mrapapport
+					border: (10,10,10,10)
 					canvas.before:
 						Color:
-							rgba: 0,0,1
+							#rgba: 0.3,0.4,0.5,1
 						Rectangle:
 							pos:self.pos
 							size: self.size
-					background_color: 1, 1, 1, 1
+					background_color: 0.3,0.4,0.5,1
 					text: "Modelo CI"
 					group: "modelos"
 					on_press: 
@@ -54,6 +56,12 @@
 						if root.disabled==False: d2d_umi.text="Distancia T_BS - R_UE (m) 150m" 
 						else: d2d_umi.text="Distancia T_BS - R_UE (m) 200m"
 						#d2d_umi.text="Frecuencia central"
+						if root.disabled== False: n_alpha.text=" [n] CI:"
+						else: n_alpha.text= " [Alpha] ABG:"
+
+						if root.disabled==False: plc_sigma_umi.text="8.0"
+						else: plc_sigma_umi.text= "8.1"
+
 						root.reloaded()
 
 					on_release:
@@ -64,14 +72,16 @@
 					#	root.noShownABG = not root.noShownABG
 
 				Button:
+					border:  (10,10,10,10)
 					id: mabg
+					#disabled = False 
 					canvas.before:
 						Color:
-							rgba: 0,0,1
+							#rgba: 0.3,0.4,0.5,1
 						Rectangle:
 							pos:self.pos
 							size: self.size
-					background_color: 1, 1, 1
+					background_color: 0.3,0.4,0.5,1
 					text: "Modelo Rappaport"
 					on_press: 
 						mrapapport.disabled = False
@@ -86,8 +96,21 @@
 						if not root.disabled==False: d2d_umi.text="Distancia T_BS - R_UE(m) 150m" 
 						else: d2d_umi.text="Distancia T_BS - R_UE (m) 200m"
 						#d2d_umi.text="Frecuencia central"
+						if not root.disabled==False:  n_alpha.text=" [n] CI:"
+						else: n_alpha.text=" [Alpha] ABG:"
+						if not root.disabled==False: plc_sigma_umi.text="8.0"
+						else: plc_sigma_umi.text= "8.1"
+
+
+						if not root.disabled==False: plc_cin_alphabg.text="3.1"
+						else: plc_cin_alphabg.text= "3.5"
+
+						if not root.disabled==False: plc_sigma_umi.disabled = True
+						else: plc_sigma_umi.disabled=True
+
 						root.reloaded()
 						
+
 					on_release:
 						mabg.disabled = True
 
@@ -112,7 +135,7 @@
 			BoxLayout: # Frecuencia central sistema 
 				#id: Vsector
 				orientation: 'horizontal'	
-				size_hint_y: 0.18		
+				size_hint_y: 0.25		
 				Label:
 					id: fc_umi
 					canvas.before:
@@ -127,9 +150,9 @@
 					size_hint: ( .15, 1)
 					multiline: False
 
-			BoxLayout:
+			BoxLayout: # distancia entre usuario
 				orientation: 'horizontal'
-				size_hint_y: 0.18
+				size_hint_y: 0.25
 
 				Label:
 					id: d2d_umi
@@ -144,65 +167,116 @@
 					id: Dbs_ue
 					size_hint: ( .15, 1)
 					multiline: False#distancia entre Estacion Base y usuario 
-			BoxLayout:
+			BoxLayout: # parametros para Propagacion desviacion
 				orientation: 'horizontal'
-				size_hint_y: 0.18
+				size_hint_y: 0.25
+
+				
 
 				Label:
 					id: desv_umi
 					canvas.before:
 						Color:
-							rgba: 0.5,0.5,0.4,1
+							rgba:  0.5,0.5,0.4,1
 						Rectangle:
 							pos:self.pos
 							size:self.size
-					text: "Desviacion estandar (dB) PLC-n"	
+					text: " Sigma (dB):"	
 				TextInput:
-					id: plc_ci
+					id: plc_sigma_umi
 					size_hint: ( .15, 1)
-					multiline: False#distancia entre Estacion Base y usuario 
+					multiline: False
+					#distancia entre Estacion Base y usuario 
+					text: '8.1'
+			GridLayout:#n_alpha Beta y gamma abg
+				rows: 2
+				size_hint_y: 0.50
+				padding: [10, 5, 10, 0]
+				Label:#parametros N y alpha para modelo ci y ABG
+					id:n_alpha
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.3,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "parametros para ABG y CI"
+					#background_color: (0.3,0.4,0.5,1)
+
+
+				Label:
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.3,1
+							#rgba: 0.5,0.6,0.5,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Beta"
+				Label: 
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.3,1
+							#rgba:  0.5,0.6,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Gamma"
+
+				TextInput:
+					id: plc_cin_alphabg
+					size_hint: ( .15, 1)
+					multiline: False
+					text: '3.1'
+
+				TextInput:
 					
-			BoxLayout:
+					size_hint_x: 0.15
+					#size_hint: ( .20, 1)
+					id:beta
+					group:'abg_parm'
+					text: "24.4"
+
+				TextInput:
+					
+					size_hint_x: 0.15
+					id:gamma
+					#size_hint: ( .20, 1)
+					group:'abg_parm' 
+					text: "1.9"
+
+		
+			BoxLayout:# botones calcular volver
 				orientation: 'horizontal'
 				padding: [0, 30]
 				Button:
 					canvas.before:
 						Color:
-							rgba: 0,0,1
+							rgba: 0.3,0.4,0.5,1
 						Rectangle:
 							pos:self.pos
 							size:self.size
-					background_color: 1, 1, 1, 1
+					background_color: 0.3,0.4,0.5,1
 					text: "Volver"
 
 					on_release: 
 						root.manager.transition.direction = "up" 		
-						app.root.current ="poche"
+						app.root.current ="caz"
 
 				Button:
 					canvas.before:
 						Color:
-							rgba: 0,0,1
+							rgba: 0.3,0.4,0.5,1
 						Rectangle:
 							pos:self.pos
 							size:self.size
-					background_color: 1, 1, 1
+					background_color: 0.3,0.4,0.5,1
 					text: "calcular"
 
 					on_release: 
 						root.manager.transition.direction = "down" 		
-						app.root.current ="caz" #botones calcular volver s
-
-
-
-		
-
-		#umibox:
-			
+						app.root.current ="poche" #botones calcular volver s
 				
-
-
-
 
 <ModelcanalUMA>
 	name:"king"
@@ -224,7 +298,7 @@
 
 
 
-#TITULO UMA PARA LA INTERFAZ GRAFICA  URBANO MACRO CELDA
+		#TITULO UMA PARA LA INTERFAZ GRAFICA  URBANO MACRO CELDA
 		Label:
 			canvas.before:
 				Color:
@@ -340,6 +414,7 @@
 	nivel: nivel
 	radiocell: radiocell
 	intensidadPPP: intensidadPPP	
+
 
 	
 	size: (.3, .1)
