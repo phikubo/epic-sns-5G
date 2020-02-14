@@ -62,6 +62,12 @@
 						if root.disabled==False: plc_sigma_umi.text="8.0"
 						else: plc_sigma_umi.text= "8.1"
 
+						if  root.disabled==False: plc_sigma_umi.disabled = True 
+						else: plc_sigma_umi.disabled=True
+
+						if root.disabled==False: plc_cin_alphabg.disabled = True 
+						else: plc_cin_alphabg.disabled=True
+
 						root.reloaded()
 
 					on_release:
@@ -105,8 +111,13 @@
 						if not root.disabled==False: plc_cin_alphabg.text="3.1"
 						else: plc_cin_alphabg.text= "3.5"
 
-						if not root.disabled==False: plc_sigma_umi.disabled = True
+
+
+						if not root.disabled==False: plc_sigma_umi.disabled = True 
 						else: plc_sigma_umi.disabled=True
+
+						if not root.disabled==False: plc_cin_alphabg.disabled = True 
+						else: plc_cin_alphabg.disabled=True
 
 						root.reloaded()
 						
@@ -202,8 +213,6 @@
 							size:self.size
 					text: "parametros para ABG y CI"
 					#background_color: (0.3,0.4,0.5,1)
-
-
 				Label:
 					canvas.before:
 						Color:
@@ -223,13 +232,13 @@
 							size:self.size
 					text: "Gamma"
 
-				TextInput:
+				TextInput:#N para CI y ALpha para ABG
 					id: plc_cin_alphabg
 					size_hint: ( .15, 1)
 					multiline: False
 					text: '3.1'
 
-				TextInput:
+				TextInput:# Beta para ABG
 					
 					size_hint_x: 0.15
 					#size_hint: ( .20, 1)
@@ -237,7 +246,7 @@
 					group:'abg_parm'
 					text: "24.4"
 
-				TextInput:
+				TextInput:# Gamma para ABG 
 					
 					size_hint_x: 0.15
 					id:gamma
@@ -283,7 +292,8 @@
 #	nivel: nivel
 #	radiocell: radiocell
 #	intensidadPPP: intensidadPPP
-	#Vsector: Vsector	
+	#Vsector: Vsector
+	isdpy:isd_uma 
 
 
 	BoxLayout:
@@ -312,14 +322,15 @@
 			font_size: 20
 
 
-		BoxLayout:			
+		BoxLayout:
 			#id: Vsector
 			orientation: 'horizontal'	
-			size_hint_y: 0.18		
+			size_hint_y: 0.18
+			padding: 2		
 			Label:
 				canvas.before:
 					Color:
-						rgba: 0.3,0.4,0.5,1
+						rgba: 0.2,0.4,0.5,1
 					Rectangle:
 						pos:self.pos
 						size:self.size
@@ -332,10 +343,11 @@
 		BoxLayout:
 			orientation:'horizontal'
 			size_hint_y: 0.18
+			padding: 2
 			Label:
 				canvas.before:
 					Color:
-						rgba: 0.3,0.4,0.5,1
+						rgba: 0.2,0.4,0.5,1
 					Rectangle:
 						pos:self.pos
 						size:self.size
@@ -348,11 +360,11 @@
 		BoxLayout:
 			orientation: 'horizontal'
 			size_hint_y: 0.18
-
+			padding:2
 			Label:
 				canvas.before:
 					Color:
-						rgba: 0.3,0.4,0.5,1
+						rgba: 0.2,0.4,0.5,1
 					Rectangle:
 						pos:self.pos
 						size:self.size
@@ -365,18 +377,78 @@
 		BoxLayout:
 			orientation:'horizontal'
 			size_hint_y: 0.18
+			padding: 2
 			Label:
 				canvas.before:
 					Color:
-						rgba: 0.3,0.4,0.5,1
+						rgba: 0.2,0.4,0.5,1
 					Rectangle:
 						pos:self.pos
 						size:self.size
-				text: "Altura eficiente (He) 1m"
+				text: "Distancia ISD [m]"
 			TextInput:
-				id: Hue
+				id: isd_uma
 				size_hint: ( .15, 1)
 				multiline: False
+
+		GridLayout:#Parametros perdidas necesarios 
+			rows: 2
+			size_hint_y: 0.50
+			padding: [10, 5, 10, 0]
+			Label:#parametros altura estacion base Hbs"
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.3,1
+						#rgba: 0.5,0.6,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Hbs [m]"				
+
+
+
+			Label:#Altura eficiente He
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.3,1
+						#rgba: 0.5,0.6,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "He [m]"
+			Label:#sigma para Desvanecimiento por sombra  
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.3,1
+						#rgba:  0.5,0.6,0.4,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "sigma SF [dB]"
+
+			TextInput:#Hbs para Uma
+				id: plc_cin_al
+				size_hint: ( .15, 1)
+				multiline: False
+				disabled: True
+				text: '25'
+
+			TextInput:# He para UMa
+				
+				size_hint_x: 0.15
+				#size_hint: ( .20, 1)
+				id:be
+				disabled : True
+				group:'uma_he'
+				text: "1"
+
+			TextInput:# 
+				
+				size_hint_x: 0.15
+				disabled: True
+				#size_hint: ( .20, 1)
+				group:'uma_sigmaSF' 
+				text: "4"
 				
 		BoxLayout:
 			orientation: 'horizontal'
@@ -384,30 +456,31 @@
 			Button:
 				canvas.before:
 					Color:
-						rgba: 0,0,1
+						rgba: 0.3,0.4,0.5,1
 					Rectangle:
 						pos:self.pos
 						size:self.size
-				background_color: 1, 1, 1, 1
-				text: "calcular"
+				background_color: 0.3,0.4,0.5,1
+				text: "Volver"
 
 				on_release: 
+					#root.reloaded(radiocell.text)
 					root.manager.transition.direction = "up" 		
-					app.root.current ="poche"
+					app.root.current ="caz"
 
 			Button:
 				canvas.before:
 					Color:
-						rgba: 0,0,1
+						rgba: 0.3,0.4,0.5,1
 					Rectangle:
 						pos:self.pos
 						size:self.size
-				background_color: 1, 1, 1
-				text: "volver"
+				background_color: 0.3,0.4,0.5,1
+				text: "calcular"
 
 				on_release: 
 					root.manager.transition.direction = "down" 		
-					app.root.current ="caz"
+					app.root.current ="poche" #botones calcular volver s
 
 <MainWindow>
 	name:"poche"
@@ -535,6 +608,7 @@
 
 							on_release: 
 								root.manager.transition.direction = "up" 		
+								root.add_dato()
 								root.btn()
 								app.root.current ="caz"
 
@@ -560,6 +634,7 @@
 						source: 'base_datos/img_gui/Escudo_Unicauca1.png'
 <SecondWindow>
 	name:"caz"
+	#radioisd:radioisd
 	canvas.before:
 		Color:
 			rgba: (1, 1, 1, 1)
@@ -575,13 +650,8 @@
 		orientation: 'horizontal'
 	#	padding: 30
 		padding: [30, 120, 30, 120]
-
-		
-		
 			#source: 'all_ppp_trisec.jpg'
-		
-		
-		Button: 
+		Button:
 			canvas.before:
 				Color:
 					rgba: 0,0,1
@@ -591,6 +661,7 @@
 					size:self.size
 			text:'MODELO DEL CANAL TIPO UMa'
 			on_release:
+
 				#root.add_dato()
 				#source:'all_ppp_trisec.jpg'
 				root.manager.transition.direction = "down"

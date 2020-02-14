@@ -16,7 +16,7 @@ import pruebas as p
 
 
 
-	
+
 
 
 class ModelcanalUMI(Screen):
@@ -31,18 +31,20 @@ class ModelcanalUMI(Screen):
 	#umibox=Widget()
 	#umibox.add_widget(BoxLayout())
 	
+
 	def disable(self, instance, *args):
 		instance.disabled= True
 	def reloaded(self):
+
 		print("aqui TOy ")
 		
 
 	def build(self):
 		mrappaport.bind(on_press=partial(self.disable,mrappaport))
-		mrappaport.bind(on_press=partial(self.reloaded,mrappaport))
+		mrppaport.bind(on_press=partial(self.reloaded,mrappaport))
 		return mrappaport
 	def evaluar(self, *ingore):
-		umibox()
+		umpyibox()
 
 		#if noShowABG
 
@@ -56,6 +58,17 @@ class ModelcanalUMA(Screen):
 	radiocell = ObjectProperty(None)
 	intensidadPPP = ObjectProperty(None)
 	current= ""
+	
+
+
+	isdpy= TextInput( text="SecondWindow.add_dato()",multiline=False) 
+
+	print("aqui estoy modelo canal ", isdpy)
+
+	def reloaded(isd):
+
+		isdp = int(isd) 
+		print("aqui TOy otra vez  ",isdp)
 
 #	def add_datoimport(nivel,radiocell,intensidadPPP,Vsec):
 
@@ -72,7 +85,8 @@ class contenedorgrilla(Screen):
 class SecondWindow(Screen):
 	#sr = StringProperty('C:/Users/PIPE_PC/Documents/UNIVERSIDAD/TESIS/epic-sns-5G/prototipo/all_ppp_trisec.jpg')
 #	nivel = ObjectProperty(None)
-#	radiocell = ObjectProperty(None)
+	radiocell = ObjectProperty(None)
+	radioisd = ObjectProperty(TextInput)
 	#intensidadPPP = ObjectProperty(None)
 	#self.add_widget(image)
 	#sr=Image(source='all_ppp_trisec.jpg')
@@ -82,8 +96,17 @@ class SecondWindow(Screen):
 	#sr=Image(source='all_ppp_trisec.jpg')
 #	sr.Image(source='all_ppp_trisec.jpg')
 #	add_widget(Boxlayout())
+	
+	def show_dato(self):
+		pass
 
-	#def add_dato(self):
+
+	def add_dato(isd): 
+		SecondWindow.radioisd=isd
+		isdint=SecondWindow.radioisd
+		print('radio celda: ', isdint)
+		return isdint
+
 	#	sr = StringProperty('C:/Users/PIPE_PC/Documents/UNIVERSIDAD/TESIS/epic-sns-5G/prototipo/all_ppp_trisec.jpg')
 		#print('por aqui pase')
 		#Image(im)
@@ -98,7 +121,7 @@ class SecondWindow(Screen):
 		
 		#dk.prot_funciones_especiales.prot_poissonpp.distribuir_circulo(dk.apotema,0,0,inten)
 		#		print("intensidadPPP:", intensidadPPP)
-	pass
+	
 	
 
 class WindowManager(ScreenManager):
@@ -125,17 +148,24 @@ class hidenWindow(TextInput):
 
 class MainWindow(Screen):
 	nivel = ObjectProperty(None)
-	radiocell = ObjectProperty(None)
+	#radiocell = ObjectProperty(None)
 	intensidadPPP = ObjectProperty(None)
 	sr = ObjectProperty(None)
 	current= ""
-
+	#radioisd = 1 
 	#layout_instance.do_layout ()
 	#Widget.canvas.ask_update ()
 
 	#def on_enter(self, *args):
 	#	print("Nivel: ", self.nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
 	#sr=Image(source='all_ppp_trisec.jpg') 
+
+	def add_dato(self):
+		isd=SecondWindow.add_dato(self.radiocell.text)
+		print('radio celda : ', isd)
+		pass
+		 		
+
 
 	def btn(self):
 		#print("Nivel: ", self.nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
@@ -167,7 +197,7 @@ for screen in screens:
 	
 
 
-sm.current="sking"
+sm.current="poche"
 
 class SimulatorApp(App):
 	def build(self):
