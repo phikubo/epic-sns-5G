@@ -30,21 +30,20 @@ class ModelcanalUMI(Screen):
 	current= ""
 	#umibox=Widget()
 	#umibox.add_widget(BoxLayout())
-	
+	### Definimos las funciones necesarias para obtener los atributos de cada funcion 
+	#
+
+
+
+
 
 	def disable(self, instance, *args):
 		instance.disabled= True
-	def reloaded(self):
 
+	def reloaded(self):
 		print("aqui TOy ")
 		
 
-	def build(self):
-		mrappaport.bind(on_press=partial(self.disable,mrappaport))
-		mrppaport.bind(on_press=partial(self.reloaded,mrappaport))
-		return mrappaport
-	def evaluar(self, *ingore):
-		umpyibox()
 
 		#if noShowABG
 
@@ -57,6 +56,7 @@ class ModelcanalUMA(Screen):
 	nivel = ObjectProperty(None)
 	radiocell = ObjectProperty(None)
 	intensidadPPP = ObjectProperty(None)
+
 	current= ""
 	
 
@@ -66,12 +66,14 @@ class ModelcanalUMA(Screen):
 	print("aqui estoy modelo canal ", isdpy)
 
 	def reloaded(isd):
-
 		isdp = int(isd) 
 		print("aqui TOy otra vez  ",isdp)
 
 #	def add_datoimport(nivel,radiocell,intensidadPPP,Vsec):
-
+## En esta instancia estamos entrando a la logica de kiv para
+## implementar funciones que necesiten valores de otras clases
+## en OOP las funciones nos ofrecen la facilidad de acceder 
+## a los atributos de cada class 
 
 
 
@@ -86,7 +88,6 @@ class SecondWindow(Screen):
 	#sr = StringProperty('C:/Users/PIPE_PC/Documents/UNIVERSIDAD/TESIS/epic-sns-5G/prototipo/all_ppp_trisec.jpg')
 #	nivel = ObjectProperty(None)
 	radiocell = ObjectProperty(None)
-	radioisd = ObjectProperty(TextInput)
 	#intensidadPPP = ObjectProperty(None)
 	#self.add_widget(image)
 	#sr=Image(source='all_ppp_trisec.jpg')
@@ -96,7 +97,11 @@ class SecondWindow(Screen):
 	#sr=Image(source='all_ppp_trisec.jpg')
 #	sr.Image(source='all_ppp_trisec.jpg')
 #	add_widget(Boxlayout())
-	
+	def ISD(self):
+		isd= 1
+		MainWindow.datosmain()
+
+
 	def show_dato(self):
 		pass
 
@@ -122,18 +127,8 @@ class SecondWindow(Screen):
 		#dk.prot_funciones_especiales.prot_poissonpp.distribuir_circulo(dk.apotema,0,0,inten)
 		#		print("intensidadPPP:", intensidadPPP)
 	
-	
-
 class WindowManager(ScreenManager):
 	pass
-
-
-
-
-
-
-
-
 class hidenWindow(TextInput):
 
 	
@@ -143,12 +138,9 @@ class hidenWindow(TextInput):
 		self.add_widget(hidenWindow)
 		self.clear_widget()
 
-
-
-
 class MainWindow(Screen):
 	nivel = ObjectProperty(None)
-	#radiocell = ObjectProperty(None)
+	radiocell = ObjectProperty(None)
 	intensidadPPP = ObjectProperty(None)
 	sr = ObjectProperty(None)
 	current= ""
@@ -159,6 +151,11 @@ class MainWindow(Screen):
 	#def on_enter(self, *args):
 	#	print("Nivel: ", self.nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
 	#sr=Image(source='all_ppp_trisec.jpg') 
+	def datosmain(self):
+		radioISD=int(radiocell.text)
+		print ("Radio inter celda :",radioISD)
+		pass
+
 
 	def add_dato(self):
 		isd=SecondWindow.add_dato(self.radiocell.text)

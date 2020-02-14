@@ -293,7 +293,7 @@
 #	radiocell: radiocell
 #	intensidadPPP: intensidadPPP
 	#Vsector: Vsector
-	isdpy:isd_uma 
+	#isdpy:isd_uma 
 
 
 	BoxLayout:
@@ -661,7 +661,8 @@
 					size:self.size
 			text:'MODELO DEL CANAL TIPO UMa'
 			on_release:
-
+				root.datosmain()
+				root.ISD()
 				#root.add_dato()
 				#source:'all_ppp_trisec.jpg'
 				root.manager.transition.direction = "down"
