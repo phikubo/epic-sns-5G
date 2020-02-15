@@ -36,7 +36,7 @@ class Celda:
 		#
 		self.usuarios=[]
 
-	def distancia_celda_usuario(params):
+	def distancia_gnodeb_ue(self):
 		pass
 
 	def trisectorizar():
@@ -52,31 +52,45 @@ class Celdas:
 		self.distribucion, self.intensidad=distribucion
 		self.cel_fig, self.cels_ax=plt.subplots(1)
 		self.num_celdas=num_celdas
-		self.celdas=[]
+		self.colmena=[]
 		self.radio=radio #radio externo
-		self.x, self.y=mc.coordenadas_nceldas(self.num_celdas, self.radio) #cordenadas celdas internas
+		self.cel_x, self.cel_y=mc.coordenadas_nceldas(self.num_celdas, self.radio) #cordenadas celdas internas
+		
 		#asigno coordenadas a cada objeto
-		for x,y in zip(self.x, self.y):
-			self.obj=Celda(self.x, self.y, self.radio) #aqui deberia generar las coordenadas de usuarios
-			self.celdas.append(self.obj)
-		#
-		#
-		self.us_x=0
-		self.us_y=0
+		for x,y in zip(self.cel_x, self.cel_y):
+			#creo celdas con cada coordenada x,y y las asigno a sus propias coordendas
+			self.obj=Celda(x,y, self.radio) #aqui deberia generar las coordenadas de usuarios
+			#agrupo las celdas creadas en una lista en las celdas.
+			self.colmena.append(self.obj)
+		
+		#inicio de variables de usuarios
+		self.ue_x=0
+		self.ue_y=0
+		
 		#
 		if self.distribucion=="ppp":
-			self.us_x, self.us_y=ppp.distribuir_en_celdas(self.radio, self.x, self.y, self.intensidad)
+			self.ue_x, self.ue_y=ppp.distribuir_en_celdas(self.radio, self.cel_x, self.cel_y, self.intensidad)
+			#shape es (n_celdas, n_usuarios en cada una)
+			print(np.shape(self.ue_x))
+			print(np.shape(self.ue_y))
+
+			print(len(self.colmena))# displays a number of objects
+		
+		#asigno coordenadas de usuario a cada celda.
+		
+		for celda_unica in self.colmena:
+			print(celda_unica.pos_x)
 
 
 	def ver_estaciones_base(self):
 		"""Permite ver las estaciones base de forma independiente"""
-		plt.plot(self.x,self.y, 'b^')
+		plt.plot(self.cel_x,self.cel_y, 'b^')
 
 
 	def ver_celdas(self):
 		'''Funcion principal que dibuja las celdas dadas las coordenadas x,y de su centro.'''
 		color="green"
-		for x,y in zip(self.x, self.y):
+		for x,y in zip(self.cel_x, self.cel_y):
 			#pinta triangulos en los origenes de las estaciones base
 			#plt.plot(x,y, 'b^')
 			
@@ -98,12 +112,12 @@ class Celdas:
 		apotema_trisec= self.radio/2 #relaciono el apotema tri con el radio celda grande
 		radio_trisec =2*apotema_trisec* math.sqrt((4/3)) #radio a partir del apotema
 		
-		mcir.tri_sectorizar(angulo_x,angulo_y, radio_trisec, self.x, self.y, self.cels_ax)
+		mcir.tri_sectorizar(angulo_x,angulo_y, radio_trisec, self.cel_x, self.cel_y, self.cels_ax)
 		
 
 	def ver_usuarios(self):
 		"""Permite ver las estaciones base de forma independiente"""
-		plt.plot(self.us_x,self.us_y, 'go')
+		plt.plot(self.ue_x,self.ue_y, 'go')
 	
 
 	def ver_todo(self):
