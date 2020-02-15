@@ -34,8 +34,7 @@ class Celda:
 		self.user_x=0
 		self.user_y=0##################
 		#
-		self.usuarios=[]
-
+		
 	def distancia_gnodeb_ue(self):
 		pass
 
@@ -76,10 +75,14 @@ class Celdas:
 
 			print(len(self.colmena))# displays a number of objects
 		
+
 		#asigno coordenadas de usuario a cada celda.
-		
-		for celda_unica in self.colmena:
-			print(celda_unica.pos_x)
+		for celda_unica, su_x, su_y in zip(self.colmena, self.ue_x, self.ue_y):
+			celda_unica.user_x=su_x
+			celda_unica.user_y=su_y
+			#celda_unica.usuarios.append()
+
+			#print("coordenadas ", celda_unica.pos_x, celda_unica.pos_y)
 
 
 	def ver_estaciones_base(self):
@@ -126,6 +129,10 @@ class Celdas:
 		self.ver_celdas()
 		self.ver_estaciones_base()
 		self.ver_sectores()
+
+	def info_celda_unica(self, target):
+		'''Funcion para ver toda la información de una celda específica'''
+		pass
 
 
 def crear_n_objetos_lista(clase_madre, n):
