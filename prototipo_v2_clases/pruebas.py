@@ -7,6 +7,7 @@ import pk_red_dispositivos.celda as pkcel
 
 
 def prueba_pk_dispositivos(celdas, radio, intensidad):
+	'''Prueba para observar funcionamiento de graficas basicas'''
 	intensidad=intensidad/radio**2
 	colmena=pkcel.Celdas(celdas,radio, distribucion=("ppp", intensidad))
 	colmena.ver_estaciones_base()
@@ -19,7 +20,9 @@ def prueba_pk_dispositivos(celdas, radio, intensidad):
 	##plt.savefig("base_datos/img_pruebas/ppp_4.png")
 	#plt.show()
 	
-
+def prueba_guardar_datos():
+	'''Prueba para observar comportamiento de guardado de datos'''
+	pass
 
 	
 

@@ -51,7 +51,7 @@ class Celdas:
 		self.distribucion, self.intensidad=distribucion
 		self.cel_fig, self.cels_ax=plt.subplots(1)
 		self.num_celdas=num_celdas
-		self.colmena=[]
+		self.cluster=[]
 		self.radio=radio #radio externo
 		self.cel_x, self.cel_y=mc.coordenadas_nceldas(self.num_celdas, self.radio) #cordenadas celdas internas
 		
@@ -60,7 +60,7 @@ class Celdas:
 			#creo celdas con cada coordenada x,y y las asigno a sus propias coordendas
 			self.obj=Celda(x,y, self.radio) #aqui deberia generar las coordenadas de usuarios
 			#agrupo las celdas creadas en una lista en las celdas.
-			self.colmena.append(self.obj)
+			self.cluster.append(self.obj)
 		
 		#inicio de variables de usuarios
 		self.ue_x=0
@@ -70,14 +70,14 @@ class Celdas:
 		if self.distribucion=="ppp":
 			self.ue_x, self.ue_y=ppp.distribuir_en_celdas(self.radio, self.cel_x, self.cel_y, self.intensidad)
 			#shape es (n_celdas, n_usuarios en cada una)
-			print(np.shape(self.ue_x))
+			print(np.shape(self.ue_x)) #displays shape of arrays
 			print(np.shape(self.ue_y))
 
-			print(len(self.colmena))# displays a number of objects
+			print(len(self.cluster))# displays a number of objects
 		
 
 		#asigno coordenadas de usuario a cada celda.
-		for celda_unica, su_x, su_y in zip(self.colmena, self.ue_x, self.ue_y):
+		for celda_unica, su_x, su_y in zip(self.cluster, self.ue_x, self.ue_y):
 			celda_unica.user_x=su_x
 			celda_unica.user_y=su_y
 			#celda_unica.usuarios.append()
