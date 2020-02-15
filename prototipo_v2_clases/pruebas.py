@@ -7,13 +7,13 @@ import pk_red_dispositivos.celda as pkcel
 
 
 def prueba_pk_dispositivos(celdas, radio, intensidad):
-	
 	intensidad=intensidad/radio**2
 	colmena=pkcel.Celdas(celdas,radio, distribucion=("ppp", intensidad))
 	colmena.ver_estaciones_base()
 	colmena.ver_celdas()
 	colmena.ver_sectores()
 	colmena.ver_usuarios()
+	#colmena.ver_todo()
 	plt.axis("equal")
 	plt.grid(True)
 	#plt.savefig("base_datos/img_pruebas/ppp_4.png")
@@ -27,7 +27,7 @@ def prueba_pk_dispositivos(celdas, radio, intensidad):
 if __name__=="__main__":
 	#Prototipo:
 	#pkcel.Celdas(1,100)
-	prueba_pk_dispositivos(18,20,5)
+	prueba_pk_dispositivos(celdas=18,radio=20,intensidad=5)
 
 	#pkcel.modulo_coordenadas.coordenadas_nceldas(3,4)
 
