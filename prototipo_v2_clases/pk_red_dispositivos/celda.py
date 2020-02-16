@@ -34,9 +34,17 @@ class Celda:
 		self.user_x=0
 		self.user_y=0##################
 		#
+		#array de distancias del centro a todos los usuarios
+		self.distancias=0
 		
 	def distancia_gnodeb_ue(self):
-		pass
+		'''Funcion que calcula la distancia entre la posicion del gnodeb hasta cada ue.'''
+		#Procedimiento
+		#0 al ejecutar esta funcion, la celda ya debe tener la informacion 
+		# de posicion de su centro y usuarios
+		#1 preparar variables pos_x,pos_y y user_x, user_y
+		#distancia=vector numpy
+		self.distancias=np.sqrt((pos_x-user_x)**2+(pos_y-user_y)**2)
 
 	def trisectorizar():
 		pass
@@ -48,31 +56,31 @@ class Celdas:
 		#radio debe conocerse desde el pricipio desde que todas las celdas son simetricas
 		#y si por el numero de cedas, calculo el nivel
 		#self.nivel=nivel
+		#https://stackoverflow.com/questions/7335237/is-it-best-practice-to-place-init-in-the-beginning-or-end-of-a-class
 		self.distribucion, self.intensidad=distribucion
 		self.cel_fig, self.cels_ax=plt.subplots(1)
 		self.num_celdas=num_celdas
 		self.cluster=[]
 		self.radio=radio #radio externo
-		self.cel_x, self.cel_y=mc.coordenadas_nceldas(self.num_celdas, self.radio) #cordenadas celdas internas
+		self.cel_x, self.cel_y=mc.coordenadas_nceldas(self.num_celdas, self.radio) #cordenadas centrales de celdas
 		
-		#asigno coordenadas a cada objeto
+		#creo objetos tipo celda y les asigno su coordenada central
 		for x,y in zip(self.cel_x, self.cel_y):
 			#creo celdas con cada coordenada x,y y las asigno a sus propias coordendas
 			self.obj=Celda(x,y, self.radio) #aqui deberia generar las coordenadas de usuarios
-			#agrupo las celdas creadas en una lista en las celdas.
+			#agrupo las celdas creadas en una lista en las celdas para procesar despues
 			self.cluster.append(self.obj)
 		
 		#inicio de variables de usuarios
 		self.ue_x=0
 		self.ue_y=0
 		
-		#
+		#creo coordenadas de usuario de acuerdo a una distribucion
 		if self.distribucion=="ppp":
 			self.ue_x, self.ue_y=ppp.distribuir_en_celdas(self.radio, self.cel_x, self.cel_y, self.intensidad)
 			#shape es (n_celdas, n_usuarios en cada una)
 			print(np.shape(self.ue_x))#displays shape of arrays
 			print(np.shape(self.ue_y))
-
 			print(len(self.cluster))#displays a number of objects-->IMPORTANTE
 		
 
@@ -80,6 +88,9 @@ class Celdas:
 		for celda_unica, su_x, su_y in zip(self.cluster, self.ue_x, self.ue_y):
 			celda_unica.user_x=su_x
 			celda_unica.user_y=su_y
+			celda_unica.distancia_gnodeb_ue()
+			#calculo las distancias cada celda y las asigno
+
 			#celda_unica.usuarios.append()
 
 			#print("coordenadas ", celda_unica.pos_x, celda_unica.pos_y)

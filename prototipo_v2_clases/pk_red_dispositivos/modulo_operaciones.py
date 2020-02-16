@@ -25,7 +25,7 @@ def azimut_lista(angulo_inicial):
 def calcular_puntos(n_user, sector):
 	'''Este script calcula la ubicación de usuarios que están en un sector de una celda'''
 	pass
-	
+
 
 if __name__ == "__main__":
 	print("inicio")

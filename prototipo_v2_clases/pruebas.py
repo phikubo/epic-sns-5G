@@ -67,6 +67,14 @@ def prueba_guardar_datos():
 	persistencia.guardar_archivo(data_y, nombre_archivo2, header_x)
 
 
+def prueba_distancia_celdas():
+	'''Funcion de prueba para observar el comportamiento del algoritmo de distancias'''
+	radio = 20
+	intensidad = 7
+	intensidad = intensidad/radio**2
+	celdas = 13
+	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad))
+
 	
 
 
@@ -76,7 +84,8 @@ if __name__=="__main__":
 
 	# pkcel.modulo_coordenadas.coordenadas_nceldas(3,4)
 
-	prueba_guardar_datos()
+	#prueba_guardar_datos()
+	prueba_distancia_celdas()
 
 else:
 	print("Modulo <escribir_nombre> importado")
