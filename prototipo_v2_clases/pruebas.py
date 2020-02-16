@@ -21,6 +21,8 @@ def prueba_pk_dispositivos(celdas, radio, intensidad):
 	# plt.savefig("base_datos/img_pruebas/ppp_4.png")
 	# plt.show()
 
+def prueba_funcion_aux(cordx, cordy):
+	pass
 
 def prueba_guardar_datos():
 	'''Prueba para observar comportamiento de guardado de datos'''
@@ -31,11 +33,11 @@ def prueba_guardar_datos():
 	# 4. abrir el archivo con el metodo correspondiente.
 	# Nota: resulta un paso extra (extra=ineficiente) por el hecho
 	# de que los datos ya estan juntos en una sola variable, pero no
-	# estan separados por celda
+	# estan separados por celda, esta es la razon de procesamiento
 	radio = 20
 	intensidad = 7
 	intensidad = intensidad/radio**2
-	celdas = 3
+	celdas = 13
 	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad))
 	# colmena.cluster --> se encuentra cada celda, y cada celda tiene las coordenadas x.
 	# si iteramos sobre cada celda y obtenemos cada x, los podemos agrupar en una lista
@@ -43,27 +45,27 @@ def prueba_guardar_datos():
 	print(len(colmena.cluster))
 	#data = colmena.cluster[0].user_x
 	#print(data)
-	test = [celula.user_x for celula in colmena.cluster]
-	data = test[0]
-	print(data)
-	tamano_cluster=len(test)
+
+	coordenadas_x = [celula.user_x for celula in colmena.cluster]
+	coordenadas_y = [celula.user_y for celula in colmena.cluster]
+
+	data_x = coordenadas_x[0] #inicializamos el primer valor
+	data_y = coordenadas_y[0]
+
+	tamano_cluster=len(coordenadas_x)
 	for i in range(tamano_cluster-1):
 		try:
-			data=np.column_stack((data,test[i+1]))
+			data_x=np.column_stack((data_x,coordenadas_x[i+1]))
+			data_y=np.column_stack((data_y,coordenadas_y[i+1]))
 		except Exception as esx:
 			print(esx) #esta excepcion ocurre por el [i+1], cuando llega a 3+1=4; de 0 a 4, el 4 seria el 5
-	print(data)
-	header="x1, x2, ..., xn"
-	nombre_archivo=persistencia.nombre_extension("base_datos","txt","reconocimiento")
-	persistencia.guardar_archivo(data, nombre_archivo, header)
 
-	# data=x1
-    # for i in range(len(lista)):
-    #    try:
-    #        data=np.column_stack((data,lista[i+1]))
-    #    except Exception as esx:
-    #        print(esx) #esta excepcion ocurre por el [i+1], cuando llega a 3+1=4; de 0 a 4, el 4 seria el 5
-    # print(data)
+	header_x="cel1, cel2, ..., cel{}".format(celdas)
+	nombre_archivo=persistencia.nombre_extension("base_datos","txt","reconocimientox")
+	nombre_archivo2=persistencia.nombre_extension("base_datos","txt","reconocimientoy")
+	persistencia.guardar_archivo(data_x, nombre_archivo, header_x)
+	persistencia.guardar_archivo(data_y, nombre_archivo2, header_x)
+
 
 	
 
