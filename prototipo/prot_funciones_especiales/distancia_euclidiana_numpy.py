@@ -1,5 +1,6 @@
 #import
 #recipes: https://semantive.com/high-performance-computation-in-python-numpy-2/
+#https://semantive.com/blog/high-performance-computation-in-python-numpy-2/
 #list to numpy: https://www.geeksforgeeks.org/numpy-asarray-in-python/
 import numpy as np
 

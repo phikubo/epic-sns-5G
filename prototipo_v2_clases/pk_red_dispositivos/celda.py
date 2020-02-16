@@ -34,10 +34,17 @@ class Celda:
 		self.user_x=0
 		self.user_y=0##################
 		#
-		self.usuarios=[]
-
-	def distancia_celda_usuario(params):
-		pass
+		#array de distancias del centro a todos los usuarios
+		self.distancias=0
+		
+	def distancia_gnodeb_ue(self):
+		'''Funcion que calcula la distancia entre la posicion del gnodeb hasta cada ue.'''
+		#Procedimiento
+		#0 al ejecutar esta funcion, la celda ya debe tener la informacion 
+		# de posicion de su centro y usuarios
+		#1 preparar variables pos_x,pos_y y user_x, user_y
+		#distancia=vector numpy
+		self.distancias=np.sqrt((self.pos_x-self.user_x)**2+(self.pos_y-self.user_y)**2)
 
 	def trisectorizar():
 		pass
@@ -49,37 +56,57 @@ class Celdas:
 		#radio debe conocerse desde el pricipio desde que todas las celdas son simetricas
 		#y si por el numero de cedas, calculo el nivel
 		#self.nivel=nivel
+		#https://stackoverflow.com/questions/7335237/is-it-best-practice-to-place-init-in-the-beginning-or-end-of-a-class
 		self.distribucion, self.intensidad=distribucion
 		self.cel_fig, self.cels_ax=plt.subplots(1)
 		self.num_celdas=num_celdas
-		self.celdas=[]
+		self.cluster=[]
 		self.radio=radio #radio externo
-		self.x, self.y=mc.coordenadas_nceldas(self.num_celdas, self.radio) #cordenadas celdas internas
-		#asigno coordenadas a cada objeto
-		for x,y in zip(self.x, self.y):
-			self.obj=Celda(self.x, self.y, self.radio) #aqui deberia generar las coordenadas de usuarios
-			self.celdas.append(self.obj)
-		#
-		#
-		self.us_x=0
-		self.us_y=0
-		#
+		self.cel_x, self.cel_y=mc.coordenadas_nceldas(self.num_celdas, self.radio) #cordenadas centrales de celdas
+		
+		#creo objetos tipo celda y les asigno su coordenada central
+		for x,y in zip(self.cel_x, self.cel_y):
+			#creo celdas con cada coordenada x,y y las asigno a sus propias coordendas
+			self.obj=Celda(x,y, self.radio) #aqui deberia generar las coordenadas de usuarios
+			#agrupo las celdas creadas en una lista en las celdas para procesar despues
+			self.cluster.append(self.obj)
+		
+		#inicio de variables de usuarios
+		self.ue_x=0
+		self.ue_y=0
+		
+		#creo coordenadas de usuario de acuerdo a una distribucion
 		if self.distribucion=="ppp":
-			self.us_x, self.us_y=ppp.distribuir_en_celdas(self.radio, self.x, self.y, self.intensidad)
+			self.ue_x, self.ue_y=ppp.distribuir_en_celdas(self.radio, self.cel_x, self.cel_y, self.intensidad)
+			#shape es (n_celdas, n_usuarios en cada una)
+			print(np.shape(self.ue_x))#displays shape of arrays
+			print(np.shape(self.ue_y))
+			print(len(self.cluster))#displays a number of objects-->IMPORTANTE
+		
+
+		#asigno coordenadas de usuario a cada celda.
+		for celda_unica, su_x, su_y in zip(self.cluster, self.ue_x, self.ue_y):
+			celda_unica.user_x=su_x
+			celda_unica.user_y=su_y
+			celda_unica.distancia_gnodeb_ue()
+			#calculo las distancias cada celda y las asigno
+
+			#celda_unica.usuarios.append()
+
+			#print("coordenadas ", celda_unica.pos_x, celda_unica.pos_y)
 
 
 	def ver_estaciones_base(self):
 		"""Permite ver las estaciones base de forma independiente"""
-		plt.plot(self.x,self.y, 'b^')
+		plt.plot(self.cel_x,self.cel_y, 'b^')
 
 
 	def ver_celdas(self):
 		'''Funcion principal que dibuja las celdas dadas las coordenadas x,y de su centro.'''
 		color="green"
-		for x,y in zip(self.x, self.y):
+		for x,y in zip(self.cel_x, self.cel_y):
 			#pinta triangulos en los origenes de las estaciones base
 			#plt.plot(x,y, 'b^')
-			
 			malla_hexagonal = RegularPolygon((x, y), numVertices=6, radius=self.radio,
 							orientation=np.radians(30), #con 60 grados funciona perfecto, pero las coordenadas cambian. Antes 30
 							facecolor=color, alpha=0.2, edgecolor='k')
@@ -98,12 +125,12 @@ class Celdas:
 		apotema_trisec= self.radio/2 #relaciono el apotema tri con el radio celda grande
 		radio_trisec =2*apotema_trisec* math.sqrt((4/3)) #radio a partir del apotema
 		
-		mcir.tri_sectorizar(angulo_x,angulo_y, radio_trisec, self.x, self.y, self.cels_ax)
+		mcir.tri_sectorizar(angulo_x,angulo_y, radio_trisec, self.cel_x, self.cel_y, self.cels_ax)
 		
 
 	def ver_usuarios(self):
 		"""Permite ver las estaciones base de forma independiente"""
-		plt.plot(self.us_x,self.us_y, 'go')
+		plt.plot(self.ue_x,self.ue_y, 'go')
 	
 
 	def ver_todo(self):
@@ -112,6 +139,10 @@ class Celdas:
 		self.ver_celdas()
 		self.ver_estaciones_base()
 		self.ver_sectores()
+
+	def info_celda_unica(self, target):
+		'''Funcion para ver toda la información de una celda específica'''
+		pass
 
 
 def crear_n_objetos_lista(clase_madre, n):
