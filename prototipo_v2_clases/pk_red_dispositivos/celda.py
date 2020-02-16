@@ -70,10 +70,10 @@ class Celdas:
 		if self.distribucion=="ppp":
 			self.ue_x, self.ue_y=ppp.distribuir_en_celdas(self.radio, self.cel_x, self.cel_y, self.intensidad)
 			#shape es (n_celdas, n_usuarios en cada una)
-			print(np.shape(self.ue_x)) #displays shape of arrays
+			print(np.shape(self.ue_x))#displays shape of arrays
 			print(np.shape(self.ue_y))
 
-			print(len(self.cluster))# displays a number of objects
+			print(len(self.cluster))#displays a number of objects-->IMPORTANTE
 		
 
 		#asigno coordenadas de usuario a cada celda.
@@ -96,7 +96,6 @@ class Celdas:
 		for x,y in zip(self.cel_x, self.cel_y):
 			#pinta triangulos en los origenes de las estaciones base
 			#plt.plot(x,y, 'b^')
-			
 			malla_hexagonal = RegularPolygon((x, y), numVertices=6, radius=self.radio,
 							orientation=np.radians(30), #con 60 grados funciona perfecto, pero las coordenadas cambian. Antes 30
 							facecolor=color, alpha=0.2, edgecolor='k')
