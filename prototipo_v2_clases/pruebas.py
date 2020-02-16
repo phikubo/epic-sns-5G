@@ -6,7 +6,9 @@ import numpy as np
 import pk_red_dispositivos.celda as pkcel
 import utilidades.savedata as persistencia
 
-
+#http://research.iac.es/sieinvens/python-course/source/matplotlib.html #graficar datos
+#me ga bru tal https://jakevdp.github.io/PythonDataScienceHandbook/04.05-histograms-and-binnings.html
+#https://stackabuse.com/python-data-visualization-with-matplotlib/
 def prueba_pk_dispositivos(celdas, radio, intensidad):
 	'''Prueba para observar funcionamiento de graficas basicas'''
 	intensidad = intensidad/radio**2
@@ -70,10 +72,20 @@ def prueba_guardar_datos():
 def prueba_distancia_celdas():
 	'''Funcion de prueba para observar el comportamiento del algoritmo de distancias'''
 	radio = 20
-	intensidad = 7
+	intensidad = 3
 	intensidad = intensidad/radio**2
-	celdas = 13
+	celdas = 2
 	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad))
+	print(colmena.cluster[0].distancias)
+	print(colmena.cluster[1].distancias)
+	colmena.ver_celdas()
+	colmena.ver_usuarios()
+	colmena.ver_estaciones_base()
+	plt.figure(2)
+	plt.bar( np.arange(len(colmena.cluster[0].distancias)),colmena.cluster[0].distancias)
+	#plt.axis("equal")
+	plt.grid(True)
+	plt.show()
 
 	
 

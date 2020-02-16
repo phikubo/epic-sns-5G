@@ -44,7 +44,7 @@ class Celda:
 		# de posicion de su centro y usuarios
 		#1 preparar variables pos_x,pos_y y user_x, user_y
 		#distancia=vector numpy
-		self.distancias=np.sqrt((pos_x-user_x)**2+(pos_y-user_y)**2)
+		self.distancias=np.sqrt((self.pos_x-self.user_x)**2+(self.pos_y-self.user_y)**2)
 
 	def trisectorizar():
 		pass
