@@ -2,6 +2,7 @@ from kivy.app import App
 from kivy.base import runTouchApp
 from kivy.lang import Builder
 from kivy.uix.textinput import TextInput
+
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from functools import partial
@@ -10,6 +11,7 @@ from kivy.properties import StringProperty
 from kivy.properties import BooleanProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.image import AsyncImage, Image
+
 
 
 import pruebas as p 
@@ -56,18 +58,20 @@ class ModelcanalUMA(Screen):
 	nivel = ObjectProperty(None)
 	radiocell = ObjectProperty(None)
 	intensidadPPP = ObjectProperty(None)
-
 	current= ""
-	
+	#ISD=StringProperty(None)
+	#ISD= 
 
 
-	isdpy= TextInput( text="SecondWindow.add_dato()",multiline=False) 
+	#isdpy= TextInput( text=SecondWindow.add_dato(),multiline=False) 
 
-	print("aqui estoy modelo canal ", isdpy)
+	#print("aqui estoy modelo canal ", add_dato())
 
 	def reloaded(isd):
 		isdp = int(isd) 
 		print("aqui TOy otra vez  ",isdp)
+
+
 
 #	def add_datoimport(nivel,radiocell,intensidadPPP,Vsec):
 ## En esta instancia estamos entrando a la logica de kiv para
@@ -94,35 +98,35 @@ class SecondWindow(Screen):
  	#self.sr.reload()
 	#intensidadPPP=intensidadPPP.text
 #	current= ""
+	#radioisd= Button(name="")
+	#radioisd=StringProperty('MainWindow.radiocell.text'	)
+	#ISD= StringProperty(None)
+
+	#def builder(self, instance, **kwargs):
+
+	#print("segunda ventana ISD:",radioisd)
 	#sr=Image(source='all_ppp_trisec.jpg')
 #	sr.Image(source='all_ppp_trisec.jpg')
 #	add_widget(Boxlayout())
-	def ISD(self):
-		isd= 1
-		MainWindow.datosmain()
-
+	
 
 	def show_dato(self):
 		pass
-
-
 	def add_dato(isd): 
+		#btnisd=Button(name= "")
 		SecondWindow.radioisd=isd
 		isdint=SecondWindow.radioisd
-		print('radio celda: ', isdint)
-		return isdint
-
+		print('radio celda: ', isd)
+		radioisd=isd
+		return isd
 	#	sr = StringProperty('C:/Users/PIPE_PC/Documents/UNIVERSIDAD/TESIS/epic-sns-5G/prototipo/all_ppp_trisec.jpg')
 		#print('por aqui pase')
-		#Image(im)
-		
+		#Image(im)	
 	#	sr ='C:/Users/PIPE_PC/Documents/UNIVERSIDAD/TESIS/epic-sns-5G/prototipo/all_ppp_trisec.jpg'
 			#sr.reload()
 	#	sm.current= "caz"
 	#	return SecondWindow()
-		
-	
-		#dk.gestionar_celdas(nvl,rcell,inten)
+		#dk.gestinar_celdas(nvl,rcell,inten)
 		
 		#dk.prot_funciones_especiales.prot_poissonpp.distribuir_circulo(dk.apotema,0,0,inten)
 		#		print("intensidadPPP:", intensidadPPP)
@@ -143,27 +147,21 @@ class MainWindow(Screen):
 	radiocell = ObjectProperty(None)
 	intensidadPPP = ObjectProperty(None)
 	sr = ObjectProperty(None)
+	radioISD= StringProperty(None)
 	current= ""
+	rcell=StringProperty('')
+	isd=StringProperty('')	
 	#radioisd = 1 
 	#layout_instance.do_layout ()
 	#Widget.canvas.ask_update ()
-
-	#def on_enter(self, *args):
-	#	print("Nivel: ", self.nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
+			#		def on_enter(self, *args):
+	#	pocher	intextn			t("Nivel: ", self.	nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
 	#sr=Image(source='all_ppp_trisec.jpg') 
-	def datosmain(self):
-		radioISD=int(radiocell.text)
-		print ("Radio inter celda :",radioISD)
-		pass
-
-
 	def add_dato(self):
 		isd=SecondWindow.add_dato(self.radiocell.text)
 		print('radio celda : ', isd)
+		print('radio StringProperty :')
 		pass
-		 		
-
-
 	def btn(self):
 		#print("Nivel: ", self.nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
 		#SecondWindow.add_dato()
@@ -180,6 +178,7 @@ class MainWindow(Screen):
 		sm.current = "caz"
 
 		
+
 
 kv = Builder.load_file("Simulator.kv")
 sm = WindowManager()

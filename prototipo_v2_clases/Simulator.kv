@@ -634,7 +634,7 @@
 						source: 'base_datos/img_gui/Escudo_Unicauca1.png'
 <SecondWindow>
 	name:"caz"
-	#radioisd:radioisd
+	radio:radioisd
 	canvas.before:
 		Color:
 			rgba: (1, 1, 1, 1)
@@ -652,6 +652,7 @@
 		padding: [30, 120, 30, 120]
 			#source: 'all_ppp_trisec.jpg'
 		Button:
+			id: radioisd 
 			canvas.before:
 				Color:
 					rgba: 0,0,1
@@ -661,8 +662,8 @@
 					size:self.size
 			text:'MODELO DEL CANAL TIPO UMa'
 			on_release:
-				root.datosmain()
-				root.ISD()
+				#root.datosmain()
+				root.ISD(self.radiocell.text)
 				#root.add_dato()
 				#source:'all_ppp_trisec.jpg'
 				root.manager.transition.direction = "down"
