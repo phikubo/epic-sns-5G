@@ -34,59 +34,32 @@ class ModelcanalUMI(Screen):
 	#umibox.add_widget(BoxLayout())
 	### Definimos las funciones necesarias para obtener los atributos de cada funcion 
 	#
-
-
-
-
-
 	def disable(self, instance, *args):
 		instance.disabled= True
-
 	def reloaded(self):
 		print("aqui TOy ")
-		
-
-
 		#if noShowABG
-
-
-
-
-
 class ModelcanalUMA(Screen):
-
 	nivel = ObjectProperty(None)
 	radiocell = ObjectProperty(None)
 	intensidadPPP = ObjectProperty(None)
 	current= ""
 	#ISD=StringProperty(None)
 	#ISD= 
-
-
 	#isdpy= TextInput( text=SecondWindow.add_dato(),multiline=False) 
-
 	#print("aqui estoy modelo canal ", add_dato())
-
 	def reloaded(isd):
 		isdp = int(isd) 
 		print("aqui TOy otra vez  ",isdp)
-
-
 
 #	def add_datoimport(nivel,radiocell,intensidadPPP,Vsec):
 ## En esta instancia estamos entrando a la logica de kiv para
 ## implementar funciones que necesiten valores de otras clases
 ## en OOP las funciones nos ofrecen la facilidad de acceder 
 ## a los atributos de cada class 
-
-
-
-
 	
 class contenedorgrilla(Screen):
 	pass
-
-
 
 class SecondWindow(Screen):
 	#sr = StringProperty('C:/Users/PIPE_PC/Documents/UNIVERSIDAD/TESIS/epic-sns-5G/prototipo/all_ppp_trisec.jpg')
@@ -108,7 +81,6 @@ class SecondWindow(Screen):
 	#sr=Image(source='all_ppp_trisec.jpg')
 #	sr.Image(source='all_ppp_trisec.jpg')
 #	add_widget(Boxlayout())
-	
 
 	def show_dato(self):
 		pass
@@ -176,8 +148,12 @@ class MainWindow(Screen):
 		
 
 		sm.current = "caz"
+#-----------------PARA DEFINIR CLASES Y TOMAR LOS ATRIBUTOS de un Screen--------------Volviendo un witget------------
+##----------------------------------------------------------def __init__(self, *args, **kwargs):
+ ##-----------------------------------------------------       super(HomeScreen, self).__init__(*args, **kwargs)
+## -----------------------------------comando de conversion -------self.add_widget()
 
-		
+	
 
 
 kv = Builder.load_file("Simulator.kv")

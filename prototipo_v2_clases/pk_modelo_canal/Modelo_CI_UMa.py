@@ -45,7 +45,7 @@ def perdidasdB():
 	alpha_n=2
 	distancia=100
 	Sigma_Xn=4
-	Ghz=1000000
+	Ghz=1000000000
 	frecuencia= 28*Ghz	
 	PL_ci= float
 	modelci=float

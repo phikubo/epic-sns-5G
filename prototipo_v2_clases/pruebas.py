@@ -5,6 +5,18 @@ import numpy as np
 #
 import pk_red_dispositivos.celda as pkcel
 import utilidades.savedata as persistencia
+import pk_modelo_canal.Modelo_CI_UMa as cim
+
+
+
+def prueba_Perdidas_propagacion(radio,frecuencia,distancias):
+	
+
+
+	PerdidasFSPL = cim.FSPL(frecuencia)
+	print("PERDIDAS ESPACIO LIBRE : ",PerdidasFSPL)
+	
+	pass
 
 #http://research.iac.es/sieinvens/python-course/source/matplotlib.html #graficar datos
 #me ga bru tal https://jakevdp.github.io/PythonDataScienceHandbook/04.05-histograms-and-binnings.html
@@ -17,6 +29,7 @@ def prueba_pk_dispositivos(celdas, radio, intensidad):
 	colmena.ver_celdas()
 	colmena.ver_sectores()
 	colmena.ver_usuarios()
+
 	# colmena.ver_todo()
 	# plt.axis("equal")
 	# plt.grid(True)
@@ -40,6 +53,8 @@ def prueba_guardar_datos():
 	intensidad = 7
 	intensidad = intensidad/radio**2
 	celdas = 13
+	frecuencia= 28000000000
+
 	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad))
 	# colmena.cluster --> se encuentra cada celda, y cada celda tiene las coordenadas x.
 	# si iteramos sobre cada celda y obtenemos cada x, los podemos agrupar en una lista
@@ -82,12 +97,15 @@ def prueba_distancia_celdas():
 	colmena.ver_usuarios()
 	colmena.ver_estaciones_base()
 	plt.figure(2)
-	plt.bar( np.arange(len(colmena.cluster[0].distancias)),colmena.cluster[0].distancias)
+	plt.bar(np.arange(len(colmena.cluster[0].distancias)),colmena.cluster[0].distancias)
 	#plt.axis("equal")
 	plt.grid(True)
 	plt.show()
-
-	
+	distArray=np.array(colmena.cluster[0].distancias)
+	plt.figure(3)
+	plt.bar(np.arange(len(distArray)),distArray)
+	ptl.grid(True)
+	plt.show()
 
 
 if __name__=="__main__":
@@ -98,6 +116,9 @@ if __name__=="__main__":
 
 	#prueba_guardar_datos()
 	prueba_distancia_celdas()
+
+	#prueba_Perdidas_propagacion(12,28,500)
+	#prueba_Perdidas_propagacion(radio,frecuencia)
 
 else:
 	print("Modulo <escribir_nombre> importado")
