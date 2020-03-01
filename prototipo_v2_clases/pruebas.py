@@ -86,9 +86,13 @@ def prueba_guardar_datos():
 
 def prueba_distancia_celdas():
 	'''Funcion de prueba para observar el comportamiento del algoritmo de distancias'''
+	#frecuencia en Herz y distancia en Metros.
 	radio = 20
 	intensidad = 3
 	intensidad = intensidad/radio**2
+	frecuencia = 28000000000
+	frecuenciaGHz= frecuencia/1000000000
+	sigma= 4
 	celdas = 2
 	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad))
 	print(colmena.cluster[0].distancias)
@@ -101,9 +105,30 @@ def prueba_distancia_celdas():
 	#plt.axis("equal")
 	plt.grid(True)
 	plt.show()
+<<<<<<< HEAD
 	distArray=np.array(colmena.cluster[0].distancias)
 	plt.figure(3)
 	plt.bar(np.arange(len(distArray)),distArray)
+=======
+	PerdidasProp=0
+	Sigma_Xn=4
+	alpha_n=3
+	PerdidasProp=0
+	PerdidasPropi=0
+	Ppl=[]
+	for d in colmena.cluster[0].distancias: 
+		PerdidasPropi=cim.modeloci(alpha_n,d,Sigma_Xn,frecuencia)
+		PerdidasProp=np.add(PerdidasPropi) 
+		#print(PerdidasProp.shape)
+		#np.array(len(colmena.cluster[0].distancias),)
+		#print(PerdidasProp)
+	#disarray=np.arange(len(distanciaU))
+	print(PerdidasProp)
+	#print("oleee ". disarray)
+	#plt.bar(np.arange(len(colmena.cluster[0].distancias)),colmena.cluster[0].distancias)
+	plt.figure(3)
+	plt.bar(np.arange(len(PerdidasProp)),PerdidasProp)
+>>>>>>> master
 	ptl.grid(True)
 	plt.show()
 

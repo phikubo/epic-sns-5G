@@ -36,7 +36,8 @@ class Celda:
 		#
 		#array de distancias del centro a todos los usuarios
 		self.distancias=0
-		
+		#Array de perdidas de propagaion hacia cada usuario
+		self.Pathloss=0
 	def distancia_gnodeb_ue(self):
 		'''Funcion que calcula la distancia entre la posicion del gnodeb hasta cada ue.'''
 		#Procedimiento
@@ -48,7 +49,8 @@ class Celda:
 
 	def trisectorizar():
 		pass
-
+	#def PL(self):
+	#	self.Pathloss=np.cim.model self.distancias
 
 class Celdas:
 	
@@ -89,6 +91,7 @@ class Celdas:
 			celda_unica.user_x=su_x
 			celda_unica.user_y=su_y
 			celda_unica.distancia_gnodeb_ue()
+			celda_unica.PL()
 			#calculo las distancias cada celda y las asigno
 
 			#celda_unica.usuarios.append()

@@ -11,7 +11,17 @@ import math
 # para las distancias corregidas en dB con un valor de 2.0 para Entornos UMa y 3.5 para entornos UMi. 
 #
 
+<<<<<<< HEAD
 
+=======
+class  modelocanal(object):
+	"""docstring for  modelocanal"""
+	def __init__(self, frecuencia):
+		super( modelocanal, self).__init__()
+		self.frecuencia = frecuencia
+		self.distancia= distancia
+			
+>>>>>>> master
 #### frecuencia en  unidades de Herz
 ### alpha en dB valor de umi 3.5
 ## sigma en dB valor de 2 dB 
@@ -19,6 +29,7 @@ import math
 
 
 def FSPL(frecuencia):
+<<<<<<< HEAD
 	c=3*(10^9)
 	FSPL_f_1m=20*math.log((4*math.pi*frecuencia)/c)
 	return FSPL_f_1m
@@ -28,6 +39,27 @@ def modeloci(alpha_n,distancia,Sigma_Xn,frecuencia):
 
 	FSPL_= FSPL(frecuencia)	
 	PLdB=(FSPL_)+(10*alpha_n*math.log(distancia))+Sigma_Xn
+=======
+#frecuencia en Hz ej: 2800000000
+#este modulo calcula las perdidas para una distancia de 1m para la frecuencias
+	c=300000000
+	res=4*math.pi/300000000
+	FSPL_f_1m=20*math.log10(res*frecuencia)
+	FSPL_f_1mb= -147 + 20*math.log10(frecuencia) 
+	#print(res)
+	return FSPL_f_1m
+
+
+##los valores obtimos para 
+def modeloci(alpha_n,distancia,Sigma_Xn,frecuencia):
+	#FSLP_=float
+#Este modulo recrea las perdidas con distancia en metros con los parametros alpha_n: 3.1 y con Sigma_Xn:4 
+#considerados por la documentacion valores en dB para sigma y veces para alpha_n
+
+	FSPL_= FSPL(frecuencia)	
+	print(FSPL_)
+	PLdB= (FSPL_)+(10*alpha_n*math.log10(distancia))+Sigma_Xn
+>>>>>>> master
 	
 	return PLdB
 	#CIdB= 10*locals()
