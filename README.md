@@ -1,6 +1,9 @@
 # epic-sns-5G
 Simulador a Nivel de Sistema 5G.
 
+Usar pip3 install --upgrade -r requirements.txt
+Para instalar.
+
 ## Instrucciones
 El desarrollo de cada script debe seguir las siguientes fases: prototipo, pruebas y producción. 
 Todos las variables deben ser llamados siguiendo el estilo PEP8 (Ver https://www.python.org/dev/peps/pep-0008/). Además el nombre de los scripts también deben seguir PEP8 y cada nombre debe corresponder con la carpeta donde se encuentra e.g., prot_nombre, prueb_nombre, prod_nombre.

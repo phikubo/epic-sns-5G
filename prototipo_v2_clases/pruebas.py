@@ -46,8 +46,9 @@ def prueba_guardar_datos():
 	# 2. juntar todos los arrays en un solo array
 	# 3. usar metodo correspondiente para guardar el array
 	# 4. abrir el archivo con el metodo correspondiente.
-	# Nota: resulta un paso extra (extra=ineficiente) por el hecho
-	# de que los datos ya estan juntos en una sola variable, pero no
+	# Nota: resulta un paso extra por el hecho
+	# de que los datos ya estan juntos en una sola variable, asi:
+	#  [c1x1, c1x2, c1x3,...,c1xn,c2x2,c2x3,...,c2xn,.. ] pero no
 	# estan separados por celda, esta es la razon de procesamiento
 	radio = 20
 	intensidad = 7
