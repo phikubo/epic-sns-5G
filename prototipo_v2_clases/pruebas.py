@@ -5,6 +5,18 @@ import numpy as np
 #
 import pk_red_dispositivos.celda as pkcel
 import utilidades.savedata as persistencia
+import pk_modelo_canal.Modelo_CI_UMa as cim
+
+
+
+def prueba_Perdidas_propagacion(radio,frecuencia,distancias):
+	
+
+
+	PerdidasFSPL = cim.FSPL(frecuencia)
+	print("PERDIDAS ESPACIO LIBRE : ",PerdidasFSPL)
+	
+	pass
 
 #http://research.iac.es/sieinvens/python-course/source/matplotlib.html #graficar datos
 #me ga bru tal https://jakevdp.github.io/PythonDataScienceHandbook/04.05-histograms-and-binnings.html
@@ -17,6 +29,7 @@ def prueba_pk_dispositivos(celdas, radio, intensidad):
 	colmena.ver_celdas()
 	colmena.ver_sectores()
 	colmena.ver_usuarios()
+
 	# colmena.ver_todo()
 	# plt.axis("equal")
 	# plt.grid(True)
@@ -40,6 +53,8 @@ def prueba_guardar_datos():
 	intensidad = 7
 	intensidad = intensidad/radio**2
 	celdas = 13
+	frecuencia= 28000000000
+
 	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad))
 	# colmena.cluster --> se encuentra cada celda, y cada celda tiene las coordenadas x.
 	# si iteramos sobre cada celda y obtenemos cada x, los podemos agrupar en una lista
@@ -71,9 +86,13 @@ def prueba_guardar_datos():
 
 def prueba_distancia_celdas():
 	'''Funcion de prueba para observar el comportamiento del algoritmo de distancias'''
+	#frecuencia en Herz y distancia en Metros.
 	radio = 20
 	intensidad = 3
 	intensidad = intensidad/radio**2
+	frecuencia = 28000000000
+	frecuenciaGHz= frecuencia/1000000000
+	sigma= 4
 	celdas = 2
 	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad))
 	print(colmena.cluster[0].distancias)
@@ -82,12 +101,30 @@ def prueba_distancia_celdas():
 	colmena.ver_usuarios()
 	colmena.ver_estaciones_base()
 	plt.figure(2)
-	plt.bar( np.arange(len(colmena.cluster[0].distancias)),colmena.cluster[0].distancias)
+	plt.bar(np.arange(len(colmena.cluster[0].distancias)),colmena.cluster[0].distancias)
 	#plt.axis("equal")
 	plt.grid(True)
 	plt.show()
-
-	
+	PerdidasProp=0
+	Sigma_Xn=4
+	alpha_n=3
+	PerdidasProp=0
+	PerdidasPropi=0
+	Ppl=[]
+	for d in colmena.cluster[0].distancias: 
+		PerdidasPropi=cim.modeloci(alpha_n,d,Sigma_Xn,frecuencia)
+		PerdidasProp=np.add(PerdidasPropi) 
+		#print(PerdidasProp.shape)
+		#np.array(len(colmena.cluster[0].distancias),)
+		#print(PerdidasProp)
+	#disarray=np.arange(len(distanciaU))
+	print(PerdidasProp)
+	#print("oleee ". disarray)
+	#plt.bar(np.arange(len(colmena.cluster[0].distancias)),colmena.cluster[0].distancias)
+	plt.figure(3)
+	plt.bar(np.arange(len(PerdidasProp)),PerdidasProp)
+	ptl.grid(True)
+	plt.show()
 
 
 if __name__=="__main__":
@@ -98,6 +135,9 @@ if __name__=="__main__":
 
 	#prueba_guardar_datos()
 	prueba_distancia_celdas()
+
+	#prueba_Perdidas_propagacion(12,28,500)
+	#prueba_Perdidas_propagacion(radio,frecuencia)
 
 else:
 	print("Modulo <escribir_nombre> importado")
