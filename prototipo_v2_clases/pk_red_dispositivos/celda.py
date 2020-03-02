@@ -38,7 +38,11 @@ class Celda:
 		#array de distancias del centro a todos los usuarios
 		self.distancias=0
 		#Array de perdidas de propagaion hacia cada usuario
-		self.Pathloss=0
+		self.basic_path_loss=0
+		#
+		self.frecuencia=0
+
+
 	def distancia_gnodeb_ue(self):
 		'''Funcion que calcula la distancia entre la posicion del gnodeb hasta cada ue.'''
 		#Procedimiento
@@ -48,10 +52,19 @@ class Celda:
 		#distancia=vector numpy
 		self.distancias=np.sqrt((self.pos_x-self.user_x)**2+(self.pos_y-self.user_y)**2)
 
+	def asignar_perdidas_espacio_libre(self, perdidas):
+		'''Funcion que asigna las perdidas basicas, con un parametro externo'''
+		self.basic_path_loss=perdidas
+
+
 	def trisectorizar():
 		pass
+<<<<<<< HEAD
 	##def PL(self):
 	#	self.Pathloss=np.cim.model self.distancias
+=======
+
+>>>>>>> a4a07e4598948df5e8a7df90afaad731010ab81c
 
 class Celdas:
 	
@@ -92,12 +105,16 @@ class Celdas:
 			celda_unica.user_x=su_x
 			celda_unica.user_y=su_y
 			celda_unica.distancia_gnodeb_ue()
+<<<<<<< HEAD
 			#celda_unica.PL()
+=======
+>>>>>>> a4a07e4598948df5e8a7df90afaad731010ab81c
 			#calculo las distancias cada celda y las asigno
-
-			#celda_unica.usuarios.append()
-
 			#print("coordenadas ", celda_unica.pos_x, celda_unica.pos_y)
+
+
+		#aqui hay que asignar el modelo del canal a todas las celdas
+		pass
 
 
 	def ver_estaciones_base(self):
@@ -161,12 +178,15 @@ def crear_n_objetos_dict(clase_madre,n):
 		nombre="celda"+str(n)
 		celdas[nombre]=clase_madre(id=n)
 
+
 def prueba1():
 	obj_cel=Celda(0,0,5) #ok
 	print("id ", id(obj_cel))
 	#clase celdas crea crea celdas internas
 	celulas=Celdas(0,5)
 	#genera error por que 0 no es una cantidad aceptable de celdas.
+
+
 def prueba2():
 	#crea una colmena con 4 macroceldas.
 	numero_celdas=1
@@ -181,6 +201,8 @@ def prueba2():
 	plt.axis("equal")
 	plt.grid(True)
 	plt.show()
+
+
 def prueba3():
 	numero_celdas=1
 	radio=100
@@ -190,6 +212,8 @@ def prueba3():
 	plt.axis("equal")
 	plt.grid(True)
 	plt.show()
+
+
 if __name__=="__main__":
 	#Prototipo:
 	print("------------")
