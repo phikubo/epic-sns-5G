@@ -91,7 +91,7 @@ class Celdas:
 			celda_unica.user_x=su_x
 			celda_unica.user_y=su_y
 			celda_unica.distancia_gnodeb_ue()
-			celda_unica.PL()
+			#celda_unica.PL()
 			#calculo las distancias cada celda y las asigno
 
 			#celda_unica.usuarios.append()

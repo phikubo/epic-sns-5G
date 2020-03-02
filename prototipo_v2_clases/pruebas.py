@@ -7,20 +7,11 @@ import pk_red_dispositivos.celda as pkcel
 import utilidades.savedata as persistencia
 import pk_modelo_canal.Modelo_CI_UMa as cim
 
-
-
-def prueba_Perdidas_propagacion(radio,frecuencia,distancias):
-	
-
-
-	PerdidasFSPL = cim.FSPL(frecuencia)
-	print("PERDIDAS ESPACIO LIBRE : ",PerdidasFSPL)
-	
-	pass
-
 #http://research.iac.es/sieinvens/python-course/source/matplotlib.html #graficar datos
 #me ga bru tal https://jakevdp.github.io/PythonDataScienceHandbook/04.05-histograms-and-binnings.html
 #https://stackabuse.com/python-data-visualization-with-matplotlib/
+
+
 def prueba_pk_dispositivos(celdas, radio, intensidad):
 	'''Prueba para observar funcionamiento de graficas basicas'''
 	intensidad = intensidad/radio**2
@@ -35,6 +26,7 @@ def prueba_pk_dispositivos(celdas, radio, intensidad):
 	# plt.grid(True)
 	# plt.savefig("base_datos/img_pruebas/ppp_4.png")
 	# plt.show()
+
 
 def prueba_funcion_aux(cordx, cordy):
 	pass
@@ -91,9 +83,6 @@ def prueba_distancia_celdas():
 	radio = 20
 	intensidad = 3
 	intensidad = intensidad/radio**2
-	frecuencia = 28000000000
-	frecuenciaGHz= frecuencia/1000000000
-	sigma= 4
 	celdas = 2
 	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad))
 	print(colmena.cluster[0].distancias)
@@ -106,15 +95,22 @@ def prueba_distancia_celdas():
 	#plt.axis("equal")
 	plt.grid(True)
 	plt.show()
+	
+
+#las funciones nuevas deben ser creadas de arriba hacia abajo. Abajo las mas nuevas.
+def pruebas_modelo_canal_umi():
+	frecuencia = 28000000000
+	frecuenciaGHz= frecuencia/1000000000
+	sigma= 4
 	PerdidasProp=0
 	Sigma_Xn=4
 	alpha_n=3
 	PerdidasProp=0
 	PerdidasPropi=0
 	Ppl=[]
-	for d in colmena.cluster[0].distancias: 
+	for d in colmena.cluster[0].distancias:
 		PerdidasPropi=cim.modeloci(alpha_n,d,Sigma_Xn,frecuencia)
-		PerdidasProp=np.add(PerdidasPropi) 
+		PerdidasProp=np.add(PerdidasPropi)
 		#print(PerdidasProp.shape)
 		#np.array(len(colmena.cluster[0].distancias),)
 		#print(PerdidasProp)
@@ -128,17 +124,56 @@ def prueba_distancia_celdas():
 	plt.show()
 
 
+def prueba_perdidas_propagacion(radio,frecuencia,distancias):
+	'''Funcion de prueba para crear las perdidas basicas (espacio libre)'''
+	#pasos:
+	#1.
+	#2.
+	#3.
+	#4.
+	PerdidasFSPL = cim.FSPL(frecuencia) #el nombre de la ecuacion debe ser mas especica: free_space_loss()
+	print("PERDIDAS ESPACIO LIBRE : ",PerdidasFSPL)
+
 if __name__=="__main__":
-	# Prototipo:
+	#REGLAS:
+	#0 [critico]. Las pruebas en if name, deben ir comentadas por prueba 1., prueba 2., ..., prueba n.
+		#0.1 Si se necesitan hacer mas de una prueba con la funcion, pasar de 1 a 1.1 a 1.2, etc.
+		#en el numeral de la prueba
+		
+	#1. LAS FUNCIONES DE PRUEBA NO RECIBEN PARAMETROS, Excepto en el siguiente caso:
+		#Que la funcion sea definida con parametros y al llamarla sea explicito los
+		#parametros y los valores que reciben
+		# funcion(parametro=valor1, parametro2=valor, etc)
+		#ver prueba 1.
+	#2. LAS VARIABLES VAN EN MINUSCULA
+	#3. LOS NOMBRE DE FUNCIONES, MINUSCULA
+	#4. LAS INSTANCIAS DE CLASE, MINUSCULA
+	#5. LOS NOMBRES DEBEN SER ESPECIFICOS Y SEPARADOS POR: _ así:
+		#EjemploDeFUNCION ---> x , ejemplo_de_funcion ---> bieeeen
+		#fdp ----------------> x , funcion_de_prueba ----> mega bieeeen
+		#etc.
+
+	
+	#Prototipos:
+	#prueba 1.
 	# prueba_pk_dispositivos(celdas=2,radio=20,intensidad=5)
-
+	
+	#prueba 2.
 	# pkcel.modulo_coordenadas.coordenadas_nceldas(3,4)
-
+	
+	#prueba 3.
 	#prueba_guardar_datos()
+	
+	#prueba 4.
 	prueba_distancia_celdas()
 
+	#prueba 5. 
 	#prueba_Perdidas_propagacion(12,28,500)
+	#prueba 5.1
 	#prueba_Perdidas_propagacion(radio,frecuencia)
+	
+	#prueba 6.
+	#
 
 else:
 	print("Modulo <escribir_nombre> importado")
