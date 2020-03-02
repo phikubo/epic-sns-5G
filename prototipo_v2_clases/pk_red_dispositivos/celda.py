@@ -4,6 +4,7 @@ import numpy as np
 import math
 #
 try:
+
 	from . import modulo_coordenadas as mc
 	from . import modulo_circulos as mcir
 	from . import usuario as ues
@@ -49,7 +50,7 @@ class Celda:
 
 	def trisectorizar():
 		pass
-	#def PL(self):
+	##def PL(self):
 	#	self.Pathloss=np.cim.model self.distancias
 
 class Celdas:
@@ -91,7 +92,7 @@ class Celdas:
 			celda_unica.user_x=su_x
 			celda_unica.user_y=su_y
 			celda_unica.distancia_gnodeb_ue()
-			celda_unica.PL()
+			#celda_unica.PL()
 			#calculo las distancias cada celda y las asigno
 
 			#celda_unica.usuarios.append()

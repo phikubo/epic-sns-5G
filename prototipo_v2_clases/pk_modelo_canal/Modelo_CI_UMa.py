@@ -43,7 +43,7 @@ def modeloci(alpha_n,distancia,Sigma_Xn,frecuencia):
 
 	FSPL_= FSPL(frecuencia)	
 	print(FSPL_)
-	PLdB= (FSPL_)+(10*alpha_n*math.log10(distancia))+Sigma_Xn
+	PLdB= (FSPL_)+(10*alpha_n*math.log10(self.distancia))+Sigma_Xn
 	
 	return PLdB
 	#CIdB= 10*locals()

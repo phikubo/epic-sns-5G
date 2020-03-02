@@ -109,12 +109,13 @@ def prueba_distancia_celdas():
 	PerdidasProp=0
 	Sigma_Xn=4
 	alpha_n=3
-	PerdidasProp=0
-	PerdidasPropi=0
+	print()
+	PerdidasProp= np.append(colmena.cluster[0].distancias, np.cim.modeloci(alpha_n,colmena.cluster[0].distancias,Sigma_Xn,frecuencia))
+	PerdidasPropi=[None]
 	Ppl=[]
 	for d in colmena.cluster[0].distancias: 
-		PerdidasPropi=cim.modeloci(alpha_n,d,Sigma_Xn,frecuencia)
-		PerdidasProp=np.add(PerdidasPropi) 
+		PerdidasProp=cim.modeloci(alpha_n,d,Sigma_Xn,frecuencia)
+		#PerdidasProp=append(PerdidasPropi) 
 		#print(PerdidasProp.shape)
 		#np.array(len(colmena.cluster[0].distancias),)
 		#print(PerdidasProp)
