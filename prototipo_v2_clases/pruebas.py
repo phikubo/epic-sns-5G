@@ -5,7 +5,8 @@ import numpy as np
 #
 import pk_red_dispositivos.celda as pkcel
 import utilidades.savedata as persistencia
-import pk_modelo_canal.Modelo_CI_UMa as cim
+#import pk_modelo_canal.Modelo_CI_UMa as cim
+import pk_modelo_canal.modelo_canal as moca
 
 #http://research.iac.es/sieinvens/python-course/source/matplotlib.html #graficar datos
 #me ga bru tal https://jakevdp.github.io/PythonDataScienceHandbook/04.05-histograms-and-binnings.html
@@ -124,15 +125,76 @@ def pruebas_modelo_canal_umi():
 	plt.show()
 
 
-def prueba_perdidas_propagacion(radio,frecuencia,distancias):
+def prueba_perdidas_basicas():
 	'''Funcion de prueba para crear las perdidas basicas (espacio libre)'''
 	#pasos:
-	#1.
-	#2.
-	#3.
-	#4.
-	PerdidasFSPL = cim.FSPL(frecuencia) #el nombre de la ecuacion debe ser mas especica: free_space_loss()
-	print("PERDIDAS ESPACIO LIBRE : ",PerdidasFSPL)
+	#1. crear cluster, en la celda 0
+	#2. obtener distancias
+	#3. asignar perdidas de espacio libre mediante una funcion propia 
+	#4. relacionar clase modelo de canal con celda
+	radio = 20 #u -> metro
+	intensidad = 2
+	intensidad = intensidad/radio**2
+	celdas = 2
+	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad)) #en este momento hay dos celdas, con sus parametros definidos
+
+	#[critico - IMPORTANTE LEER] hay dos opciones para implementar
+	#1. opcion. crear instancia de las celdas, obtener distancia; crear instancia de modelo del canal
+	# alimentarlo con distancias y frecuencia de operacion, calcular perdidas, retornar
+	# alimentar celdas con las perdidas, resultado: ahora la celda tiene sus propias perdidas.
+	#{phikubo says: de esta forma podria tenerse un modelo para todas las celdas, el cual funciona
+	# como modulo. Sin embargo esto no aprovecha el potencial de la clase, pues si ese es el caso,
+	# pues es mas sencillo implmentarlo como un modulo y no una clase. Con la clase se pueden guardar
+	# mas parametros y establecer relaciones mas fuertes y complejas}
+
+	#2. opcion. crear la instancia del modelo del canal, asignarlo a un parametro de la celda
+	# y calcular las perdidas desde la variable de la instancia de la celda.
+	#{phikubo says: esta opcion me parece mejor pues no hay que hacer tanta vuelta, es mas directa,
+	# esta implementacion aun no se hara, sin embargo se hara la prueba posteriomente. La ventaja es 
+	# que se puede manipular el modelo del canal para cada celda y de manera independiente. Se puede
+	# realizar combinaciones realmente complejas.}
+
+	#implementacion opcion 1.
+	celda_inicial=colmena.cluster[0] #objeto de la celda 0
+	#opcion 1, como instancias diferentes
+	distancias_celda_cero=celda_inicial.distancias #obtengo las distancias de esa celda
+	freq=10 #asigno frecuencia en gigaz
+	print("Asumiendo que las distancias son en [km] las siguientes: ")
+	print(distancias_celda_cero) #asumiendo que la distancia esta en km
+	modelo=moca.Modelo_canal(freq, distancias_celda_cero) #creo el modelo del canal
+	print("las perdidas de esas distancias son: ")
+	modelo.perdidas_espacio_libre_ghz() #calculo las perdidas 
+	print(modelo.path_loss)
+	print("asignacion de las perdidas en esa celda")
+	celda_inicial.basic_path_loss=modelo.path_loss
+	print(celda_inicial.basic_path_loss)
+	#o puede hacerse con la funcion (cuando se desee para varias celdas debe usarse esa funcion)
+	celda_inicial.asignar_perdidas_espacio_libre(modelo.path_loss)
+	print(celda_inicial.basic_path_loss)
+	#cualequiera de las dos formas es valida, sien embargo para automatizar en el futuro, se
+	#usuara la funcion llamada: asginar_perdias_espacio_libre(etc,)
+
+	#implementacion opcion 2
+	#1. creamos la instancia del modelo del canal
+	#2. creamos instancia de la celdas (colmena)
+		#recibe como parametro celdas, radio, distribucion Y modelo del canal (la instancia creada en 1.)
+		#celdas entonces crea automaticamente las configuraciones para todas las celdas
+		#es decir, crea perdidas_basicas, para todas las celdas.
+
+		#esto implica dos cosas:
+			#1. la clase celdas (sistema) crea perdidas para todas las celdas automaticamente
+			#1.1 es necesario modificar la inicializacion de variables
+			#2. la clase celda tiene como una de sus variables al modelo del canal, que es una
+				#instancia de modelo del canal.
+			#2.1 la clase celda entonces ejecuta desde si misma, las perdidas y todas
+			#las funciones y facultades que tenga el modelo del canal.
+			#2.2 esto implica modificar la clase celda para habilitar este cambio:
+				#solo es neceasrio crear una variable self.modelo=0
+				#la clase sistema le dara un modelo distinto a cada celda si es necesario
+				#la clase celda ejecuta self.perdidas=self.modelo.perdidas_espacio_libre_ghz()
+				#completando el ciclo
+	pass
+
 
 if __name__=="__main__":
 	#REGLAS:
@@ -165,7 +227,7 @@ if __name__=="__main__":
 	#prueba_guardar_datos()
 	
 	#prueba 4.
-	prueba_distancia_celdas()
+	#prueba_distancia_celdas()
 
 	#prueba 5. 
 	#prueba_Perdidas_propagacion(12,28,500)
@@ -173,7 +235,7 @@ if __name__=="__main__":
 	#prueba_Perdidas_propagacion(radio,frecuencia)
 	
 	#prueba 6.
-	#
+	prueba_perdidas_basicas()
 
 else:
 	print("Modulo <escribir_nombre> importado")
