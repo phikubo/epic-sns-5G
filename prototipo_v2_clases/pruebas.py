@@ -194,7 +194,19 @@ def prueba_perdidas_basicas():
 				#la clase sistema le dara un modelo distinto a cada celda si es necesario
 				#la clase celda ejecuta self.perdidas=self.modelo.perdidas_espacio_libre_ghz()
 				#completando el ciclo
-	pass
+
+
+def prueba_perdidas_basicas_2():
+	'''Funcion de prueba de concepto, clase como una relacion de composicion en la celda.'''
+	#https://stackoverflow.com/questions/38657337/how-can-i-get-the-type-of-a-class-without-instantiating-it-in-python
+	radio = 20 #u -> metro
+	intensidad = 2
+	intensidad = intensidad/radio**2
+	celdas = 2
+	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad)) #en este momento hay dos celdas, con sus parametros definidos
+	#la idea es tener una referencia a la clase sin crear el objeto para luego crear este objeto en otra clase
+	print(moca.Modelo_canal)
+
 
 
 if __name__=="__main__":
@@ -236,7 +248,7 @@ if __name__=="__main__":
 	#prueba_Perdidas_propagacion(radio,frecuencia)
 	
 	#prueba 6.
-	prueba_perdidas_basicas()
+	prueba_perdidas_basicas_2()
 
 else:
 	print("Modulo <escribir_nombre> importado")
