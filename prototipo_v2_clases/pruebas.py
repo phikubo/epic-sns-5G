@@ -110,15 +110,9 @@ def pruebas_modelo_canal_umi():
 	PerdidasProp= np.append(colmena.cluster[0].distancias, np.cim.modeloci(alpha_n,colmena.cluster[0].distancias,Sigma_Xn,frecuencia))
 	PerdidasPropi=[None]
 	Ppl=[]
-<<<<<<< HEAD
-	for d in colmena.cluster[0].distancias: 
-		PerdidasProp=cim.modeloci(alpha_n,d,Sigma_Xn,frecuencia)
-		#PerdidasProp=append(PerdidasPropi) 
-=======
 	for d in colmena.cluster[0].distancias:
 		PerdidasPropi=cim.modeloci(alpha_n,d,Sigma_Xn,frecuencia)
 		PerdidasProp=np.add(PerdidasPropi)
->>>>>>> a4a07e4598948df5e8a7df90afaad731010ab81c
 		#print(PerdidasProp.shape)
 		#np.array(len(colmena.cluster[0].distancias),)
 		#print(PerdidasProp)

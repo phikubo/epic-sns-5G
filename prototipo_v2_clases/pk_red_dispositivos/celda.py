@@ -59,12 +59,6 @@ class Celda:
 
 	def trisectorizar():
 		pass
-<<<<<<< HEAD
-	##def PL(self):
-	#	self.Pathloss=np.cim.model self.distancias
-=======
-
->>>>>>> a4a07e4598948df5e8a7df90afaad731010ab81c
 
 class Celdas:
 	
@@ -105,10 +99,6 @@ class Celdas:
 			celda_unica.user_x=su_x
 			celda_unica.user_y=su_y
 			celda_unica.distancia_gnodeb_ue()
-<<<<<<< HEAD
-			#celda_unica.PL()
-=======
->>>>>>> a4a07e4598948df5e8a7df90afaad731010ab81c
 			#calculo las distancias cada celda y las asigno
 			#print("coordenadas ", celda_unica.pos_x, celda_unica.pos_y)
 
