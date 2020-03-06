@@ -62,7 +62,7 @@ class Celda:
 
 class Celdas:
 	
-	def __init__(self, num_celdas, radio, distribucion):
+	def __init__(self, num_celdas, radio, distribucion, Modelo_Canal):
 		#radio debe conocerse desde el pricipio desde que todas las celdas son simetricas
 		#y si por el numero de cedas, calculo el nivel
 		#self.nivel=nivel

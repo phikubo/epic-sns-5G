@@ -203,7 +203,8 @@ def prueba_perdidas_basicas_2():
 	intensidad = 2
 	intensidad = intensidad/radio**2
 	celdas = 2
-	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad)) #en este momento hay dos celdas, con sus parametros definidos
+	clase=moca.Modelo_canal
+	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad),Modelo_Canal=clase) #en este momento hay dos celdas, con sus parametros definidos
 	#la idea es tener una referencia a la clase sin crear el objeto para luego crear este objeto en otra clase
 	print(moca.Modelo_canal)
 
