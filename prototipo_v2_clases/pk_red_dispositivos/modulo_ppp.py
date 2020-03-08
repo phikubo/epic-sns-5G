@@ -51,7 +51,6 @@ def distribuir_en_celdas(r, x_origen, y_origen, intensidad):
 
 def distribuir_usuarios(r, cantidad_puntos):
 	'''Funcion secundaria a principal. Copia el comportamiento de distribuir_circuo, pero en una forma modular'''
-
 	#calcular theta y rho en esta funcion, garantiza que sean distintos.
 	try:
 		theta=2*np.pi*np.random.uniform(0,1,cantidad_puntos)

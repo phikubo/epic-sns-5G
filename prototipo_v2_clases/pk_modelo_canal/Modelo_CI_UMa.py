@@ -53,13 +53,16 @@ def modeloci(alpha_n,distancia,Sigma_Xn,frecuencia):
 ##los valores obtimos para 
 def modeloci(alpha_n,distancia,Sigma_Xn,frecuencia):
 	#FSLP_=float
-#Este modulo recrea las perdidas con distancia en metros con los parametros alpha_n: 3.1 y con Sigma_Xn:4 
-#considerados por la documentacion valores en dB para sigma y veces para alpha_n
-
+	#Este modulo recrea las perdidas con distancia en metros con los parametros alpha_n: 3.1 y con Sigma_Xn:4 
+	#considerados por la documentacion valores en dB para sigma y veces para alpha_n
 	FSPL_= FSPL(frecuencia)	
 	print(FSPL_)
+<<<<<<< HEAD
 	PLdB= (FSPL_)+(10*alpha_n*math.log10(distancia))+Sigma_Xn
 >>>>>>> master
+=======
+	PLdB= (FSPL_)+(10*alpha_n*math.log10(self.distancia))+Sigma_Xn
+>>>>>>> 4e21a1d5734b5c29357b72b70e09fc4a9133bec3
 	
 	return PLdB
 	#CIdB= 10*locals()
