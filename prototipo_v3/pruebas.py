@@ -6,9 +6,8 @@ import os
 #
 import pk_red_dispositivos.celda as pkcel
 import utilidades.savedata as persistencia
-#import pk_modelo_canal.Modelo_CI_UMa as cim
 import pk_modelo_canal.modelo_canal as moca
-
+import sistema as ss
 #http://research.iac.es/sieinvens/python-course/source/matplotlib.html #graficar datos
 #me ga bru tal https://jakevdp.github.io/PythonDataScienceHandbook/04.05-histograms-and-binnings.html
 #https://stackabuse.com/python-data-visualization-with-matplotlib/
@@ -97,6 +96,14 @@ def prueba_perdidas_basicas_2():
 	print(moca.Modelo_canal)
 
 
+def prueba_externa_0():
+	'''Prueba. Comprobar la utilidad de este script'''
+	celdas=3
+	radio=20
+	intensidad=10
+	distribucion=(intensidad/radio**2,"ppp") #0 en el primer valor si es otra distribucion (no necesario)
+	mod_canal=None
+	sc=ss.Sistema_Celular(celdas,radio, distribucion, mod_canal)
 
 if __name__=="__main__":
 	#REGLAS:
@@ -116,6 +123,7 @@ if __name__=="__main__":
 		#EjemploDeFUNCION ---> x , ejemplo_de_funcion ---> bieeeen
 		#fdp ----------------> x , funcion_de_prueba ----> mega bieeeen
 		#etc.
+	prueba_externa_0()
 
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")
