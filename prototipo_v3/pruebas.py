@@ -13,6 +13,15 @@ import sistema as ss
 #https://stackabuse.com/python-data-visualization-with-matplotlib/
 
 
+def replicar_datos_distribucion_usuarios():
+	distancias_celda=0
+	prueba_perdidas_basicas()
+	opc=pruebas_perdidas_basicas.distancias_celda_cero
+	#distancias_celda_cero= distancias_celda.distancias_celda_cero
+	#print(distancia_celda_cero)
+	print(opc)
+
+
 def prueba_perdidas_basicas():
 	'''Funcion de prueba para crear las perdidas basicas (espacio libre)'''
 	#pasos:
@@ -24,7 +33,7 @@ def prueba_perdidas_basicas():
 	intensidad = 2
 	intensidad = intensidad/radio**2
 	celdas = 2
-	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad)) #en este momento hay dos celdas, con sus parametros definidos
+	colmena = pkcel.Celda(celdas, radio, distribucion=("ppp", intensidad)) #en este momento hay dos celdas, con sus parametros definidos
 
 	#[critico - IMPORTANTE LEER] hay dos opciones para implementar
 	#1. opcion. crear instancia de las celdas, obtener distancia; crear instancia de modelo del canal
@@ -46,6 +55,8 @@ def prueba_perdidas_basicas():
 	celda_inicial=colmena.cluster[0] #objeto de la celda 0
 	#opcion 1, como instancias diferentes
 	distancias_celda_cero=celda_inicial.distancias #obtengo las distancias de esa celda
+	
+
 	freq=10 #asigno frecuencia en gigaz
 	print("Asumiendo que las distancias son en [km] las siguientes: ")
 	print(distancias_celda_cero) #asumiendo que la distancia esta en km
@@ -59,6 +70,7 @@ def prueba_perdidas_basicas():
 	#o puede hacerse con la funcion (cuando se desee para varias celdas debe usarse esa funcion)
 	celda_inicial.asignar_perdidas_espacio_libre(modelo.path_loss)
 	print(celda_inicial.basic_path_loss)
+
 	#cualequiera de las dos formas es valida, sien embargo para automatizar en el futuro, se
 	#usuara la funcion llamada: asginar_perdias_espacio_libre(etc,)
 
@@ -96,6 +108,7 @@ def prueba_perdidas_basicas_2():
 	print(moca.Modelo_canal)
 
 
+
 def prueba_externa_0():
 	'''Prueba. Comprobar la utilidad de este script'''
 	celdas=3
@@ -104,6 +117,22 @@ def prueba_externa_0():
 	distribucion=(intensidad/radio**2,"ppp") #0 en el primer valor si es otra distribucion (no necesario)
 	mod_canal=None
 	sc=ss.Sistema_Celular(celdas,radio, distribucion, mod_canal)
+	dist=sc.cluster[0].distancias
+	print(len(dist))
+	uniformedia=sum(dist)/len(dist)
+	print(dist)
+	print(uniformedia)
+
+	vmedia =[ uniformedia for x in dist]
+	print(vmedia)
+	print(len(vmedia))
+	plt.figure(1)
+	plt.axis("equal")
+	plt.plot(np.arange(len(dist)),dist)
+	plt.plot(np.arange(len(vmedia)),vmedia)
+	plt.grid(True)
+	plt.show()
+
 
 if __name__=="__main__":
 	#REGLAS:
@@ -117,13 +146,15 @@ if __name__=="__main__":
 		# funcion(parametro=valor1, parametro2=valor, etc)
 		#ver prueba 1.
 	#2. LAS VARIABLES VAN EN MINUSCULA
-	#3. LOS NOMBRE DE FUNCIONES, MINUSCULA
+		#3. LOS NOMBRE DE FUNCIONES, MINUSCULA
 	#4. LAS INSTANCIAS DE CLASE, MINUSCULA
 	#5. LOS NOMBRES DEBEN SER ESPECIFICOS Y SEPARADOS POR: _ así:
 		#EjemploDeFUNCION ---> x , ejemplo_de_funcion ---> bieeeen
 		#fdp ----------------> x , funcion_de_prueba ----> mega bieeeen
 		#etc.
 	prueba_externa_0()
+	#prueba_perdidas_basicas()
+	#replicar_datos_distribucion_usuarios()
 
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")

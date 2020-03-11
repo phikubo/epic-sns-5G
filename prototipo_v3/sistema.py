@@ -148,6 +148,8 @@ def prueba_interna_v3_1():
 	#plt.show()
 	print(sc.cluster[0].user_x) #[ok], inicializar_cluster_usuarios
 	print(sc.cluster[0].distancias) #[ok] funcion interna, distancias
+	
+	
 if __name__=="__main__":
 	#Prototipo:
 	prueba_interna_v3_1()
