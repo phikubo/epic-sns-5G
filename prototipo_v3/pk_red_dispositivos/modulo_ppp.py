@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 import math
 import time
 import os
+
+
 def distribuir_en_sector():
 	'''Funcion. Distribuye usuarios en un sector. Retorna una matriz por celda mas no por sector.'''
 	pass
@@ -78,7 +80,7 @@ def distribuir_circulo(r, x_origen, y_origen, intensidad):
 
 	#Simulate Poisson point process. Este proceso debe ser independiente de maint si se desea que sea el mismo número de puntos.
 	numero_de_puntos = np.random.poisson(intensidad*area_total);#Poisson number of points
-	print("Numero de points: ", numero_de_puntos)
+	################print("Numero de points: ", numero_de_puntos)
 	theta=2*np.pi*np.random.uniform(0,1,numero_de_puntos); #angular coordinates
 	rho=r*np.sqrt(np.random.uniform(0,1,numero_de_puntos)); #radial coordinates
 
@@ -95,17 +97,36 @@ def distribuir_circulo(r, x_origen, y_origen, intensidad):
 	#plt.axis('equal');
 	#plt.grid(True)
 	#plt.savefig("test2.png")
-	return coordenada_x,coordenada_y
+	return coordenada_x,coordenada_y,numero_de_puntos
 
 
 def prueba1():
+	#obsoleta
 	x=5;y=10
 	intensity=100/radio**2
 	x,y=distribuir_circulo(radio, x,y, intensity)
 	plt.plot(x,y,"ro")
 
-def prueba2():
-	pass
+def v31_prueba():
+	'''Prueba para observar el comportamiento estadistico del proceso'''
+	x0=5;y0=10
+	intensity=0.01
+	veces=100 #numero de veces a simular
+	test_x=[]
+	test_y=[]
+	n_ppp=[]
+	#x,y=distribuir_circulo(radio, x0,y0, intensity)
+	for i in range(veces):
+		x,y,cantidad_ppp=distribuir_circulo(radio, x0,y0, intensity)
+		test_x.append(x)
+		test_y.append(y)
+		n_ppp.append(cantidad_ppp)
+
+
+	plt.hist((x,y))
+	plt.figure()
+	plt.hist(n_ppp)
+	#plt.plot(x,y,"ro")
 
 if __name__ == "__main__":
 	print("ppp fix function")
@@ -114,7 +135,12 @@ if __name__ == "__main__":
 
 	#requisite: create n disk or radius r.
 	#radio: radius of disk. origen: coordinates.
-	prueba1()
+
+	#prueba 1
+	#prueba1()
+
+	#prueba v3 1
+	v31_prueba()
 
 	plt.show()
 
