@@ -131,6 +131,9 @@ class Sistema_Celular:
 	def info_celda_unica(self, target):
 		'''Funcion para ver toda la información de una celda específica'''
 		pass
+
+	def monte_carlo(self):
+		pass
 #bloque de funciones - final
 
 def prueba_interna_v3_1():
