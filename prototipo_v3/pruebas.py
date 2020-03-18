@@ -120,12 +120,7 @@ def prueba_externa_0():
 	dist=sc.cluster[0].distancias
 	print(len(dist))
 	uniformedia=sum(dist)/len(dist)
-	print(dist)
-	print(uniformedia)
-
 	vmedia =[ uniformedia for x in dist]
-	print(vmedia)
-	print(len(vmedia))
 	plt.figure(1)
 	plt.axis("equal")
 	plt.plot(np.arange(len(dist)),dist)
