@@ -1,15 +1,13 @@
-#<backend_gridview>
-			
-#	BoxLayout:
 
 
 
-#ESTA INTERFFAZ REALIZA EL MODELO DEL CANAL DE TIPO URBANO PARA EL SIMULADOR 
 #WindowManager:
+#ESTA INTERFFAZ REALIZA EL MODELO DEL CANAL DE TIPO URBANO PARA EL SIMULADOR 
 <ModelcanalUMI>
+
+
 	name: "sking"
 	mrap :mrapapport
-
 
 
 	BoxLayout:
@@ -29,9 +27,19 @@
 					pos:self.pos
 					size:self.size
 
-			BoxLayout:# Funcion del modelo de propagacion 
+			BoxLayout:# Funcion del modelo de propagacion [ CI ]  -  [ ABG(Rappaport )]
 				orientation: 'horizontal'
-				Button:
+				Button:# boton para modelo CI 
+				
+					##PARAMETROS:
+
+					##		Frecuencia:
+					##		Ditancia BS al UE
+					##		Sigma(Desvanecimiento lento AWGN)
+					##		Parametro de retroalimentacion de distancia decadas [n]
+
+					##		nota: los demas parametros se desprecian.
+				 
 					id:mrapapport
 					border: (10,10,10,10)
 					canvas.before:
@@ -57,10 +65,18 @@
 						else: d2d_umi.text="Distancia T_BS - R_UE (m) 200m"
 						#d2d_umi.text="Frecuencia central"
 						if root.disabled== False: n_alpha.text=" [n] CI:"
-						else: n_alpha.text= " [Alpha] ABG:"
+						else: n_alpha.text= " [Alpha] ABG:" 
 
-						if root.disabled==False: plc_sigma_umi.text="8.0"
-						else: plc_sigma_umi.text= "8.1"
+						if root.disabled==False: plc_sigma_umi.text="8.1"
+						else: plc_sigma_umi.text= "8.0"
+
+
+						if root.disabled==False: plc_cin_alphabg.text="3.1"
+						else: plc_cin_alphabg.text= "3.5"
+
+						#if root.disabled==False: plc_sigma_umi.disabled = True
+						#else: plc_sigma_umi.disabled=True
+
 
 						root.reloaded()
 
@@ -71,7 +87,19 @@
 					#on_release:
 					#	root.noShownABG = not root.noShownABG
 
-				Button:
+				Button:# boton para modelo ABG -rappaport
+				
+					##PARAMETROS:
+
+					##		Frecuencia:
+					##		Ditancia BS al UE
+					##		Sigma(Desvanecimiento lento AWGN)
+					##		Parametro de retroalimentacion de distancia decadas [alpha]
+					##		Parametro de correccion del modelo [Beta] en dB
+					##		Parametro de retroalimentacion por frecuencia [Gamma]
+
+					##		nota: los demas parametros se desprecian.
+				 
 					border:  (10,10,10,10)
 					id: mabg
 					#disabled = False 
@@ -98,15 +126,15 @@
 						#d2d_umi.text="Frecuencia central"
 						if not root.disabled==False:  n_alpha.text=" [n] CI:"
 						else: n_alpha.text=" [Alpha] ABG:"
-						if not root.disabled==False: plc_sigma_umi.text="8.0"
-						else: plc_sigma_umi.text= "8.1"
+						if not root.disabled==False: plc_sigma_umi.text="8.1"
+						else: plc_sigma_umi.text= "8.0"
 
 
 						if not root.disabled==False: plc_cin_alphabg.text="3.1"
 						else: plc_cin_alphabg.text= "3.5"
 
-						if not root.disabled==False: plc_sigma_umi.disabled = True
-						else: plc_sigma_umi.disabled=True
+						#if not root.disabled==False: plc_sigma_umi.disabled = True
+						#else: plc_sigma_umi.disabled=True
 
 						root.reloaded()
 						
@@ -167,6 +195,7 @@
 					id: Dbs_ue
 					size_hint: ( .15, 1)
 					multiline: False#distancia entre Estacion Base y usuario 
+
 			BoxLayout: # parametros para Propagacion desviacion
 				orientation: 'horizontal'
 				size_hint_y: 0.25
@@ -188,10 +217,13 @@
 					multiline: False
 					#distancia entre Estacion Base y usuario 
 					text: '8.1'
-			GridLayout:#n_alpha Beta y gamma abg
+					disabled: not root.disabled
+
+			GridLayout:# TABLA [n_alpha,n_CI] [Beta] y [gamma abg]
 				rows: 2
 				size_hint_y: 0.50
-				padding: [10, 5, 10, 0]
+
+				padding: [0, 5, 0, 0]
 				Label:#parametros N y alpha para modelo ci y ABG
 					id:n_alpha
 					canvas.before:
@@ -228,6 +260,7 @@
 					size_hint: ( .15, 1)
 					multiline: False
 					text: '3.1'
+					disabled: not root.disabled
 
 				TextInput:
 					
@@ -236,6 +269,7 @@
 					id:beta
 					group:'abg_parm'
 					text: "24.4"
+					disabled: not root.disabled
 
 				TextInput:
 					
@@ -244,11 +278,29 @@
 					#size_hint: ( .20, 1)
 					group:'abg_parm' 
 					text: "1.9"
+					disabled: not root.disabled
 
-		
+			Button:# Boton de ayuda para orientacion estudiantil
+
+				canvas.before:
+							Color:
+								rgba: 0.3,0.4,0.5,1
+							Rectangle:
+								pos:self.pos
+								size:self.size
+						background_color: 0.3,0.4,0.5,1
+						text: "Volver"
+
+						on_press: 
+							root.openpdf()	
+							app.root.current ="caz"
+
+
+
+
 			BoxLayout:# botones calcular volver
 				orientation: 'horizontal'
-				padding: [0, 30]
+				padding: [0,5,0,30]
 				Button:
 					canvas.before:
 						Color:

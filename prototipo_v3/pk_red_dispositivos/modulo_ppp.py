@@ -99,6 +99,53 @@ def distribuir_circulo(r, x_origen, y_origen, intensidad):
 	#plt.savefig("test2.png")
 	return coordenada_x,coordenada_y,numero_de_puntos
 
+def distribuir_matern(radio, intensidadp, intensidadh):
+
+	"""
+	Plastico NOTA 
+	Proceso puntual de distribucion matern: este proceso parte desde una distribucion binomial igual 
+	que poisson este proceso puntual es conocido como uno de los muchos procesos puntuales de cluster 
+	Neyman-scott.
+	Matern utiliza  una Funcion de covarianza para procesos gausianos. definiendo el proceso puntial 
+	
+
+	NOTA:
+	como primera medida se genera una cantidad de puntos con lamda o media  superior a [u>0]  subyaciente de un numero de puntos 
+	poisson, con una ventana de simulacion en area de hexagonos en un radio constante [r>0]
+
+	nota el proceo de puntos subyacentes se denomina proceso padre o puntual, el proceso de puntos
+	posterior se llama proceso puntual hijo 
+	 """
+	##Area o ventana de simulacion 
+	area_total=np.pi*radio**2;
+	# numero de puntos generados por el proceso puntual poisson padre 
+	numbPointsParent = np.random.poisson(area_total*intensidadp);
+	# posiciones de origen de los puntos padres de forma de circular padre
+	theta = 2*np.pi* np.random.uniform(0, 1, numbPointsParent);
+	rho=radio*np.sqrt(np.random.uniform(0, 1, numbPointsParent));
+	#cordenadas polares a cartesianas
+	xxp = rho * np.cos(theta);
+	yyp = rho * np.sin(theta);
+	#numero de puntos para el proceso puntual hijo
+	numbPointsDaughter = np.random.poisson(intensidadh, numbPointsParent);
+	numbPoints = sum(numbPointsDaughter);
+	#posiciones de origen de los puntos hijos de forma circular hijo 
+	thetah = 2 * np.pi * np.random.uniform(0, 1, numbPoints);  # angular coordinates
+	rhoh = radio * np.sqrt(np.random.uniform(0, 1, numbPoints));  # radial coordinates
+	# Convert from polar to Cartesian coordinates	
+	xxh = rhoh * np.cos(thetah);
+	yyh = rhoh * np.sin(thetah);
+	#posiciones de los cluster para cada proceso padre
+	xx = np.repeat(xxp, numbPointsDaughter);
+	yy = np.repeat(yyp, numbPointsDaughter);
+	#transladamos los puntos hacia el centro de cada celda padre
+	xx = xx + xxh;
+	yy = yy + yyh;
+
+	cordenada_x=xx;cordenada_y=yy	
+
+	return  cordenada_x,cordenada_y,numbPoints
+
 
 def prueba1():
 	#obsoleta
@@ -128,6 +175,33 @@ def v31_prueba():
 	plt.hist(n_ppp)
 	#plt.plot(x,y,"ro")
 
+
+
+
+def prueba4():
+	intensidadhijo= 0.1
+	intensidadpadre= 10
+	radio= 20
+	veces =100
+	test_x=[]
+	test_y=[]
+	n_ppp=[]
+
+	for i in range(veces):
+		x,y,cantidad_ppp=distribuir_matern(radio,intensidadhijo,intensidadpadre)
+		test_x.append(x)
+		test_y.append(y)
+		n_ppp.append(cantidad_ppp)
+
+	plt.figure(1)
+	plt.scatter(x, y, edgecolor='b', facecolor='none', alpha=0.5);
+	plt.xlabel('x');
+	plt.ylabel('y');
+	plt.axis('equal');
+	plt.figure(2)
+	plt.hist((x,y))
+	plt.figure(3)
+	plt.hist(n_ppp)
 if __name__ == "__main__":
 	print("ppp fix function")
 	radio=100
@@ -140,8 +214,9 @@ if __name__ == "__main__":
 	#prueba1()
 
 	#prueba v3 1
-	v31_prueba()
-
+	#v31_prueba()
+	#Prueba distribucion Neyman-scott matern
+	prueba4()
 	plt.show()
 
 else:

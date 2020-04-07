@@ -20,13 +20,20 @@ class Modelo_canal:
 
 	def perdidas_espacio_libre_ghz(self):
 		'''Funcion que calcula las perdidas de espacio libre en dB'''
-		self.path_loss=92.4+20*np.log10(self.frecuencia)+20*np.log10(self.distancia)
+		self.path_loss=32.4+20*np.log10(self.frecuencia)+20*np.log10(self.distancia)
 
-
+	def perdidas_umi_ci(self):
+		#Este modulo recrea las perdidas con distancia en metros con los parametros alpha_n: 3.1 y con Sigma_Xn:8.1 dB 
+		#considerados por la documentacion valores en dB para sigma y veces para alpha_n
+		#articulo Simulation path loss Propagation Path Loss models for 5G urban micro and macro-cellular Scenarios
+		alpha_n=3.1
+		sigma_Xn=8.1
+		fspl=perdidas_espacio_libre_ghz()
+		self.path_loss= fspl + 10*alpha_n*math.log10(self.distancia)+sigma_Xn
 def prueba_interna_path_loss():
 	'''Funcion que prueba el concepto de perdidas de espacio libre con numpy'''
 	freq=10 #en gigas
-	distancias_km=np.array([0.1, 1, 2, 3, 4, 5, 6])
+	distancias_m=np.array([0.1, 1, 2, 3, 4, 5, 6])
 	modelo=Modelo_canal(freq, distancias_km)
 	modelo.perdidas_espacio_libre_ghz()
 	l_bs=modelo.path_loss

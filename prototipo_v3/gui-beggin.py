@@ -13,11 +13,6 @@ from kivy.uix.image import AsyncImage, Image
 
 import pruebas as p 
 
-
-
-	
-
-
 class ModelcanalUMI(Screen):
 	noShownCI = BooleanProperty(True)
 	noShownABG= BooleanProperty(True)
@@ -28,8 +23,6 @@ class ModelcanalUMI(Screen):
 	current= ""
 	#umibox=Widget()
 	#umibox.add_widget(BoxLayout())
-	
-
 
 	def evaluar(self, *ingore):
 		umibox()
@@ -42,10 +35,6 @@ class ModelcanalUMI(Screen):
 
 		#if noShowABG
 
-
-
-
-
 class ModelcanalUMA(Screen):
 
 	nivel = ObjectProperty(None)
@@ -54,16 +43,9 @@ class ModelcanalUMA(Screen):
 	current= ""
 
 #	def add_datoimport(nivel,radiocell,intensidadPPP,Vsec):
-
-
-
-
-
 	
 class contenedorgrilla(Screen):
 	pass
-
-
 
 class SecondWindow(Screen):
 	#sr = StringProperty('C:/Users/PIPE_PC/Documents/UNIVERSIDAD/TESIS/epic-sns-5G/prototipo/all_ppp_trisec.jpg')
@@ -96,16 +78,8 @@ class SecondWindow(Screen):
 		#		print("intensidadPPP:", intensidadPPP)
 	pass
 	
-
 class WindowManager(ScreenManager):
 	pass
-
-
-
-
-
-
-
 
 class hidenWindow(TextInput):
 
@@ -115,8 +89,6 @@ class hidenWindow(TextInput):
 		intext = TextInput(text = 'Button')
 		self.add_widget(hidenWindow)
 		self.clear_widget()
-
-
 
 
 class MainWindow(Screen):
@@ -140,23 +112,18 @@ class MainWindow(Screen):
 		rcell=int(self.radiocell.text)
 		nvl=int(self.nivel.text)
 		inten=float(self.intensidadPPP.text)
-
 		p.prueba_pk_dispositivos(nvl,rcell,inten)
-		
 		#SecondWindow.add_dato(self)
-		
-
 		sm.current = "caz"
 
 		
 
-kv = Builder.load_file("Simulator.kv")
+kv = Builder.load_file("Simulator-beggin.kv")
 sm = WindowManager()
 screens = [MainWindow(name="poche"),SecondWindow(name="caz"),ModelcanalUMA(name="king"),ModelcanalUMI(name="sking")]
 for screen in screens:
 	sm.add_widget(screen)
   
-
 #def get_dato(intensidadPPP):
 #	inten=int(intensidadPPP)
 #	return intePPP

@@ -1,3 +1,35 @@
+'''
+	Archivo  Simulador.kv 
+
+	Contiene todo el estilo(colores, formas y distribucion en la interfaz),
+	llamado de funciones de fondo(creadas por el archivo [gui.py]) para la interfaz,
+	funciones de los botones, restricciones, de cada interfaz para el simulador.
+
+	con el fin de entender como se distribuye el codigo, se comenta cada modulo de los archivos gui.py
+	identificando cada interfaz con estas llaves <> (lenguaje de KIVY) dentro de estos se encuentra
+	todo el diseño de esa interfaz, junto con la nomenclatura necesaria para diferenciar las divisiones.
+
+
+	Nomenclatura  
+	name: "" : distingues la etiqueta de la interfaz para tomar los datos de los archivos .py
+
+	las variables dentro del .py tienen  los mismos nombres de las variables en el  .ky como forma de convencion 
+	para mantener el orden de los objetos creados y distinguir.
+
+	Boxlayout: son cajas de tamaños predefinidos por el programador, diferenciando los espacios de contenido
+	y desplegados uno tras otro de forma horizontal y vertical.
+
+	label: contenedores de texto para mostrar 
+
+	Textinput: contenedores de texto para digitar de donde el ID es el mismo del objeto para los archivos .py
+
+	Button: botones para acciones en la interfaz.
+
+
+'''
+
+
+
 from kivy.app import App
 from kivy.base import runTouchApp
 from kivy.lang import Builder
@@ -12,6 +44,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.image import AsyncImage, Image
 
 
+import os 
 import pruebas as p 
 
 
@@ -45,6 +78,9 @@ class ModelcanalUMI(Screen):
 		umibox()
 
 		#if noShowABG
+	def openpdf(self):
+		os.startfile(r'base_datos\\doc_help_gui\\L2S_interlink_Mapping_Table.pdf')
+
 
 
 

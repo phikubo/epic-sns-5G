@@ -165,6 +165,7 @@
 		orientation: 'vertical'
 		BoxLayout:
 			orientation: 'vertical'
+			#Botones cambio de modelo de propagacion CI - ABG(rappaport)
 			BoxLayout:
 				orientation: 'horizontal'
 				ToggleButton:
@@ -191,10 +192,10 @@
 					background_color: 1, 1, 1
 					text: "Modelo Rappaport"
 
-					#on_press: 
-					#	root.noShownABG =  not root.noShownABG
-					#on_release: 
-					#	root.evaluar()
+					on_press: 
+						root.noShownABG =  not root.noShownABG
+					on_release: 
+						root.evaluar()
 				
 
 		BoxLayout:
@@ -482,7 +483,7 @@
 
 
 
-#TITULO UMA PARA LA INTERFAZ GRAFICA  URBANO MACRO CELDA
+		#TITULO UMA PARA LA INTERFAZ GRAFICA  URBANO MACRO CELDA
 		Label:
 			canvas.before:
 				Color:
