@@ -43,8 +43,8 @@ def prueba_guardar_datos():
 	# de que los datos ya estan juntos en una sola variable, asi:
 	#  [c1x1, c1x2, c1x3,...,c1xn,c2x2,c2x3,...,c2xn,.. ] pero no
 	# estan separados por celda, esta es la razon de procesamiento
-	radio = 20
-	intensidad = 7
+	radio = 200
+	intensidad = 20
 	intensidad = intensidad/radio**2
 	celdas = 13
 	frecuencia= 28000000000
@@ -81,8 +81,8 @@ def prueba_guardar_datos():
 def prueba_distancia_celdas():
 	'''Funcion de prueba para observar el comportamiento del algoritmo de distancias'''
 	#frecuencia en Herz y distancia en Metros.
-	radio = 20
-	intensidad = 3
+	radio = 100
+	intensidad =20
 	intensidad = intensidad/radio**2
 	celdas = 2
 	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad))
@@ -118,21 +118,40 @@ def pruebas_modelo_canal_umi():
 	PerdidasProp= np.append(colmena.cluster[0].distancias, np.cim.modeloci(alpha_n,colmena.cluster[0].distancias,Sigma_Xn,frecuencia))
 	PerdidasPropi=[None]
 	Ppl=[]
+<<<<<<< HEAD
+"""<<<<<<< HEAD
+	for d in colmena.cluster[0].distancias: 
+		PerdidasProp=cim.modeloci(alpha_n,d,Sigma_Xn,frecuencia)
+		#PerdidasProp=append(PerdidasPropi) 
+=======
+=======
+>>>>>>> 17da46f59e339a8efc53ffc608b958b1e1bebc07
 	for d in colmena.cluster[0].distancias:
 		PerdidasPropi=cim.modeloci(alpha_n,d,Sigma_Xn,frecuencia)
 		PerdidasProp=np.add(PerdidasPropi)
 		#print(PerdidasProp.shape)
 		#np.array(len(colmena.cluster[0].distancias),)
 		#print(PerdidasProp)
+"""
+
+
 	#disarray=np.arange(len(distanciaU))
-	print(PerdidasProp)
+	#print(PerdidasProp)
 	#print("oleee ". disarray)
 	#plt.bar(np.arange(len(colmena.cluster[0].distancias)),colmena.cluster[0].distancias)
+<<<<<<< HEAD
 	plt.figure(3)
 	plt.bar(np.arange(len(PerdidasProp)),PerdidasProp)
 >>>>>>> master
 	ptl.grid(True)
 	plt.show()
+=======
+	
+	#plt.figure(3)
+	##plt.bar(np.arange(len(PerdidasProp)),PerdidasProp)
+	#ptl.grid(True)
+	#plt.show()
+>>>>>>> b83624d4e7a4efbb16e1bfb9bfd36a9f37c48edc
 
 
 def prueba_perdidas_basicas():
@@ -250,7 +269,7 @@ if __name__=="__main__":
 	#prueba_guardar_datos()
 	
 	#prueba 4.
-	#prueba_distancia_celdas()
+	prueba_distancia_celdas()
 
 	#prueba 5. 
 	#prueba_Perdidas_propagacion(12,28,500)
