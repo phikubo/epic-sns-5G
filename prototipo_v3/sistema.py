@@ -4,6 +4,8 @@ from matplotlib.patches import RegularPolygon
 import numpy as np
 import math
 #
+from shapely.geometry import Point
+from shapely.geometry.polygon import Polygon
 #import - final
 #
 #bloque de carga de modulos - inicio
@@ -134,9 +136,41 @@ class Sistema_Celular:
 
 	def monte_carlo(self):
 		pass
+
+	def montecarlo_hexagono(self):
+		'''Funcion para probar logica de montecarlo e impacto en el sistema'''
+		#procedimiento
+		#1. calcular coordenadas cartesianas de la figura
+		#1.2 definir la figura con shapely.Polygon
+		#2. definir funcion de conteo montecarlo::quiza sea necesario crear una libreria
+		#3. los puntos de prueba son los usuarios del sistema, usar shapely.point o alternativa
+		#4. Aplicar definicion montecarlo: usar polygon.contains(point) con todos los puntos
+		#5. Obtener cartesiana
+		#6. Obtener conclusiones
+
+		#...
+		#1. De una figura centrada en 0. En este caso no interesa que este ubicada # -*- coding: utf-8 -*-
+			#otra coordenada, desde que el area es la misma.
+
+		angulos=mcir.calcular_angulo_v3(angulo_inicial=0, angulo_particion=60)
+		angx_norm,angy_norm=mcir.angulos_2_cartesiano_norm(angulos)
+		x,y=mcir.angulos_2_cartesiano(angx_norm,angy_norm,self.radio)
+
+		#1.2. Se define la figura con los calculos anteriores
+		pi=[]
+		for pa,pb in zip(x,y):
+			pi.append((pa,pb))
+		polygon_hex = Polygon(pi)
+
+		#2.
+
+
+
+
 #bloque de funciones - final
 
 def prueba_interna_v3_1():
+	'''Funcion de prueba para comprobar estado del sistema'''
 	celdas=3
 	radio=20
 	intensidad=10
@@ -151,8 +185,29 @@ def prueba_interna_v3_1():
 	#plt.show()
 	print(sc.cluster[0].user_x) #[ok], inicializar_cluster_usuarios
 	print(sc.cluster[0].distancias) #[ok] funcion interna, distancias
+
+def prueba_interna_v3_montecarlo():
+	'''Esta funcion comprueba el funcionamiento de una simulacion sencilla de montecarlo.'''
+	celdas=3
+	radio=20
+	intensidad=10
+	distribucion=(intensidad/radio**2,"ppp") #0 en el primer valor si es otra distribucion (no necesario)
+	mod_canal=None
+
+	sc=Sistema_Celular(celdas,radio, distribucion, mod_canal)
+	#angulos=mcir.calcular_angulo_v3(angulo_inicial=0, angulo_particion=60)
+	#angx_norm,angy_norm=mcir.angulos_2_cartesiano_norm(angulos)
+	#x,y=mcir.angulos_2_cartesiano(angx_norm,angy_norm,radio)
+	sc.montecarlo_hexagono()
+
+	#ok.
+
+
 if __name__=="__main__":
 	#Prototipo:
-	prueba_interna_v3_1()
+	#1
+	#prueba_interna_v3_1()
+	#2
+	prueba_interna_v3_montecarlo()
 else:
 	print("Modulo Sistema importado")
