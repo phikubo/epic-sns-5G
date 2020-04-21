@@ -15,9 +15,7 @@ def azimut_lista(angulo_inicial):
 
 def calcular_angulo_v3(angulo_inicial, angulo_particion):
 	'''Dado un angulo, se calcula el azimut. Como resultado se obtiene una
-	lista de 3 angulos, incluyendo el inicial. Esta funcion solo es util para obtener
-	3 angulos, por ello se usa para trisectorizar, es decir, a partir de un angulo, encontrar
-	los 2 siguientes que estan separados simetricamente entre si.'''
+	lista de n angulos, con n=360/angulo_particion, incluyendo el inicial.'''
 	n=360/angulo_particion
 	angs=[angulo_inicial +i*angulo_particion for i in range(int(n))]
 	return angs
@@ -92,8 +90,11 @@ def tri_sectorizar(angulo_x,angulo_y, radio_ext, cartesian_x, cartesian_y, ax):
 
 def prueba_angulos_v30():
 	'''Prueba que modifica funcion azimut. Cambio de nombre y funcionalidad. '''
+	#ATENCION, LA PRUEBA REQUIERE IMPLEMENTAR EL ORIGEN DEL CALCULO, ES DECIR, MOVER x,y a otras coordenadas.
 	radio=10
 	#x,y=coordenadas_circulo(radio, origen=[10,10])
+
+	#60 es el angulo de partcion para obtener las aristas de un hexagono
 	angulos=calcular_angulo_v3(angulo_inicial=0, angulo_particion=60)
 	angx_norm,angy_norm=angulos_2_cartesiano_norm(angulos)
 	x,y=angulos_2_cartesiano(angx_norm,angy_norm,radio)
@@ -108,7 +109,7 @@ def prueba_angulos_v30():
 	plt.show()
 
 	#prueba exitosa
-
+	#resultados:
 	#INSIGHT:
 	'''Al hacer zoom sobre las coordenas del circulo y la de los angulos, no coinciden.
 	Esto se debe a que la resolución de theta afecta la exactitud de esta coinicidencia.'''
