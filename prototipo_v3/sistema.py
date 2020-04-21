@@ -4,6 +4,8 @@ from matplotlib.patches import RegularPolygon
 import numpy as np
 import math
 #
+from shapely.geometry import Point
+from shapely.geometry.polygon import Polygon
 #import - final
 #
 #bloque de carga de modulos - inicio
@@ -116,9 +118,13 @@ class Sistema_Celular:
 		mcir.tri_sectorizar(angulo_x,angulo_y, radio_trisec, self.origen_cel_x, self.origen_cel_y, self.cels_ax)
 
 
-	def ver_usuarios(self):
+	def ver_usuarios(self, *target):
+		#*target ahora permite invocar la funcion con o sin parametros.
 		"""Permite ver las estaciones base de forma independiente"""
-		plt.plot(self.ue_x,self.ue_y, 'go')
+		if target:
+			plt.plot(self.ue_x[target],self.ue_y[target], 'go')
+		else:
+			plt.plot(self.ue_x,self.ue_y, 'go')
 
 
 	def ver_todo(self):
@@ -134,9 +140,74 @@ class Sistema_Celular:
 
 	def monte_carlo(self):
 		pass
+
+	def montecarlo_hexagono(self):
+		'''Funcion para probar logica de montecarlo e impacto en el sistema'''
+		#procedimiento
+		#1. calcular coordenadas cartesianas de la figura
+		#1.2 definir la figura con shapely.Polygon
+		#1.3 definir los puntos con shapely.point
+		#2. definir funcion de conteo montecarlo::quiza sea necesario crear una libreria
+		#3. los puntos de prueba son los usuarios del sistema, usar shapely.point o alternativa
+		#4. Aplicar definicion montecarlo: usar polygon.contains(point) con todos los puntos
+		#5. Obtener resultado
+		#5.2 Obtener funcion acumulativa
+		#6. Obtener conclusiones
+
+		#...
+		#1. De una figura centrada en 0. En este caso no interesa que este ubicada # -*- coding: utf-8 -*-
+			#otra coordenada, desde que el area es la misma.
+
+		angulos=mcir.calcular_angulo_v3(angulo_inicial=0, angulo_particion=60)
+		angx_norm,angy_norm=mcir.angulos_2_cartesiano_norm(angulos)
+		px_hex,py_hex=mcir.angulos_2_cartesiano(angx_norm,angy_norm,self.radio)
+
+		#1.2. Se define la figura con los calculos anteriores
+		pi=[]
+		for pa,pb in zip(px_hex,py_hex):
+			pi.append((pa,pb))
+		polygon_hex = Polygon(pi)
+
+		#1.3. Se define los puntos con la variable
+		##print(self.ue_x[0])
+		##print(self.ue_y[0])
+
+		#point
+		#punto=Point(self.ue_x[0][0], self.ue_y[0][0])
+		#2,3, 4. Las tres se resumen en el siguiente procedimiento:
+		puntos=[polygon_hex.contains(Point(a,b)) for a,b in zip(self.ue_x[0], self.ue_y[0])] #solo para celda de origen
+		##print(puntos)
+		##print(len(puntos)-sum(puntos)) #los falsos, pero solo necesito los verdaderos lol
+
+
+		'''
+		montecarlo=(area_hexagono/area_circulo), en terminos de radio, seria:
+		P(x: x C Hexagono)=(area_hexagono/area_circulo)
+		P(...) -> P(x: x esta contenido en Hexagono)
+		Despejando el área del hexagono obtenemos:
+		 -> area_hexagono= ( P(...) * pi*r**2)
+		'''
+
+
+		N_a=sum(puntos)
+		N=len(puntos)
+		P_a=N_a/N
+		print("probabilidad de exito", P_a)
+		print("area del hexagono: ", math.pi*self.radio**2*P_a)
+		acomulativa=np.cumsum(puntos)
+		print(acomulativa)
+		eje_x=np.arange(1,len(puntos)+1)
+
+		plt.plot(eje_x,acomulativa/eje_x)
+
+
+
+
+
 #bloque de funciones - final
 
 def prueba_interna_v3_1():
+	'''Funcion de prueba para comprobar estado del sistema'''
 	celdas=3
 	radio=20
 	intensidad=10
@@ -145,16 +216,50 @@ def prueba_interna_v3_1():
 	sc=Sistema_Celular(celdas,radio, distribucion, mod_canal)
 	#print(sc.cluster[0].radio) #[ok], inicializar_cluster_celdas
 	#print(sc.ue_x) #[ok], inicializar_distribucion
-	#sc.ver_todo() #[ok],
+	sc.ver_todo() #[ok],
+	plt.axis("equal")
+	plt.grid(True)
+	plt.show()
+	##print(sc.cluster[0].user_x) #[ok], inicializar_cluster_usuarios
+	##print(sc.cluster[0].distancias) #[ok] funcion interna, distancias
+
+def prueba_interna_v3_montecarlo():
+	'''Esta funcion comprueba el funcionamiento de una simulacion sencilla de montecarlo.'''
+	celdas=3
+	radio=20
+	intensidad=20000
+	distribucion=(intensidad/radio**2,"ppp") #0 en el primer valor si es otra distribucion (no necesario)
+	mod_canal=None
+
+	sc=Sistema_Celular(celdas,radio, distribucion, mod_canal)
+	#sc.ver_celdas()
+	#sc.ver_usuarios()
+	#sc.ver_usuarios(0) # La funcion puede definirse con o sin parametros
+	#angulos=mcir.calcular_angulo_v3(angulo_inicial=0, angulo_particion=60)
+	#angx_norm,angy_norm=mcir.angulos_2_cartesiano_norm(angulos)
+	#x,y=mcir.angulos_2_cartesiano(angx_norm,angy_norm,radio)
+	sc.montecarlo_hexagono()
+
+	#ok.
 	#plt.axis("equal")
+<<<<<<< HEAD
 	#plt.grid(True)
 	#plt.show()
 	print(sc.cluster[0].user_x) #[ok], inicializar_cluster_usuarios
 	print(sc.cluster[0].distancias) #[ok] funcion interna, distancias
 	
 	
+=======
+	plt.grid(True)
+	plt.show()
+
+
+>>>>>>> 4bd9c1b6e7ee0e0ce851b2caeecd72c2656bccf0
 if __name__=="__main__":
 	#Prototipo:
-	prueba_interna_v3_1()
+	#1
+	#prueba_interna_v3_1()
+	#2
+	prueba_interna_v3_montecarlo()
 else:
 	print("Modulo Sistema importado")
