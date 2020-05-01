@@ -22,8 +22,6 @@ def prueba_pk_dispositivos(celdas, radio, intensidad):
 	colmena.ver_sectores()
 	colmena.ver_usuarios()
 
-
-
 	# colmena.ver_todo()
 	# plt.axis("equal")
 	# plt.grid(True)
