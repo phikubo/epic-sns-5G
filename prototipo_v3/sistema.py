@@ -242,19 +242,15 @@ def prueba_interna_v3_montecarlo():
 
 	#ok.
 	#plt.axis("equal")
-<<<<<<< HEAD
-	#plt.grid(True)
-	#plt.show()
-	print(sc.cluster[0].user_x) #[ok], inicializar_cluster_usuarios
-	print(sc.cluster[0].distancias) #[ok] funcion interna, distancias
-	
-	
-=======
+
 	plt.grid(True)
 	plt.show()
+	#print(sc.cluster[0].user_x) #[ok], inicializar_cluster_usuarios
+	#print(sc.cluster[0].distancias) #[ok] funcion interna, distancias
+	
 
 
->>>>>>> 4bd9c1b6e7ee0e0ce851b2caeecd72c2656bccf0
+
 if __name__=="__main__":
 	#Prototipo:
 	#1

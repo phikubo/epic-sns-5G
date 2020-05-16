@@ -68,22 +68,15 @@ class ModelcanalUMI(Screen):
 		instance.disabled= True
 	def reloaded(self):
 		print("aqui TOy ")
-		
-
 	def build(self):
 		mrappaport.bind(on_press=partial(self.disable,mrappaport))
 		mrappaport.bind(on_press=partial(self.reloaded,mrappaport))
 		return mrappaport
 	def evaluar(self, *ingore):
 		umibox()
-
 		#if noShowABG
 	def openpdf(self):
 		os.startfile(r'base_datos\\doc_help_gui\\L2S_interlink_Mapping_Table.pdf')
-
-
-
-
 
 
 class ModelcanalUMA(Screen):
@@ -94,16 +87,9 @@ class ModelcanalUMA(Screen):
 	current= ""
 
 #	def add_datoimport(nivel,radiocell,intensidadPPP,Vsec):
-
-
-
-
-
 	
 class contenedorgrilla(Screen):
 	pass
-
-
 
 class SecondWindow(Screen):
 	#sr = StringProperty('C:/Users/PIPE_PC/Documents/UNIVERSIDAD/TESIS/epic-sns-5G/prototipo/all_ppp_trisec.jpg')
@@ -136,16 +122,8 @@ class SecondWindow(Screen):
 		#		print("intensidadPPP:", intensidadPPP)
 	pass
 	
-
 class WindowManager(ScreenManager):
 	pass
-
-
-
-
-
-
-
 
 class hidenWindow(TextInput):
 
@@ -157,22 +135,17 @@ class hidenWindow(TextInput):
 		self.clear_widget()
 
 
-
-
 class MainWindow(Screen):
 	nivel = ObjectProperty(None)
 	radiocell = ObjectProperty(None)
 	intensidadPPP = ObjectProperty(None)
 	sr = ObjectProperty(None)
 	current= ""
-
 	#layout_instance.do_layout ()
 	#Widget.canvas.ask_update ()
-
 	#def on_enter(self, *args):
 	#	print("Nivel: ", self.nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
 	#sr=Image(source='all_ppp_trisec.jpg') 
-
 	def btn(self):
 		#print("Nivel: ", self.nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
 		#SecondWindow.add_dato()
@@ -180,35 +153,23 @@ class MainWindow(Screen):
 		rcell=int(self.radiocell.text)
 		nvl=int(self.nivel.text)
 		inten=float(self.intensidadPPP.text)
-
 		p.prueba_pk_dispositivos(nvl,rcell,inten)
-		
 		#SecondWindow.add_dato(self)
-		
-
 		sm.current = "caz"
-
-		
 
 kv = Builder.load_file("Simulator.kv")
 sm = WindowManager()
 screens = [MainWindow(name="poche"),SecondWindow(name="caz"),ModelcanalUMA(name="king"),ModelcanalUMI(name="sking")]
 for screen in screens:
 	sm.add_widget(screen)
-  
-
 #def get_dato(intensidadPPP):
 #	inten=int(intensidadPPP)
 #	return intePPP
-	
-
-
 sm.current="sking"
 
 class SimulatorApp(App):
 	def build(self):
 		return sm
-
 if __name__ == "__main__":
 	print("--------------------------------------")
 	print("ash Nazg thrakatulûk, agh burzum-ishi krimpatul")
@@ -218,5 +179,4 @@ if __name__ == "__main__":
 	#nivel,radiocell,intensidadPPP=self.nivel.tex, self.radiocell.text, self.intensidadPPP
 	#print("nivel :",nivel,"radiocell  :",radiocell,"intensidadPPP:  ",intensidadPPP)
 	#dk.gestionar_celdas(nivel,radiocell)
-
 	SimulatorApp().run()

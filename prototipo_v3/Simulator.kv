@@ -29,6 +29,7 @@
 
 			BoxLayout:# Funcion del modelo de propagacion [ CI ]  -  [ ABG(Rappaport )]
 				orientation: 'horizontal'
+				#size_hint_y: 0.50
 				Button:# boton para modelo CI 
 				
 					##PARAMETROS:
@@ -149,7 +150,6 @@
 				id:titulo_umi 
 				canvas.before:
 					Color:
-					
 						rgba: 0.5,0.5,0.3,1
 					Rectangle:
 						pos:self.pos
@@ -235,7 +235,6 @@
 					text: "parametros para ABG y CI"
 					#background_color: (0.3,0.4,0.5,1)
 
-
 				Label:
 					canvas.before:
 						Color:
@@ -280,27 +279,29 @@
 					text: "1.9"
 					disabled: not root.disabled
 
-			Button:# Boton de ayuda para orientacion estudiantil
-
-				canvas.before:
-							Color:
-								rgba: 0.3,0.4,0.5,1
-							Rectangle:
-								pos:self.pos
-								size:self.size
-						background_color: 0.3,0.4,0.5,1
-						text: "Volver"
-
-						on_press: 
-							root.openpdf()	
-							app.root.current ="caz"
-
-
-
+			BoxLayout:#Boton de ayuda para orientacion estudiantil
+				orientation: 'horizontal'
+				padding: [0,5,0,5]
+				size_hint_y: 0.5
+				Button:					
+					border: (10, 5, 10, 5)
+					canvas.before:
+						Color:
+							rgba: 0.3,0.4,0.5,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					background_color: 0.5,0.2,0.2,1
+					#state: 'down' 
+					text: "Ayuda"
+					on_press: 
+						root.openpdf()	
+						#app.root.current ="caz"
 
 			BoxLayout:# botones calcular volver
 				orientation: 'horizontal'
-				padding: [0,5,0,30]
+				padding: [0,5,0,0]
+				size_hint_y: 0.5
 				Button:
 					canvas.before:
 						Color:
@@ -378,7 +379,7 @@
 				text: "Distancia T-R (2D)"
 			TextInput:
 				id: d2d
-				size_hint: ( .15, 1)
+				size_hint: ( .10, 1)
 				multiline: False
 
 		BoxLayout:
@@ -394,7 +395,7 @@
 				text: "Alto de la antena (HBs) 25m"
 			TextInput:
 				id: Hbs
-				size_hint: ( .15, 1)
+				size_hint: ( .10, 1)
 				multiline: False
 
 		BoxLayout:
@@ -411,7 +412,7 @@
 				text: "Altura Usuario (Hut) 1.5-22.5m"	
 			TextInput:
 				id: Hut
-				size_hint: ( .15, 1)
+				size_hint: ( .10, 1)
 				multiline: False
 
 		BoxLayout:
@@ -419,7 +420,7 @@
 			size_hint_y: 0.18
 			Label:
 				canvas.before:
-					Color:
+					Color: 
 						rgba: 0.3,0.4,0.5,1
 					Rectangle:
 						pos:self.pos
@@ -427,7 +428,7 @@
 				text: "Altura eficiente (He) 1m"
 			TextInput:
 				id: Hue
-				size_hint: ( .15, 1)
+				size_hint: ( .10, 1)
 				multiline: False
 				
 		BoxLayout:

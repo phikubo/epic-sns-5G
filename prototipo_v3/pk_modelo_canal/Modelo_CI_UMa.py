@@ -46,6 +46,10 @@ def modeloci(alpha_n,distancia,Sigma_Xn,frecuencia):
 	
 	return PLdB
 	#CIdB= 10*locals()
+def modelorappaport(alpha,distancia,beta,gamma,frecuencia):
+	pass
+
+
 
 def perdidasCI(alpha_n,distancia,Sigma_Xn,frecuencia):
 	PL_ci= float
