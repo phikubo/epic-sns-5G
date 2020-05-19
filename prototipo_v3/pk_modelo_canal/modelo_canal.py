@@ -42,6 +42,9 @@ class Modelo_canal:
 		Sigma_Xn=8.0
 		self.path_loss=(10*alpha_n*math.log10(self.distancia))+beta+(10*gamma*math.log10(self.frecuencia))+Sigma_Xn
 
+	def perdidas_uma_etsi(self)
+		pass
+
 def prueba_interna_path_loss():
 	'''Funcion que prueba el concepto de perdidas de espacio libre con numpy'''
 	freq=10 #en gigas
