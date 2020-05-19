@@ -332,10 +332,11 @@
 				
 
 <ModelcanalUMA>
+	
 	name:"king"
-#	nivel: nivel
-#	radiocell: radiocell
-#	intensidadPPP: intensidadPPP
+	radiocell :ISDuma
+	#nivel: nivel
+	#intensidadPPP: intensidadPPP
 	#Vsector: Vsector	
 
 
@@ -351,7 +352,7 @@
 
 
 
-		#TITULO UMA PARA LA INTERFAZ GRAFICA  URBANO MACRO CELDA
+		
 		Label:
 			canvas.before:
 				Color:
@@ -362,10 +363,10 @@
 					source: "base_datos/img_gui/modelcanal.PNG"
 
 			text: "URBANO  MACRO CELDA"
-			font_size: 20
+			font_size: 20#TITULO UMA PARA LA INTERFAZ GRAFICA  URBANO MACRO CELDA
 
 
-		BoxLayout:			
+		BoxLayout:#Distancia entre estacion base y usuario distancia T-R	
 			#id: Vsector
 			orientation: 'horizontal'	
 			size_hint_y: 0.18		
@@ -382,7 +383,7 @@
 				size_hint: ( .10, 1)
 				multiline: False
 
-		BoxLayout:
+		BoxLayout:#Altura de la estacion base HBs
 			orientation:'horizontal'
 			size_hint_y: 0.18
 			Label:
@@ -398,7 +399,7 @@
 				size_hint: ( .10, 1)
 				multiline: False
 
-		BoxLayout:
+		BoxLayout:#Altura Usuario (Hut)
 			orientation: 'horizontal'
 			size_hint_y: 0.18
 
@@ -415,7 +416,7 @@
 				size_hint: ( .10, 1)
 				multiline: False
 
-		BoxLayout:
+		BoxLayout:#Distancia Inter celda ISD
 			orientation:'horizontal'
 			size_hint_y: 0.18
 			Label:
@@ -425,15 +426,95 @@
 					Rectangle:
 						pos:self.pos
 						size:self.size
-				text: "Altura eficiente (He) 1m"
+				text: "Distancia ISD"
 			TextInput:
-				id: Hue
+				id: ISDuma
 				size_hint: ( .10, 1)
 				multiline: False
+
 				
-		BoxLayout:
+		GridLayout:# TABLA [n_alpha,n_CI] [Beta] y [gamma abg]
+			rows: 2
+			size_hint_y: 0.50
+
+			padding: [0, 5, 0, 0]
+			Label:#parametros de altura efectiva para evaluar breakpoint
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.3,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "He[m]"
+				#background_color: (0.3,0.4,0.5,1)
+
+			Label:#parametro Frecuencia central del canal de transmision.
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.3,1
+						#rgba: 0.5,0.6,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Fc[Mhz]"
+			Label:#Desviacion estandar del modelo UMA
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.3,1
+						#rgba:  0.5,0.6,0.4,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "sigma SF[dB]"
+
+			TextInput:
+				id: He_uma
+				size_hint: ( .15, 1)
+				multiline: False
+				text: '1'
+				disabled: not root.disabled
+
+			TextInput:
+				
+				size_hint_x: 0.15
+				#size_hint: ( .20, 1)
+				id:Fc_uma
+				group:'Pl_uma'
+				text: "2600"
+				disabled: not root.disabled
+
+			TextInput:
+				
+				size_hint_x: 0.15
+				id:sigma_uma
+				#size_hint: ( .20, 1)
+				group:'Pl_uma' 
+				text: "4"
+				disabled: not root.disabled
+
+		BoxLayout:#Boton de ayuda para orientacion estudiantil
 			orientation: 'horizontal'
-			padding: [0, 30]
+			padding: [0,5,0,5]
+			size_hint_y: 0.5
+			Button:	
+				id: bntuma	
+				border: (10, 5, 10, 5)
+				canvas.before:
+					Color:
+						rgba: 0.3,0.4,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				background_color: 0.5,0.2,0.2,1
+				#state: 'down' 
+				text: "Ayuda"
+				on_press: 
+					root.openpdf()
+					#app.root.current ="caz"
+		BoxLayout:#Boton para volver a modelos UMa y UMi y calcular Modelo UMa
+			orientation: 'horizontal'
+			padding: [0,5,0,0]
+			size_hint_y: 0.5
 			Button:
 				canvas.before:
 					Color:
@@ -442,11 +523,11 @@
 						pos:self.pos
 						size:self.size
 				background_color: 1, 1, 1, 1
-				text: "calcular"
+				text: "volver"
 
 				on_release: 
 					root.manager.transition.direction = "up" 		
-					app.root.current ="poche"
+					app.root.current ="caz"
 
 			Button:
 				canvas.before:
@@ -456,11 +537,11 @@
 						pos:self.pos
 						size:self.size
 				background_color: 1, 1, 1
-				text: "volver"
+				text: "calcular"
 
 				on_release: 
 					root.manager.transition.direction = "down" 		
-					app.root.current ="caz"
+					app.root.current ="poche"
 
 <MainWindow>
 	name:"poche"
@@ -473,26 +554,18 @@
 	size: (.3, .1)
 
 	BoxLayout:
-
-
 		#orientation: 'vertical'
 		padding: 20
-
 		size: self.size
 		#size: (.3 , .5) 
 		#size: (.4, .3)
 		canvas:
-
 			Color:
 				rgba: (1, 1, 1, 1)
 				#rgba: 0,0,0.53,0.2
 			Rectangle:
 				pos:self.pos
 				size:self.size
-
-		
-	
-
 		BoxLayout:
 			padding: 5
 			orientation: 'vertical'
@@ -516,10 +589,8 @@
 				orientation: 'horizontal'
 
 				BoxLayout:
-
 					padding: 10
 					orientation: 'vertical'
-
 
 					BoxLayout:
 						orientation: 'horizontal'
@@ -536,7 +607,6 @@
 							id: nivel
 							size_hint: ( .20, 1)
 							multiline: False
-
 
 					BoxLayout:
 						orientation: 'horizontal'
@@ -621,16 +691,10 @@
 			pos:self.pos
 			size:self.size
 			source: "base_datos/img_gui/modelcanal.PNG"
-
-
-
 	BoxLayout:
 		orientation: 'horizontal'
 	#	padding: 30
 		padding: [30, 120, 30, 120]
-
-		
-		
 			#source: 'all_ppp_trisec.jpg'
 		
 		
@@ -644,8 +708,8 @@
 					size:self.size
 			text:'MODELO DEL CANAL TIPO UMa'
 			on_release:
-				#root.add_dato()
 				#source:'all_ppp_trisec.jpg'
+				root.rcell_uma()
 				root.manager.transition.direction = "down"
 				app.root.current = "king"
 

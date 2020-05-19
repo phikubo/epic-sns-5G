@@ -53,8 +53,6 @@ import pruebas as p
 
 
 class ModelcanalUMI(Screen):
-	noShownCI = BooleanProperty(True)
-	noShownABG= BooleanProperty(True)
 	nivel = ObjectProperty(None)
 	radiocell = ObjectProperty(None)
 	intensidadPPP = ObjectProperty(None)
@@ -63,15 +61,8 @@ class ModelcanalUMI(Screen):
 	current= ""
 	#umibox=Widget()
 	#umibox.add_widget(BoxLayout())
-	
-	def disable(self, instance, *args):
-		instance.disabled= True
 	def reloaded(self):
-		print("aqui TOy ")
-	def build(self):
-		mrappaport.bind(on_press=partial(self.disable,mrappaport))
-		mrappaport.bind(on_press=partial(self.reloaded,mrappaport))
-		return mrappaport
+		print("aqui TOy umi")
 	def evaluar(self, *ingore):
 		umibox()
 		#if noShowABG
@@ -85,9 +76,21 @@ class ModelcanalUMA(Screen):
 	radiocell = ObjectProperty(None)
 	intensidadPPP = ObjectProperty(None)
 	current= ""
-
+	bntuma= ObjectProperty(None)
+	ISD_uma= StringProperty("")
+	#radiocell=TextInput(text=MainWindow.rcell, multiline=False)
 #	def add_datoimport(nivel,radiocell,intensidadPPP,Vsec):
 	
+#		print(rcell,"---",ISD_uma)
+		#print(ISD_uma,"  --- ",rcell,"-----",self.ids.ISD_umak.text)
+	#def add_radiocell(rcell):
+	#	ISDuma= String
+	#	ISDuma.text = rcell
+	def reloaded(self):
+		print("I'll Be Alright Without You-Journey")
+	def openpdf(self):
+		os.startfile(r'base_datos\\doc_help_gui\\L2S_interlink_Mapping_Table.pdf')
+
 class contenedorgrilla(Screen):
 	pass
 
@@ -104,12 +107,18 @@ class SecondWindow(Screen):
 	#sr=Image(source='all_ppp_trisec.jpg')
 #	sr.Image(source='all_ppp_trisec.jpg')
 #	add_widget(Boxlayout())
-
+	def rcell_uma(self):
+		rcelluma=str(MainWindow.rcell)
+		#rcelluma=MainWindow.addrcell()
+		print(rcelluma)
 	#def add_dato(self):
 	#	sr = StringProperty('C:/Users/PIPE_PC/Documents/UNIVERSIDAD/TESIS/epic-sns-5G/prototipo/all_ppp_trisec.jpg')
 		#print('por aqui pase')
 		#Image(im)
-		
+
+
+
+
 	#	sr ='C:/Users/PIPE_PC/Documents/UNIVERSIDAD/TESIS/epic-sns-5G/prototipo/all_ppp_trisec.jpg'
 			#sr.reload()
 	#	sm.current= "caz"
@@ -141,11 +150,16 @@ class MainWindow(Screen):
 	intensidadPPP = ObjectProperty(None)
 	sr = ObjectProperty(None)
 	current= ""
+	rcell= StringProperty("")
 	#layout_instance.do_layout ()
 	#Widget.canvas.ask_update ()
 	#def on_enter(self, *args):
 	#	print("Nivel: ", self.nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
 	#sr=Image(source='all_ppp_trisec.jpg') 
+	
+	def addrcell(self):
+		rcell=self.rcell
+		return rcell 
 	def btn(self):
 		#print("Nivel: ", self.nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
 		#SecondWindow.add_dato()
@@ -153,8 +167,10 @@ class MainWindow(Screen):
 		rcell=int(self.radiocell.text)
 		nvl=int(self.nivel.text)
 		inten=float(self.intensidadPPP.text)
-		p.prueba_pk_dispositivos(nvl,rcell,inten)
-		#SecondWindow.add_dato(self)
+		p.prueba_externa_1(nvl,rcell,inten)
+		print(rcell)
+		#ModelcanalUMA.ISD_uma=str(addrcell())
+
 		sm.current = "caz"
 
 kv = Builder.load_file("Simulator.kv")
@@ -165,7 +181,7 @@ for screen in screens:
 #def get_dato(intensidadPPP):
 #	inten=int(intensidadPPP)
 #	return intePPP
-sm.current="sking"
+sm.current="poche"
 
 class SimulatorApp(App):
 	def build(self):

@@ -129,6 +129,24 @@ def prueba_externa_0():
 	plt.show()
 
 
+
+def prueba_externa_1(celdas,radio,intensidad):
+	'''Prueba. Comprobar la utilidad de este script'''
+	
+	distribucion=(intensidad/radio**2,"ppp") #0 en el primer valor si es otra distribucion (no necesario)
+	mod_canal=None
+	sc=ss.Sistema_Celular(celdas,radio, distribucion, mod_canal)
+	dist=sc.cluster[0].distancias
+	print(len(dist))
+	uniformedia=sum(dist)/len(dist)
+	vmedia =[ uniformedia for x in dist]
+	plt.figure(1)
+	plt.axis("equal")
+	plt.plot(np.arange(len(dist)),dist)
+	plt.plot(np.arange(len(vmedia)),vmedia)
+	plt.grid(True)
+	plt.show()
+
 if __name__=="__main__":
 	#REGLAS:
 	#0 [critico]. Las pruebas en if name, deben ir comentadas por prueba 1., prueba 2., ..., prueba n.
