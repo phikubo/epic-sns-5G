@@ -13,6 +13,8 @@ import math
 class Modelo_canal:
 	"""Clase que define el modelo del canal, calcula las perdidas del sistema"""
 	def __init__(self, frecuencia, distancia):
+		#Distancia BS a Usuario 
+		#Frecuencia portadora
 		self.frecuencia=frecuencia
 		self.distancia=distancia
 		self.path_loss=0
@@ -23,7 +25,7 @@ class Modelo_canal:
 		self.path_loss=32.4+20*np.log10(self.frecuencia)+20*np.log10(self.distancia)
 
 	def perdidas_umi_ci(self):
-		#Este modulo recrea las perdidas con distancia en metros con los parametros alpha_n: 3.1 y con Sigma_Xn:8.1 dB 
+		#Este modulo recrea las perdidas con distancia [m] frecuencia [GHz] con los parametros alpha_n: 3.1 y con Sigma_Xn:8.1 dB 
 		#considerados por la documentacion valores en dB para sigma y veces para alpha_n
 		#articulo Simulation path loss Propagation Path Loss models for 5G urban micro and macro-cellular Scenarios
 		alpha_n=3.1
@@ -32,7 +34,7 @@ class Modelo_canal:
 		self.path_loss= fspl + 10*alpha_n*math.log10(self.distancia)+sigma_Xn
 
 	def perdidas_umi_abg(self):
-		#Este modulo recrea las perdidas co distacia en metros  con los parametros alpha_n: 3.5 gamma : 1.9 (veces)
+		#Este modulo recrea las perdidas con distacia [m] frecuencia [GHz] con los parametros alpha_n: 3.5 gamma : 1.9 (veces)
 		#consideramos alpha y gamma como la dependencia de las perdidas en  relacion a la distancia y la frecuencia
 		#Beta es un factor de correccion o compensacion de optimizacion en [dB], sigma_Xn[dB]:8.0 desviacion estandar.
 		#articulo Propagation Path Loss Models for 5G Urban Micro- and Macro-Cellular Scenarios✮
@@ -43,7 +45,19 @@ class Modelo_canal:
 		self.path_loss=(10*alpha_n*math.log10(self.distancia))+beta+(10*gamma*math.log10(self.frecuencia))+Sigma_Xn
 
 	def perdidas_uma_etsi(self)
-		pass
+		#https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/15.00.00_60/tr_138901v150000p.pdf
+		#Este modulo recrea las perdidas con distancia[m] y frecuencia[GHz] con los parametros 
+		#distancia breakpoint: 4(Hbs-He)*(Hut-He)*fc/C 
+
+		He=1.0
+		Hut=1.5
+		Hbs=25
+		distancia3D=math.sqrt(Hbs**2+self.distancia**2)		
+		distbreakpoint=4(*(Hbs-He)*(Hut-He)*self.frecuencia)/(3*math.pow(10, 8))
+		if self.distancia<=distbreakpoint && self.distancia>= 10:
+			self.path_loss=28.0+22*math.log10(distancia3D)+20*math.log10(self.frecuencia)
+		else self.distancia>distbreakpoint && self.distancia<=5000:
+			self.path_loss=13.54+39.08*math.log10(distancia3D)+20*math.log10(self.frecuencia)-0.6*(Hut-1.5)
 
 def prueba_interna_path_loss():
 	'''Funcion que prueba el concepto de perdidas de espacio libre con numpy'''
