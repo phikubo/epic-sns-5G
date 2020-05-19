@@ -30,6 +30,18 @@ class Modelo_canal:
 		sigma_Xn=8.1
 		fspl=perdidas_espacio_libre_ghz()
 		self.path_loss= fspl + 10*alpha_n*math.log10(self.distancia)+sigma_Xn
+
+	def perdidas_umi_abg(self):
+		#Este modulo recrea las perdidas co distacia en metros  con los parametros alpha_n: 3.5 gamma : 1.9 (veces)
+		#consideramos alpha y gamma como la dependencia de las perdidas en  relacion a la distancia y la frecuencia
+		#Beta es un factor de correccion o compensacion de optimizacion en [dB], sigma_Xn[dB]:8.0 desviacion estandar.
+		#articulo Propagation Path Loss Models for 5G Urban Micro- and Macro-Cellular Scenarios✮
+		alpha_n=3.5
+		beta=24.4
+		gamma=1.9
+		Sigma_Xn=8.0
+		self.path_loss=(10*alpha_n*math.log10(self.distancia))+beta+(10*gamma*math.log10(self.frecuencia))+Sigma_Xn
+
 def prueba_interna_path_loss():
 	'''Funcion que prueba el concepto de perdidas de espacio libre con numpy'''
 	freq=10 #en gigas
