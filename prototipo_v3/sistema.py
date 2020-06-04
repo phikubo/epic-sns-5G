@@ -71,6 +71,7 @@ class Sistema_Celular:
 				##print(np.shape(self.ue_x))#displays shape of arrays
 				##print(np.shape(self.ue_y))
 				#displays a number of objects-->IMPORTANTE
+				print("aki",type(self.ue_x)) #muestra la estructura de los datos.
 				print("El cluster tiene ahora, ", len(self.cluster), "celdas.")
 
 			elif self.distribucion=="random":
@@ -78,7 +79,7 @@ class Sistema_Celular:
 			elif self.distribucion=="prueba_unitaria":
 				print("prueba unitaria-parametros_", self.intensidad)
 				self.ue_x,self.ue_y=self.intensidad
-
+				#solucion, esto es una lista, debe ser numpy!
 		else:
 			pass
 
@@ -86,6 +87,7 @@ class Sistema_Celular:
 	def inicializar_cluster_usuarios(self):
 		'''Init. Almacena coordenadas de usuarios a su respectiva celda.'''
 		for celda_unica, su_x, su_y in zip(self.cluster, self.ue_x, self.ue_y):
+			print(celda_unica, su_x, su_y)
 			celda_unica.user_x=su_x
 			celda_unica.user_y=su_y
 			celda_unica.distancia_gnodeb_ue()
@@ -254,12 +256,12 @@ def prueba_interna_v3_montecarlo():
 if __name__=="__main__":
 	#Prototipo:
 	#1
-	#prueba_interna_v3_1()
+	prueba_interna_v3_1()
 	#2
 	#prueba_interna_v3_montecarlo()
 	#
 	#3
 	#prueba_modelo_canal()
-	pass
+	#pass
 else:
 	print("Modulo Sistema importado")
