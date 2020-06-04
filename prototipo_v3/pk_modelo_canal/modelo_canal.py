@@ -10,8 +10,8 @@ import math
 	#pass
 
 
-class Modelo_canal:
-	"""Clase que define el modelo del canal, calcula las perdidas del sistema"""
+class Modelo_Canal:
+	"""Clase que define el modelo del canal, calcula las perdidas del sistema. No adiciona AWGN ni Ruido."""
 	def __init__(self, frecuencia, distancia):
 		self.frecuencia=frecuencia
 		self.distancia=distancia
@@ -27,9 +27,9 @@ def prueba_interna_path_loss():
 	'''Funcion que prueba el concepto de perdidas de espacio libre con numpy'''
 	freq=10 #en gigas
 	distancias_km=np.array([0.1, 1, 2, 3, 4, 5, 6])
-	modelo=Modelo_canal(freq, distancias_km)
-	modelo.perdidas_espacio_libre_ghz()
-	l_bs=modelo.path_loss
+	modelo_simple=Modelo_Canal(freq, distancias_km)
+	modelo_simple.perdidas_espacio_libre_ghz()
+	l_bs=modelo_simple.path_loss
 	print(l_bs)
 
 
@@ -37,7 +37,7 @@ def prueba_interna_path_loss():
 if __name__=="__main__":
 	#Prototipo:
 	#import #aqui van los submodulos nuevamente para envitar errores
-	
+
 	#prueba interna 1.
 	prueba_interna_path_loss()
 else:

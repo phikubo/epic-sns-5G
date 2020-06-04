@@ -32,6 +32,7 @@ class Sistema_Celular:
 		'''Constructor por defecto. Inicializa las variables de las clases'''
 		#1.tupla con (intensidad, distribucion)
 		#1.1 si la distribucion no tiene una intensidad, intensidad=0
+
 		self.intensidad, self.distribucion=distribucion
 		self.cel_fig, self.cels_ax=plt.subplots(1)
 		self.num_celdas=num_celdas
@@ -74,6 +75,10 @@ class Sistema_Celular:
 
 			elif self.distribucion=="random":
 				pass
+			elif self.distribucion=="prueba_unitaria":
+				print("prueba unitaria-parametros_", self.intensidad)
+				self.ue_x,self.ue_y=self.intensidad
+
 		else:
 			pass
 
@@ -251,6 +256,10 @@ if __name__=="__main__":
 	#1
 	#prueba_interna_v3_1()
 	#2
-	prueba_interna_v3_montecarlo()
+	#prueba_interna_v3_montecarlo()
+	#
+	#3
+	#prueba_modelo_canal()
+	pass
 else:
 	print("Modulo Sistema importado")

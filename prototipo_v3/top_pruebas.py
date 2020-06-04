@@ -4,7 +4,7 @@ from matplotlib.patches import RegularPolygon
 import numpy as np
 import os
 #
-import pk_red_dispositivos.celda as pkcel
+import pk_red_dispositivos.celda as pkcel #ya no es necesario
 import utilidades.savedata as persistencia
 import pk_modelo_canal.modelo_canal as moca
 import sistema as ss
@@ -49,7 +49,7 @@ def prueba_perdidas_basicas():
 	freq=10 #asigno frecuencia en gigaz
 	print("Asumiendo que las distancias son en [km] las siguientes: ")
 	print(distancias_celda_cero) #asumiendo que la distancia esta en km
-	modelo=moca.Modelo_canal(freq, distancias_celda_cero) #creo el modelo del canal
+	modelo=moca.Modelo_Canal(freq, distancias_celda_cero) #creo el modelo del canal
 	print("las perdidas de esas distancias son: ")
 	modelo.perdidas_espacio_libre_ghz() #calculo las perdidas
 	print(modelo.path_loss)
@@ -90,20 +90,78 @@ def prueba_perdidas_basicas_2():
 	intensidad = 2
 	intensidad = intensidad/radio**2
 	celdas = 2
-	clase=moca.Modelo_canal
-	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad),Modelo_Canal=clase) #en este momento hay dos celdas, con sus parametros definidos
+	referencia_clase=moca.Modelo_Canal
+	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad),Modelo_Canal=referencia_clase) #en este momento hay dos celdas, con sus parametros definidos
 	#la idea es tener una referencia a la clase sin crear el objeto para luego crear este objeto en otra clase
-	print(moca.Modelo_canal)
+	print(moca.Modelo_Canal)
 
 
 def prueba_externa_0():
-	'''Prueba. Comprobar la utilidad de este script'''
+	'''PRUEBA. Comprobar la utilidad de este script'''
 	celdas=3
 	radio=20
 	intensidad=10
 	distribucion=(intensidad/radio**2,"ppp") #0 en el primer valor si es otra distribucion (no necesario)
 	mod_canal=None
 	sc=ss.Sistema_Celular(celdas,radio, distribucion, mod_canal)
+
+
+
+def prueba_top_1_balance_del_enlace():
+	'''Prueba para validar un balance del enlace simple (no 5G)
+
+	1.DESIGN:
+	1.1 Generar escenario (celdas->1, usuarios->1)
+	1.2 Calcular distancias a la base
+	1.3 Recibir parámetros: frecuencia de operacion, perdidas tx, ganancia tx
+													perdidas rx, ganacia rx
+	1.4 Calcular balance del enlace asi:
+	Potencia del transmisor [dBm] – Pérdida en el cable TX [dB] + Ganancia de antena TX [dBi] –
+	Pérdidas en la trayectoria del espacio abierto [dB] + Ganancia de antena RX [dBi] – Pérdidas en
+	el cable del RX [dB] = Margen – Sensibilidad del receptor [dBm]
+	DATOS DE PRUEBA
+	+Cable de baja calidad
+	+Distancia: 1 km (0,622 millas)
+	+Frecuencia: 2,4 GHz
+	+Cables y conectores -5 dB
+	+Salida del transmisor +18 dBm
+	+Antena TX +5 dBi
+	*** FSL -100 dB
+	+Antena RX + 8 dBi
+	+Cables y conectores Rx -5 dB
+	+Sensibilidad del receptor -92 dBm
+	***Total: (margen) + 13 dB
+
+	El margen de este enlace es de 13 dB, adecuado para ambientes urbanos y la potencia irradiada es de
+	18 dBm (<100 mW), quiere decir que el enlace es legal en cualquier país.
+	1.5 Generar graficas.
+	'''
+	#IMPLEMENTACION:
+	celdas=1
+	radio=1000#unidades->m ATENCION: EL RADIO DEFINE LAS UNIDADES, SI SON EN M O EN KM, LOS CALCULOS TAMBIEN.
+	#requerimiento 1 usuarios-OK
+	#requerimiento n usuarios (lista)-OK
+	distribucion=(([1000, 500],[0, 0]),"prueba_unitaria")
+	mod_canal=None
+	mono_celda=ss.Sistema_Celular(celdas,radio, distribucion, mod_canal)
+	celda_inicial=mono_celda.cluster[0] #objeto de la celda 0
+	#opcion 1, como instancias diferentes
+	distancias_celda_cero=celda_inicial.distancias #obtengo las distancias de esa celda
+	print(distancias_celda_cero) #esta en metros.
+	freq=2.4 #asigno frecuencia en gigaz
+	#print("Asumiendo que las distancias son en [km] las siguientes: ")
+	#print(distancias_celda_cero) #asumiendo que la distancia esta en km
+	#modelo=moca.Modelo_Canal(freq, distancias_celda_cero) #creo el modelo del canal
+	#print("las perdidas de esas distancias son: ")
+	#modelo.perdidas_espacio_libre_ghz() #calculo las perdidas en dB
+	#print(modelo.path_loss)
+	#mono_celda.ver_celdas()
+	#mono_celda.ver_usuarios()
+	mono_celda.ver_todo()
+	plt.grid(True)
+	plt.show()
+
+
 
 if __name__=="__main__":
 	#REGLAS:
@@ -123,7 +181,10 @@ if __name__=="__main__":
 		#EjemploDeFUNCION ---> x , ejemplo_de_funcion ---> bieeeen
 		#fdp ----------------> x , funcion_de_prueba ----> mega bieeeen
 		#etc.
-	prueba_externa_0()
+	#1
+	#prueba_externa_0()
+	#2
+	prueba_top_1_balance_del_enlace()
 
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")
