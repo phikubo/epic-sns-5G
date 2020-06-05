@@ -140,12 +140,13 @@ def prueba_top_1_balance_del_enlace():
 	1.5 Generar graficas.
 	'''
 	#IMPLEMENTACION:
-	celdas=1
+	celdas=2
 	radio=1000#unidades->m ATENCION: EL RADIO DEFINE LAS UNIDADES, SI SON EN M O EN KM, LOS CALCULOS TAMBIEN.
 	#requerimiento 1 usuarios-OK
 	#requerimiento n usuarios (lista)-OK
 	####################################1.1 Generar escenario (celdas->1, usuarios->1)
 	distribucion=((np.array([[1000, 250]]),np.array([[0, 250]])),"prueba_unitaria")
+	distribucion=((np.array([[1000, 250],[1500, 1000]]),np.array([[0, 250],[500, 1500]])),"prueba_unitaria") #celdas=2
 	#este formato (arriba) de la tupla no es correcto, por que la listas de n_usuarios
 	#se guardan asi: [[celda0],[celda1],...,[celdan]]
 	mod_canal=None
