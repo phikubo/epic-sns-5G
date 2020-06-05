@@ -16,6 +16,8 @@ try:
 	from pk_red_dispositivos import modulo_coordenadas as mc
 	from pk_red_dispositivos import modulo_ppp as ppp
 	from pk_red_dispositivos import modulo_circulos as mcir
+	#
+	import pk_modelo_canal.modelo_canal as moca
 
 except:
 	print("ATENCION: Uno o mas modulos no pudo ser importado... ")
@@ -28,11 +30,11 @@ except:
 class Sistema_Celular:
 	'''Clase que crea y controla clusters de celdas. Asigna e inicializa valores.
 	Muestra graficas de las celdas deseadas.'''
-	def __init__(self, num_celdas, radio, distribucion, Modelo_Canal):
+	def __init__(self, num_celdas, radio, distribucion, tipo_canal):
 		'''Constructor por defecto. Inicializa las variables de las clases'''
 		#1.tupla con (intensidad, distribucion)
 		#1.1 si la distribucion no tiene una intensidad, intensidad=0
-
+		self.tipo_canal=tipo_canal
 		self.intensidad, self.distribucion=distribucion
 		self.cel_fig, self.cels_ax=plt.subplots(1)
 		self.num_celdas=num_celdas
@@ -50,6 +52,8 @@ class Sistema_Celular:
 		self.inicializar_distribucion() #falta implementar otras distribuciones
 		#Almacena usuarios en cada celda del cluster
 		self.inicializar_cluster_usuarios()
+		#crea el modelo del mod_canal
+		#self.inicialiar_modelo_canal() #depende de la frec y cluster_usuarios
 
 
 	def inicializar_cluster_celdas(self):

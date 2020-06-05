@@ -9,10 +9,10 @@ import math
 #except:
 	#pass
 
-
+#modelo del canal incluye perdidas AWGN y RUIDO. Crear modulos awgn y ruido.
 class Modelo_Canal:
 	"""Clase que define el modelo del canal, calcula las perdidas del sistema. No adiciona AWGN ni Ruido."""
-	def __init__(self, frecuencia, distancia):
+	def __init__(self, frecuencia, distancia): #usar args and kwards, recibir tipo de primero, y sus parametros.
 		self.frecuencia=frecuencia
 		self.distancia=distancia
 		self.path_loss=0

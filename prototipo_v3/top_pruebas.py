@@ -149,10 +149,10 @@ def prueba_top_1_balance_del_enlace():
 	distribucion=((np.array([[1000, 250],[1500, 1000]]),np.array([[0, 250],[500, 1500]])),"prueba_unitaria") #celdas=2
 	#este formato (arriba) de la tupla no es correcto, por que la listas de n_usuarios
 	#se guardan asi: [[celda0],[celda1],...,[celdan]]
-	mod_canal=None
+	mod_perdidas="espacio_libre" #espacio_libre, rappaport, ci, ts901. TUPLA: (tipo, perdidas_tx, perdidas_rx, ganancia_rx,ganancia_tx, sensibilidad)
 	'''IMPORTANTE: al incluir el modelo desde aca, puedo tener 2 tier o layer de Celdas
 	#un modelo de celdas para umi y otro para uma de forma independiente, ahora como se relacionan?'''
-	mono_celda=ss.Sistema_Celular(celdas,radio, distribucion, mod_canal)
+	mono_celda=ss.Sistema_Celular(celdas,radio, distribucion, mod_perdidas)
 	celda_0=mono_celda.cluster[0] #objeto de la celda 0
 	#opcion 1, como instancias diferentes
 	#print(celda_0.user_x)
@@ -183,8 +183,88 @@ def prueba_top_1_balance_del_enlace():
 	#mono_celda.ver_celdas()
 	#mono_celda.ver_usuarios()
 
+
+	#0.implementar para celdas>1, con los mismos usuarios. Ok para celda=2. Probar para c=n {con sus propios uusarios}
+	#1. empaquetar el modelo del canal, balancel del enlace. para cumplir lo de arriba.
+	#2. embeber el modelo del canal en la clase sistema celular
 	#tarea: implementar grafica para el caso de no cumplir sensibilidad
-	#implementar para celdas>1, con los mismos usuarios.
+	#3. crear modulos awgn y ruido
+
+
+	#PRUEBA DE BALANCE EXITOSA PARA celda=1, celda=2.
+	mono_celda.ver_todo()
+	plt.grid(True)
+	plt.show()
+
+
+def prueba_top_2_balance_del_enlace():
+	'''Prueba para validar un balance del enlace simple (no 5G)
+
+	1.DESIGN:
+	#0.implementar para celdas>1, con los mismos usuarios. Ok para celda=2. Probar para c=n {con sus propios uusarios}
+	#1. empaquetar el modelo del canal, balancel del enlace. para cumplir lo de arriba.
+	#2. embeber el modelo del canal en la clase sistema celular
+	#tarea: implementar grafica para el caso de no cumplir sensibilidad
+	#3. crear modulos awgn y ruido
+	'''
+	#IMPLEMENTACION:
+	celdas=2
+	radio=1000#unidades->m ATENCION: EL RADIO DEFINE LAS UNIDADES, SI SON EN M O EN KM, LOS CALCULOS TAMBIEN.
+	#requerimiento 1 usuarios-OK
+	#requerimiento n usuarios (lista)-OK
+	####################################1.1 Generar escenario (celdas->1, usuarios->1)
+	distribucion=((np.array([[1000, 250]]),np.array([[0, 250]])),"prueba_unitaria")
+	distribucion=((np.array([[1000, 250],[1500, 1000]]),np.array([[0, 250],[500, 1500]])),"prueba_unitaria") #celdas=2
+	mod_perdidas="espacio_libre" #espacio_libre, rappaport, ci, ts901. TUPLA: (tipo, perdidas_tx, perdidas_rx, ganancia_rx,ganancia_tx, sensibilidad)
+
+	pot_tx=0
+	loss_tx=0
+	loss_rx=0
+	gan_tx=0
+	gan_rx=0
+	sensibilidad=0
+	#TODOS LOS EQUIPOS TIENEN LA MISMA LOSS TX, GAN TX, ETC?
+	#ES NECESARIO CREAR LOS USUARIOS Y LA ANTENA, con los parametros de arriba
+
+	mod_perdidas=("espacio_libre", pot_tx,loss_tx,loss_rx,gan_tx,gan_rx,sensibilidad)
+	'''IMPORTANTE: al incluir el modelo desde aca, puedo tener 2 tier o layer de Celdas
+	#un modelo de celdas para umi y otro para uma de forma independiente, ahora como se relacionan?'''
+	mono_celda=ss.Sistema_Celular(celdas,radio, distribucion, mod_perdidas)
+	celda_0=mono_celda.cluster[0] #objeto de la celda 0
+	#opcion 1, como instancias diferentes
+	#print(celda_0.user_x)
+	##################################1.2 Calcular distancias a la base
+	distancias_celda_cero=celda_0.distancias #obtengo las distancias de esa celda
+	print("dist:",distancias_celda_cero)
+	distancias_km=distancias_celda_cero/1000 #esta en km.
+	print(distancias_km)
+	freq=2.4 #asigno frecuencia en gigaz
+	#print("Asumiendo que las distancias son en [km] las siguientes: ")
+	#print(distancias_celda_cero) #asumiendo que la distancia esta en km
+	modelo_prueba=moca.Modelo_Canal(freq, distancias_km) #creo el modelo_prueba del canal
+	#print("las perdidas de esas distancias son: ")
+	modelo_prueba.perdidas_espacio_libre_ghz() #calculo las perdidas en dB
+	print(modelo_prueba.path_loss, "[dB]")
+	#############################################1.3 Recibir parámetros
+	ptx=18 #[dBm]
+	cable_conector_tx=5 #[dB]
+	cable_conector_rx=5 #[dB]
+	ganancia_tx=5 #dBi
+	ganancia_rx=8 #dBi
+	sensibilidad=92 #dBm
+	modelo_perdidas_simple=modelo_prueba.path_loss
+	###########################################1.4 Calcular balance del enlace
+	ecuacion_balance=ptx-cable_conector_tx+ganancia_tx-modelo_perdidas_simple+ganancia_rx-cable_conector_rx
+	print("potencia irradiada: ", ecuacion_balance)
+	print("margen: ",ecuacion_balance+sensibilidad)
+	#mono_celda.ver_celdas()
+	#mono_celda.ver_usuarios()
+
+
+
+
+
+	#PRUEBA DE BALANCE EXITOSA PARA celda=1, celda=2.
 	mono_celda.ver_todo()
 	plt.grid(True)
 	plt.show()
