@@ -225,12 +225,16 @@ def prueba_top_2_balance_del_enlace():
 	sensibilidad=0
 	#TODOS LOS EQUIPOS TIENEN LA MISMA LOSS TX, GAN TX, ETC?
 	#ES NECESARIO CREAR LOS USUARIOS Y LA ANTENA, con los parametros de arriba
+	#Considerar lo siguiente: si tenemos dos layers, cada uno tendria un modelo de canal asociado.
+	#pero si tienen un modelo de canal diferente, como usarian los mismos usuarios?
+	#en realidad si habria un modelo del canal diferente?
+	#cual es el criterio de las dos layers?
 
-	mod_perdidas=("espacio_libre", pot_tx,loss_tx,loss_rx,gan_tx,gan_rx,sensibilidad)
+	param_perdidas=("espacio_libre", pot_tx,loss_tx,loss_rx,gan_tx,gan_rx,sensibilidad)
 	'''IMPORTANTE: al incluir el modelo desde aca, puedo tener 2 tier o layer de Celdas
 	#un modelo de celdas para umi y otro para uma de forma independiente, ahora como se relacionan?'''
-	mono_celda=ss.Sistema_Celular(celdas,radio, distribucion, mod_perdidas)
-	celda_0=mono_celda.cluster[0] #objeto de la celda 0
+	colmena=ss.Sistema_Celular(celdas,radio, distribucion, param_perdidas)
+	celda_0=colmena.cluster[0] #objeto de la celda 0
 	#opcion 1, como instancias diferentes
 	#print(celda_0.user_x)
 	##################################1.2 Calcular distancias a la base
@@ -257,8 +261,8 @@ def prueba_top_2_balance_del_enlace():
 	ecuacion_balance=ptx-cable_conector_tx+ganancia_tx-modelo_perdidas_simple+ganancia_rx-cable_conector_rx
 	print("potencia irradiada: ", ecuacion_balance)
 	print("margen: ",ecuacion_balance+sensibilidad)
-	#mono_celda.ver_celdas()
-	#mono_celda.ver_usuarios()
+	#colmena.ver_celdas()
+	#colmena.ver_usuarios()
 
 
 

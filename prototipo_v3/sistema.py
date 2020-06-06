@@ -43,9 +43,14 @@ class Sistema_Celular:
 		self.radio=radio
 		#cordenadas centrales de celdas
 		self.origen_cel_x, self.origen_cel_y=mc.coordenadas_nceldas(self.num_celdas, self.radio)
-		#inicio de variables de usuarios
+		#inicio de variables de usuarios (de todas las celdas)
 		self.ue_x=0
 		self.ue_y=0
+		#
+		#falta las distancias totales?
+		self.distancias_celdas=0
+		#todas las perdidas
+		self.perdidas=0
 		#inicializa objetos tipo celda y las almacena en self.cluster
 		self.inicializar_cluster_celdas()
 		#crea las coordenadas de los usuarios segun una distribucion
@@ -53,7 +58,7 @@ class Sistema_Celular:
 		#Almacena usuarios en cada celda del cluster
 		self.inicializar_cluster_usuarios()
 		#crea el modelo del mod_canal
-		#self.inicialiar_modelo_canal() #depende de la frec y cluster_usuarios
+		#self.inicialiar_modelo_canal(frecuencia_central, distancias) #depende de la frec y cluster_usuarios
 
 
 	def inicializar_cluster_celdas(self):
@@ -90,11 +95,14 @@ class Sistema_Celular:
 
 	def inicializar_cluster_usuarios(self):
 		'''Init. Almacena coordenadas de usuarios a su respectiva celda.'''
+		#append distancias
 		for celda_unica, su_x, su_y in zip(self.cluster, self.ue_x, self.ue_y):
 			print(celda_unica, su_x, su_y)
 			celda_unica.user_x=su_x
 			celda_unica.user_y=su_y
 			celda_unica.distancia_gnodeb_ue()
+			print(type(celda_unica.distancias))
+
 
 
 	def ver_estaciones_base(self):

@@ -17,7 +17,6 @@ class Modelo_Canal:
 		self.distancia=distancia
 		self.path_loss=0
 
-
 	def perdidas_espacio_libre_ghz(self):
 		'''Funcion que calcula las perdidas de espacio libre en dB'''
 		self.path_loss=92.4+20*np.log10(self.frecuencia)+20*np.log10(self.distancia)
