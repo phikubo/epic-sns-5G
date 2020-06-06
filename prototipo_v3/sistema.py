@@ -96,12 +96,13 @@ class Sistema_Celular:
 	def inicializar_cluster_usuarios(self):
 		'''Init. Almacena coordenadas de usuarios a su respectiva celda.'''
 		#append distancias
+		#self.distancias_celdas
 		for celda_unica, su_x, su_y in zip(self.cluster, self.ue_x, self.ue_y):
 			print(celda_unica, su_x, su_y)
 			celda_unica.user_x=su_x
 			celda_unica.user_y=su_y
 			celda_unica.distancia_gnodeb_ue()
-			print(type(celda_unica.distancias))
+			print("---aki",celda_unica.distancias)
 
 
 

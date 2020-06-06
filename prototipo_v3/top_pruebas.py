@@ -235,11 +235,17 @@ def prueba_top_2_balance_del_enlace():
 	#un modelo de celdas para umi y otro para uma de forma independiente, ahora como se relacionan?'''
 	colmena=ss.Sistema_Celular(celdas,radio, distribucion, param_perdidas)
 	celda_0=colmena.cluster[0] #objeto de la celda 0
+	celda_1=colmena.cluster[1]
 	#opcion 1, como instancias diferentes
 	#print(celda_0.user_x)
 	##################################1.2 Calcular distancias a la base
 	distancias_celda_cero=celda_0.distancias #obtengo las distancias de esa celda
-	print("dist:",distancias_celda_cero)
+	print("++++++++++++dist:",distancias_celda_cero)
+
+	distancias_celda_uno=celda_1.distancias #obtengo las distancias de esa celda
+	print("++++++++++++dist:",distancias_celda_uno)
+
+
 	distancias_km=distancias_celda_cero/1000 #esta en km.
 	print(distancias_km)
 	freq=2.4 #asigno frecuencia en gigaz
@@ -269,7 +275,7 @@ def prueba_top_2_balance_del_enlace():
 
 
 	#PRUEBA DE BALANCE EXITOSA PARA celda=1, celda=2.
-	mono_celda.ver_todo()
+	colmena.ver_todo()
 	plt.grid(True)
 	plt.show()
 
@@ -296,8 +302,8 @@ if __name__=="__main__":
 	#1
 	#prueba_externa_0()
 	#2
-	prueba_top_1_balance_del_enlace()
-
+	#prueba_top_1_balance_del_enlace()
+	prueba_top_2_balance_del_enlace()
 	#prueba_perdidas_basicas()
 
 else:
