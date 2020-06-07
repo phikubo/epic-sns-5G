@@ -48,6 +48,7 @@ class Sistema_Celular:
 		self.ue_y=0
 		#
 		#falta las distancias totales?
+		self.no_usuarios_total=0
 		self.distancias_celdas=0
 		#todas las perdidas
 		self.perdidas=0
