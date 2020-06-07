@@ -1,0 +1,736 @@
+
+
+
+#WindowManager:
+#ESTA INTERFFAZ REALIZA EL MODELO DEL CANAL DE TIPO URBANO PARA EL SIMULADOR 
+<ModelcanalUMI>
+
+
+	name: "sking"
+	mrap :mrapapport
+
+
+	BoxLayout:
+		orientation: 'vertical'
+		
+
+		BoxLayout:
+			id: "Plrappaport"
+			orientation: 'vertical'
+			padding: 50
+			
+
+			canvas:
+				Color:
+					rgba: (1, 1, 1, 1)
+				Rectangle:
+					pos:self.pos
+					size:self.size
+
+			BoxLayout:# Funcion del modelo de propagacion [ CI ]  -  [ ABG(Rappaport )]
+				orientation: 'horizontal'
+				#size_hint_y: 0.50
+				Button:# boton para modelo CI 
+				
+					##PARAMETROS:
+
+					##		Frecuencia:
+					##		Ditancia BS al UE
+					##		Sigma(Desvanecimiento lento AWGN)
+					##		Parametro de retroalimentacion de distancia decadas [n]
+
+					##		nota: los demas parametros se desprecian.
+				 
+					id:mrapapport
+					border: (10,10,10,10)
+					canvas.before:
+						Color:
+							#rgba: 0.3,0.4,0.5,1
+						Rectangle:
+							pos:self.pos
+							size: self.size
+					background_color: 0.3,0.4,0.5,1
+					text: "Modelo CI"
+					group: "modelos"
+					on_press: 
+						mabg.disabled =False
+
+						if root.disabled==False: titulo_umi.text="URBANO CALLEJON ESTRECHO (STREET CANYON) CI" 
+						else: titulo_umi.text="URBANO CALLEJON ESTRECHO (STREET CANYON) ABG "
+
+						if root.disabled==False: fc_umi.text="Frecuencia central (GHz) 28GHz" 
+						else: fc_umi.text="Frecuencia central (GHz) 73GHz"
+
+
+						if root.disabled==False: d2d_umi.text="Distancia T_BS - R_UE (m) 150m" 
+						else: d2d_umi.text="Distancia T_BS - R_UE (m) 200m"
+						#d2d_umi.text="Frecuencia central"
+						if root.disabled== False: n_alpha.text=" [n] CI:"
+						else: n_alpha.text= " [Alpha] ABG:" 
+
+						if root.disabled==False: plc_sigma_umi.text="8.1"
+						else: plc_sigma_umi.text= "8.0"
+
+
+						if root.disabled==False: plc_cin_alphabg.text="3.1"
+						else: plc_cin_alphabg.text= "3.5"
+
+						#if root.disabled==False: plc_sigma_umi.disabled = True
+						#else: plc_sigma_umi.disabled=True
+
+
+						root.reloaded()
+
+					on_release:
+						#mrapapport.disabled = True
+						mrapapport.disabled = True
+
+					#on_release:
+					#	root.noShownABG = not root.noShownABG
+
+				Button:# boton para modelo ABG -rappaport
+				
+					##PARAMETROS:
+
+					##		Frecuencia:
+					##		Ditancia BS al UE
+					##		Sigma(Desvanecimiento lento AWGN)
+					##		Parametro de retroalimentacion de distancia decadas [alpha]
+					##		Parametro de correccion del modelo [Beta] en dB
+					##		Parametro de retroalimentacion por frecuencia [Gamma]
+
+					##		nota: los demas parametros se desprecian.
+				 
+					border:  (10,10,10,10)
+					id: mabg
+					#disabled = False 
+					canvas.before:
+						Color:
+							#rgba: 0.3,0.4,0.5,1
+						Rectangle:
+							pos:self.pos
+							size: self.size
+					background_color: 0.3,0.4,0.5,1
+					text: "Modelo Rappaport"
+					on_press: 
+						mrapapport.disabled = False
+
+						if not root.disabled==False: titulo_umi.text="URBANO CALLEJON ESTRECHO (STREET CANYON) CI" 
+						else: titulo_umi.text="URBANO CALLEJON ESTRECHO (STREET CANYON) ABG "
+
+						if not root.disabled==False: fc_umi.text="Frecuencia central (GHz) 28GHz" 
+						else: fc_umi.text="Frecuencia central (GHz) 73GHz"
+
+
+						if not root.disabled==False: d2d_umi.text="Distancia T_BS - R_UE(m) 150m" 
+						else: d2d_umi.text="Distancia T_BS - R_UE (m) 200m"
+						#d2d_umi.text="Frecuencia central"
+						if not root.disabled==False:  n_alpha.text=" [n] CI:"
+						else: n_alpha.text=" [Alpha] ABG:"
+						if not root.disabled==False: plc_sigma_umi.text="8.1"
+						else: plc_sigma_umi.text= "8.0"
+
+
+						if not root.disabled==False: plc_cin_alphabg.text="3.1"
+						else: plc_cin_alphabg.text= "3.5"
+
+						#if not root.disabled==False: plc_sigma_umi.disabled = True
+						#else: plc_sigma_umi.disabled=True
+
+						root.reloaded()
+						
+
+					on_release:
+						mabg.disabled = True
+
+
+
+			#TITULO UMA PARA LA INTERFAZ GRAFICA 
+			Label:
+				id:titulo_umi 
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.3,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+						source: "base_datos/img_gui/modelcanal.PNG"
+
+				text: "URBANO CALLEJON ESTRECHO (STREET CANYON)Rappaport"
+				font_size: 20
+
+
+			BoxLayout: # Frecuencia central sistema 
+				#id: Vsector
+				orientation: 'horizontal'	
+				size_hint_y: 0.25		
+				Label:
+					id: fc_umi
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text:"frecuencia central del sistema"
+				TextInput:
+					id: fc
+					size_hint: ( .15, 1)
+					multiline: False
+
+			BoxLayout: # distancia entre usuario
+				orientation: 'horizontal'
+				size_hint_y: 0.25
+
+				Label:
+					id: d2d_umi
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Distancia entre Estacion base y Usuario"	
+				TextInput:
+					id: Dbs_ue
+					size_hint: ( .15, 1)
+					multiline: False#distancia entre Estacion Base y usuario 
+
+			BoxLayout: # parametros para Propagacion desviacion
+				orientation: 'horizontal'
+				size_hint_y: 0.25
+
+				
+
+				Label:
+					id: desv_umi
+					canvas.before:
+						Color:
+							rgba:  0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: " Sigma (dB):"	
+				TextInput:
+					id: plc_sigma_umi
+					size_hint: ( .15, 1)
+					multiline: False
+					#distancia entre Estacion Base y usuario 
+					text: '8.1'
+					disabled: not root.disabled
+
+			GridLayout:# TABLA [n_alpha,n_CI] [Beta] y [gamma abg]
+				rows: 2
+				size_hint_y: 0.50
+
+				padding: [0, 5, 0, 0]
+				Label:#parametros N y alpha para modelo ci y ABG
+					id:n_alpha
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.3,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "parametros para ABG y CI"
+					#background_color: (0.3,0.4,0.5,1)
+
+				Label:
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.3,1
+							#rgba: 0.5,0.6,0.5,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Beta"
+				Label: 
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.3,1
+							#rgba:  0.5,0.6,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Gamma"
+
+				TextInput:
+					id: plc_cin_alphabg
+					size_hint: ( .15, 1)
+					multiline: False
+					text: '3.1'
+					disabled: not root.disabled
+
+				TextInput:
+					
+					size_hint_x: 0.15
+					#size_hint: ( .20, 1)
+					id:beta
+					group:'abg_parm'
+					text: "24.4"
+					disabled: not root.disabled
+
+				TextInput:
+					
+					size_hint_x: 0.15
+					id:gamma
+					#size_hint: ( .20, 1)
+					group:'abg_parm' 
+					text: "1.9"
+					disabled: not root.disabled
+
+			BoxLayout:#Boton de ayuda para orientacion estudiantil
+				orientation: 'horizontal'
+				padding: [0,5,0,5]
+				size_hint_y: 0.5
+				Button:					
+					border: (10, 5, 10, 5)
+					canvas.before:
+						Color:
+							rgba: 0.3,0.4,0.5,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					background_color: 0.5,0.2,0.2,1
+					#state: 'down' 
+					text: "Ayuda"
+					on_press: 
+						root.openpdf()	
+						#app.root.current ="caz"
+
+			BoxLayout:# botones calcular volver
+				orientation: 'horizontal'
+				padding: [0,5,0,0]
+				size_hint_y: 0.5
+				Button:
+					canvas.before:
+						Color:
+							rgba: 0.3,0.4,0.5,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					background_color: 0.3,0.4,0.5,1
+					text: "Volver"
+
+					on_release: 
+						root.manager.transition.direction = "up" 		
+						app.root.current ="caz"
+
+				Button:
+					canvas.before:
+						Color:
+							rgba: 0.3,0.4,0.5,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					background_color: 0.3,0.4,0.5,1
+					text: "calcular"
+
+					on_release: 
+						root.manager.transition.direction = "down" 		
+						app.root.current ="poche" #botones calcular volver
+				
+
+<ModelcanalUMA>
+	
+	name:"king"
+	radiocell :ISDuma
+	#nivel: nivel
+	#intensidadPPP: intensidadPPP
+	#Vsector: Vsector	
+
+
+	BoxLayout:
+		orientation: 'vertical'
+		padding: 50
+		canvas:
+			Color:
+				rgba: (1, 1, 1, 1)
+			Rectangle:
+				pos:self.pos
+				size:self.size
+
+
+
+		
+		Label:
+			canvas.before:
+				Color:
+					rgba: 0.3,0.4,0.5,1
+				Rectangle:
+					pos:self.pos
+					size:self.size
+					source: "base_datos/img_gui/modelcanal.PNG"
+
+			text: "URBANO  MACRO CELDA"
+			font_size: 20#TITULO UMA PARA LA INTERFAZ GRAFICA  URBANO MACRO CELDA
+
+
+		BoxLayout:#Distancia entre estacion base y usuario distancia T-R	
+			#id: Vsector
+			orientation: 'horizontal'	
+			size_hint_y: 0.18		
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.3,0.4,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Distancia T-R (2D)"
+			TextInput:
+				id: d2d
+				size_hint: ( .10, 1)
+				multiline: False
+
+		BoxLayout:#Altura de la estacion base HBs
+			orientation:'horizontal'
+			size_hint_y: 0.18
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.3,0.4,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Alto de la antena (HBs) 25m"
+			TextInput:
+				id: Hbs
+				size_hint: ( .10, 1)
+				multiline: False
+
+		BoxLayout:#Altura Usuario (Hut)
+			orientation: 'horizontal'
+			size_hint_y: 0.18
+
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.3,0.4,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Altura Usuario (Hut) 1.5-22.5m"	
+			TextInput:
+				id: Hut
+				size_hint: ( .10, 1)
+				multiline: False
+
+		BoxLayout:#Distancia Inter celda ISD
+			orientation:'horizontal'
+			size_hint_y: 0.18
+			Label:
+				canvas.before:
+					Color: 
+						rgba: 0.3,0.4,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Distancia ISD"
+			TextInput:
+				id: ISDuma
+				size_hint: ( .10, 1)
+				multiline: False
+
+				
+		GridLayout:# TABLA [n_alpha,n_CI] [Beta] y [gamma abg]
+			rows: 2
+			size_hint_y: 0.50
+
+			padding: [0, 5, 0, 0]
+			Label:#parametros de altura efectiva para evaluar breakpoint
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.3,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "He[m]"
+				#background_color: (0.3,0.4,0.5,1)
+
+			Label:#parametro Frecuencia central del canal de transmision.
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.3,1
+						#rgba: 0.5,0.6,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Fc[Mhz]"
+			Label:#Desviacion estandar del modelo UMA
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.3,1
+						#rgba:  0.5,0.6,0.4,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "sigma SF[dB]"
+
+			TextInput:
+				id: He_uma
+				size_hint: ( .15, 1)
+				multiline: False
+				text: '1'
+				disabled: not root.disabled
+
+			TextInput:
+				
+				size_hint_x: 0.15
+				#size_hint: ( .20, 1)
+				id:Fc_uma
+				group:'Pl_uma'
+				text: "2600"
+				disabled: not root.disabled
+
+			TextInput:
+				
+				size_hint_x: 0.15
+				id:sigma_uma
+				#size_hint: ( .20, 1)
+				group:'Pl_uma' 
+				text: "4"
+				disabled: not root.disabled
+
+		BoxLayout:#Boton de ayuda para orientacion estudiantil
+			orientation: 'horizontal'
+			padding: [0,5,0,5]
+			size_hint_y: 0.5
+			Button:					
+				border: (10, 5, 10, 5)
+				canvas.before:
+					Color:
+						rgba: 0.3,0.4,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				background_color: 0.5,0.2,0.2,1
+				#state: 'down' 
+				text: "Ayuda"
+				on_press: 
+					root.openpdf()	
+					#app.root.current ="caz"
+		BoxLayout:#Boton para volver a modelos UMa y UMi y calcular Modelo UMa
+			orientation: 'horizontal'
+			padding: [0,5,0,0]
+			size_hint_y: 0.5
+			Button:
+				canvas.before:
+					Color:
+						rgba: 0,0,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				background_color: 1, 1, 1, 1
+				text: "volver"
+
+				on_release: 
+					root.manager.transition.direction = "up" 		
+					app.root.current ="caz"
+
+			Button:
+				canvas.before:
+					Color:
+						rgba: 0,0,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				background_color: 1, 1, 1
+				text: "calcular"
+
+				on_release: 
+					root.manager.transition.direction = "down" 		
+					app.root.current ="poche"
+
+<MainWindow>
+	name:"poche"
+	nivel: nivel
+	radiocell: radiocell
+	intensidadPPP: intensidadPPP	
+
+
+	
+	size: (.3, .1)
+
+	BoxLayout:
+		#orientation: 'vertical'
+		padding: 20
+		size: self.size
+		#size: (.3 , .5) 
+		#size: (.4, .3)
+		canvas:
+			Color:
+				rgba: (1, 1, 1, 1)
+				#rgba: 0,0,0.53,0.2
+			Rectangle:
+				pos:self.pos
+				size:self.size
+		BoxLayout:
+			padding: 5
+			orientation: 'vertical'
+			size: (.4, .3)
+
+			ActionBar:
+				pos_hint: {'top': 1}
+				ActionView:
+					ActionPrevious:
+						title: 'Simulador Tools'
+						with_previous: False
+					ActionOverflow:
+					ActionButton:
+						text: 'Guardar datos'
+					ActionButton:
+						text: 'Cobertura'
+					ActionButton:
+						text: 'resultados'
+			BoxLayout:
+				padding: 5	
+				orientation: 'horizontal'
+
+				BoxLayout:
+					padding: 10
+					orientation: 'vertical'
+
+					BoxLayout:
+						orientation: 'horizontal'
+						size_hint_y: 0.15
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: "Nivel"
+						TextInput:
+							id: nivel
+							size_hint: ( .20, 1)
+							multiline: False
+
+					BoxLayout:
+						orientation: 'horizontal'
+						size_hint_y: 0.15
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: "Radio celdas"
+						TextInput:
+							id: radiocell
+							size_hint: ( .20, 1)
+							multiline: False
+					
+					BoxLayout:
+						orientation: 'horizontal'
+						size_hint_y: 0.15
+   
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: "Intensidad puntos Poisson:"
+						TextInput:
+							id: intensidadPPP
+							size_hint: ( .20, 1)
+							multiline: False
+
+					BoxLayout:
+						orientation: 'vertical'
+						padding: [0, 40]
+						
+						Button:
+							id: cal
+							canvas.before:
+								Color:
+									rgba: 0,0,1,0
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							background_color: 1, 1, 1, 1
+							text: "Calcular"
+
+							on_release: 
+								root.manager.transition.direction = "up" 		
+								root.btn()
+								app.root.current ="caz"
+
+						Button: 
+							id: back
+							canvas.before:
+								Color:
+									rgba: 0,0,1,0
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							background_color: 1, 1, 1, 1
+							text: "Volver"
+				
+				BoxLayout:
+					orientation: 'horizontal'
+					padding: [0,50] 
+				
+					Image:
+						size: self.texture_size
+						size_hint: 1, 1
+						#size: dp(56),dp(56)
+						source: 'base_datos/img_gui/Escudo_Unicauca1.png'
+<SecondWindow>
+	name:"caz"
+	canvas.before:
+		Color:
+			rgba: (1, 1, 1, 1)
+			#rgba: 0,0,0.53,0.2
+		Rectangle:
+			pos:self.pos
+			size:self.size
+			source: "base_datos/img_gui/modelcanal.PNG"
+	BoxLayout:
+		orientation: 'horizontal'
+	#	padding: 30
+		padding: [30, 120, 30, 120]
+			#source: 'all_ppp_trisec.jpg'
+		
+		
+		Button: 
+			canvas.before:
+				Color:
+					rgba: 0,0,1
+				Rectangle:
+			
+					pos:self.pos
+					size:self.size
+			text:'MODELO DEL CANAL TIPO UMa'
+			on_release:
+				#source:'all_ppp_trisec.jpg'
+				root.rcell_uma()
+				root.manager.transition.direction = "down"
+				app.root.current = "king"
+
+		Button:
+			canvas.before:
+				Color:
+					rgba: 0,0,1
+				Rectangle:
+					
+					pos:self.pos
+					size:self.size
+			text: 'MODELO DEL CANAL TIPO UMi-Street Canyon'
+			on_release:
+				#root.add_dato()
+				#source:'all_ppp_trisec.jpg'
+				root.manager.transition.direction = "down"
+				app.root.current = "sking"
+	
+#				source:root.sr
+				#source:'all_ppp_trisec.jpg'
+
+			
+#<contenedorgrilla>
+#	name:"ima"		
+	
