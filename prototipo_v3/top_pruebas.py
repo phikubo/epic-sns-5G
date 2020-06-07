@@ -198,7 +198,7 @@ def prueba_top_1_balance_del_enlace():
 
 
 def prueba_top_2_balance_del_enlace():
-	'''Prueba para validar un balance del enlace simple (no 5G)
+	'''Prueba para validar un balance del enlace simple (no 5G), al comparar esta prueba y la implementacion.
 
 	1.DESIGN:
 	#0.implementar para celdas>1, con los mismos usuarios. Ok para celda=2. Probar para c=n {con sus propios uusarios}
@@ -207,6 +207,7 @@ def prueba_top_2_balance_del_enlace():
 	#tarea: implementar grafica para el caso de no cumplir sensibilidad
 	#3. crear modulos awgn y ruido
 	'''
+	print("============INICIO DE LA PRUEBA ==========")
 	#IMPLEMENTACION:
 	celdas=2
 	radio=1000#unidades->m ATENCION: EL RADIO DEFINE LAS UNIDADES, SI SON EN M O EN KM, LOS CALCULOS TAMBIEN.
@@ -217,12 +218,14 @@ def prueba_top_2_balance_del_enlace():
 	distribucion=((np.array([[1000, 250],[1500, 1000]]),np.array([[0, 250],[500, 1500]])),"prueba_unitaria") #celdas=2
 	mod_perdidas="espacio_libre" #espacio_libre, rappaport, ci, ts901. TUPLA: (tipo, perdidas_tx, perdidas_rx, ganancia_rx,ganancia_tx, sensibilidad)
 
-	pot_tx=0
-	loss_tx=0
-	loss_rx=0
-	gan_tx=0
-	gan_rx=0
-	sensibilidad=0
+	pot_tx=18
+	loss_tx=5
+	loss_rx=5
+	gan_tx=5
+	gan_rx=8
+	sensibilidad=92
+
+	freq=2.4 #asigno frecuencia en gigaz
 	#TODOS LOS EQUIPOS TIENEN LA MISMA LOSS TX, GAN TX, ETC?
 	#ES NECESARIO CREAR LOS USUARIOS Y LA ANTENA, con los parametros de arriba
 	#Considerar lo siguiente: si tenemos dos layers, cada uno tendria un modelo de canal asociado.
@@ -230,31 +233,39 @@ def prueba_top_2_balance_del_enlace():
 	#en realidad si habria un modelo del canal diferente?
 	#cual es el criterio de las dos layers?
 
-	param_perdidas=("espacio_libre", pot_tx,loss_tx,loss_rx,gan_tx,gan_rx,sensibilidad)
+	param_perdidas=("espacio_libre", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad)
 	'''IMPORTANTE: al incluir el modelo desde aca, puedo tener 2 tier o layer de Celdas
 	#un modelo de celdas para umi y otro para uma de forma independiente, ahora como se relacionan?'''
-	colmena=ss.Sistema_Celular(celdas,radio, distribucion, param_perdidas)
+
+	colmena=ss.Sistema_Celular((celdas,freq),radio, distribucion, param_perdidas)
+
 	celda_0=colmena.cluster[0] #objeto de la celda 0
 	celda_1=colmena.cluster[1]
+
 	#opcion 1, como instancias diferentes
 	#print(celda_0.user_x)
 	##################################1.2 Calcular distancias a la base
 	distancias_celda_cero=celda_0.distancias #obtengo las distancias de esa celda
-	print("++++++++++++dist:",distancias_celda_cero)
+	#print("++++++++++++distancias celda 0:",distancias_celda_cero)
 
 	distancias_celda_uno=celda_1.distancias #obtengo las distancias de esa celda
-	print("++++++++++++dist:",distancias_celda_uno)
+	#print("++++++++++++distancias celda 1:",distancias_celda_uno)
+	########################################print("************usarios en el sistema: ", colmena.no_usuarios_total)
+	#print("************distancias en el sistema: ")
+	############################################print(colmena.distancias_celdas)
+	###############################3distancias_km=distancias_celda_cero/1000 #esta en km.
+	#######################3print("&&&&&&&&&&&&distancias en km")
+	#####################print(distancias_km)
 
-
-	distancias_km=distancias_celda_cero/1000 #esta en km.
-	print(distancias_km)
-	freq=2.4 #asigno frecuencia en gigaz
 	#print("Asumiendo que las distancias son en [km] las siguientes: ")
 	#print(distancias_celda_cero) #asumiendo que la distancia esta en km
-	modelo_prueba=moca.Modelo_Canal(freq, distancias_km) #creo el modelo_prueba del canal
+	modelo_prueba=moca.Modelo_Canal(param_perdidas,freq, (colmena.distancias_celdas, "m")) #creo el modelo_prueba del canal
 	#print("las perdidas de esas distancias son: ")
 	modelo_prueba.perdidas_espacio_libre_ghz() #calculo las perdidas en dB
-	print(modelo_prueba.path_loss, "[dB]")
+	print("================top_pruebas==============")
+	print("modelo perdidas")
+	print(modelo_prueba.path_loss, "perdidas en [dB]")
+	modelo_perdidas_simple=modelo_prueba.path_loss #asigno a una variable
 	#############################################1.3 Recibir parámetros
 	ptx=18 #[dBm]
 	cable_conector_tx=5 #[dB]
@@ -262,20 +273,86 @@ def prueba_top_2_balance_del_enlace():
 	ganancia_tx=5 #dBi
 	ganancia_rx=8 #dBi
 	sensibilidad=92 #dBm
-	modelo_perdidas_simple=modelo_prueba.path_loss
+
 	###########################################1.4 Calcular balance del enlace
+	segmento1=ptx-cable_conector_tx+ganancia_tx
+	segmento2=ganancia_rx-cable_conector_rx
+	print("segmentos", segmento1, segmento2)
+	####print("modelo perdidas",modelo_perdidas_simple)
+	print("type mod per simple", type(modelo_perdidas_simple))
 	ecuacion_balance=ptx-cable_conector_tx+ganancia_tx-modelo_perdidas_simple+ganancia_rx-cable_conector_rx
 	print("potencia irradiada: ", ecuacion_balance)
+	print("type prx", type(ecuacion_balance))
 	print("margen: ",ecuacion_balance+sensibilidad)
+
+	#print("ptx",ptx)
+	#print("ltx",cable_conector_tx)
+	#print("gtx",ganancia_tx)
+	#print("grx",ganancia_rx)
+	#print("lrx",cable_conector_rx)
 	#colmena.ver_celdas()
 	#colmena.ver_usuarios()
-
-
-
-
-
 	#PRUEBA DE BALANCE EXITOSA PARA celda=1, celda=2.
 	colmena.ver_todo()
+	plt.grid(True)
+	plt.show()
+
+def prueba_top_3_balance_del_enlace():
+	'''Prueba limpia para observar la nueva implementacion de la clase modelo del canal
+	La prueba consiste en generar un escenario probado sin acudir a la clase modelo del canal como se hizo
+	en la prueba top2.'''
+	print("============INICIO DE LA PRUEBA P3 ==========")
+	celdas=2
+	radio=1000
+	#parametros de param_escenario
+	pot_tx=18
+	loss_tx=5
+	loss_rx=5
+	gan_tx=5
+	gan_rx=8
+	sensibilidad=92
+	freq=2.4
+	#empaquetado de variables de escenario
+	param_perdidas=("espacio_libre", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad)
+	#definicion de las coordenadas de usuario
+	distribucion=((np.array([[1000, 250],[1500, 1000]]),np.array([[0, 250],[500, 1500]])),"prueba_unitaria") #celdas=2
+	#simulacion del escenario al crear un sistema celular
+	sim_colmena=ss.Sistema_Celular((celdas,freq),radio, distribucion, param_perdidas)
+	print(sim_colmena.modelo_canal.resultado_balance)
+	print(sim_colmena.modelo_canal.resultado_margen)
+
+	sim_colmena.ver_todo()
+	plt.grid(True)
+	plt.show()
+
+def prueba_top_4_balance_del_enlace():
+	'''Prueba limpia para observar la nueva implementacion de la clase modelo del canal
+	La prueba consiste en generar un escenario probado sin acudir a la clase modelo del canal como se hizo
+	en la prueba top2.'''
+	print("============INICIO DE LA PRUEBA P3 ==========")
+	celdas=2
+	radio=1000
+	#parametros de param_escenario
+	pot_tx=18
+	loss_tx=5
+	loss_rx=5
+	gan_tx=5
+	gan_rx=8
+	sensibilidad=92
+	freq=2.4
+	#empaquetado de variables de escenario
+	param_perdidas=("espacio_libre", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad)
+	#definicion de las coordenadas de usuario
+	intensidad = 10
+	distribucion=(intensidad/radio**2,"ppp")
+	#simulacion del escenario al crear un sistema celular
+	sim_colmena=ss.Sistema_Celular((celdas,freq),radio, distribucion, param_perdidas)
+	print("POTENCIA RECIBIDA")
+	print(sim_colmena.modelo_canal.resultado_balance)
+	print("MARGEN")
+	print(sim_colmena.modelo_canal.resultado_margen)
+
+	sim_colmena.ver_todo()
 	plt.grid(True)
 	plt.show()
 
@@ -303,7 +380,9 @@ if __name__=="__main__":
 	#prueba_externa_0()
 	#2
 	#prueba_top_1_balance_del_enlace()
-	prueba_top_2_balance_del_enlace()
+	#prueba_top_2_balance_del_enlace()
+	#prueba_top_3_balance_del_enlace()
+	prueba_top_4_balance_del_enlace()
 	#prueba_perdidas_basicas()
 
 else:

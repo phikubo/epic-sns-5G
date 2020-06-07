@@ -30,14 +30,15 @@ except:
 class Sistema_Celular:
 	'''Clase que crea y controla clusters de celdas. Asigna e inicializa valores.
 	Muestra graficas de las celdas deseadas.'''
-	def __init__(self, num_celdas, radio, distribucion, tipo_canal):
+	def __init__(self, param_escenario, radio, distribucion, params_perdidas):
 		'''Constructor por defecto. Inicializa las variables de las clases'''
 		#1.tupla con (intensidad, distribucion)
 		#1.1 si la distribucion no tiene una intensidad, intensidad=0
-		self.tipo_canal=tipo_canal
 		self.intensidad, self.distribucion=distribucion
 		self.cel_fig, self.cels_ax=plt.subplots(1)
-		self.num_celdas=num_celdas
+		self.num_celdas, self.frequencia_operacion=param_escenario
+		self.params_perdidas=params_perdidas #"tipo", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad
+		#
 		self.cluster=[]
 		#radio externo
 		self.radio=radio
@@ -47,20 +48,28 @@ class Sistema_Celular:
 		self.ue_x=0
 		self.ue_y=0
 		#
+		self.modelo_canal=0
 		#falta las distancias totales?
 		self.no_usuarios_total=0
-		self.distancias_celdas=0
+		self.distancias_celdas=[]
 		#todas las perdidas
-		self.perdidas=0
+		self.perdidas_celdas=[]
 		#inicializa objetos tipo celda y las almacena en self.cluster
 		self.inicializar_cluster_celdas()
 		#crea las coordenadas de los usuarios segun una distribucion
 		self.inicializar_distribucion() #falta implementar otras distribuciones
 		#Almacena usuarios en cada celda del cluster
 		self.inicializar_cluster_usuarios()
-		#crea el modelo del mod_canal
-		#self.inicialiar_modelo_canal(frecuencia_central, distancias) #depende de la frec y cluster_usuarios
+		#crea el modelo del mod_canal, frecuencia_central, distancias
+		self.inicializar_modelo_canal() #depende de la frec y cluster_usuarios
 
+
+
+	'''-----------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------------
+	------------------------------------FUNCIONES DE INICIALIZACION-----------------------------
+	--------------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------------'''
 
 	def inicializar_cluster_celdas(self):
 		'''Init. Almacena las celdas unicas en un cluster de celdas para control y gestion.'''
@@ -76,7 +85,8 @@ class Sistema_Celular:
 		'''Init. Crea coordenadas de usuario de acuerdo a una distribucion.'''
 		if self.intensidad != 0:
 			if self.distribucion=="ppp":
-				self.ue_x, self.ue_y=ppp.distribuir_en_celdas(self.radio, self.origen_cel_x, self.origen_cel_y, self.intensidad)
+				self.ue_x, self.ue_y=ppp.distribuir_en_celdas(self.radio, self.origen_cel_x,
+					self.origen_cel_y, self.intensidad)
 				#shape es (n_celdas, n_usuarios en cada una)
 				##print(np.shape(self.ue_x))#displays shape of arrays
 				##print(np.shape(self.ue_y))
@@ -87,7 +97,7 @@ class Sistema_Celular:
 			elif self.distribucion=="random":
 				pass
 			elif self.distribucion=="prueba_unitaria":
-				print("prueba unitaria-parametros_", self.intensidad)
+				#print("prueba unitaria-parametros_", self.intensidad)
 				self.ue_x,self.ue_y=self.intensidad
 				#solucion, esto es una lista, debe ser numpy!
 		else:
@@ -99,13 +109,46 @@ class Sistema_Celular:
 		#append distancias
 		#self.distancias_celdas
 		for celda_unica, su_x, su_y in zip(self.cluster, self.ue_x, self.ue_y):
-			print(celda_unica, su_x, su_y)
+			#print(celda_unica, su_x, su_y)
 			celda_unica.user_x=su_x
 			celda_unica.user_y=su_y
 			celda_unica.distancia_gnodeb_ue()
-			print("---aki",celda_unica.distancias)
+			self.distancias_celdas.append(celda_unica.distancias)
+			#print("---inicializar_cluster",celda_unica.distancias)
+		self.distancias_celdas=np.array(self.distancias_celdas)
+		#print(len(self.cluster)*len(self.ue_x), "usuarios")
+		self.no_usuarios_total=len(self.cluster)*len(self.ue_x)
+		#print("---aki2",self.distancias_celdas)
+		#print("---tipo:",type(self.distancias_celdas)
+
+	def inicializar_modelo_canal(self):
+		'''Init. Crea un modelo del canal aplicado a todo el sistema.
+		 Calcula perdidas, dependiendo del tipo de modelo indicado.'''
+		#diseno:
+		#"tipo", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad
+		#pasar parametros de perdidas:
+		self.modelo_canal=moca.Modelo_Canal(self.params_perdidas,self.frequencia_operacion,
+			(self.distancias_celdas, "m"))
+		if self.params_perdidas[0]=="espacio_libre":
+			self.modelo_canal.perdidas_espacio_libre_ghz()
+			self.modelo_canal.balance_del_enlace_simple()
+
+		#
+		#
+		#
+		#
+		#
+		#
+		#
+		#
 
 
+
+	'''-----------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------------
+	------------------------------------FUNCIONES DE VISULAIZACION------------------------------
+	--------------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------------'''
 
 	def ver_estaciones_base(self):
 		"""Permite ver las estaciones base de forma independiente"""
@@ -136,7 +179,8 @@ class Sistema_Celular:
 		apotema_trisec= self.radio/2 #relaciono el apotema tri con el radio celda grande
 		radio_trisec =2*apotema_trisec* math.sqrt((4/3)) #radio a partir del apotema
 
-		mcir.tri_sectorizar(angulo_x,angulo_y, radio_trisec, self.origen_cel_x, self.origen_cel_y, self.cels_ax)
+		mcir.tri_sectorizar(angulo_x,angulo_y, radio_trisec, self.origen_cel_x,
+		self.origen_cel_y, self.cels_ax)
 
 
 	def ver_usuarios(self, *target):
@@ -158,6 +202,12 @@ class Sistema_Celular:
 	def info_celda_unica(self, target):
 		'''Funcion para ver toda la información de una celda específica'''
 		pass
+
+	'''------------------------------------------------------------------------------------------
+	---------------------------------------------------------------------------------------------
+	------------------------------------FUNCIONES DE EXPERIMENTALES------------------------------
+	---------------------------------------------------------------------------------------------
+	---------------------------------------------------------------------------------------------'''
 
 	def monte_carlo(self):
 		pass
@@ -220,6 +270,7 @@ class Sistema_Celular:
 		eje_x=np.arange(1,len(puntos)+1)
 
 		plt.plot(eje_x,acomulativa/eje_x)
+
 
 
 
