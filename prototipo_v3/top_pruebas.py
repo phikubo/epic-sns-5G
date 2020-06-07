@@ -330,7 +330,7 @@ def prueba_top_4_balance_del_enlace():
 	La prueba consiste en generar un escenario probado sin acudir a la clase modelo del canal como se hizo
 	en la prueba top2.'''
 	print("============INICIO DE LA PRUEBA P3 ==========")
-	celdas=8
+	celdas=15
 	radio=50
 	#parametros de param_escenario
 	pot_tx=18
@@ -352,8 +352,9 @@ def prueba_top_4_balance_del_enlace():
 	print("MARGEN")
 	print(sim_colmena.modelo_canal.resultado_margen)
 
-	sim_colmena.ver_usuarios()
-	sim_colmena.ver_celdas()
+	#sim_colmena.ver_usuarios()
+	#sim_colmena.ver_celdas()
+	sim_colmena.ver_todo()
 	plt.grid(True)
 	plt.show()
 

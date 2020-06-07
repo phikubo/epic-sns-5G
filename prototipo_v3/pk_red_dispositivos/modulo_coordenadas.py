@@ -129,7 +129,9 @@ def mapear_coordenadas_cartesianas(coordenadas_axiales, nivel,radio_ext):
 	for lista, nvl in zip(coordenadas_axiales, range(nivel+1)):
 		#print("axiales totales ", lista, "numero de celdas ", len(lista))
 		#print("nivel: ",nvl)
-		dec = distancia_entre_celdas(nvl, radio_ext) ####################################checkear
+		#IMPORTANTE: antes estaba distancia_entre_celdas(nvl,radio_ext) parece que esto no funciona y si como sigue
+		#investigar por que
+		dec = distancia_entre_celdas(1, radio_ext) ####################################checkear
 		#print("distancia ", dec)
 
 		for axial in lista:
