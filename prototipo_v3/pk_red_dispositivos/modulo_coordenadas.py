@@ -231,9 +231,11 @@ def prueba_interna1():
 	coordx,coordy=ensamblar(0,10)
 	plt.plot(coordx,coordy, "go")
 	plt.show()
+
+
 def prueba_interna2():
 	print("-----------------------------")
-	print("inicio")
+	print("inicio prueba interna 2")
 	print("-----------------------------")
 	#solo modificar las celdas deseadas y
 	#el radio.

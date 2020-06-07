@@ -84,7 +84,7 @@ def prueba_distancia_celdas():
 	radio = 100
 	intensidad =20
 	intensidad = intensidad/radio**2
-	celdas = 2
+	celdas = 15
 	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad))
 	print(colmena.cluster[0].distancias)
 	print(colmena.cluster[1].distancias)
@@ -110,7 +110,7 @@ def pruebas_modelo_canal_umi():
 	PerdidasProp= np.append(colmena.cluster[0].distancias, np.cim.modeloci(alpha_n,colmena.cluster[0].distancias,Sigma_Xn,frecuencia))
 	PerdidasPropi=[None]
 	Ppl=[]
-<<<<<<< HEAD
+#<<<<<<< HEAD
 """<<<<<<< HEAD
 	for d in colmena.cluster[0].distancias: 
 		PerdidasProp=cim.modeloci(alpha_n,d,Sigma_Xn,frecuencia)
@@ -214,11 +214,11 @@ def prueba_perdidas_basicas_2():
 	radio = 20 #u -> metro
 	intensidad = 2
 	intensidad = intensidad/radio**2
-	celdas = 2
+	celdas = 10
 	clase=moca.Modelo_canal
-	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad),Modelo_Canal=clase) #en este momento hay dos celdas, con sus parametros definidos
+	colmena = pkcel.Celdas(celdas, radio, distribucion=("ppp", intensidad),Modelo_Canal=None) #en este momento hay dos celdas, con sus parametros definidos
 	#la idea es tener una referencia a la clase sin crear el objeto para luego crear este objeto en otra clase
-	print(moca.Modelo_canal)
+	#print(moca.Modelo_canal)
 
 
 
@@ -261,7 +261,7 @@ if __name__=="__main__":
 	#prueba_Perdidas_propagacion(radio,frecuencia)
 	
 	#prueba 6.
-	prueba_perdidas_basicas_2()
+	####prueba_perdidas_basicas_2()
 
 else:
 	print("Modulo <escribir_nombre> importado")

@@ -330,8 +330,8 @@ def prueba_top_4_balance_del_enlace():
 	La prueba consiste en generar un escenario probado sin acudir a la clase modelo del canal como se hizo
 	en la prueba top2.'''
 	print("============INICIO DE LA PRUEBA P3 ==========")
-	celdas=2
-	radio=1000
+	celdas=8
+	radio=50
 	#parametros de param_escenario
 	pot_tx=18
 	loss_tx=5
@@ -343,7 +343,7 @@ def prueba_top_4_balance_del_enlace():
 	#empaquetado de variables de escenario
 	param_perdidas=("espacio_libre", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad)
 	#definicion de las coordenadas de usuario
-	intensidad = 10
+	intensidad = 2
 	distribucion=(intensidad/radio**2,"ppp")
 	#simulacion del escenario al crear un sistema celular
 	sim_colmena=ss.Sistema_Celular((celdas,freq),radio, distribucion, param_perdidas)
@@ -352,7 +352,8 @@ def prueba_top_4_balance_del_enlace():
 	print("MARGEN")
 	print(sim_colmena.modelo_canal.resultado_margen)
 
-	sim_colmena.ver_todo()
+	sim_colmena.ver_usuarios()
+	sim_colmena.ver_celdas()
 	plt.grid(True)
 	plt.show()
 
