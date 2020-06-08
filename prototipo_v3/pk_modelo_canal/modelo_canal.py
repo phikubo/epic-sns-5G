@@ -20,7 +20,7 @@ class Modelo_Canal:
 		#params_perdidas[4]:ganancia en rx
 		#params_perdidas[5]:perdidas en rx
 		#params_perdidas[6]:sensibilidad de todos los usuarios #en el futuro, sensibidad variable
-		
+
 		self.frecuencia=frecuencia #en gigaherz
 		self.distancias, self.unidades=params_distancia
 		self.params_perdidas=params_perdidas
@@ -36,12 +36,29 @@ class Modelo_Canal:
 	def inicializar_distancias_km(self):
 		if self.unidades=="m" and self.tipo_perdidas=="espacio_libre":
 			self.distancia_km=self.distancias/1000
+		elif self.unidades=="m" and self.tipo_perdidas=="hata_1980":
+			self.distancia_km=self.distancias/1000
 		elif self.unidades=="km":
 			pass
 
 	def perdidas_espacio_libre_ghz(self):
 		'''Funcion que calcula las perdidas de espacio libre en dB'''
 		self.path_loss=92.4+20*np.log10(self.frecuencia)+20*np.log10(self.distancia_km)
+
+	def perdidas_empirica_hata_mhz(self):
+		'''Funcion que calcula las perdidasd de espacio con el modelo hata 1980.
+		Fuente:Empirical Formula for Propagation Loss in Land Mobile Radio Services'''
+		#rangos
+		#fc:150,1500 MHz
+		#hb=30,200 m
+		#R:1, 200 km
+		hb=30 #m
+		alfa=0
+		hm=1.5
+		segmento_a=69.55+26.16*np.log10(self.frecuencia)
+		segmento_c=(44.9-6.55*np.log10(hb))*np.log10(self.distancia_km)
+		segmento_b=13.82*np.log10(hb)+alfa*(hm)
+		self.path_loss=segmento_a-segmento_b+segmento_c
 
 	def balance_del_enlace_simple(self):
 		'''Funcion que calcula un balance del enlace sencillo'''

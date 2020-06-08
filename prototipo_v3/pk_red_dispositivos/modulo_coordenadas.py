@@ -108,12 +108,12 @@ def distancia_entre_celdas(nivel, radio_ext):
 	'''Funcion que genera el valor de la distancia entre el origen y las celdas por nivel. Puede ser util para calcular el
 	radio de todo el sistema. Calcula la distancia con la mitad del radio que genera patron 3nr'''
 	#print(radio_ext)
-	r_med=radio_ext/2
+	r_med=radio_ext/2 #ISD
 
 	#este nivel debe ser constante cuando se llama en el mapeo, porque?
 	#Rta, debido a que la distancia entre celdas, se ve afectada por 2/3*seno(60)(x-z), por esto dec
 	#no debe ser ajustable porque esa distancia se ajusta en la ecuacion de arriba.
-	print("[NOK] mod_cel->",distancia_entre_celdas.__name__,3*(nivel)*r_med)
+	print("[OK] mod_cel->",distancia_entre_celdas.__name__,3*(nivel)*r_med)
 	#print(r_med, nivel)
 	return 3*(nivel)*r_med
 

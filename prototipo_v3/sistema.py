@@ -131,7 +131,11 @@ class Sistema_Celular:
 			(self.distancias_celdas, "m"))
 		if self.params_perdidas[0]=="espacio_libre":
 			self.modelo_canal.perdidas_espacio_libre_ghz()
-			self.modelo_canal.balance_del_enlace_simple()
+
+		elif self.params_perdidas[0]=="hata_1980":
+			self.modelo_canal.perdidas_empirica_hata_mhz()
+
+		self.modelo_canal.balance_del_enlace_simple()
 
 		#
 		#
