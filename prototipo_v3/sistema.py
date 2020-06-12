@@ -132,8 +132,8 @@ class Sistema_Celular:
 		if self.params_perdidas[0]=="espacio_libre":
 			self.modelo_canal.perdidas_espacio_libre_ghz()
 
-		elif self.params_perdidas[0]=="hata_1980":
-			self.modelo_canal.perdidas_empirica_hata_mhz()
+		elif self.params_perdidas[0]=="okumura_hata":
+			self.modelo_canal.perdidas_okumura_hata_mhz()
 
 		self.modelo_canal.balance_del_enlace_simple()
 

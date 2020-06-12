@@ -363,7 +363,7 @@ def prueba_top_5_balance_del_enlace():
 	La prueba consiste en generar un escenario probado sin acudir a la clase modelo del canal como se hizo
 	en la prueba top2.'''
 	print("============INICIO DE LA PRUEBA P3 ==========")
-	celdas=2
+	celdas=15
 	radio=1000 #km
 	#parametros de param_escenario
 	pot_tx=18
@@ -374,12 +374,14 @@ def prueba_top_5_balance_del_enlace():
 	sensibilidad=92
 	freq=1500 #megaherz
 	#empaquetado de variables de escenario. Debe seguir la norma Kwars
-	param_perdidas=("hata_1980", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad)
+	param_perdidas=("okumura_hata", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad)
 	#definicion de las coordenadas de usuario
 	intensidad = 2
 	distribucion=(intensidad/radio**2,"ppp")
 	#simulacion del escenario al crear un sistema celular
 	sim_colmena=ss.Sistema_Celular((celdas,freq),radio, distribucion, param_perdidas)
+	print("MODELO DE PERDIDAS")
+	print(sim_colmena.modelo_canal.resultado_path_loss)
 	print("POTENCIA RECIBIDA")
 	print(sim_colmena.modelo_canal.resultado_balance)
 	print("MARGEN")
