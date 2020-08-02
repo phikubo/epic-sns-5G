@@ -129,7 +129,7 @@ def prueba_v00():
 
 
 if __name__ == "__main__":
-	#prueba_v00()
-	prueba_angulos_v30()
+	prueba_v00()
+	#prueba_angulos_v30()
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")

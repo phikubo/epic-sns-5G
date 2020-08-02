@@ -49,15 +49,43 @@ class Sistema_Celular:
 		self.ue_y=0
 		#
 		self.modelo_canal=0
+		self.modelo_canal_interf=0
 		#falta las distancias totales?
 		self.no_usuarios_total=0
 		self.distancias_celdas=[]
+		self.distancias_hiper_cluster=[]
+		self.angulos_hiper_cluster=[]
 		#todas las perdidas
 		self.perdidas_celdas=[]
 		#inicializa objetos tipo celda y las almacena en self.cluster
 		self.inicializar_cluster_celdas()
 		#crea las coordenadas de los usuarios segun una distribucion
-		self.inicializar_distribucion() #falta implementar otras distribuciones
+		self.inicializar_distribucion() #falta implementar otras distribuciones: thomas cluster
+		#self.ue_x, self.ue_y contiene los usuarios del cluster
+		'''Definicion de la implementacion:
+		COBERTURA:
+		A. Usuario como entidad principal.
+
+		0. Definir el número de usuarios en cada celda.
+		1. Obtener posicion de usuarios del cluster: self.ue_x, self.ue_y [[cel1], [cel2],...,[celn]]
+		2. Relacionar posicion cluster celdas, con posicion cluster usuarios:
+			a. En cada celda iterar en cada usuario
+			b. En cada usuario calcular el balance del enlace (potencia recibida)
+				1. Reutilizar inicializar_modelo_canal()
+			c. En variable: mejor celda servida, seleccionar id de celda con mejor potencia recibida.
+			d. Reorganizar de acuerdo al id de mejor celda servida * requerimiento para +++ capacidad.
+				1. Reutilizar inicializar_cluster_usuarios() para este proposito
+		3. Dimensionar el número de usuarios en cada celda. ****Ejemplo 5-10-15.
+			1. Contar cuantos usuarios se han asignado
+			2. Rellenar usuarios faltantes con parametros nulos.
+
+		4. CAPACIDAD:
+			B. Celdas como elemento principal.
+				a. Iterar sobre los valores de las celdas.
+		nota: crear cuando instancia de usuario al generar las coordenadas de distribucion o luego
+		de este evento, crear los usuarios'''
+		#Gestiona los usuarios
+		self.inicializar_usuarios_base()
 		#Almacena usuarios en cada celda del cluster
 		self.inicializar_cluster_usuarios()
 		#crea el modelo del mod_canal, frecuencia_central, distancias
@@ -82,7 +110,7 @@ class Sistema_Celular:
 
 
 	def inicializar_distribucion(self):
-		'''Init. Crea coordenadas de usuario de acuerdo a una distribucion.'''
+		'''Init. Crea coordenadas de usuario de acuerdo a una proceso de distribucion.'''
 		if self.intensidad != 0:
 			if self.distribucion=="ppp":
 				self.ue_x, self.ue_y=ppp.distribuir_en_celdas(self.radio, self.origen_cel_x,
@@ -91,8 +119,11 @@ class Sistema_Celular:
 				##print(np.shape(self.ue_x))#displays shape of arrays
 				##print(np.shape(self.ue_y))
 				#displays a number of objects-->IMPORTANTE
-				print("aki",type(self.ue_x)) #muestra la estructura de los datos.
-				print("El cluster tiene ahora, ", len(self.cluster), "celdas.")
+				##print("[sis.init.dist] 1. El cluster tiene ahora,", len(self.cluster), "celdas.")
+				##print("[sis.init.dist] 2. Tipo de dato\n",type(self.ue_x)) #muestra la estructura de los datos.
+				##print("[sis.init.dist] 3. Logitud dato celda[0]:\n",len(self.ue_x[0]))
+				##print("[sis.init.dist] 4. Estructura de celdas\n",self.ue_x)
+
 
 			elif self.distribucion=="random":
 				pass
@@ -116,10 +147,35 @@ class Sistema_Celular:
 			self.distancias_celdas.append(celda_unica.distancias)
 			#print("---inicializar_cluster",celda_unica.distancias)
 		self.distancias_celdas=np.array(self.distancias_celdas)
-		#print(len(self.cluster)*len(self.ue_x), "usuarios")
-		self.no_usuarios_total=len(self.cluster)*len(self.ue_x)
+		#print(len(self.cluster),len(self.ue_x), "********usuarios")
+		self.no_usuarios_total=len(self.cluster)*len(self.ue_x[0]) #todos las celdas=#usuarios
 		#print("---aki2",self.distancias_celdas)
-		#print("---tipo:",type(self.distancias_celdas)
+		#print("---tipo:",type(self.distancias_celdas
+
+
+
+
+	def inicializar_usuarios_base(self):
+		'''Init. crea la clase usuario en cada coordenada.'''
+		print('[debug init usuarios base]')
+		for celda_unica in self.cluster:
+			celda_unica.interf_user_x=self.ue_x
+			celda_unica.interf_user_y=self.ue_y
+			celda_unica.distancia_all_estacion_base_usuarios()#a cual celda hace esto?
+			celda_unica.angulos_all_estacion_base_usuarios()
+
+			self.distancias_hiper_cluster.append(celda_unica.interf_distancias)
+			self.angulos_hiper_cluster.append(celda_unica.interf_angulos)
+			#rta, a cada celda, por es una instancia de clase.
+			print('end of usuarios_base')
+			#print(celda_unica.interf_user_x)
+			#if c==3:
+			#	break
+		'''
+		La funcion recibe todas las cordenadas de todos los usuarios en las celdas: [c1,c2,..,cn]
+		con ci={xi,yi}, con xi,yi, i={1,2,...}
+		'''
+
 
 	def inicializar_modelo_canal(self):
 		'''Init. Crea un modelo del canal aplicado a todo el sistema.
@@ -129,13 +185,23 @@ class Sistema_Celular:
 		#pasar parametros de perdidas:
 		self.modelo_canal=moca.Modelo_Canal(self.params_perdidas,self.frequencia_operacion,
 			(self.distancias_celdas, "m"))
+
+		#convierto la lista en array numpy
+		self.distancias_hiper_cluster=np.stack(self.distancias_hiper_cluster, axis=0)
+		#Creo un modelo del canal con todas las distancias.
+		self.modelo_canal_interf=moca.Modelo_Canal(self.params_perdidas,self.frequencia_operacion,
+			(self.distancias_hiper_cluster, "m"))
+		#calculo las perdidas del modelo del canal segun el tipo de modelo de propagacion
 		if self.params_perdidas[0]=="espacio_libre":
 			self.modelo_canal.perdidas_espacio_libre_ghz()
 
 		elif self.params_perdidas[0]=="okumura_hata":
 			self.modelo_canal.perdidas_okumura_hata_mhz()
-
+			#################
+			self.modelo_canal_interf.perdidas_okumura_hata_mhz()
+		#con los calculos anteriores, calculo el balance del enlace.
 		self.modelo_canal.balance_del_enlace_simple()
+		self.modelo_canal_interf.balance_del_enlace_simple()
 
 		#
 		#
@@ -194,6 +260,27 @@ class Sistema_Celular:
 			plt.plot(self.ue_x[target],self.ue_y[target], 'go')
 		else:
 			plt.plot(self.ue_x,self.ue_y, 'go')
+
+
+	def ver_usuarios_colores(self):
+		#*target ahora permite invocar la funcion con o sin parametros.
+		"""Permite ver los usuarios de diferente color, aleatorio"""
+		for x,y in zip(self.ue_x, self.ue_y):
+			plt.plot(x,y, c=np.random.rand(3,), ls='dotted')
+
+
+	def ver_circulos(self):
+		'''Permite observar los radios de las estaciones base en forma de circulo'''
+		'''Definicion de la prueba
+			1. radio de las Celdas
+			2. coordenada de las celdas.
+			3. usar modulo circulos y obtener coordendas
+			4. guardar coordendas en un arrays
+			5. plot'''
+		for x,y in zip(self.origen_cel_x, self.origen_cel_y):
+			#print(x,y)
+			cx,cy=mcir.coordenadas_circulo(self.radio, [x,y])
+			plt.plot(cx,cy, 'b')
 
 
 	def ver_todo(self):

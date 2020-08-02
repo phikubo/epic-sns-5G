@@ -363,7 +363,7 @@ def prueba_top_5_balance_del_enlace():
 	La prueba consiste en generar un escenario probado sin acudir a la clase modelo del canal como se hizo
 	en la prueba top2.'''
 	print("============INICIO DE LA PRUEBA P3 ==========")
-	celdas=15
+	celdas=4
 	radio=1000 #km
 	#parametros de param_escenario
 	pot_tx=18
@@ -376,7 +376,7 @@ def prueba_top_5_balance_del_enlace():
 	#empaquetado de variables de escenario. Debe seguir la norma Kwars
 	param_perdidas=("okumura_hata", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad)
 	#definicion de las coordenadas de usuario
-	intensidad = 2
+	intensidad = 1
 	distribucion=(intensidad/radio**2,"ppp")
 	#simulacion del escenario al crear un sistema celular
 	sim_colmena=ss.Sistema_Celular((celdas,freq),radio, distribucion, param_perdidas)
@@ -394,6 +394,275 @@ def prueba_top_5_balance_del_enlace():
 	plt.show()
 
 
+def prueba_sistema_v035():
+	'''Prueba para implemenetar el requerimiento 5a1 del reporte version 39. Parte 1'''
+	print("============INICIO DE LA PRUEBA requerimiento 5a1 ==========")
+	celdas=19
+	intensidad = 1
+	#
+	radio=1000 #km
+	#parametros de param_escenario
+	pot_tx=18
+	loss_tx=5
+	loss_rx=5
+	gan_tx=5
+	gan_rx=8
+	sensibilidad=92
+	freq=1500 #megaherz
+	#empaquetado de variables de escenario. Debe seguir la norma Kwars
+	param_perdidas=("okumura_hata", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad)
+	#definicion de las coordenadas de usuario
+	#
+	distribucion=(intensidad/radio**2,"ppp")
+	#simulacion del escenario al crear un sistema celular
+	sim_colmena=ss.Sistema_Celular((celdas,freq),radio, distribucion, param_perdidas)
+	print("[top] 1. El cluster tiene ahora,", len(sim_colmena.cluster), "celdas.")
+	print("[top] 2. Tipo de dato  ",type(sim_colmena.ue_x)) #muestra la estructura de los datos.
+	print("[top] 3. Logitud dato celda[0]-usuarios/celda: ",len(sim_colmena.ue_x[0]), " usuarios.")
+	print("[top] 5. Total usuarios",sim_colmena.no_usuarios_total)
+	#print("[top] 4. Estructura de celdas\n",sim_colmena.ue_x)
+	print("[top] 6. distancia all usuarios c0",sim_colmena.cluster[0].interf_distancias)
+	print("[top] 7. origen celda",sim_colmena.cluster[0].pos_x, sim_colmena.cluster[0].pos_y)
+
+	'''Cada celda del cluster, ya contiene la distancia de los usuarios a las demas celdas.'''
+	#En este caso se ha seleccionado la celda celda_0 para conocer las distancias asociadas de sus usuarios.
+	stack_test=np.stack(sim_colmena.cluster[0].interf_distancias, axis=0)
+
+	print("[top] 8. stak all usuarios c0",stack_test.shape)
+	transpose_test=np.transpose(stack_test) #consituye las distancias de los usuarios a todas las celdas
+	print("[top] 9. traspose all usuarios c0",transpose_test[0])
+	print("[top] 10. maximo python c0",max(transpose_test[0]))
+	print("[top] 11. minimo python c0",min(transpose_test[0]))
+	print("[top] 12. maximo numpy c0",np.amax(transpose_test[0]))
+	print("[top] 13. minimo numpy c0",np.amin(transpose_test[0]))
+	print("[top] 14. cell id maximo numpy c0",np.where(transpose_test[0]==np.amax(transpose_test[0])))
+	print("[top] 15. cell id minimo numpy c0",np.where(transpose_test[0]==np.amin(transpose_test[0])))
+	#print("[top] 10. stak all usuarios c0",stack_test.shape)
+
+
+	'''Diseno de implementacion
+	1. Con las coordenadas de los usuarios, SIN asignarlos a una celda, calcular:
+		a. distancia a la celda(s)-> n(input) celdas.
+			a1. caso 1: todas las celdas
+			values.index(max(values))
+			a2. caso 2: celdas cercanas
+		b. perdidas del modelo de propagacion correspondiente
+		c. potencia recibida
+	2. 	Con la potencia recibida asignar a usuario.
+
+
+
+
+
+
+
+	'''
+	sim_colmena.ver_todo()
+	plt.grid(True)
+	plt.show()
+
+
+def prueba_sistema_v036():
+	'''Prueba para implemenetar el feature de visualizacion de radios circulares.'''
+	print("============INICIO DE LA PRUEBA==========")
+	celdas=5
+	intensidad = 1
+	#
+	radio=1000 #km
+	#parametros de param_escenario
+	pot_tx=18
+	loss_tx=5
+	loss_rx=5
+	gan_tx=5
+	gan_rx=8
+	sensibilidad=92
+	freq=1500 #megaherz
+	#empaquetado de variables de escenario. Debe seguir la norma Kwars
+	param_perdidas=("okumura_hata", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad)
+	#definicion de las coordenadas de usuario
+	#
+	distribucion=(intensidad/radio**2,"ppp")
+	#simulacion del escenario al crear un sistema celular
+	sim_colmena=ss.Sistema_Celular((celdas,freq),radio, distribucion, param_perdidas)
+	sim_colmena.ver_circulos()
+	sim_colmena.ver_todo()
+	plt.grid(True)
+	plt.show()
+	'''Prueba terminada'''
+
+def prueba_sistema_v037():
+	'''Prueba para implemenetar el feature de visualizacion usuarios por celda, en diferente color.'''
+	print("============INICIO DE LA PRUEBA==========")
+	celdas=19
+	intensidad = 1
+	#
+	radio=1000 #km
+	#parametros de param_escenario
+	pot_tx=18
+	loss_tx=5
+	loss_rx=5
+	gan_tx=5
+	gan_rx=8
+	sensibilidad=92
+	freq=1500 #megaherz
+	#empaquetado de variables de escenario. Debe seguir la norma Kwars
+	param_perdidas=("okumura_hata", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad)
+	#definicion de las coordenadas de usuario
+	#
+	distribucion=(intensidad/radio**2,"ppp")
+	#simulacion del escenario al crear un sistema celular
+	sim_colmena=ss.Sistema_Celular((celdas,freq),radio, distribucion, param_perdidas)
+	sim_colmena.ver_circulos()
+	sim_colmena.ver_celdas()
+	sim_colmena.ver_estaciones_base()
+	sim_colmena.ver_usuarios_colores()
+	sim_colmena.ver_usuarios()
+	#sim_colmena.ver_todo()
+	plt.grid(True)
+	plt.show()
+
+
+def prueba_sistema_v038():
+	'''Prueba para implemenetar el requerimiento 5a1 del reporte version 39. Parte 2'''
+	print("============INICIO DE LA PRUEBA==========")
+	celdas=19
+	intensidad = 1
+	#
+	radio=1000 #km
+	#parametros de param_escenario
+	pot_tx=18
+	loss_tx=5
+	loss_rx=5
+	gan_tx=5
+	gan_rx=8
+	sensibilidad=92
+	freq=1500 #megaherz
+	#empaquetado de variables de escenario. Debe seguir la norma Kwars
+	param_perdidas=("okumura_hata", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad)
+	#definicion de las coordenadas de usuario
+	#
+	distribucion=(intensidad/radio**2,"ppp")
+	#simulacion del escenario al crear un sistema celular
+	sim_colmena=ss.Sistema_Celular((celdas,freq),radio, distribucion, param_perdidas)
+	print("HIPER CLUSTER")
+	print(type(sim_colmena.distancias_hiper_cluster))
+	stack_test=np.stack(sim_colmena.distancias_hiper_cluster, axis=0)
+	print("stack original", stack_test)
+	print("-------------------------------------------------")
+	#print("stack original", stack_test*10)
+	newarr = stack_test.reshape(celdas, celdas, -1)
+	print(newarr.shape) #indica que no se puede organizar de otro modo, que no sea stack.
+	print("--------------------------------------------------")
+	print("stack2[0]", stack_test[0])
+	print("stack3[0][0]", stack_test[0][0])
+	print("[top] 3. Logitud dato celda[0]-usuarios/celda: ",len(sim_colmena.ue_x[0]), " usuarios.")
+	print("[top] 5. Total usuarios",sim_colmena.no_usuarios_total)
+	print("[top] 6'. Forma",stack_test.shape)
+	print("--------------------------------------------test")
+	print("stack4 celda0", stack_test[0][0])
+	print("stack5 celda0", stack_test[1][0])
+	print("stack6 celda0", stack_test[2][0])
+	#significancia:
+	# stack_test[i][j], con i: distancias de la i celda,
+	#						j: usuarios de la j celda donde se originaron los usuarios propios.
+	#
+	#Mismos usuarios, desde la celda 1,2,3
+	#los usuarios pertenencen a la celda 0 originalmente.
+	print("\nstack41 celda1", stack_test[0][1])
+	print("stack51 celda1", stack_test[1][1])
+	print("stack61 celda1", stack_test[2][1])
+	#
+	print("\nstack42 celda2", stack_test[0][2])
+	print("stack52 celda2", stack_test[1][2])
+	print("stack62 celda3", stack_test[2][2])
+
+	print("\nlen usuarios",len(sim_colmena.distancias_hiper_cluster[0][0]))
+	print("\nlen1 celdas",len(np.array(sim_colmena.distancias_hiper_cluster)))
+	print("**************************")
+	print("MODELO DE PERDIDAS")
+	print(sim_colmena.modelo_canal_interf.resultado_path_loss)
+	print("POTENCIA RECIBIDA")
+	print(sim_colmena.modelo_canal_interf.resultado_balance)
+	print("MARGEN")
+	print(sim_colmena.modelo_canal_interf.resultado_margen)
+	'''for test in stack_test:
+		print(test)
+		print("--")
+	for test in np.array(sim_colmena.distancias_hiper_cluster):
+		print(test)
+		print("*")
+
+	print("...")
+	#usuarios
+	for cel in range(celdas):
+		#celdas.
+		for usrs in range(len(sim_colmena.ue_x[0])):
+			print(usrs,cel)
+			print("\n output", stack_test[usrs][cel])
+			#print(stack_test[i][j])
+			#print("\n")
+
+	'''
+
+
+
+	sim_colmena.ver_circulos()
+	sim_colmena.ver_celdas()
+	sim_colmena.ver_estaciones_base()
+	sim_colmena.ver_usuarios_colores()
+	sim_colmena.ver_usuarios()
+	#sim_colmena.ver_todo()
+	plt.grid(True)
+	plt.show()
+	#prueba exitosa!
+
+def prueba_sistema_v039():
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 2'''
+	print("============INICIO DE LA PRUEBA==========")
+	'''Diseño
+	1.Definir una funcion que recibe una lista, y calcula el angulo que forma respecto al punto 0.0.
+		y contra las manecillas del reloj. Listo
+	1.2.Definir una funcion que recibe una lista, y calcula el angulo que forma respecto al punto indicado. Ok
+	1.3 Definir una funcion que recibe un array numpy, y calcula el angulo que forma respecto al punto indicado. OK
+
+	2. Para cada angulo en el arrary 1.3, calcular la ganancia que debe recibir con 1 lobulo.
+	2.2 Para cada angulo en el arrary 1.3, calcular la ganancia que debe recibir cuando existen 3 lobulos.
+	2.3 Para cada angulo en el arrary 1.3, calcular la ganancia que debe recibir cuando existen n lobulos.
+	ref:https://stackoverflow.com/questions/31735499/calculate-angle-clockwise-between-two-points
+	'''
+	celdas=3
+	intensidad = 1
+	#
+	radio=1000 #km
+	#parametros de param_escenario
+	pot_tx=18
+	loss_tx=5
+	loss_rx=5
+	gan_tx=5
+	gan_rx=8
+	sensibilidad=92
+	freq=1500 #megaherz
+	#empaquetado de variables de escenario. Debe seguir la norma Kwars
+	param_perdidas=("okumura_hata", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad)
+	#definicion de las coordenadas de usuario
+	#
+	distribucion=(intensidad/radio**2,"ppp")
+	#simulacion del escenario al crear un sistema celular
+	sim_colmena=ss.Sistema_Celular((celdas,freq),radio, distribucion, param_perdidas)
+	print("------------------------")
+	print("coordenadas de usuarios")
+	print(sim_colmena.ue_x)
+	print(sim_colmena.ue_y)
+	print("------------------------")
+	print(np.stack(sim_colmena.angulos_hiper_cluster))
+
+	sim_colmena.ver_celdas()
+	sim_colmena.ver_estaciones_base()
+	sim_colmena.ver_usuarios_colores()
+	sim_colmena.ver_usuarios()
+	#sim_colmena.ver_todo()
+	plt.grid(True)
+	plt.show()
 
 if __name__=="__main__":
 	#REGLAS:
@@ -419,8 +688,14 @@ if __name__=="__main__":
 	#prueba_top_1_balance_del_enlace()
 	#prueba_top_2_balance_del_enlace()
 	#prueba_top_3_balance_del_enlace()
-	prueba_top_5_balance_del_enlace()
+	#prueba_top_5_balance_del_enlace()
 	#prueba_perdidas_basicas()
+	#prueba_sistema_v035()
+	#prueba_sistema_v036()
+	#prueba_sistema_v037()
+	#prueba_sistema_v038()
+	prueba_sistema_v039()
+
 
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")
