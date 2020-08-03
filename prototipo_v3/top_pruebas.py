@@ -660,7 +660,7 @@ def prueba_sistema_v039():
 	sim_colmena.ver_estaciones_base()
 	sim_colmena.ver_usuarios_colores()
 	sim_colmena.ver_usuarios()
-	#sim_colmena.ver_todo()
+	sim_colmena.ver_todo()
 	plt.grid(True)
 	plt.show()
 
