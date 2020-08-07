@@ -15,6 +15,7 @@ try:
 	from pk_red_dispositivos import celda
 	from pk_red_dispositivos import modulo_coordenadas as mc
 	from pk_red_dispositivos import modulo_ppp as ppp
+	from pk_red_dispositivos import antenas as ant
 	from pk_red_dispositivos import modulo_circulos as mcir
 	#
 	import pk_modelo_canal.modelo_canal as moca
@@ -189,6 +190,15 @@ class Sistema_Celular:
 		#convierto la lista en array numpy
 		self.distancias_hiper_cluster=np.stack(self.distancias_hiper_cluster, axis=0)
 		#Creo un modelo del canal con todas las distancias.
+		##########################################################PARA CORRECIION###############
+
+		hpbw=55
+		amin=self.params_perdidas[3]
+		ref="4g"
+		parametros=[ref, hpbw, amin]
+		#self.params_perdidas[3]=ant.Antena(parametros)
+
+		#
 		self.modelo_canal_interf=moca.Modelo_Canal(self.params_perdidas,self.frequencia_operacion,
 			(self.distancias_hiper_cluster, "m"))
 		#calculo las perdidas del modelo del canal segun el tipo de modelo de propagacion

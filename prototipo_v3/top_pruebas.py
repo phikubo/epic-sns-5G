@@ -630,8 +630,8 @@ def prueba_sistema_v039():
 	2.3 Para cada angulo en el arrary 1.3, calcular la ganancia que debe recibir cuando existen n lobulos.
 	ref:https://stackoverflow.com/questions/31735499/calculate-angle-clockwise-between-two-points
 	'''
-	celdas=3
-	intensidad = 1
+	celdas=2
+	intensidad = 0.5
 	#
 	radio=1000 #km
 	#parametros de param_escenario
@@ -643,7 +643,7 @@ def prueba_sistema_v039():
 	sensibilidad=92
 	freq=1500 #megaherz
 	#empaquetado de variables de escenario. Debe seguir la norma Kwars
-	param_perdidas=("okumura_hata", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad)
+	param_perdidas=["okumura_hata", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
 	#definicion de las coordenadas de usuario
 	#
 	distribucion=(intensidad/radio**2,"ppp")
@@ -654,7 +654,13 @@ def prueba_sistema_v039():
 	print(sim_colmena.ue_x)
 	print(sim_colmena.ue_y)
 	print("------------------------")
+	print("angulos hiper cluster grados -180,180")
 	print(np.stack(sim_colmena.angulos_hiper_cluster))
+	print("------------------------")
+	print("angulos hiper cluster grados 360")
+	theta=np.stack(sim_colmena.angulos_hiper_cluster)
+	theta=np.where(theta<0, 360+theta, theta)
+	print(theta)
 
 	sim_colmena.ver_celdas()
 	sim_colmena.ver_estaciones_base()

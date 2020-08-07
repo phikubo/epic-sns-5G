@@ -16,7 +16,7 @@ class Modelo_Canal:
 		#params_perdidas[0]:tipo de perdidas
 		#params_perdidas[1]:potencia de tx
 		#params_perdidas[2]:perdidas en tx
-		#params_perdidas[3]:ganancia en tx
+		#params_perdidas[3]:ganancia en tx ***array numpy
 		#params_perdidas[4]:ganancia en rx
 		#params_perdidas[5]:perdidas en rx
 		#params_perdidas[6]:sensibilidad de todos los usuarios #en el futuro, sensibidad variable

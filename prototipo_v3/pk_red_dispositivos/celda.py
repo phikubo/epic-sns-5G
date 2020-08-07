@@ -6,6 +6,7 @@ import os
 #
 try:
 	pass
+	#from antesnas import Antena
 except:
 	print("ATENCION: Uno o mas modulos no pudo ser importado... ")
 	print("...desde un archivo externo. Ignorar si la ejecucion es interna. ")
@@ -70,7 +71,9 @@ class Celda:
 			#print('oy',origen_y)
 			theta=np.degrees(np.arctan2(origen_y-self.pos_y,origen_x-self.pos_x))
 			#cambio los angulos negativos por el angulo desde 0, hasta 360.
-			theta=np.where(theta<0, 360+theta, theta)
+
+			#theta=np.where(theta<0, 360+theta, theta) #el patron solo acepta entre -180 a 180.
+
 			self.interf_angulos.append(theta)
 
 	def asignar_perdidas_espacio_libre(self, perdidas):
