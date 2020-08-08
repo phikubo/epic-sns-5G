@@ -580,11 +580,11 @@ def prueba_sistema_v038():
 	print("\nlen1 celdas",len(np.array(sim_colmena.distancias_hiper_cluster)))
 	print("**************************")
 	print("MODELO DE PERDIDAS")
-	print(sim_colmena.modelo_canal_interf.resultado_path_loss)
+	print(sim_colmena.hiperc_modelo_canal.resultado_path_loss)
 	print("POTENCIA RECIBIDA")
-	print(sim_colmena.modelo_canal_interf.resultado_balance)
+	print(sim_colmena.hiperc_modelo_canal.resultado_balance)
 	print("MARGEN")
-	print(sim_colmena.modelo_canal_interf.resultado_margen)
+	print(sim_colmena.hiperc_modelo_canal.resultado_margen)
 	'''for test in stack_test:
 		print(test)
 		print("--")
@@ -670,6 +670,53 @@ def prueba_sistema_v039():
 	plt.grid(True)
 	plt.show()
 
+def prueba_sistema_v040():
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 2'''
+	n_cel=3
+	radio_cel=5
+	frecuencia=(1500,'mhz')
+	intensidad=1/radio_cel**2
+	distribucion=('ppp', intensidad)
+
+	params_simulacion=[n_cel,radio_cel, distribucion, frecuencia]
+	#
+	modelo='4g'
+	pot_tx=18
+	loss_tx=5
+	gan_tx=5
+	gan_rx=8
+	loss_rx=0
+	sensibilidad=92
+	params_perdidas=[modelo, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
+	#
+	hpbw=55
+	amin=20
+	ref="4g"
+	gtx=params_perdidas[3]
+	#apunt=mc.calcular_angulo_v3(45,120) #inicio,angulo de particion.
+	#tar=np.array([45, 90, 180, -1, -179])
+	params_transmision=[ref, hpbw, gtx, amin] #se adjunta luego: apunt, tar
+	#
+	params_recepcion=[0]
+
+	#INICIO DE LA SIMULACION
+	sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
+	print("[top]. Total usuarios",sim_colmena.no_usuarios_total)
+	print("**************************")
+	print("[top]. MODELO DE PERDIDAS\n")
+	print(sim_colmena.hiperc_modelo_canal.resultado_path_loss)
+	print("[top]. POTENCIA RECIBIDA\n")
+	print(sim_colmena.hiperc_modelo_canal.resultado_balance)
+	print("[top]. MARGEN **revisar ecuacion\n")
+	print(sim_colmena.hiperc_modelo_canal.resultado_margen)
+	sim_colmena.ver_celdas()
+	sim_colmena.ver_estaciones_base()
+	sim_colmena.ver_usuarios_colores()
+	sim_colmena.ver_usuarios()
+	sim_colmena.ver_todo()
+	plt.grid(True)
+	plt.show()
+
 if __name__=="__main__":
 	#REGLAS:
 	#0 [critico]. Las pruebas en if name, deben ir comentadas por prueba 1., prueba 2., ..., prueba n.
@@ -700,7 +747,8 @@ if __name__=="__main__":
 	#prueba_sistema_v036()
 	#prueba_sistema_v037()
 	#prueba_sistema_v038()
-	prueba_sistema_v039()
+	#prueba_sistema_v039()
+	prueba_sistema_v040()
 
 
 else:

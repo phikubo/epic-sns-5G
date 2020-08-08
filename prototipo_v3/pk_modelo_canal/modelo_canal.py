@@ -20,13 +20,20 @@ class Modelo_Canal:
 		#params_perdidas[4]:ganancia en rx
 		#params_perdidas[5]:perdidas en rx
 		#params_perdidas[6]:sensibilidad de todos los usuarios #en el futuro, sensibidad variable
-
-		self.frecuencia=frecuencia #en gigaherz
+		#print("from modelo canal", frecuencia)
+		#ENTRADA
+		self.frecuencia=frecuencia[0] #en gigaherz
+		self.frec_unidad=frecuencia[1]
+		#
 		self.distancias, self.unidades=params_distancia
 		self.params_perdidas=params_perdidas
-		self.distancia_km=0
+
 		self.tipo_perdidas=params_perdidas[0]
 
+		#AUXILIAR
+		self.distancia_km=0
+
+		#SALIDA
 		self.resultado_path_loss=0
 		self.resultado_balance=0
 		self.resultado_margen=0
@@ -126,7 +133,9 @@ class Modelo_Canal:
 		#params_perdidas[0]:tipo de perdidas
 		#params_perdidas[1]:potencia de tx
 		#params_perdidas[2]:perdidas en tx
+
 		#params_perdidas[3]:ganancia en tx
+
 		#params_perdidas[4]:ganancia en rx
 		#params_perdidas[5]:perdidas en rx
 		#params_perdidas[6]:sensibilidad de todos los usuarios #en el futuro, sensibidad variable

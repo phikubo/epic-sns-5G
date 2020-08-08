@@ -34,62 +34,62 @@ son desempaquetados por la clases correspondiente'''
 class Sistema_Celular:
 	'''Clase que crea y controla clusters de celdas. Asigna e inicializa valores.
 	Muestra graficas de las celdas deseadas.'''
-	def __init__(self, param_escenario, radio, distribucion, params_perdidas):
+	#def __init__(self, params_escenario, radio, distribucion, params_perdidas):
+	def __init__(self, params_simulacion, params_transmision, params_perdidas):
 		'''Constructor por defecto. Inicializa las variables de las clases'''
+		#----------------------------------------------------------------------
+		#--------------------------ENTRADA-------------------------------------
+		#----------------------------------------------------------------------
+		#params_simulacion=[n_cel,radio_cel, distribucion, frecuencia]
+		self.num_celdas=params_simulacion[0]
+		#radio externo
+		self.radio=params_simulacion[1]
+		#
 		#1.tupla con (intensidad, distribucion)
 		#1.1 si la distribucion no tiene una intensidad, intensidad=0
-		self.intensidad, self.distribucion=distribucion
-		self.cel_fig, self.cels_ax=plt.subplots(1)
-		self.num_celdas, self.frequencia_operacion=param_escenario
+		self.distribucion,self.intensidad=params_simulacion[2]
+		self.frequencia_operacion=params_simulacion[3]
+		#
 		self.params_perdidas=params_perdidas #"tipo", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad
 		#
-		self.cluster=[]
-		#radio externo
-		self.radio=radio
+		self.params_antena=params_transmision
+		#
+		#----------------------------------------------------------------------
+		#AUXILIAR
+		#----------------------------------------------------------------------
+		self.cel_fig, self.cels_ax=plt.subplots(1)
 		#cordenadas centrales de celdas
 		self.origen_cel_x, self.origen_cel_y=mc.coordenadas_nceldas(self.num_celdas, self.radio)
+		#----------------------------------------------------------------------
+		#SALIDA
+		#----------------------------------------------------------------------
+		self.cluster=[]
 		#inicio de variables de usuarios (de todas las celdas)
 		self.ue_x=0
 		self.ue_y=0
 		#
-		self.modelo_canal=0
-		self.modelo_canal_interf=0
+		self.modelo_canal=0 #modelo de canal unico
+		self.distancias_celdas=[] #distancias unica celda
+
+		self.hiperc_modelo_canal=0 #modelo de canal de todos.
+		self.hiperc_distancias=[]
+		self.hiperc_angulos=[]
+		self.hiperc_ganancia_relativa=[]
 		#falta las distancias totales?
 		self.no_usuarios_total=0
-		self.distancias_celdas=[]
-		self.distancias_hiper_cluster=[]
-		self.angulos_hiper_cluster=[]
+
 		#todas las perdidas
 		self.perdidas_celdas=[]
 		#OUTPUTS
-		self.ganancia_relativa=[] ###############***********************por usar
+		 ###############***********************por usar
+		#----------------------------------------------------------------------
+		#---------------------------INICIALIZAR--------------------------------
+		#----------------------------------------------------------------------
 		#inicializa objetos tipo celda y las almacena en self.cluster
 		self.inicializar_cluster_celdas()
 		#crea las coordenadas de los usuarios segun una distribucion
 		self.inicializar_distribucion() #falta implementar otras distribuciones: thomas cluster
 		#self.ue_x, self.ue_y contiene los usuarios del cluster
-		'''Definicion de la implementacion:
-		COBERTURA:
-		A. Usuario como entidad principal.
-
-		0. Definir el número de usuarios en cada celda.
-		1. Obtener posicion de usuarios del cluster: self.ue_x, self.ue_y [[cel1], [cel2],...,[celn]]
-		2. Relacionar posicion cluster celdas, con posicion cluster usuarios:
-			a. En cada celda iterar en cada usuario
-			b. En cada usuario calcular el balance del enlace (potencia recibida)
-				1. Reutilizar inicializar_modelo_canal()
-			c. En variable: mejor celda servida, seleccionar id de celda con mejor potencia recibida.
-			d. Reorganizar de acuerdo al id de mejor celda servida * requerimiento para +++ capacidad.
-				1. Reutilizar inicializar_cluster_usuarios() para este proposito
-		3. Dimensionar el número de usuarios en cada celda. ****Ejemplo 5-10-15.
-			1. Contar cuantos usuarios se han asignado
-			2. Rellenar usuarios faltantes con parametros nulos.
-
-		4. CAPACIDAD:
-			B. Celdas como elemento principal.
-				a. Iterar sobre los valores de las celdas.
-		nota: crear cuando instancia de usuario al generar las coordenadas de distribucion o luego
-		de este evento, crear los usuarios'''
 		#Gestiona los usuarios
 		self.inicializar_usuarios_base()
 		#Almacena usuarios en cada celda del cluster
@@ -97,9 +97,7 @@ class Sistema_Celular:
 		#Crea la clase antena, outputs ganancia relativa.
 		self.inicializar_antenas()
 		#crea el modelo del mod_canal, frecuencia_central, distancias, ganancia relativa
-		self.inicializar_modelo_canal() #depende de la frec y cluster_usuarios
-
-
+		self.inicializar_modelo_canal() #depende de la frec y cluster_usuarios, cluster_ganancia
 
 	'''-----------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------------
@@ -172,8 +170,8 @@ class Sistema_Celular:
 			celda_unica.distancia_all_estacion_base_usuarios()#a cual celda hace esto?
 			celda_unica.angulos_all_estacion_base_usuarios()
 
-			self.distancias_hiper_cluster.append(celda_unica.interf_distancias)
-			self.angulos_hiper_cluster.append(celda_unica.interf_angulos)
+			self.hiperc_distancias.append(celda_unica.interf_distancias)
+			self.hiperc_angulos.append(celda_unica.interf_angulos)
 			#rta, a cada celda, por es una instancia de clase.
 			print('end of usuarios_base')
 			#print(celda_unica.interf_user_x)
@@ -186,12 +184,19 @@ class Sistema_Celular:
 	def inicializar_antenas(self):
 		'''Init. Crea un modelo de antena especificado. Calcula la ganancia relativa de
 		un conjunto de angulos de usuario'''
-		hpbw=55
-		amin=20
-		ref="4g"
-		gtx=15
+		#hpbw=55
+		#amin=20
+		#ref="4g"
+		#gtx=15
+		#indica la orientacion de los lobulos.
 		apunt=mcir.calcular_angulo_v3(45,120) #inicio,angulo de particion.
-		parametros=[ref, hpbw, gtx, amin, apunt, self.angulos_hiper_cluster]
+		#se adjunta luego: apunt, tar
+		#parametros=[ref, hpbw, gtx, amin, apunt, self.hiperc_angulos]
+		self.params_antena.append(apunt)
+		self.params_antena.append(self.hiperc_angulos)
+		#print("ant", self.params_antena)
+		self.hiper_antena=ant.Antena(self.params_antena)
+		self.hiperc_ganancia_relativa=self.hiper_antena.hiper_ganancias #**condierar quitar
 
 	def inicializar_modelo_canal(self):
 		'''Init. Crea un modelo del canal aplicado a todo el sistema.
@@ -203,19 +208,14 @@ class Sistema_Celular:
 			(self.distancias_celdas, "m"))
 
 		#convierto la lista en array numpy
-		self.distancias_hiper_cluster=np.stack(self.distancias_hiper_cluster, axis=0)
+		self.hiperc_distancias=np.stack(self.hiperc_distancias, axis=0)
 		#Creo un modelo del canal con todas las distancias.
-		##########################################################PARA CORRECIION###############
-		hpbw=55
-		amin=20
-		ref="4g"
-		gtx=15
-		apunt=mcir.calcular_angulo_v3(45,120) #inicio,angulo de particion.
-		parametros=[ref, hpbw, gtx, amin, apunt, self.angulos_hiper_cluster]
-
 		#
-		self.modelo_canal_interf=moca.Modelo_Canal(self.params_perdidas,self.frequencia_operacion,
-			(self.distancias_hiper_cluster, "m"))
+		#la ganacia de tx, ahora es la ganancia relativa de cada usuario.
+		self.params_perdidas[3]=self.hiperc_ganancia_relativa
+		#otro modelo de canal, pero con las hiper distancias.
+		self.hiperc_modelo_canal=moca.Modelo_Canal(self.params_perdidas,self.frequencia_operacion,
+			(self.hiperc_distancias, "m"))
 		#calculo las perdidas del modelo del canal segun el tipo de modelo de propagacion
 		if self.params_perdidas[0]=="espacio_libre":
 			self.modelo_canal.perdidas_espacio_libre_ghz()
@@ -223,10 +223,10 @@ class Sistema_Celular:
 		elif self.params_perdidas[0]=="okumura_hata":
 			self.modelo_canal.perdidas_okumura_hata_mhz()
 			#################
-			self.modelo_canal_interf.perdidas_okumura_hata_mhz()
+			self.hiperc_modelo_canal.perdidas_okumura_hata_mhz()
 		#con los calculos anteriores, calculo el balance del enlace.
 		self.modelo_canal.balance_del_enlace_simple()
-		self.modelo_canal_interf.balance_del_enlace_simple()
+		self.hiperc_modelo_canal.balance_del_enlace_simple()
 
 		#
 		#
@@ -446,3 +446,26 @@ if __name__=="__main__":
 	#pass
 else:
 	print("Modulo Sistema importado")
+
+	'''Definicion de la implementacion:
+	COBERTURA:
+	A. Usuario como entidad principal.
+
+	0. Definir el número de usuarios en cada celda.
+	1. Obtener posicion de usuarios del cluster: self.ue_x, self.ue_y [[cel1], [cel2],...,[celn]]
+	2. Relacionar posicion cluster celdas, con posicion cluster usuarios:
+		a. En cada celda iterar en cada usuario
+		b. En cada usuario calcular el balance del enlace (potencia recibida)
+			1. Reutilizar inicializar_modelo_canal()
+		c. En variable: mejor celda servida, seleccionar id de celda con mejor potencia recibida.
+		d. Reorganizar de acuerdo al id de mejor celda servida * requerimiento para +++ capacidad.
+			1. Reutilizar inicializar_cluster_usuarios() para este proposito
+	3. Dimensionar el número de usuarios en cada celda. ****Ejemplo 5-10-15.
+		1. Contar cuantos usuarios se han asignado
+		2. Rellenar usuarios faltantes con parametros nulos.
+
+	4. CAPACIDAD:
+		B. Celdas como elemento principal.
+			a. Iterar sobre los valores de las celdas.
+	nota: crear cuando instancia de usuario al generar las coordenadas de distribucion o luego
+	de este evento, crear los usuarios'''
