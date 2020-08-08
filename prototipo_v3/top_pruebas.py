@@ -663,6 +663,7 @@ def prueba_sistema_v039():
 	print(theta)
 
 	sim_colmena.ver_celdas()
+	sim_colmena.ver_circulos()
 	sim_colmena.ver_estaciones_base()
 	sim_colmena.ver_usuarios_colores()
 	sim_colmena.ver_usuarios()
@@ -673,14 +674,14 @@ def prueba_sistema_v039():
 def prueba_sistema_v040():
 	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 2'''
 	n_cel=3
-	radio_cel=5
+	radio_cel=1000
 	frecuencia=(1500,'mhz')
 	intensidad=1/radio_cel**2
 	distribucion=('ppp', intensidad)
 
 	params_simulacion=[n_cel,radio_cel, distribucion, frecuencia]
 	#
-	modelo='4g'
+	modelo='okumura_hata' #si no: se pone, se escribe o se escribe bien, el pathloss es 0
 	pot_tx=18
 	loss_tx=5
 	gan_tx=5
@@ -710,6 +711,7 @@ def prueba_sistema_v040():
 	print("[top]. MARGEN **revisar ecuacion\n")
 	print(sim_colmena.hiperc_modelo_canal.resultado_margen)
 	sim_colmena.ver_celdas()
+	sim_colmena.ver_circulos()
 	sim_colmena.ver_estaciones_base()
 	sim_colmena.ver_usuarios_colores()
 	sim_colmena.ver_usuarios()

@@ -67,7 +67,7 @@ class Modelo_Canal:
 		B=44.9-6.55*np.log10(hb)
 		E=3.2*(np.log10(11.75*hm))**2 -4.97 #[dB] para ciudades grandes y fc>300 MHz
 		#E=8.29*(np.log10(1.54*hm))**2 -1.1 #[dB] para ciudades grandes y fc<300 MHz
-		#print("a,b:",A,B)
+		print("---------------------a,b:",A,B)
 		self.resultado_path_loss=A+B*np.log10(self.distancia_km)-E
 
 

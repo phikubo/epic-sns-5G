@@ -204,6 +204,7 @@ class Sistema_Celular:
 		#diseno:
 		#"tipo", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad
 		#pasar parametros de perdidas:
+		print("init. modelo canal")
 		self.modelo_canal=moca.Modelo_Canal(self.params_perdidas,self.frequencia_operacion,
 			(self.distancias_celdas, "m"))
 
