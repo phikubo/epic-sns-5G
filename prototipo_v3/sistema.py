@@ -28,6 +28,9 @@ except:
 #
 #bloque de funciones - inicio
 #
+
+'''Tarea: los parametros de entrada, se designan como: params_<name> y
+son desempaquetados por la clases correspondiente'''
 class Sistema_Celular:
 	'''Clase que crea y controla clusters de celdas. Asigna e inicializa valores.
 	Muestra graficas de las celdas deseadas.'''
@@ -58,6 +61,8 @@ class Sistema_Celular:
 		self.angulos_hiper_cluster=[]
 		#todas las perdidas
 		self.perdidas_celdas=[]
+		#OUTPUTS
+		self.ganancia_relativa=[] ###############***********************por usar
 		#inicializa objetos tipo celda y las almacena en self.cluster
 		self.inicializar_cluster_celdas()
 		#crea las coordenadas de los usuarios segun una distribucion
@@ -89,7 +94,9 @@ class Sistema_Celular:
 		self.inicializar_usuarios_base()
 		#Almacena usuarios en cada celda del cluster
 		self.inicializar_cluster_usuarios()
-		#crea el modelo del mod_canal, frecuencia_central, distancias
+		#Crea la clase antena, outputs ganancia relativa.
+		self.inicializar_antenas()
+		#crea el modelo del mod_canal, frecuencia_central, distancias, ganancia relativa
 		self.inicializar_modelo_canal() #depende de la frec y cluster_usuarios
 
 
@@ -176,7 +183,15 @@ class Sistema_Celular:
 		La funcion recibe todas las cordenadas de todos los usuarios en las celdas: [c1,c2,..,cn]
 		con ci={xi,yi}, con xi,yi, i={1,2,...}
 		'''
-
+	def inicializar_antenas(self):
+		'''Init. Crea un modelo de antena especificado. Calcula la ganancia relativa de
+		un conjunto de angulos de usuario'''
+		hpbw=55
+		amin=20
+		ref="4g"
+		gtx=15
+		apunt=mcir.calcular_angulo_v3(45,120) #inicio,angulo de particion.
+		parametros=[ref, hpbw, gtx, amin, apunt, self.angulos_hiper_cluster]
 
 	def inicializar_modelo_canal(self):
 		'''Init. Crea un modelo del canal aplicado a todo el sistema.
@@ -191,12 +206,12 @@ class Sistema_Celular:
 		self.distancias_hiper_cluster=np.stack(self.distancias_hiper_cluster, axis=0)
 		#Creo un modelo del canal con todas las distancias.
 		##########################################################PARA CORRECIION###############
-
 		hpbw=55
-		amin=self.params_perdidas[3]
+		amin=20
 		ref="4g"
-		parametros=[ref, hpbw, amin]
-		#self.params_perdidas[3]=ant.Antena(parametros)
+		gtx=15
+		apunt=mcir.calcular_angulo_v3(45,120) #inicio,angulo de particion.
+		parametros=[ref, hpbw, gtx, amin, apunt, self.angulos_hiper_cluster]
 
 		#
 		self.modelo_canal_interf=moca.Modelo_Canal(self.params_perdidas,self.frequencia_operacion,
