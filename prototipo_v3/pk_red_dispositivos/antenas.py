@@ -110,6 +110,7 @@ class Antena:
 	#---------------------------------------------------------------------------
 	def observar_patron(self):
 		'''Grafica los patrones de radiacion. No terminado'''
+		plt.figure()
 		patron_original=-1*np.minimum(self.relacion_angulos, self.a_min)
 		plt.plot(self.angulos, patron_original)
 		plt.title("Patron original, piso a_min")
@@ -139,8 +140,8 @@ class Antena:
 		plt.polar(np.radians(self.angulos), self.patron_radiacion, '-r')
 		plt.title("[POL] Patron final, filtrado, sumado. f(gtx)")
 
-		plt.grid(True)
-		plt.show()
+		#plt.grid(True)
+		#plt.show()
 
 
 if __name__=="__main__":

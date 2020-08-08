@@ -710,12 +710,16 @@ def prueba_sistema_v040():
 	print(sim_colmena.hiperc_modelo_canal.resultado_balance)
 	print("[top]. MARGEN **revisar ecuacion\n")
 	print(sim_colmena.hiperc_modelo_canal.resultado_margen)
+
+	plt.title("Escenario: "+modelo)
 	sim_colmena.ver_celdas()
 	sim_colmena.ver_circulos()
 	sim_colmena.ver_estaciones_base()
 	sim_colmena.ver_usuarios_colores()
 	sim_colmena.ver_usuarios()
 	sim_colmena.ver_todo()
+	#
+	sim_colmena.hiperc_antena.observar_patron()
 	plt.grid(True)
 	plt.show()
 

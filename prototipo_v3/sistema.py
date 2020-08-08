@@ -72,6 +72,7 @@ class Sistema_Celular:
 		self.distancias_celdas=[] #distancias unica celda
 
 		self.hiperc_modelo_canal=0 #modelo de canal de todos.
+		self.hiperc_antena=0
 		self.hiperc_distancias=[]
 		self.hiperc_angulos=[]
 		self.hiperc_ganancia_relativa=[]
@@ -195,8 +196,8 @@ class Sistema_Celular:
 		self.params_antena.append(apunt)
 		self.params_antena.append(self.hiperc_angulos)
 		#print("ant", self.params_antena)
-		self.hiper_antena=ant.Antena(self.params_antena)
-		self.hiperc_ganancia_relativa=self.hiper_antena.hiper_ganancias #**condierar quitar
+		self.hiperc_antena=ant.Antena(self.params_antena)
+		self.hiperc_ganancia_relativa=self.hiperc_antena.hiper_ganancias #**condierar quitar
 
 	def inicializar_modelo_canal(self):
 		'''Init. Crea un modelo del canal aplicado a todo el sistema.
