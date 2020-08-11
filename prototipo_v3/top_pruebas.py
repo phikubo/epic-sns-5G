@@ -748,7 +748,8 @@ def prueba_sistema_v041():
 	alpha_n=3.1
 	sigma_xn=8.1
 	mu=0
-	play_desv=False
+	play_desv=True
+	#el tercer valor va en el mismo orden, dependiendo del desvanecimiento
 	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
 	#
 	propagacion=['okumura_hata', params_prop, params_desv]
@@ -774,11 +775,13 @@ def prueba_sistema_v041():
 	sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
 	print("[top]. Total usuarios",sim_colmena.no_usuarios_total)
 	print("**************************")
-	print("[top]. MODELO DE PERDIDAS\n")
+	print("[top]. MODELO DE PERDIDAS -ANTES")
+	print(sim_colmena.hiperc_modelo_canal.resultado_path_loss_antes)
+	print("\n[top]. MODELO DE PERDIDAS")
 	print(sim_colmena.hiperc_modelo_canal.resultado_path_loss)
-	print("[top]. POTENCIA RECIBIDA\n")
+	print("\n[top]. POTENCIA RECIBIDA")
 	print(sim_colmena.hiperc_modelo_canal.resultado_balance)
-	print("[top]. MARGEN **revisar ecuacion\n")
+	print("\n[top]. MARGEN **revisar ecuacion")
 	print(sim_colmena.hiperc_modelo_canal.resultado_margen)
 
 	plt.title("Escenario: "+propagacion[0])
@@ -850,7 +853,12 @@ Luego, como realizar una comparacion entre simulaciones?. Que es lo que se compa
 4. [OK] La funcion normal especifica un numero de puntos asociados, pero si estos no son especificados?
 Por ejemplo, tengo un array numpy y deseo operar sobre ellos, como deberia operar? ->solucionado,np.random.normal, funciona con np.shape.
 
-5. Deseo como parametro de entrada, especificar si quiero incorporar el desvanecimiento o no.
+5. [OK] Deseo como parametro de entrada, especificar si quiero incorporar el desvanecimiento o no. ->
+
+6. Modelo del canal debe especificar cuando se hace el balance del enlace, no la clase sistema.
+7. Revisar ecuacion del balance
+8. Implmentar balance del enlace, mcl. mcl debe ser un parametro de entrada?->no. Revisar las condiciones urbano.
+9. Implementar clase usuario, crear view interactiva y obtener informacion, dada las coordendas.
 
 
 '''

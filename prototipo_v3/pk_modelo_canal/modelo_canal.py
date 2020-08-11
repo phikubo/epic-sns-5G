@@ -41,7 +41,7 @@ class Modelo_Canal:
 		print('parametros desvanecimiento', self.params_desvanecimiento)
 		#AUXILIAR
 		#self.distancias=0
-
+		self.resultado_path_loss_antes=0 #eliminar, dejar solo en debug.
 		self.desvanecimiento=0
 
 		#SALIDA
@@ -51,6 +51,7 @@ class Modelo_Canal:
 		#self.inicializar_distancias()
 		self.inicializar_desvanecimiento()
 		self.inicializar_tipo()
+		self.inicialiar_balance()
 
 
 	def inicializar_tipo(self):
@@ -137,6 +138,7 @@ class Modelo_Canal:
 		#E=8.29*(np.log10(1.54*hm))**2 -1.1 #[dB] para ciudades grandes y fc<300 MHz
 		print("okumura_hata, says->A,B:",A,B)
 		#print(self.distancias)
+		self.resultado_path_loss_antes=A+B*np.log10(self.distancias)-E
 		self.resultado_path_loss=A+B*np.log10(self.distancias)-E + self.desvanecimiento
 
 
@@ -213,6 +215,10 @@ class Modelo_Canal:
 		self.resultado_balance=segmento_tx-self.resultado_path_loss+segmento_rx
 		#print("[mod canal] margen")
 		self.resultado_margen=self.resultado_balance+self.params_perdidas[6]
+
+	def balance_del_enlace_mcl(self):
+		'''Funcion que calcula un balance del enlace, teniendo en cuenta el mcl.'''
+		pass
 
 	def balance_del_enlace_LTE(self):
 		'''Funcion que calcula el balance del enlace 5G/4G.
