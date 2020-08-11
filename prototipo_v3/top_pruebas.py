@@ -617,7 +617,7 @@ def prueba_sistema_v038():
 	#prueba exitosa!
 
 def prueba_sistema_v039():
-	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 2'''
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 2.1: angulos'''
 	print("============INICIO DE LA PRUEBA==========")
 	'''Diseño
 	1.Definir una funcion que recibe una lista, y calcula el angulo que forma respecto al punto 0.0.
@@ -672,7 +672,7 @@ def prueba_sistema_v039():
 	plt.show()
 
 def prueba_sistema_v040():
-	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 2'''
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 2: ganancia relativa'''
 	n_cel=3
 	radio_cel=1000
 	frecuencia=(1500,'mhz')
@@ -680,15 +680,19 @@ def prueba_sistema_v040():
 	distribucion=('ppp', intensidad)
 
 	params_simulacion=[n_cel,radio_cel, distribucion, frecuencia]
-	#
-	modelo='okumura_hata' #si no: se pone, se escribe o se escribe bien, el pathloss es 0
+	#propagacion='okumura_hata' #si no: se pone, se escribe o se escribe bien, el pathloss es 0
+	hb=30 #m
+	alfa=0
+	hm=1.5
+	params_prop=[hb, alfa, hm]
+	propagacion=['okumura_hata', params_prop]
 	pot_tx=18
 	loss_tx=5
 	gan_tx=5
 	gan_rx=8
 	loss_rx=0
 	sensibilidad=92
-	params_perdidas=[modelo, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
+	params_perdidas=[propagacion, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
 	#
 	hpbw=55
 	amin=20
@@ -711,7 +715,7 @@ def prueba_sistema_v040():
 	print("[top]. MARGEN **revisar ecuacion\n")
 	print(sim_colmena.hiperc_modelo_canal.resultado_margen)
 
-	plt.title("Escenario: "+modelo)
+	plt.title("Escenario: "+propagacion[0])
 	sim_colmena.ver_celdas()
 	sim_colmena.ver_circulos()
 	sim_colmena.ver_estaciones_base()
@@ -722,6 +726,74 @@ def prueba_sistema_v040():
 	sim_colmena.hiperc_antena.observar_patron()
 	plt.grid(True)
 	plt.show()
+
+
+def prueba_sistema_v041():
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 3: desvanecimiento'''
+	n_cel=3
+	radio_cel=1000 #DEFINICION, SIEMPRE EN METROS. La distancia tambien es en metros.
+	frecuencia=(1500,'mhz')
+	intensidad=1/radio_cel**2
+	distribucion=('ppp', intensidad)
+
+	params_simulacion=[n_cel,radio_cel, distribucion, frecuencia]
+	#propagacion='okumura_hata' #si no: se pone, se escribe o se escribe bien, el pathloss es 0
+	hb=30 #m
+	alfa=0
+	hm=1.5
+	params_prop=[hb, alfa, hm]
+	#
+	#params desv
+	tipo_desv='lento'
+	alpha_n=3.1
+	sigma_xn=8.1
+	mu=0
+	play_desv=False
+	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
+	#
+	propagacion=['okumura_hata', params_prop, params_desv]
+	pot_tx=18
+	loss_tx=5
+	gan_tx=5
+	gan_rx=8
+	loss_rx=0
+	sensibilidad=92
+	params_perdidas=[propagacion, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
+	#
+	hpbw=55
+	amin=20
+	ref="4g"
+	gtx=params_perdidas[3]
+	#apunt=mc.calcular_angulo_v3(45,120) #inicio,angulo de particion.
+	#tar=np.array([45, 90, 180, -1, -179])
+	params_transmision=[ref, hpbw, gtx, amin] #se adjunta luego: apunt, tar
+	#
+	params_recepcion=[0]
+
+	#INICIO DE LA SIMULACION
+	sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
+	print("[top]. Total usuarios",sim_colmena.no_usuarios_total)
+	print("**************************")
+	print("[top]. MODELO DE PERDIDAS\n")
+	print(sim_colmena.hiperc_modelo_canal.resultado_path_loss)
+	print("[top]. POTENCIA RECIBIDA\n")
+	print(sim_colmena.hiperc_modelo_canal.resultado_balance)
+	print("[top]. MARGEN **revisar ecuacion\n")
+	print(sim_colmena.hiperc_modelo_canal.resultado_margen)
+
+	plt.title("Escenario: "+propagacion[0])
+	sim_colmena.ver_celdas()
+	sim_colmena.ver_circulos()
+	sim_colmena.ver_estaciones_base()
+	sim_colmena.ver_usuarios_colores()
+	sim_colmena.ver_usuarios()
+	sim_colmena.ver_todo()
+	#
+	###################sim_colmena.hiperc_antena.observar_patron()
+	plt.grid(True)
+	plt.show()
+
+
 
 if __name__=="__main__":
 	#REGLAS:
@@ -754,8 +826,31 @@ if __name__=="__main__":
 	#prueba_sistema_v037()
 	#prueba_sistema_v038()
 	#prueba_sistema_v039()
-	prueba_sistema_v040()
+	#prueba_sistema_v040()
+	prueba_sistema_v041()
 
 
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")
+
+'''Requerimientos:
+
+1. [ok] Si cada modelo de propagacion tiene sus propias variables, como las recibo? ->parametros de entrada del modelo,
+	reciben el nombre del modelo y sus parametros. Cada funcino interna del modelo del canal, selecciona
+	sus parametros internos de acuerdo a un orden establecido.
+2. [ok] Seleccionar el modelo de canal segun las unidades de freccuencia y distancia.
+O, convertir todo a una misma unidad para efectos de uso. -> funcion modelocanal.inicializar_tipo()
+
+3. Supongamos que tenemos n realizaciones de instancias de la clase Sistema_Celular. Cada instancia tiene
+diferentes longitudes de usuarios, por ser el resutlado de un numero poisson.
+Luego, como realizar una comparacion entre simulaciones?. Que es lo que se compara en cobertura?
+	a. idea 1: la probabilidad de outage es un valor unico en cada simulacion, puede compararse.
+		1.1 debe ser un kpi comparable, que sea unico a pesar de los diferentes usuarios.
+
+4. [OK] La funcion normal especifica un numero de puntos asociados, pero si estos no son especificados?
+Por ejemplo, tengo un array numpy y deseo operar sobre ellos, como deberia operar? ->solucionado,np.random.normal, funciona con np.shape.
+
+5. Deseo como parametro de entrada, especificar si quiero incorporar el desvanecimiento o no.
+
+
+'''

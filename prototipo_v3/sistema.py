@@ -48,6 +48,7 @@ class Sistema_Celular:
 		#1.tupla con (intensidad, distribucion)
 		#1.1 si la distribucion no tiene una intensidad, intensidad=0
 		self.distribucion,self.intensidad=params_simulacion[2]
+
 		self.frequencia_operacion=params_simulacion[3]
 		#
 		self.params_perdidas=params_perdidas #"tipo", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad
@@ -206,19 +207,24 @@ class Sistema_Celular:
 		#"tipo", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad
 		#pasar parametros de perdidas:
 		print("init. modelo canal")
-		self.modelo_canal=moca.Modelo_Canal(self.params_perdidas,self.frequencia_operacion,
-			(self.distancias_celdas, "m"))
+
+		#self.modelo_canal=moca.Modelo_Canal(self.params_perdidas,params_sim, params_desv)
 
 		#convierto la lista en array numpy
 		self.hiperc_distancias=np.stack(self.hiperc_distancias, axis=0)
+		#ya incluye unididades.
+		params_sim=[self.frequencia_operacion, (self.hiperc_distancias, "m")] #distancia siempre en metros.
+		params_desv=self.params_perdidas[0][2]
 		#Creo un modelo del canal con todas las distancias.
 		#
 		#la ganacia de tx, ahora es la ganancia relativa de cada usuario.
 		self.params_perdidas[3]=self.hiperc_ganancia_relativa
 		#otro modelo de canal, pero con las hiper distancias.
-		self.hiperc_modelo_canal=moca.Modelo_Canal(self.params_perdidas,self.frequencia_operacion,
-			(self.hiperc_distancias, "m"))
+		self.hiperc_modelo_canal=moca.Modelo_Canal(self.params_perdidas,params_sim, params_desv)
 		#calculo las perdidas del modelo del canal segun el tipo de modelo de propagacion
+
+		#IMPLEMENTACION DE PERDIDAS, NO DEBERIA ESTAR EN EL MODULO?. Cambiado.
+		'''
 		if self.params_perdidas[0]=="espacio_libre":
 			self.modelo_canal.perdidas_espacio_libre_ghz()
 
@@ -226,8 +232,9 @@ class Sistema_Celular:
 			self.modelo_canal.perdidas_okumura_hata_mhz()
 			#################
 			self.hiperc_modelo_canal.perdidas_okumura_hata_mhz()
+		'''
 		#con los calculos anteriores, calculo el balance del enlace.
-		self.modelo_canal.balance_del_enlace_simple()
+		#self.modelo_canal.balance_del_enlace_simple()
 		self.hiperc_modelo_canal.balance_del_enlace_simple()
 
 		#

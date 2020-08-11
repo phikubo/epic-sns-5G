@@ -1,4 +1,5 @@
 #import
+import matplotlib.pyplot as plt
 import numpy as np
 import math
 #como esto no usa submodulos, no necesito hacer try catch en esos modulos.
@@ -9,66 +10,134 @@ import math
 #except:
 	#pass
 
-#modelo del canal incluye perdidas AWGN y RUIDO. Crear modulos awgn y ruido.
+#modelo del canal incluye perdidas AWGN y RUIDO. Crear modulos awgn y ruido. desechado.
+
+#Falta validar unidades de distancias y frequencias.
+
 class Modelo_Canal:
 	"""Clase que define el modelo del canal, calcula las perdidas del sistema. No adiciona AWGN ni Ruido."""
-	def __init__(self, params_perdidas,frecuencia, params_distancia): #usar args and kwards, recibir tipo de primero, y sus parametros.
+	def __init__(self, params_perdidas, params_simulacion, params_desvanecimiento): #usar args and kwards, recibir tipo de primero, y sus parametros.
 		#params_perdidas[0]:tipo de perdidas
 		#params_perdidas[1]:potencia de tx
 		#params_perdidas[2]:perdidas en tx
-		#params_perdidas[3]:ganancia en tx ***array numpy
+		#params_perdidas[3]:ganancia en tx ***array numpy *s cambia por ganancia relativa previamente.
 		#params_perdidas[4]:ganancia en rx
 		#params_perdidas[5]:perdidas en rx
 		#params_perdidas[6]:sensibilidad de todos los usuarios #en el futuro, sensibidad variable
 		#print("from modelo canal", frecuencia)
 		#ENTRADA
-		self.frecuencia=frecuencia[0] #en gigaherz
-		self.frec_unidad=frecuencia[1]
+		self.frecuencia=params_simulacion[0][0] #en gigaherz
+		self.unidades_freq=params_simulacion[0][1]
 		#
-		self.distancias, self.unidades=params_distancia
+		self.distancias=params_simulacion[1][0]
+		self.unidades_dist=params_simulacion[1][1]
+
 		self.params_perdidas=params_perdidas
+		self.params_desvanecimiento=params_desvanecimiento
 
-		self.tipo_perdidas=params_perdidas[0]
-
+		self.tipo_perdidas=params_perdidas[0][0]
+		self.params_modelo=params_perdidas[0][1]
+		print('parametros modelo', self.params_modelo)
+		print('parametros desvanecimiento', self.params_desvanecimiento)
 		#AUXILIAR
-		self.distancia_km=0
+		#self.distancias=0
+
+		self.desvanecimiento=0
 
 		#SALIDA
 		self.resultado_path_loss=0
 		self.resultado_balance=0
 		self.resultado_margen=0
-		self.inicializar_distancias_km()
-		#self.inicializar_tipo()
+		#self.inicializar_distancias()
+		self.inicializar_desvanecimiento()
+		self.inicializar_tipo()
 
-	def inicializar_distancias_km(self):
-		if self.unidades=="m" and self.tipo_perdidas=="espacio_libre":
-			self.distancia_km=self.distancias/1000
-		elif self.unidades=="m" and self.tipo_perdidas=="okumura_hata":
-			self.distancia_km=self.distancias/1000
-		elif self.unidades=="km":
+
+	def inicializar_tipo(self):
+		'''Segun el modelo de propagacion escogido, inicizalizar selecciona la funcion que calcula las perdidas'''
+		if self.tipo_perdidas =="espacio_libre":
+			#km, GHz
+			if self.unidades_dist=="m":
+				#convierto a kilometros
+				self.distancias=self.distancias/1000
+			else:
+				pass #opcion kilometro, no cambia.
+
+			if self.unidades_freq=="mhz":
+				#convierto a gigaherz
+				self.unidades_freq=self.unidades_freq/1000
+			else:
+				pass #opcion gigahez, no cambia.
+			self.perdidas_espacio_libre_ghz()
+
+
+		elif self.tipo_perdidas =="okumura_hata":
+			#km, mhz
+			if self.unidades_dist=="m":
+				#convierto a kilometros
+				self.distancias=self.distancias/1000
+			else:
+				pass #opcion kilometro, no cambia.
+			if self.unidades_freq=="ghz":
+				#convierto a megaherz
+				self.unidades_freq=self.unidades_freq*1000
+			else:
+				pass #opcion megaherz, no cambia.
+			self.perdidas_okumura_hata_mhz()
+			#print(self.resultado_path_loss)
+		else:
+			pass
+
+	def inicializar_desvanecimiento(self):
+		'''Crea un array de desvanecimiento, dependiendo del tipo y especificaciones extras'''
+		if self.params_desvanecimiento[0]=="lento":
+			print("lento seleccionado")
+			#distancias=np.arange(1,200,1)
+			#sized=len(distancias)
+			if self.params_desvanecimiento[1]:
+				sigma_xn=self.params_desvanecimiento[2][1]
+				mu=self.params_desvanecimiento[2][2]
+				#if true, el desvanecimiento deja de ser 0 y se integra a las perdidas.
+				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.distancias.shape)
+			else:
+				pass #se suma 0, a las perdidas iniciales.
+
+
+		elif self.params_desvanecimiento[0]=="rapido":
+			print("rapido seleccionado")
+		elif self.params_desvanecimiento[0]=="mixto":
+			print("rapido+lento seleccionado")
+		else:
 			pass
 
 	def perdidas_espacio_libre_ghz(self):
+		#outs dB
 		'''Funcion que calcula las perdidas de espacio libre en dB'''
-		self.resultado_path_loss=92.4+20*np.log10(self.frecuencia)+20*np.log10(self.distancia_km)
+		self.resultado_path_loss=92.4+20*np.log10(self.frecuencia)+20*np.log10(self.distancias)
 
 	def perdidas_okumura_hata_mhz(self):
+		#outs dB
+		#http://catarina.udlap.mx/u_dl_a/tales/documentos/lem/soriano_m_jc/capitulo2.pdf
 		'''Funcion que calcula las perdidasd de espacio con el modelo hata 1980.
 		Fuente:Empirical Formula for Propagation Loss in Land Mobile Radio Services'''
 		#rangos
 		#fc:150,1500 MHz
 		#hb=30,200 m
 		#R:1, 200 km
-		hb=30 #m
-		alfa=0
-		hm=1.5
+		#hb=30 #m
+		#alfa=0
+		#hm=1.5
+		hb=self.params_modelo[0]
+		alfa=self.params_modelo[1]
+		hm=self.params_modelo[2]
 		#de la forma: Lp=A+Blog10(R)
 		A=69.55+26.16*np.log10(self.frecuencia)-13.82*np.log10(hb)-alfa*(hm)
 		B=44.9-6.55*np.log10(hb)
 		E=3.2*(np.log10(11.75*hm))**2 -4.97 #[dB] para ciudades grandes y fc>300 MHz
 		#E=8.29*(np.log10(1.54*hm))**2 -1.1 #[dB] para ciudades grandes y fc<300 MHz
-		print("---------------------a,b:",A,B)
-		self.resultado_path_loss=A+B*np.log10(self.distancia_km)-E
+		print("okumura_hata, says->A,B:",A,B)
+		#print(self.distancias)
+		self.resultado_path_loss=A+B*np.log10(self.distancias)-E + self.desvanecimiento
 
 
 	def perdidas_umi_ci(self):
@@ -181,6 +250,7 @@ class Modelo_Canal:
 
 
 def prueba_interna_resultado_path_loss():
+	#obsoleta
 	'''Funcion que prueba el concepto de perdidas de espacio libre con numpy'''
 	freq=10 #en gigas
 	distancias_km=np.array([0.1, 1, 2, 3, 4, 5, 6])
@@ -189,6 +259,55 @@ def prueba_interna_resultado_path_loss():
 	l_bs=modelo_simple.resultado_path_loss
 	print(l_bs)
 
+def prueba_interna_desvanecimiento():
+	'''Funcion que prueba el concepto de tipos desvanecimiento con numpy'''
+	#params sim
+	freq=1.5 #gigas?
+	distancias=np.arange(1,200,1)
+
+	#params perdidas
+	params_modelo=[30, 0, 1.5] #hb, alfa, hm
+	modelo=['okumura_hata',params_modelo] #si no: se pone, se escribe o se escribe bien, el pathloss es 0
+	pot_tx=18
+	loss_tx=5
+	gan_tx=5
+	gan_rx=8
+	loss_rx=0
+	sensibilidad=92
+	##
+	params_p=[modelo, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
+	#
+	params_sim=[(freq,"ghz"),(distancias, "km")]
+	#
+	#params desv
+	tipo_desv='lento'
+	alpha_n=3.1
+	sigma_xn=8.1
+	mu=0
+	play_desv=False
+	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
+
+	modelo_simple=Modelo_Canal(params_p, params_sim, params_desv)
+	#LA PREGUNTA ES AQUI, CON LOS anteriores DEBERIA ARROJAR HATA, PERO ESTA REALIZANDO libre_ghz.... Corregido
+	#modelo_simple.perdidas_espacio_libre_ghz()
+	path_loss=modelo_simple.resultado_path_loss
+	print(path_loss)
+
+	#desvanecimiento lento
+	#distancias_np=np.array([[10,50,100],[130, 170, 200]])
+	#print("shape", distancias_np.shape)
+
+	#sized=len(distancias)
+	N=np.random.normal(mu,sigma_xn,distancias.shape)
+	path_loss_desv=path_loss+N
+	plt.grid(True)
+	plt.xlabel('Distancia m')
+	plt.ylabel('Perdidas [dB]')
+	plt.title('Perdidas modelo: '+ modelo[0])
+	#plt.plot(distancias,path_loss,'b*')
+	plt.plot(distancias,path_loss,'b*')
+	plt.plot(distancias,path_loss_desv,'go')
+	plt.show()
 
 
 if __name__=="__main__":
@@ -196,6 +315,7 @@ if __name__=="__main__":
 	#import #aqui van los submodulos nuevamente para envitar errores
 
 	#prueba interna 1.
-	prueba_interna_resultado_path_loss()
+	#prueba_interna_resultado_path_loss()
+	prueba_interna_desvanecimiento()
 else:
 	print("Modulo <escribir_nombre> importado")
