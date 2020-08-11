@@ -25,7 +25,17 @@ class Modelo_Canal:
 		#params_perdidas[5]:perdidas en rx
 		#params_perdidas[6]:sensibilidad de todos los usuarios #en el futuro, sensibidad variable
 		#print("from modelo canal", frecuencia)
+		#RX_PWR = TX_PWR – Max (pathloss – G_TX – G_RX, MCL)
 		#ENTRADA
+		self.tx_prw=params_perdidas[1]
+		self.tx_loss=params_perdidas[2]
+		self.tx_grel=params_perdidas[3] #relativa
+		#--
+		self.rx_g=params_perdidas[4] #no relativa
+		self.rx_loss=params_perdidas[5]
+		self.rx_sens=params_perdidas[6]
+
+		#--
 		self.frecuencia=params_simulacion[0][0] #en gigaherz
 		self.unidades_freq=params_simulacion[0][1]
 		#
@@ -51,7 +61,7 @@ class Modelo_Canal:
 		#self.inicializar_distancias()
 		self.inicializar_desvanecimiento()
 		self.inicializar_tipo()
-		self.inicialiar_balance()
+		#self.inicializar_balance()
 
 
 	def inicializar_tipo(self):
@@ -70,6 +80,7 @@ class Modelo_Canal:
 			else:
 				pass #opcion gigahez, no cambia.
 			self.perdidas_espacio_libre_ghz()
+			self.balance_del_enlace_simple()
 
 
 		elif self.tipo_perdidas =="okumura_hata":
@@ -85,7 +96,8 @@ class Modelo_Canal:
 			else:
 				pass #opcion megaherz, no cambia.
 			self.perdidas_okumura_hata_mhz()
-			#print(self.resultado_path_loss)
+			self.balance_del_enlace_mcl() # ->generar errorees
+			#self.balance_del_enlace_simple()
 		else:
 			pass
 
@@ -124,20 +136,22 @@ class Modelo_Canal:
 		#rangos
 		#fc:150,1500 MHz
 		#hb=30,200 m
-		#R:1, 200 km
+		#R:1, 200 km #no es el radio, es la distancia.
 		#hb=30 #m
 		#alfa=0
 		#hm=1.5
 		hb=self.params_modelo[0]
-		alfa=self.params_modelo[1]
+		alfa=self.params_modelo[1] #0 si hm=1.5m
 		hm=self.params_modelo[2]
 		#de la forma: Lp=A+Blog10(R)
+
 		A=69.55+26.16*np.log10(self.frecuencia)-13.82*np.log10(hb)-alfa*(hm)
 		B=44.9-6.55*np.log10(hb)
 		E=3.2*(np.log10(11.75*hm))**2 -4.97 #[dB] para ciudades grandes y fc>300 MHz
 		#E=8.29*(np.log10(1.54*hm))**2 -1.1 #[dB] para ciudades grandes y fc<300 MHz
 		print("okumura_hata, says->A,B:",A,B)
-		#print(self.distancias)
+		print("distancias")
+		print(self.distancias)
 		self.resultado_path_loss_antes=A+B*np.log10(self.distancias)-E
 		self.resultado_path_loss=A+B*np.log10(self.distancias)-E + self.desvanecimiento
 
@@ -197,7 +211,8 @@ class Modelo_Canal:
 
 
 	def balance_del_enlace_simple(self):
-		'''Funcion que calcula un balance del enlace sencillo'''
+		'''Funcion que calcula un balance del enlace sencillo:
+		Potencia recibida ( dB ) = potencia transmitida (dB) + Ganancias (dB) - Pérdidas (dB)'''
 		#segemento=ptx-perdidas+ganancia
 		#ATENCION, DOCUMENTAR UNIDADES
 		#"espacio_libre", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad
@@ -210,15 +225,40 @@ class Modelo_Canal:
 		#params_perdidas[4]:ganancia en rx
 		#params_perdidas[5]:perdidas en rx
 		#params_perdidas[6]:sensibilidad de todos los usuarios #en el futuro, sensibidad variable
-		segmento_tx=self.params_perdidas[1]-self.params_perdidas[2]+self.params_perdidas[3]
-		segmento_rx=self.params_perdidas[4]-self.params_perdidas[5]
-		self.resultado_balance=segmento_tx-self.resultado_path_loss+segmento_rx
-		#print("[mod canal] margen")
-		self.resultado_margen=self.resultado_balance+self.params_perdidas[6]
+		##segmento_tx=self.params_perdidas[1]-self.params_perdidas[2]+self.params_perdidas[3]
+		##segmento_rx=self.params_perdidas[4]-self.params_perdidas[5]
+		##self.resultado_balance=segmento_tx-self.resultado_path_loss+segmento_rx
+
+		##self.resultado_margen=self.resultado_balance+self.params_perdidas[6]
+
+		segmento_tx=self.tx_prw+self.tx_grel-self.tx_loss
+		segmento_rx=self.rx_g-self.rx_loss
+		self.resultado_balance=segmento_tx+segmento_rx-self.resultado_path_loss
+		self.resultado_margen=self.resultado_balance-self.rx_sens
+
 
 	def balance_del_enlace_mcl(self):
-		'''Funcion que calcula un balance del enlace, teniendo en cuenta el mcl.'''
-		pass
+		'''Funcion que calcula un balance del enlace, teniendo en cuenta el mcl.
+		RX_PWR = TX_PWR – Max (pathloss – G_TX – G_RX, MCL)
+		where:
+		RX_PWR is the received signal power
+		TX_PWR is the transmitted signal power
+		G_TX is the transmitter antenna gain
+		G_RX is the receiver antenna gain '''
+		mcl=70 #dB para entorno urbano.
+		#segmento_tx=self.tx_grel-self.tx_loss
+		#segmento_rx=self.rx_g-self.rx_loss
+		#self.resultado_balance=segmento_tx+segmento_rx-self.resultado_path_loss
+		print("-----------------------path loss: ")
+		print(self.resultado_path_loss)
+		balance_simplificado=self.resultado_path_loss-self.tx_grel-self.rx_g+self.tx_loss+self.rx_loss
+		print("-----------------------balance simplificado: ")
+		print(balance_simplificado)
+		maxx=np.maximum(balance_simplificado, mcl)
+		self.resultado_balance=self.tx_prw-np.maximum(balance_simplificado, mcl)
+		print("-----------------------resultadao balance simplificado-> maxx: ")
+		print(maxx)
+		self.resultado_margen=self.resultado_balance-self.rx_sens
 
 	def balance_del_enlace_LTE(self):
 		'''Funcion que calcula el balance del enlace 5G/4G.
@@ -274,12 +314,12 @@ def prueba_interna_desvanecimiento():
 	#params perdidas
 	params_modelo=[30, 0, 1.5] #hb, alfa, hm
 	modelo=['okumura_hata',params_modelo] #si no: se pone, se escribe o se escribe bien, el pathloss es 0
-	pot_tx=18
+	pot_tx=30,52 #18 #dBm
 	loss_tx=5
 	gan_tx=5
 	gan_rx=8
 	loss_rx=0
-	sensibilidad=92
+	sensibilidad=-92 #dBm
 	##
 	params_p=[modelo, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
 	#
@@ -297,7 +337,7 @@ def prueba_interna_desvanecimiento():
 	#LA PREGUNTA ES AQUI, CON LOS anteriores DEBERIA ARROJAR HATA, PERO ESTA REALIZANDO libre_ghz.... Corregido
 	#modelo_simple.perdidas_espacio_libre_ghz()
 	path_loss=modelo_simple.resultado_path_loss
-	print(path_loss)
+	#print(path_loss)
 
 	#desvanecimiento lento
 	#distancias_np=np.array([[10,50,100],[130, 170, 200]])

@@ -235,7 +235,7 @@ class Sistema_Celular:
 		'''
 		#con los calculos anteriores, calculo el balance del enlace.
 		#self.modelo_canal.balance_del_enlace_simple()
-		self.hiperc_modelo_canal.balance_del_enlace_simple()
+		#self.hiperc_modelo_canal.balance_del_enlace_simple()->implementado en modelo del canal
 
 		#
 		#
