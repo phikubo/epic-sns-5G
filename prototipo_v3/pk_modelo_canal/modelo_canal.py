@@ -53,14 +53,18 @@ class Modelo_Canal:
 		#self.distancias=0
 		self.resultado_path_loss_antes=0 #eliminar, dejar solo en debug.
 		self.desvanecimiento=0
+		self.balance_simplificado=0
 
 		#SALIDA
 		self.resultado_path_loss=0
 		self.resultado_balance=0
 		self.resultado_margen=0
 		#self.inicializar_distancias()
-		self.inicializar_desvanecimiento()
 		self.inicializar_tipo()
+		#se altera el orden para poder obtener los valores de perdidas, en el
+		#desvanecimiento rayleight, y luego, adicionar ese desvanecimiento al balance del enlace
+		self.inicializar_desvanecimiento()
+		self.balance_del_enlace_mcl()
 		#self.inicializar_balance()
 
 
@@ -80,7 +84,7 @@ class Modelo_Canal:
 			else:
 				pass #opcion gigahez, no cambia.
 			self.perdidas_espacio_libre_ghz()
-			self.balance_del_enlace_simple()
+			#self.balance_del_enlace_simple()
 
 
 		elif self.tipo_perdidas =="okumura_hata":
@@ -96,7 +100,7 @@ class Modelo_Canal:
 			else:
 				pass #opcion megaherz, no cambia.
 			self.perdidas_okumura_hata_mhz()
-			self.balance_del_enlace_mcl() # ->generar errorees
+			#self.balance_del_enlace_mcl()
 			#self.balance_del_enlace_simple()
 		else:
 			pass
@@ -112,12 +116,28 @@ class Modelo_Canal:
 				mu=self.params_desvanecimiento[2][2]
 				#if true, el desvanecimiento deja de ser 0 y se integra a las perdidas.
 				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.distancias.shape)
+
 			else:
 				pass #se suma 0, a las perdidas iniciales.
 
 
-		elif self.params_desvanecimiento[0]=="rapido":
-			print("rapido seleccionado")
+		elif self.params_desvanecimiento[0]=="profundo":
+			print("(rayleight) seleccionado")
+			if self.params_desvanecimiento[1]:
+				#sigma_xn=self.params_desvanecimiento[2][1]
+				#mu=self.params_desvanecimiento[2][2]
+				#if true, el desvanecimiento deja de ser 0 y se integra a las perdidas.
+				path_loss_desva=10**(-self.resultado_path_loss/10)
+				path_loss_desva_r=np.sqrt(path_loss_desva)
+				b=path_loss_desva_r/np.sqrt(np.pi/2)
+				bray=np.random.rayleigh(b)
+				bray=np.power(bray,2)
+				self.desvanecimiento=10*np.log10(bray) #bray_dB
+				plt.figure()
+				plt.plot(self.distancias, self.desvanecimiento, label="rayleigh")
+			else:
+				pass #se suma 0, a las perdidas iniciales.
+
 		elif self.params_desvanecimiento[0]=="mixto":
 			print("rapido+lento seleccionado")
 		else:
@@ -150,10 +170,10 @@ class Modelo_Canal:
 		E=3.2*(np.log10(11.75*hm))**2 -4.97 #[dB] para ciudades grandes y fc>300 MHz
 		#E=8.29*(np.log10(1.54*hm))**2 -1.1 #[dB] para ciudades grandes y fc<300 MHz
 		print("okumura_hata, says->A,B:",A,B)
-		print("distancias")
-		print(self.distancias)
+		#print("distancias")
+		#print(self.distancias)
 		self.resultado_path_loss_antes=A+B*np.log10(self.distancias)-E
-		self.resultado_path_loss=A+B*np.log10(self.distancias)-E + self.desvanecimiento
+		self.resultado_path_loss=A+B*np.log10(self.distancias)-E #+ self.desvanecimiento
 
 
 	def perdidas_umi_ci(self):
@@ -244,20 +264,48 @@ class Modelo_Canal:
 		RX_PWR is the received signal power
 		TX_PWR is the transmitted signal power
 		G_TX is the transmitter antenna gain
-		G_RX is the receiver antenna gain '''
+		G_RX is the receiver antenna gain
+		---
+		Una ecuación de balance de enlace que incluye todos estos efectos, expresado de forma logarítmica,
+		podría tener este aspecto:
+
+		  P_ {RX} = P_ {TX} + G_ {TX} - L_ {TX} - L_ {FS} - L_M + G_ {RX} - L_ {RX} \,
+
+		dónde:
+
+		P_ {RX} = Potencia recibida (dBm)
+		P_ {TX} = Potencia de salida del transmisor (dBm)
+		G_ {TX}= Transmisor de ganancia de la antena (dBi)
+		L_ {TX} = pérdidas transmisor (coaxiales, conectores, ...) (dB)
+		L_ {FS}= Pérdida de trayecto , por lo general la pérdida de espacio libre (dB)
+		L_M = Pérdidas diversas ( desvanecimiento margen, la pérdida del cuerpo, desadaptación de polarización, otras pérdidas ...) (dB)
+		G_ {RX}= Receptor de ganancia de la antena (dBi)
+		L_ {RX} = pérdidas receptor (coaxial, conectores, ...) (dB) '''
 		mcl=70 #dB para entorno urbano.
 		#segmento_tx=self.tx_grel-self.tx_loss
 		#segmento_rx=self.rx_g-self.rx_loss
 		#self.resultado_balance=segmento_tx+segmento_rx-self.resultado_path_loss
 		print("-----------------------path loss: ")
 		print(self.resultado_path_loss)
-		balance_simplificado=self.resultado_path_loss-self.tx_grel-self.rx_g+self.tx_loss+self.rx_loss
-		print("-----------------------balance simplificado: ")
-		print(balance_simplificado)
-		maxx=np.maximum(balance_simplificado, mcl)
-		self.resultado_balance=self.tx_prw-np.maximum(balance_simplificado, mcl)
-		print("-----------------------resultadao balance simplificado-> maxx: ")
-		print(maxx)
+
+		if self.params_desvanecimiento[0]=="lento":
+			self.balance_simplificado=self.resultado_path_loss-self.tx_grel-self.rx_g+self.tx_loss+self.rx_loss
+			plt.plot(self.distancias, -self.balance_simplificado, 'r-',  label="sin ptx, simplificado")
+			self.balance_simplificado=self.balance_simplificado+self.desvanecimiento
+			plt.plot(self.distancias, -self.balance_simplificado, "go-",  label="sin ptx + desva")
+		elif self.params_desvanecimiento[0]=="profundo":
+			self.balance_simplificado=-self.desvanecimiento-self.tx_grel-self.rx_g+self.tx_loss+self.rx_loss
+			balance_simplificado_original=self.resultado_path_loss-self.tx_grel-self.rx_g+self.tx_loss+self.rx_loss
+			plt.plot(self.distancias, -balance_simplificado_original, "r-",  label="sin ptx. simplificado")
+			plt.plot(self.distancias, -self.balance_simplificado, "go-",  label="sin ptx. desva insted pl")
+		else:
+			pass
+
+		self.resultado_balance=self.tx_prw-np.maximum(self.balance_simplificado, mcl)
+
+
+		###print("-----------------------resultadao balance simplificado-> maxx: ")
+		###print(maxx)
 		self.resultado_margen=self.resultado_balance-self.rx_sens
 
 	def balance_del_enlace_LTE(self):
@@ -305,7 +353,7 @@ def prueba_interna_resultado_path_loss():
 	l_bs=modelo_simple.resultado_path_loss
 	print(l_bs)
 
-def prueba_interna_desvanecimiento():
+def prueba_interna_desvanecimiento_lento():
 	'''Funcion que prueba el concepto de tipos desvanecimiento con numpy'''
 	#params sim
 	freq=1.5 #gigas?
@@ -314,7 +362,7 @@ def prueba_interna_desvanecimiento():
 	#params perdidas
 	params_modelo=[30, 0, 1.5] #hb, alfa, hm
 	modelo=['okumura_hata',params_modelo] #si no: se pone, se escribe o se escribe bien, el pathloss es 0
-	pot_tx=30,52 #18 #dBm
+	pot_tx=18 #18 #dBm
 	loss_tx=5
 	gan_tx=5
 	gan_rx=8
@@ -328,7 +376,7 @@ def prueba_interna_desvanecimiento():
 	#params desv
 	tipo_desv='lento'
 	alpha_n=3.1
-	sigma_xn=8.1
+	sigma_xn=4
 	mu=0
 	play_desv=False
 	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
@@ -336,7 +384,8 @@ def prueba_interna_desvanecimiento():
 	modelo_simple=Modelo_Canal(params_p, params_sim, params_desv)
 	#LA PREGUNTA ES AQUI, CON LOS anteriores DEBERIA ARROJAR HATA, PERO ESTA REALIZANDO libre_ghz.... Corregido
 	#modelo_simple.perdidas_espacio_libre_ghz()
-	path_loss=modelo_simple.resultado_path_loss
+	#path_loss=modelo_simple.resultado_path_loss
+	balance=modelo_simple.resultado_balance
 	#print(path_loss)
 
 	#desvanecimiento lento
@@ -345,14 +394,58 @@ def prueba_interna_desvanecimiento():
 
 	#sized=len(distancias)
 	N=np.random.normal(mu,sigma_xn,distancias.shape)
-	path_loss_desv=path_loss+N
+	balance_desv=balance+N
 	plt.grid(True)
 	plt.xlabel('Distancia m')
 	plt.ylabel('Perdidas [dB]')
 	plt.title('Perdidas modelo: '+ modelo[0])
 	#plt.plot(distancias,path_loss,'b*')
-	plt.plot(distancias,path_loss,'b*')
-	plt.plot(distancias,path_loss_desv,'go')
+	plt.plot(distancias,balance,'bx')
+	plt.plot(distancias,balance_desv,'go-')
+	plt.show()
+
+def prueba_interna_desvanecimiento_prof():
+	'''Funcion que prueba el concepto de tipos desvanecimiento con numpy'''
+	#params sim
+	freq=1.5 #gigas?
+	distancias=np.arange(1,200,1)
+
+	#params perdidas
+	params_modelo=[30, 0, 1.5] #hb, alfa, hm
+	modelo=['okumura_hata',params_modelo] #si no: se pone, se escribe o se escribe bien, el pathloss es 0
+	pot_tx=18 #18 #dBm
+	loss_tx=5
+	gan_tx=5
+	gan_rx=8
+	loss_rx=0
+	sensibilidad=-92 #dBm
+	##
+	params_p=[modelo, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
+	#
+	params_sim=[(freq,"ghz"),(distancias, "km")]
+	#
+	#params desv
+	tipo_desv='profundo'
+	alpha_n=3.1
+	sigma_xn=4
+	mu=0
+	play_desv=True
+	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
+
+	modelo_simple=Modelo_Canal(params_p, params_sim, params_desv)
+	#LA PREGUNTA ES AQUI, CON LOS anteriores DEBERIA ARROJAR HATA, PERO ESTA REALIZANDO libre_ghz.... Corregido
+	#modelo_simple.perdidas_espacio_libre_ghz()
+	#path_loss=modelo_simple.resultado_path_loss
+	balance=modelo_simple.resultado_balance
+
+	plt.grid(True)
+	plt.xlabel('Distancia m')
+	plt.ylabel('Perdidas [dB]')
+	plt.title('Perdidas modelo: '+ modelo[0]+', desva: '+tipo_desv)
+	#plt.plot(distancias,path_loss,'b*')
+
+	plt.plot(distancias,balance,'bx-', label="mcl y ptx")
+	plt.legend(loc="upper left")
 	plt.show()
 
 
@@ -362,6 +455,7 @@ if __name__=="__main__":
 
 	#prueba interna 1.
 	#prueba_interna_resultado_path_loss()
-	prueba_interna_desvanecimiento()
+	#prueba_interna_desvanecimiento_lento() #se observa unos puntos planos al principo del array, se debe al mcl.
+	prueba_interna_desvanecimiento_prof()
 else:
 	print("Modulo <escribir_nombre> importado")
