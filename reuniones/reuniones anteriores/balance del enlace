@@ -1,0 +1,22 @@
+PIRE (dBm) = Potencia del transmisor (dBm) – Pérdidas en el cable y conectores (dB) +
+ganancia de antena (dBi)
+
+Potencia del transmisor [dBm] – Pérdida en el cable TX [dB] + Ganancia de antena TX [dBi] –
+Pérdidas en la trayectoria del espacio abierto [dB] + Ganancia de antena RX [dBi] – Pérdidas en
+el cable del RX [dB] = Margen – Sensibilidad del receptor [dBm]
+
+Cable de baja calidad
+Distancia: 1 km (0,622 millas)
+Frecuencia: 2,4 GHz 
+Cables y conectores -5 dB
+Salida del transmisor +18 dBm
+Antena TX +5 dBi
+*** FSL -100 dB
+Antena RX + 8 dBi
+Cables y conectores Rx -5 dB
+Sensibilidad del receptor -92 dBm
+Total: (margen) + 13 dB
+
+El margen de este enlace es de 13 dB, adecuado para ambientes urbanos y la potencia irradiada es de
+18 dBm (<100 mW), quiere decir que el enlace es legal en cualquier país.
+

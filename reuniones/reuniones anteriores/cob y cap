@@ -1,0 +1,70 @@
+simulador implementará como mı́nimo 1 caso de uso (mMTC,
+emBB, URLLC) de la red 5G, y como mı́nimo eMBB (sin considerar efectos
+de movilidad).
+• El simulador implementará acceso a banda ancha en áreas
+de diferente densidad de usuarios (200-150000 usuarios por kilome-
+tro cuadrado). Pruebas de complejidad son necesarias en fase de
+pruebas: ¿Cual es el máximo de usuarios que puede simularse en
+un tiempo adecuado y sin desestabilizar el simulador?
+◦ El simulador implementará un procedimiento para cuanti-
+ficar la relación entre usuarios y área total del sistema, para definir
+la densidad de usuario en un área determinada.
+◦ El simulador implementará un procedimiento para generar
+las coordenadas espaciales de los usuarios, en diferentes patro-
+nes de densidad y de forma aleatoria.
+ El simulador implementará el proceso puntual poisson.
+ El simulador implementará el proceso puntual thomas-
+cluster.
+• El simulador implementará acceso a banda ancha para alcan-
+zar el throughput correspondiente a la densidad de usuarios, y en el
+enlace de bajada.
+◦ El simulador implementará un procedimiento para calcular
+la SNR del sistema (ver definición de sistema en el reporte 38).
+◦ El simulador implementaráá un procedimiento para identifi-
+car el esquema de modulación a partir de la SNR y la BER objetivo.
+◦ El simulador implementará un procedimiento calcular el
+ı́ndice de modulación para todos los usuarios según el esquema
+de modulación identificado.
+◦ El simulador implementará diversos algoritmos de planifi-
+cación radio, y como mı́nimo Round Robin.
+◦ El simulador implementará un procedimiento para obte-
+ner el throughput a partir de tablas, parámetros fijos y parámetros
+calculados.
+12El simulador implementará un modelo de sistema basado en ondas
+milimétricas y como mı́nimo en en la banda 28 y 73 GHz.
+El simulador implementará diversos algoritmos de planificación radio,
+y como mı́nimo Round Robin.
+
+------------------------------
+------------------------------
+
+-1. Ganancia de antena variable
+0. Obtener la interferencia de cada usuario
+1. Obtener SINR de cada Usuario
+2. Calcular Throughput de Cada Usuario (3GPP TS 38.306 st)
+	2.1 Factor  de MCS-Orden de modulación
+		=TABLA_etsi(SINR, BER objetivo, {CQI})
+	2.2 Diversidad de antenas (arreglo de antenas)
+		=parámetro gui fijo (MIMO)	
+	2.4 Factor de escala
+		=TABLA_etsi(orden de mod, mcs)
+	2.5 Tasa de datos máxima
+		=TABLA_etsi(orden de mod, mcs)
+	2.6 Factor de trama
+		=ecuacion_espaciamiento(numerología, recusos físicos)
+			2.6.1 numerología = parametro gui
+			2.6.2 recusos_PRB = algoritmo de plafinicación
+				2.6.2.1 algoritmo round robin (numero de usuarios, estado del canal cqi, )
+	2.7 Factor de cabeceras-overehead
+		2.7.1 =fc(fr1,fr2)
+
+------------------------------
+------------------------------
+
+Preguntas
+1. interferencia
+2. enlaces unicos, no en malla
+3. mapa de calor
+4. fast fading no (en balance del enlace, como un margen)
+
+

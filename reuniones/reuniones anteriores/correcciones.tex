@@ -1,0 +1,234 @@
+\section{COMPILACIÓN DE DEFINICIONES}
+\begin{itemize}
+    \item \textbf{SIMULADOR en lugar de SOFTWARE}: para hacer referencia al conjunto de procedimientos y rutinas creadas en el lenguaje de programación \textit{Python} con el propósito de simulación se reserva la palabra \textit{Simulador} en lugar de \textit{Software}. El simulador también en últimas puede entenderse como \textit{todo} el programa.
+    \item \textbf{USUARIO FINAL en lugar de USUARIO}: Usuario final es aquella persona que utiliza el simulador con el propósito de aprender, enseñar o desarrollar algoritmos, en el contexto de la red 5G. La palabra \textit{Usuario} se reserva para la entidad del modelo del sistema, que posee un equipo terminal (UE). En este sentido, lo que se despliega en un área determinada no son solamente UEs sino la entidad completa Usuario, pues los UEs en si mismo corresponden a una entidad independiente (solo en su definición en el modelo, pues en cuanto a implementación en el simulador siempre están relacionadas estrictamente y no pueden separarse, pero pueden analizarse independientemente).
+    
+    \item \textbf{MODELO DEL SISTEMA en lugar de SISTEMA}: para hacer referencia a lógica que se implementara en el \textit{simulador}, se reserva las palabras (en conjunto) \textit{Modelo del Sistema} en lugar de \textit{Sistema} únicamente. El modelo del sistema describe los elementos y relaciones que describen los escenarios (con sus elementos) de la red 5G. Por ejemplo: los usuarios, UEs, estaciones base, celdas son entidades del modelo del sistema y pueden caracterizarse independientemente. En cambio, se sugiere usar reservar \textit{Sistema} para referirse a un conjunto de n celdas, entidades, relaciones y operaciones o comportamiento sobre ellas. %Esto con el propósito de diferenciarlo con uno de los tres \textit{tipos} de simulación: enlace, sistema, red.
+
+    \item \textbf{INTERFAZ GRÁFICA (GUI) en lugar de solo INTERFAZ}: para hacer referencia a la vista gráfica con la que el usuario final interactúa con el simulador.
+     \item \textbf{REQUERIMIENTOS en lugar de REQUISITOS}: para hacer referencia al conjunto de premisas que describen funcional y no funcionalmente el simulador. Requisitos en cambio, se reserva para definir las características que debe cumplir la red 5G.
+     
+    
+    \item \textbf{MÓDULO en lugar de SCRIPT} Para diferenciar el archivo que contiene las instrucciones de código. %de la lógica que ejecutan dichas instrucciones se refiere el archivo como el módulo. 
+    Módulo es el archivo de texto que contiene instrucciones python.
+    
+    \item \textbf{MODULO vs LIBRERÍA}: En \textit{Python} existe la idea de \textit{Modulo} como un conjunto de archivos con instrucciones que pueden ser invocadas, desde otro modulo. De esta manera, se reserva la palabra módulo para esa connotación. Un conjunto de módulos estructurados conforman una librería.
+    
+    \item \textbf{LIBRERÍA vs PAQUETES}:
+    El paquete hace referencia al sistema de archivos que contienen un conjunto de módulos que a su vez conforman en su lógica diversas librerías. Un paquete puede contener diferentes librerías.
+    
+    \item \textbf{FLUJO DE SIMULACIÓN entendido como}: una serie ordenada de \textit{eventos de simulación}. Un evento de simulación puede ser: \textit{generar usuarios}. No debe confundirse con un \textit{evento del simulador}, en este caso un ejemplo sería:  \textit{guardar datos del ultimo evento de simulación}. La diferencia radica que la primera refiere a eventos del modelo del sistema y el segundo a eventos del simulador, estrictamente.
+    
+    \item \textbf{BACKEND entendido como}: Se ha seleccionado \textit{Kivy} como \textit{marco de trabajo} para el desarrollo de la GUI; el marco de trabajo consiste en dos elementos fundamentales: lógica en lenguaje python (controla las vistas y relaciona otros módulos) y vistas en lenguaje kv (que definen las vistas gráficas estrictamente). De modo que ambos elementos están aislados en código, pero el marco de trabajo los conecta internamente. Para referirse a la lógica de la GUI sin confundirla con la lógica del simulador, pues son lógicas diferentes, la lógica de la GUI en adelante será denominada como
+    \textit{Backend}.
+    
+    \item \textbf{CÓDIGO FUENTE entendido como}: todo el código que se compone de la estructura de paquetes que contiene librerías y módulos.
+    
+    \item \textbf{TIPOS DE PARÁMETROS}: en el momento existen 3 tipos de variables de entrada y salida, que en este caso serán denominadas como parámetros, así: %(indistinguibles en este momento) que serán nombrados a partir del siguiente reporte como sigue:
+    \begin{itemize}
+        \item Parámetro GUI variable: es un parámetro que recibe la GUI y lo provee el usuario final mediante una entrada por teclado.
+         
+        \item Parámetro GUI Fijo: es un parámetro que recibe la GUI y lo provee el usuario final mediante una lista desplegable.
+        
+        \item Parámetro Fijo: es un parámetro que existe dentro del simulador por defecto.
+        
+        \item Parámetro Calculado:
+        es un parámetro que es calculado en el simulador usando los parámetros GUI de entrada, GUI fijo y fijo.
+    \end{itemize}
+    \item \sout{\textbf{MODELO DE PÉRDIDAS EQUIVALENTE AL MODELO DE PROPAGACIÓN}: cuando se haga una referencia al modelo de pérdidas se hace una referencia directa al modelo de pérdidas de propagación.}
+    \item \textbf{MODELO DE PÉRDIDAS DE PROPAGACIÓN en lugar de MODELO DE PÉRDIDAS o MODELO DE PROPAGACIÓN} Como regla general para referirse a las pérdidas en el sistema.
+\end{itemize}
+
+\section{REQUERIMIENTOS DE ALTO NIVEL V0.4-V0.5}
+Se han definido dos versiones clave, una que contiene la lógica de cobertura y otra que además integra esa versión con la lógica de capacidad, es decir junta la versión v0.4 y v.05 respectivamente. De este modo es posible separar los requerimientos de ambas versiones.
+
+
+\subsection{Simulador v0.4}
+Esta versión contiene la lógica de cobertura.
+\subsubsection{Objetivo del Usuario Final}
+El usuario final obtendrá  la gráfica \textit{CDF} y \textit{PDF} que refleja el cálculo de la probabilidad de degradación (outage) [agregar más métricas] de un escenario UMa y UMi de la red 5G.
+
+ \subsubsection{Requerimientos de Cobertura}
+ \sout{El simulador implementará los modelos de pérdidas de propagación ABG, Ci y Tr. 38901-ETSI en los escenarios UMi y Uma correspondientes.}  
+       El simulador implementará los escenarios Umi y Uma de acuerdo al modelo del sistema correspondiente. 
+        \begin{enumerate}
+            \item El simulador implementará un procedimiento para generar las entidades que conforman la red.
+            \begin{enumerate}            
+                            \item \sout{El simulador implementará un procedimiento para generar y distribuir las coordenadas espaciales de los usuarios, en diferentes patrones de densidad.}
+                            \item El simulador implementará un procedimiento para definir aleatoriamente la posición de los usuarios, en diferentes patrones de densidad.
+                                \begin{enumerate}            
+                                    \item El simulador implementará el proceso puntual Poisson.
+                                    \item El simulador implementará el proceso puntual Thomas-cluster.
+                                    \item El simulador implementará una rutina para almacenar las coordenadas generadas en un archivo de texto.
+                                    \item El simulador implementará una runita para cargar las coordenadas generadas y crear una simulación (con parámetros de entrada diferentes).
+                                \end{enumerate}
+                        
+                            \item \sout{El simulador implementará un procedimiento para generar y distribuir las coordenadas espaciales de las estaciones base en un patrón definido y ajustable.}
+                            \item El simulador implementará un procedimiento para definir la posición de las estaciones base en un patrón definido y ajustable.
+                                \begin{enumerate}            
+                                    \item El simulador implementará un algoritmo de coordenadas axiales  3D para generar el patron de distribución en forma hexagonal.
+                                    \item El simulador implementará un algoritmo para mapear las coordenadas axiales 3D a coordendas cartesianas.
+                                    \item El simulador implementará una rutina para almacenar las coordendas cartesianas en un archivo de texto.
+                                    \item El simulador implementará una rutina para cargar las coordenadas generadas para ahorrar procesamiento (pues siempre son las mismas).
+                                \end{enumerate}
+                            \item El simulador implementará un procedimiento para modelar el patrón de radiación de diversas antenas.
+                        \end{enumerate}
+            
+            
+                        
+            \item El simulador implementará un procedimiento para estimar de forma aleatoria las pérdidas por desvanecimiento.
+                \begin{enumerate}
+                    \item El simulador implementará un procedimiento para estimar el desvanecimiento log-normal.            
+                    \item El simulador implementará un procedimiento para adicionar los resultados de desvanecimiento al modelo de pérdidas de propagación.
+                \end{enumerate}
+            
+            \item \sout{El simulador implementará un procedimiento para recibir los parámetros de entrada de cada modelo de pérdidas.} Incluido en requerimientos GUI.
+            
+            \item El simulador implementará modelos de pérdidas de propagación teniendo en cuenta las frecuencias de operación de cada escenario.
+                \begin{enumerate}            
+                    \item El simulador implementará el modelo de pérdidas de propagación ABG y Ci en el escenario Umi para la banda fr2 en las frecuencialas 28, 37 y 73 GHz.
+                    \item El simulador implementará el modelo de pérdidas de propagación Tr. 38901-ETSI en el escenario UMa para la banda fr1 en las frecuencialas 700 MHz, 2.4 GHz,  2.6 GHz, 3.5 GHz.
+                \end{enumerate}
+            
+            
+            \item El simulador implementará un procedimiento para calcular el balance del enlace relacionado las pérdidas del modelo de pérdidas de propagación con las características de los elementos que conforman el sistema (ganancias, potencias de transmisión, pérdidas adicionales entre otros). % (pérdidas del cable, conectores, componentes, etc).
+            
+            \begin{enumerate}
+                \item El simulador implementará un procedimiento para %calcular %la diferencia aritmética
+                relacionar la potencia de recepción y la sensibilidad del receptor para indicar si el usuario recibe señal suficiente para conectarse a una estación base.%está en el rango de servicio.
+                \item El simulador implementará un procedimiento para calcular la probabilidad de degradación.
+                
+                \item El simulador implementará un procedimiento para calcular la interferencia de otras celdas.
+                    \begin{enumerate}
+                        \item El simulador implementará un procedimiento para calcular la distancia entre el usuario y las estaciones base más cercanas. Nota: depende de la escalabilidad. La primera prueba consiste en calcular la distancia respecto a las celdas más cercanas o contiguas a la celda donde el usuario ha sido generado; posteriormente se prueba con todas las celdas y se compara el tiempo de ejecución.
+                        \item El simulador implementará un procedimiento para seleccionar la celda con la mayor potencia de recepción.
+                        \item El simulador implementará un procedimiento para reorganizar los usuarios según la potencia recibida.
+                        \item El simulador implementará un procedimiento para dimensionar el número de usuarios en el sistema, cuando sea necesario.
+                    \end{enumerate}
+            \end{enumerate}
+        
+        \end{enumerate}
+        
+
+\subsection{Simulador v0.5}
+Esta versión contiene la lógica de cobertura y además la lógica de capacidad e integración GUI.
+\subsubsection{Objetivo del Usuario Final}
+El usuario final obtendrá una gráfica \textit{CDF} y \textit{PDF} que refleja el cálculo de \textit{throughput} para un usuario, una celda y el conjunto de celdas, de un escenario UMa y UMi de la red 5G.
+
+ \subsubsection{Requerimientos de Capacidad}
+
+    El simulador implementará las características más relevantes del \textit{caso de uso} eMBB  de la red 5G (sin considerar efectos de movilidad).
+    
+        \begin{enumerate}
+            \item El simulador implementará acceso a banda ancha en áreas de diferente densidad de usuarios (200-150000 usuarios por kilometro cuadrado). %Comentario: Pruebas de complejidad son necesarias en fase de pruebas: ¿Cual es el máximo de usuarios que puede simularse en un tiempo adecuado y sin desestabilizar el simulador? 
+                \begin{enumerate}
+                %    \item El simulador implementará un procedimiento para cuantificar la relación entre usuarios y área total del sistema, para definir la densidad de usuario en un área determinada.
+                    \item El simulador implementará un procedimiento para relacionar el parámetro GUI fijo de rango de usuarios disponibles y la frecuencia de operación selecionada.  %Nota: este requerimiento puede ser tanto de GUI como de Capacidad.
+                \end{enumerate}
+            
+            \item El simulador implementará acceso a banda ancha para alcanzar el throughput correspondiente a la densidad de usuarios, y en el enlace de bajada.
+             %------>
+            %\cite{}.%https://www.qualcomm.com/media/documents/files/heavy-reading-whitepaper-exploring-5g-new-radio-use-cases-capabilities-timeline.pdf
+                    \begin{enumerate}
+                        \item El simulador implementará un procedimiento para calcular la SINR del sistema (ver definición de sistema).
+                        \item El simulador implementará un procedimiento para identificar el esquema de modulación a partir de la SINR y la \textit{BER} objetivo. 
+                        \item El simulador implementará un procedimiento para identificar el índice de modulación para todos los usuarios según el esquema de modulación identificado.
+                        \item El simulador implementará el algoritmo Round Robin como planificador de recursos radio.
+                        \item El simulador implementará un procedimiento para calcular el throughput a partir de tablas, parámetros fijos y \textit{parámetros calculados}. 
+                            \begin{enumerate}
+                                \item El simulador implementará un procedimiento para identificar el orden de modulación. Nota: este parámetro depende de la tabla ETSI correspondiente, con los parámetros SINR, BER y CQI.
+                                \item El simulador implementará un procedimiento para obtener el parámetro GUI fijo de diversidad de antenas.
+                                \item El simulador implementará un procedimiento para obtener el parámetro GUI fijo de factor de escala del sistema. Nota: este parámetro depende de la tabla ETSI correspondiente.
+                                
+                                \item El simulador implementará un procedimiento para identificar la tasa de datos máxima de cada usuario. Nota: este parámetro depende de la tabla ETSI correspondiente.
+                                
+                                \item El simulador implementará un procedimiento para calcular el factor de trama.
+                                    \begin{enumerate}            
+                                        \item El simulador implementará un procedimiento obtener el parámetro GUI fijo de numerología.
+                                        \item El simulador implementará un procedimiento para identificar la duración de los símbolos de acuerdo a la numerología.
+                                        \item El simulador implementará un procedimiento para obtener el número de recursos radio disponibles (a partir del planificador).
+                                    \end{enumerate}
+                                    
+                            \end{enumerate}
+                        
+                    \end{enumerate}
+                
+
+\end{enumerate}
+
+\subsubsection{Requerimientos de GUI}
+
+    La GUI controlará el flujo de la simulación al implementar un procedimiento  de inicio y terminación de simulación.
+    \begin{enumerate}
+        \item El backend permitirá implementar un procedimiento para iniciar la simulación, mediante un protocolo de comunicación con el simulador, que permita ejecutar las diferentes fases de simulación de los módulos python. %\textbf{Genera Logs}.
+        \item El backend permitirá implementar un procedimiento para el manejo de excepciones software que permita terminar el programa sin errores. %\textit{Si este procedimiento no es implementado, al terminar una simulación,  la GUI cierra y toda operación se detiene, por lo que es necesario abrir nuevamente el programa. Con excepciones, el programa puede continuar abierto y puede iniciarse una nueva simulación sin abrir nuevamente el programa}.
+    \end{enumerate}
+    
+    
+   La GUI habilitará la escritura en campos de texto con el valor numérico de los parámetros de una simulación, mediante la entrada por teclado.
+    \begin{enumerate}
+        \item El backend implementará un protocolo de comunicación con la GUI, que permita obtener los parámetros iniciales de simulación.
+        \item El backend implementará un protocolo de comunicación entre la GUI y la lógica del simulador.
+        \item El backend implementará un procedimiento para validar si los valores numéricos están en los rangos de operación del simulador.
+
+    \end{enumerate}
+    
+    
+    La GUI habilitará parámetros GUI fijos mediante opciones desplegables predefinidas.
+    \begin{enumerate}
+        \item  El backend implementará un protocolo de comunicación (de interfaces) entre la GUI y la base de datos, que permita desplegar los parámetros iniciales de simulación predefinidos en un archivo de texto de configuración jason.
+    \end{enumerate}
+   
+    La GUI almacenará los resultados de los eventos de simulación, en diferentes formatos de texto.
+    \begin{enumerate}
+        \item El backend permitirá implementar rutinas estándar para almacenar datos de simulación en formato txt.
+        \item El backend  permitirá implementar rutinas estándar para almacenar parámetros de configuración del simulación en formato jason.
+    \end{enumerate}
+
+    La GUI habilitará en un campo de texto la edición del nombre de la simulación, para diferenciar diferentes simulaciones. o una opción por defecto.
+    \begin{enumerate}
+        \item El  El backend  implementará una procedimiento para crear una estructura de carpetas dentro de la carpeta \textit{base de datos} donde los archivos serán almacenados en cada simulación, con el nombre de simulación de preferencia.
+        \item El backend  implementará un procedimiento para crear una estructura de carpetas dentro de la carpeta \textit{base de datos} donde los archivos serán almacenados en cada simulación, con un nombre por defecto (si no se especifica uno): \textit{simulacion0, simulacion1, simulacion2, simulacion3}.
+    \end{enumerate}
+    
+
+     La GUI habilitará la opción de cargar los resultados de los eventos de simulación, para generar una nueva simulación.
+    \begin{enumerate}
+        \item  El backend  implementará un procedimiento para enlazar los datos de un evento de simulación con un evento de simulación posterior (en las fases iniciales de la simulación), de tal manera que pueda continuarse   una simulación sin reiniciar el proceso con datos diferentes, para ahorrar tiempos de simulación.
+    \end{enumerate}
+
+    La GUI habilitará un campo de texto para informar textualmente el estado de la simulación en un campo específico para ese propósito.
+    \begin{enumerate}
+        \item  El backend implementará un procedimiento para registrar la traza del flujo de simulación (logs) en formato jason, con cada uno de los eventos de simulación y errores (si aplica).
+        \item El backend implementará un procedimiento de comunicación entre los archivos jason logs y la GUI, para informar al usuario final el flujo y errores. % (Repetido)
+    \end{enumerate}
+    
+    La GUI habilitará parámetros GUI fijos mediante opciones desplegables predefinidas.
+    \begin{enumerate}
+        \item  El backend implementará un protocolo de comunicación entre la GUI y la base de datos, que permita desplegar los parámetros iniciales de simulación predefinidos en un archivo de texto jason.
+    \end{enumerate}
+    
+    La GUI habilitará parámetros GUI fijos mediante opciones desplegables predefinidas.
+    \begin{enumerate}
+        \item  El backend implementará un protocolo de comunicación entre la GUI y la base de datos, que permita desplegar los parámetros iniciales de simulación predefinidos en un archivo de texto jason.
+    \end{enumerate}
+
+%------------------------------------------------
+%------------------------------------------------
+%\NAME
+%------------- %------------------------------------------------------------------------- 
+\subsection{Requerimientos no Funcionales}
+\begin{enumerate}
+    \item El usuario final implementará diversas entidades y relaciones de un escenario de la red 5G mediante una aproximación de Programación Orientada a Objetos.
+\end{enumerate}
+ 
+
+
+
+
+             
+
+%El usuario final obtendrá  la gráfica \textit{CDF} y \textit{PDF} que refleja el cálculo de la probabilidad de degradación [agregar más métricas] de un escenario UMa y UMi de la red 5G.
+
+%El usuario final obtendrá  la gráfica \textit{CDF} y \textit{PDF} que refleja el cálculo de la probabilidad de degradación [agregar más métricas] de un escenario UMa y UMi de la red 5G.
+

@@ -27,6 +27,8 @@ class Modelo_Canal:
 		#print("from modelo canal", frecuencia)
 		#RX_PWR = TX_PWR – Max (pathloss – G_TX – G_RX, MCL)
 		#ENTRADA
+		self.debug=False#true si local, false si externo.
+
 		self.tx_prw=params_perdidas[1]
 		self.tx_loss=params_perdidas[2]
 		self.tx_grel=params_perdidas[3] #relativa
@@ -53,6 +55,7 @@ class Modelo_Canal:
 		#self.distancias=0
 		self.resultado_path_loss_antes=0 #eliminar, dejar solo en debug.
 		self.desvanecimiento=0
+		self.balance_simplificado_antes=0
 		self.balance_simplificado=0
 
 		#SALIDA
@@ -63,7 +66,7 @@ class Modelo_Canal:
 		self.inicializar_tipo()
 		#se altera el orden para poder obtener los valores de perdidas, en el
 		#desvanecimiento rayleight, y luego, adicionar ese desvanecimiento al balance del enlace
-		self.inicializar_desvanecimiento()
+		#self.configurar_desvanecimiento()
 		self.balance_del_enlace_mcl()
 		#self.inicializar_balance()
 
@@ -84,7 +87,7 @@ class Modelo_Canal:
 			else:
 				pass #opcion gigahez, no cambia.
 			self.perdidas_espacio_libre_ghz()
-			#self.balance_del_enlace_simple()
+
 
 
 		elif self.tipo_perdidas =="okumura_hata":
@@ -100,15 +103,14 @@ class Modelo_Canal:
 			else:
 				pass #opcion megaherz, no cambia.
 			self.perdidas_okumura_hata_mhz()
-			#self.balance_del_enlace_mcl()
-			#self.balance_del_enlace_simple()
+
 		else:
 			pass
 
-	def inicializar_desvanecimiento(self):
+	def configurar_desvanecimiento(self):
 		'''Crea un array de desvanecimiento, dependiendo del tipo y especificaciones extras'''
-		if self.params_desvanecimiento[0]=="lento":
-			print("lento seleccionado")
+		if self.params_desvanecimiento[0]=="normal":
+			print("normal seleccionado")
 			#distancias=np.arange(1,200,1)
 			#sized=len(distancias)
 			if self.params_desvanecimiento[1]:
@@ -116,30 +118,72 @@ class Modelo_Canal:
 				mu=self.params_desvanecimiento[2][2]
 				#if true, el desvanecimiento deja de ser 0 y se integra a las perdidas.
 				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.distancias.shape)
+				self.balance_simplificado=self.resultado_path_loss-self.tx_grel-self.rx_g+self.tx_loss+self.rx_loss
+				#solo en debug
+				self.balance_simplificado_antes=self.balance_simplificado
+				#COMENTAR en produccion. solo para propositos demostrativos
+				if self.debug:
+					plt.plot(self.distancias, -self.balance_simplificado, 'r-',  label="sin ptx, simplificado")
+				else:
+					pass
 
+				self.balance_simplificado=self.balance_simplificado+self.desvanecimiento
+				#plt.plot(self.distancias, -self.balance_simplificado, "go-",  label="sin ptx + desva")
 			else:
 				pass #se suma 0, a las perdidas iniciales.
 
-
-		elif self.params_desvanecimiento[0]=="profundo":
+		elif self.params_desvanecimiento[0]=="rayl":
 			print("(rayleight) seleccionado")
 			if self.params_desvanecimiento[1]:
-				#sigma_xn=self.params_desvanecimiento[2][1]
-				#mu=self.params_desvanecimiento[2][2]
-				#if true, el desvanecimiento deja de ser 0 y se integra a las perdidas.
-				path_loss_desva=10**(-self.resultado_path_loss/10)
-				path_loss_desva_r=np.sqrt(path_loss_desva)
-				b=path_loss_desva_r/np.sqrt(np.pi/2)
+				#self.resultado_path_loss es positivo. por eso la ecuacion cambia.
+				self.balance_simplificado=self.resultado_path_loss-self.tx_grel-self.rx_g+self.tx_loss+self.rx_loss
+				#QUITAR LUEGO
+				self.balance_simplificado_antes=self.balance_simplificado
+				#COMENTAR en produccion. solo para propositos demostrativos
+				if self.debug:
+					plt.plot(self.distancias, -self.balance_simplificado, 'r', label="sin desva, sin ptx")
+				else:
+					pass
+				#debe ser negativo siempre.
+				bal_simpl_desva=10**(-self.balance_simplificado/10)
+				bal_simpl_desva_r=np.sqrt(bal_simpl_desva)
+				b=bal_simpl_desva_r/np.sqrt(np.pi/2)
 				bray=np.random.rayleigh(b)
 				bray=np.power(bray,2)
 				self.desvanecimiento=10*np.log10(bray) #bray_dB
-				plt.figure()
-				plt.plot(self.distancias, self.desvanecimiento, label="rayleigh")
+				self.balance_simplificado=-self.desvanecimiento
 			else:
 				pass #se suma 0, a las perdidas iniciales.
 
 		elif self.params_desvanecimiento[0]=="mixto":
-			print("rapido+lento seleccionado")
+			print("RAY+NORMAL seleccionado")
+			'''Idea1. el balance simplificado de la normal, se recibe como parametro en la rayleigh'''
+			#normal
+			sigma_xn=self.params_desvanecimiento[2][1]
+			mu=self.params_desvanecimiento[2][2]
+			#if true, el desvanecimiento deja de ser 0 y se integra a las perdidas.
+			self.desvanecimiento=np.random.normal(mu,sigma_xn,self.distancias.shape)
+			self.balance_simplificado=self.resultado_path_loss-self.tx_grel-self.rx_g+self.tx_loss+self.rx_loss
+			#QUITAR LUEGO
+			self.balance_simplificado_antes=self.balance_simplificado
+			#COMENTAR en produccion. solo para propositos demostrativos
+			if self.debug:
+				plt.plot(self.distancias, -self.balance_simplificado, 'r-',  label="sin ptx, simplificado")
+			else:
+				pass
+
+			self.balance_simplificado=self.balance_simplificado+self.desvanecimiento
+			#rayleigh
+			#correccion de signos desvanecimiento
+			bal_simpl_desva=10**(-self.balance_simplificado/10)
+			bal_simpl_desva_r=np.sqrt(bal_simpl_desva)
+			b=bal_simpl_desva_r/np.sqrt(np.pi/2)
+			bray=np.random.rayleigh(b)
+			bray=np.power(bray,2)
+			self.desvanecimiento=10*np.log10(bray) #bray_dB
+			self.balance_simplificado=-self.desvanecimiento
+
+			'''Idea2. al balance rayleig, se sumo la N, de la distribucion normal. Opcion viable.'''
 		else:
 			pass
 
@@ -285,14 +329,14 @@ class Modelo_Canal:
 		#segmento_tx=self.tx_grel-self.tx_loss
 		#segmento_rx=self.rx_g-self.rx_loss
 		#self.resultado_balance=segmento_tx+segmento_rx-self.resultado_path_loss
-		print("-----------------------path loss: ")
-		print(self.resultado_path_loss)
-
-		if self.params_desvanecimiento[0]=="lento":
+		self.configurar_desvanecimiento()
+		'''
+		if self.params_desvanecimiento[0]=="normal":
 			self.balance_simplificado=self.resultado_path_loss-self.tx_grel-self.rx_g+self.tx_loss+self.rx_loss
 			plt.plot(self.distancias, -self.balance_simplificado, 'r-',  label="sin ptx, simplificado")
 			self.balance_simplificado=self.balance_simplificado+self.desvanecimiento
 			plt.plot(self.distancias, -self.balance_simplificado, "go-",  label="sin ptx + desva")
+
 		elif self.params_desvanecimiento[0]=="profundo":
 			self.balance_simplificado=-self.desvanecimiento-self.tx_grel-self.rx_g+self.tx_loss+self.rx_loss
 			balance_simplificado_original=self.resultado_path_loss-self.tx_grel-self.rx_g+self.tx_loss+self.rx_loss
@@ -300,12 +344,12 @@ class Modelo_Canal:
 			plt.plot(self.distancias, -self.balance_simplificado, "go-",  label="sin ptx. desva insted pl")
 		else:
 			pass
+		'''
 
+		#
+		print("\n[modelo_canal.func.mcl] MCL")
+		print(np.maximum(self.balance_simplificado, mcl))
 		self.resultado_balance=self.tx_prw-np.maximum(self.balance_simplificado, mcl)
-
-
-		###print("-----------------------resultadao balance simplificado-> maxx: ")
-		###print(maxx)
 		self.resultado_margen=self.resultado_balance-self.rx_sens
 
 	def balance_del_enlace_LTE(self):
@@ -340,6 +384,23 @@ class Modelo_Canal:
 		#mismo que el de 5G
 		pass
 
+	def debug_ver_balance(self):
+		'''Funcion para observar el balance del enlace. Solo funciona localmente.'''
+		#print(self.balance_simplificado)->tiene que ser positivo
+		#self.desvanecimiento es negativo
+
+		plt.xlabel('Distancia m')
+		plt.ylabel('Perdidas [dB]')
+		plt.title('Perdidas modelo: '+ self.tipo_perdidas+', desva: '+self.params_desvanecimiento[0])
+		if self.params_desvanecimiento[0]=='normal':
+			plt.plot(self.distancias, -self.balance_simplificado, label="normal+sin ptx, simplificado")
+		else:
+			pass
+		plt.plot(self.distancias, self.desvanecimiento, label="desva "+self.params_desvanecimiento[0])
+		plt.plot(self.distancias, self.resultado_balance,'bx-', label="mcl y ptx")
+		plt.legend(loc="upper left")
+		#en el plot es negativo por aquello de la ecuacion mcl.
+
 
 
 
@@ -353,7 +414,7 @@ def prueba_interna_resultado_path_loss():
 	l_bs=modelo_simple.resultado_path_loss
 	print(l_bs)
 
-def prueba_interna_desvanecimiento_lento():
+def prueba_interna_desvanecimiento_normal():
 	'''Funcion que prueba el concepto de tipos desvanecimiento con numpy'''
 	#params sim
 	freq=1.5 #gigas?
@@ -374,7 +435,7 @@ def prueba_interna_desvanecimiento_lento():
 	params_sim=[(freq,"ghz"),(distancias, "km")]
 	#
 	#params desv
-	tipo_desv='lento'
+	tipo_desv='rayl'
 	alpha_n=3.1
 	sigma_xn=4
 	mu=0
@@ -388,7 +449,7 @@ def prueba_interna_desvanecimiento_lento():
 	balance=modelo_simple.resultado_balance
 	#print(path_loss)
 
-	#desvanecimiento lento
+	#desvanecimiento normal
 	#distancias_np=np.array([[10,50,100],[130, 170, 200]])
 	#print("shape", distancias_np.shape)
 
@@ -408,7 +469,7 @@ def prueba_interna_desvanecimiento_prof():
 	'''Funcion que prueba el concepto de tipos desvanecimiento con numpy'''
 	#params sim
 	freq=1.5 #gigas?
-	distancias=np.arange(1,200,1)
+	distancias=np.arange(1,200,0.2)
 
 	#params perdidas
 	params_modelo=[30, 0, 1.5] #hb, alfa, hm
@@ -425,7 +486,7 @@ def prueba_interna_desvanecimiento_prof():
 	params_sim=[(freq,"ghz"),(distancias, "km")]
 	#
 	#params desv
-	tipo_desv='profundo'
+	tipo_desv='mixto' #normal, rayl, mixto=normal+rayl
 	alpha_n=3.1
 	sigma_xn=4
 	mu=0
@@ -437,15 +498,9 @@ def prueba_interna_desvanecimiento_prof():
 	#modelo_simple.perdidas_espacio_libre_ghz()
 	#path_loss=modelo_simple.resultado_path_loss
 	balance=modelo_simple.resultado_balance
-
+	modelo_simple.debug_ver_balance()
 	plt.grid(True)
-	plt.xlabel('Distancia m')
-	plt.ylabel('Perdidas [dB]')
-	plt.title('Perdidas modelo: '+ modelo[0]+', desva: '+tipo_desv)
-	#plt.plot(distancias,path_loss,'b*')
 
-	plt.plot(distancias,balance,'bx-', label="mcl y ptx")
-	plt.legend(loc="upper left")
 	plt.show()
 
 
@@ -455,7 +510,7 @@ if __name__=="__main__":
 
 	#prueba interna 1.
 	#prueba_interna_resultado_path_loss()
-	#prueba_interna_desvanecimiento_lento() #se observa unos puntos planos al principo del array, se debe al mcl.
+	#prueba_interna_desvanecimiento_normal() #se observa unos puntos planos al principo del array, se debe al mcl.
 	prueba_interna_desvanecimiento_prof()
 else:
 	print("Modulo <escribir_nombre> importado")

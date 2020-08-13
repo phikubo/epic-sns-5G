@@ -729,7 +729,7 @@ def prueba_sistema_v040():
 
 
 def prueba_sistema_v041():
-	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 3: desvanecimiento, mcl'''
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 3: desvanecimiento lento, mcl'''
 	n_cel=2
 	radio_cel=1000 #DEFINICION, SIEMPRE EN METROS. La distancia tambien es en metros.
 	frecuencia=(1500,'mhz')
@@ -778,7 +778,7 @@ def prueba_sistema_v041():
 	sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
 	print("[top]. Total usuarios",sim_colmena.no_usuarios_total)
 	print("**************************")
-	'''
+
 	print("[top]. MODELO DE PERDIDAS -ANTES")
 	print(sim_colmena.hiperc_modelo_canal.resultado_path_loss_antes)
 	print("\n[top]. MODELO DE PERDIDAS")
@@ -787,7 +787,7 @@ def prueba_sistema_v041():
 	print(sim_colmena.hiperc_modelo_canal.resultado_balance)
 	print("\n[top]. MARGEN **revisar ecuacion")
 	print(sim_colmena.hiperc_modelo_canal.resultado_margen)
-	'''
+
 	plt.title("Escenario: "+propagacion[0])
 	sim_colmena.ver_celdas()
 	sim_colmena.ver_circulos()
@@ -797,6 +797,87 @@ def prueba_sistema_v041():
 	sim_colmena.ver_todo()
 	#
 	###################sim_colmena.hiperc_antena.observar_patron()
+	plt.grid(True)
+	plt.show()
+
+
+def prueba_sistema_v042():
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 3: desvanecimiento lento, mcl'''
+	n_cel=2
+	radio_cel=1000 #DEFINICION, SIEMPRE EN METROS. La distancia tambien es en metros.
+	frecuencia=(1500,'mhz')
+	intensidad=1/radio_cel**2
+	distribucion=('ppp', intensidad)
+	#verificar mcl
+	x_prueba=np.array([[1000, 0, 1000, 0],[1500, 1000, 1000, 1500]])
+	y_prueba=np.array([[0,	 10, 550, 580],[500, 1500, 1000, 1750]])
+	distribucion=("prueba_unitaria",(np.array([[1000, 250],[1500, 1000]]),np.array([[0, 250],[500, 1500]]))) #celdas=2
+	distribucion=("prueba_unitaria",(x_prueba,y_prueba) ) #celdas=2
+
+	params_simulacion=[n_cel,radio_cel, distribucion, frecuencia]
+	#propagacion='okumura_hata' #si no: se pone, se escribe o se escribe bien, el pathloss es 0
+	hb=30 #m
+	alfa=0
+	hm=1.5
+	params_prop=[hb, alfa, hm]
+	#
+	#params desv
+	tipo_desv='normal'
+	alpha_n=3.1
+	sigma_xn=8.1
+	mu=0
+	play_desv=True
+	#el tercer valor va en el mismo orden, dependiendo del desvanecimiento
+	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
+	#
+	propagacion=['okumura_hata', params_prop, params_desv]
+	pot_tx=18 #dBm
+	loss_tx=5
+	gan_tx=15#
+	gan_rx=8
+	loss_rx=0
+	sensibilidad=-92
+	params_perdidas=[propagacion, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
+	#
+	hpbw=55
+	amin=20
+	ref="4g"
+	gtx=params_perdidas[3]
+	#apunt=mc.calcular_angulo_v3(45,120) #inicio,angulo de particion.
+	#tar=np.array([45, 90, 180, -1, -179])
+	params_transmision=[ref, hpbw, gtx, amin] #se adjunta luego: apunt, tar
+	#
+	params_recepcion=[0]
+
+	#INICIO DE LA SIMULACION
+	sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
+	print("[top]. Total usuarios",sim_colmena.no_usuarios_total)
+	print("**************************")
+	print("[top]. GANANCIA")
+	print(sim_colmena.hiperc_ganancia_relativa)
+	print("[top]. DISTANCIAS")
+	print(sim_colmena.hiperc_distancias)
+	#print("[top]. MODELO DE PERDIDAS -ANTES")
+	#print(sim_colmena.hiperc_modelo_canal.resultado_path_loss_antes) *ELIMINAR ANTES PATLOSS
+	print("\n[top]. MODELO DE PERDIDAS + Desva (si aplica)")
+	print(sim_colmena.hiperc_modelo_canal.resultado_path_loss) #ya no aplica, ahora aplica en el balance
+
+	print("\n[top]. POTENCIA RECIBIDA, simplificado, sin tx. ")
+	print(sim_colmena.hiperc_modelo_canal.balance_simplificado_antes)
+	print("\n[top]. POTENCIA RECIBIDA + Desva (si aplica) ")
+	print(sim_colmena.hiperc_modelo_canal.resultado_balance)
+	print("\n[top]. MARGEN")
+	print(sim_colmena.hiperc_modelo_canal.resultado_margen)
+
+	plt.title("Escenario: "+propagacion[0])
+	sim_colmena.ver_celdas()
+	sim_colmena.ver_circulos()
+	sim_colmena.ver_estaciones_base()
+	sim_colmena.ver_usuarios_colores()
+	sim_colmena.ver_usuarios()
+	sim_colmena.ver_todo()
+	#
+	#sim_colmena.hiperc_antena.observar_patron()
 	plt.grid(True)
 	plt.show()
 
@@ -834,7 +915,8 @@ if __name__=="__main__":
 	#prueba_sistema_v038()
 	#prueba_sistema_v039()
 	#prueba_sistema_v040()
-	prueba_sistema_v041()
+	#prueba_sistema_v041()
+	prueba_sistema_v042()
 
 
 else:
@@ -848,7 +930,7 @@ else:
 2. [ok] Seleccionar el modelo de canal segun las unidades de freccuencia y distancia.
 O, convertir todo a una misma unidad para efectos de uso. -> funcion modelocanal.inicializar_tipo()
 
-3. Supongamos que tenemos n realizaciones de instancias de la clase Sistema_Celular. Cada instancia tiene
+3. -----Supongamos que tenemos n realizaciones de instancias de la clase Sistema_Celular. Cada instancia tiene
 diferentes longitudes de usuarios, por ser el resutlado de un numero poisson.
 Luego, como realizar una comparacion entre simulaciones?. Que es lo que se compara en cobertura?
 	a. idea 1: la probabilidad de outage es un valor unico en cada simulacion, puede compararse.
@@ -859,10 +941,23 @@ Por ejemplo, tengo un array numpy y deseo operar sobre ellos, como deberia opera
 
 5. [OK] Deseo como parametro de entrada, especificar si quiero incorporar el desvanecimiento o no. ->
 
-6. Modelo del canal debe especificar cuando se hace el balance del enlace, no la clase sistema.
-7. [OK] Revisar ecuacion del balance ->corregido la sensibilidad
-8. Implmentar balance del enlace, mcl. mcl debe ser un parametro de entrada?->no. Revisar las condiciones urbano.
-9. Implementar clase usuario, crear view interactiva y obtener informacion, dada las coordendas.
+6. [ok] Modelo del canal debe especificar cuando se hace el balance del enlace, no la clase sistema.->todo se inicializa en modelo del canal
+7. [OK] Revisar ecuacion del balance
+	->corregido la sensibilidad. Ahora la sensibilidad se define negativo.
+8. [ok] Implmentar balance del enlace, mcl. mcl debe ser un parametro de entrada?
+	->no. Revisar las condiciones urbano.
+9. ----Implementar clase usuario, crear view interactiva y obtener informacion, dada las coordendas.
 
-
+10. [ok] El desvanecimiento lento es una suma al balance del enlace, pero el rayleigh no. El rayleigh modifica
+las perdidas o el balance simple, se convierte a unidades lineales y finalmente logaritmicas.
+Pero cuando se usa la ecuacion mcl, el patron no responde. Investigar y arreglar este inconveniente.
+	->el error era el signo de la operacion. La ecuacion mcl opera con signos contrarios. Cuando se hace el
+	cambio de pathloss por desvanecimiento de rayileght, el desvanecimiento tiene un signo contrario.
+	pathloss+etc=>balance simplificado
+	si es normal:
+		a. (pathloss+etc)+N
+		fin
+	si es profundo:
+		a. res=ray(pathloss+etc)
+		b. usar ecuacion.
 '''
