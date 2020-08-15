@@ -852,6 +852,10 @@ def prueba_sistema_v042():
 	#INICIO DE LA SIMULACION
 	sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
 	print("[top]. Total usuarios",sim_colmena.no_usuarios_total)
+	print("************")
+	print("[top]. Tipo hiper-dato: ",type(sim_colmena.hiperc_ganancia_relativa))
+	print("************")
+	print("[top]. Forma hiper-dato: ",sim_colmena.hiperc_ganancia_relativa.shape)
 	print("**************************")
 	print("[top]. GANANCIA")
 	print(sim_colmena.hiperc_ganancia_relativa)
@@ -880,6 +884,229 @@ def prueba_sistema_v042():
 	#sim_colmena.hiperc_antena.observar_patron()
 	plt.grid(True)
 	plt.show()
+
+
+def prueba_sistema_v043():
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 4: datos por usuario.'''
+	n_cel=2
+	radio_cel=1000 #DEFINICION, SIEMPRE EN METROS. La distancia tambien es en metros.
+	frecuencia=(1500,'mhz')
+	intensidad=1/radio_cel**2
+	distribucion=('ppp', intensidad)
+	#verificar mcl
+	#x_prueba=np.array([[1000, 0, 1000, 0],[1500, 1000, 1000, 1500]])
+	#y_prueba=np.array([[0,	 10, 550, 580],[500, 1500, 1000, 1750]])
+	#distribucion=("prueba_unitaria",(np.array([[1000, 250],[1500, 1000]]),np.array([[0, 250],[500, 1500]]))) #celdas=2
+	#distribucion=("prueba_unitaria",(x_prueba,y_prueba) ) #celdas=2
+
+	params_simulacion=[n_cel,radio_cel, distribucion, frecuencia]
+	#propagacion='okumura_hata' #si no: se pone, se escribe o se escribe bien, el pathloss es 0
+	hb=30 #m
+	alfa=0
+	hm=1.5
+	params_prop=[hb, alfa, hm]
+	#
+	#params desv
+	tipo_desv='normal'
+	alpha_n=3.1
+	sigma_xn=8.1
+	mu=0
+	play_desv=True
+	#el tercer valor va en el mismo orden, dependiendo del desvanecimiento
+	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
+	#
+	propagacion=['okumura_hata', params_prop, params_desv]
+	pot_tx=18 #dBm
+	loss_tx=5
+	gan_tx=15#
+	gan_rx=8
+	loss_rx=0
+	sensibilidad=-92
+	params_perdidas=[propagacion, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
+	#
+	hpbw=55
+	amin=20
+	ref="4g"
+	gtx=params_perdidas[3]
+	#apunt=mc.calcular_angulo_v3(45,120) #inicio,angulo de particion.
+	#tar=np.array([45, 90, 180, -1, -179])
+	params_transmision=[ref, hpbw, gtx, amin] #se adjunta luego: apunt, tar
+	#
+	params_recepcion=[0]
+
+	#INICIO DE LA SIMULACION
+	sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
+	print("\n**************************")
+	print("[top] Por celda: ",len(sim_colmena.ue_x[0]), " usuarios.")
+	print("[top]. Total usuarios",sim_colmena.no_usuarios_total)
+	print("************")
+	print("[top]. Tipo hiper-dato: ",type(sim_colmena.hiperc_ganancia_relativa))
+	print("************")
+	print("[top]. Forma hiper-dato: ",sim_colmena.hiperc_ganancia_relativa.shape)
+	print("**************************")
+	#print("\n[top]. GANANCIA")
+	#print(sim_colmena.hiperc_ganancia_relativa)
+	print("[top]. DISTANCIAS->", type(sim_colmena.hiperc_distancias))
+	print(sim_colmena.hiperc_distancias)
+	print("**************************")
+	'''
+	ind_celda=0
+	print("**************************distancias[a]->indice [a] (usuarios creados en celda a) -->CELDA[{}]".format(ind_celda))
+	print(sim_colmena.hiperc_distancias[ind_celda])
+	print("**************************")
+	print("**************************")
+
+	ind_celda_1=1
+	print("\n**************************distancias[a][b]->indice [b] (usuarios creados en celda a, distancia usuarios en celda b) -->CELDA[{}][{}]".format(ind_celda,ind_celda_1))
+	print(sim_colmena.hiperc_distancias[ind_celda][ind_celda_1])
+
+	print("**************************")
+	print("**************************")
+
+	ind_us=0
+	print("\n**************************\ndistancias[a][b][c]->indice [c] (usuario {} creados en celda a, distancia usuarios en celda b) -->CELDA[{}][{}][{}]".format(ind_us,ind_celda,ind_celda_1,ind_us))
+	print(sim_colmena.hiperc_distancias[ind_celda][ind_celda_1][ind_us])
+
+	print("\n**************************")
+	print("\n**************************")
+	print("\n******* INICIO DE LA PRUEBA 1 ************")
+	print("\n**************************")
+	print("\n**************************")
+	test=[]
+	organizacion=[0 for i in range(n_cel)]
+	print(organizacion)
+	for ind,celda in enumerate(sim_colmena.hiperc_distancias):
+		print("Celda ", ind)
+		print(celda)
+		print("***")
+		print(celda[0])
+		test.append(celda[0])
+		print("************************\n")
+
+	print(test)
+	'''
+	print("\n**************************")
+	print("\n**************************")
+	print("\n******* INICIO DE LA PRUEBA 2 ************")
+	print("\n**************************")
+	print("\n**************************")
+	organizacion=[0 for i in range(n_cel)] #usuarios de cada celda organizados.
+	temporal=[] #array temporal
+	print(sim_colmena.hiperc_distancias)
+	for origen in range(n_cel):
+		print("origen->",origen)
+		for ind,celda in enumerate(sim_colmena.hiperc_distancias):
+			print("Celda ", ind)
+			print(celda)
+			print("*** OUTPUT----->")
+			print(celda[origen])
+			a=celda[origen]
+			print("<----->\n")
+			temporal.append(a)
+		organizacion[origen]=np.stack(temporal,axis=-1)
+		temporal=[]
+	print("IN: ",sim_colmena.hiperc_distancias)
+	print("\nOUT 0: ")
+	organizacion=np.asarray(organizacion)
+	print("\n",organizacion)
+
+
+	#print("\nOUT 0: ",organizacion[0])
+
+	#print("OUT 1: ",organizacion[1])
+
+	#print("OUT 2: ",organizacion[2])
+
+
+
+
+
+
+
+
+	'''
+	#print("[top]. MODELO DE PERDIDAS -ANTES")
+	#print(sim_colmena.hiperc_modelo_canal.resultado_path_loss_antes) *ELIMINAR ANTES PATLOSS
+	print("\n[top]. MODELO DE PERDIDAS + Desva (si aplica)")
+	print(sim_colmena.hiperc_modelo_canal.resultado_path_loss) #ya no aplica, ahora aplica en el balance
+	print("\n[top]. POTENCIA RECIBIDA, simplificado, sin tx. ")
+	print(sim_colmena.hiperc_modelo_canal.balance_simplificado_antes)
+	print("\n[top]. POTENCIA RECIBIDA + Desva (si aplica) ")
+	print(sim_colmena.hiperc_modelo_canal.resultado_balance)
+	print("\n[top]. MARGEN")
+	print(sim_colmena.hiperc_modelo_canal.resultado_margen)
+
+
+	Requerimiento:
+	Es deseable para cada usuario, conocer: distancia, ganancia, perdidas, potencia recibida, de todas las celdas.
+
+	------
+	Idea 1.
+	Crear n_cel matrices con la forma:
+
+	Matriz 1 para distancia, usuarios creados en la celda 1:
+		us1 usd2 usd3 ... usdi
+	cel1
+	cel2
+	cel3
+	...
+	celj
+
+
+	Matriz 2 para distancia, usuarios creados en la celda 2:
+		us1 usd2 usd3 ... usdi
+	cel1
+	cel2
+	cel3
+	...
+	celj
+
+	...
+
+	Matriz k para distancia, usuarios creados en la celda k:
+		us1 usd2 usd3 ... usdi
+	cel1
+	cel2
+	cel3
+	...
+	celj
+
+
+	Se crean n_cel matrices para cada parametro distancia, ganancia, perdidas, potencia recibida.
+	Iniciar con distancia y aplicar el mismo modelo a los demas parámetros.
+
+	------
+	Idea 2:
+
+	Crear una matriz unica, con todos los usuarios de todas las estaciones.
+
+		us1 us2 ... usi .. us21 us22 ... us2i .. .. usni
+	cel1
+	cel2
+	cel3
+	...
+	celj
+
+	***********************************
+	crear ambas matrices y comparar cual seria mejor usar.
+
+	Idea 1: desing:
+	Requerimiento lv3:
+	La estructura tiene el siguiente diseno: [-  [-[] [] []-]   [-[] [] []-]   [-[] [] []-] -]
+
+	'''
+
+	#plt.title("Escenario: "+propagacion[0])
+	#sim_colmena.ver_celdas()
+	#sim_colmena.ver_circulos()
+	#sim_colmena.ver_estaciones_base()
+	#sim_colmena.ver_usuarios_colores()
+	#sim_colmena.ver_usuarios()
+	#sim_colmena.ver_todo()
+	#
+	#sim_colmena.hiperc_antena.observar_patron()
+	#plt.grid(True)
+	#plt.show()
 
 
 
@@ -916,7 +1143,8 @@ if __name__=="__main__":
 	#prueba_sistema_v039()
 	#prueba_sistema_v040()
 	#prueba_sistema_v041()
-	prueba_sistema_v042()
+	#prueba_sistema_v042()
+	prueba_sistema_v043()
 
 
 else:
@@ -947,6 +1175,12 @@ Por ejemplo, tengo un array numpy y deseo operar sobre ellos, como deberia opera
 8. [ok] Implmentar balance del enlace, mcl. mcl debe ser un parametro de entrada?
 	->no. Revisar las condiciones urbano.
 9. ----Implementar clase usuario, crear view interactiva y obtener informacion, dada las coordendas.
+	9.1 crear hiper matriz organizada.
+		[ok] idea 1.- matriz con matrices adentro: VER DEFINICION PRUEBA 43. implementada, con transpose y stack.
+				idea 1.1.-existen dos formas de conseguir los valores de un usuario. ejecutando la funcion de organizacion
+				para cada parametro, o ejecutar 1 vez la funcion a la matriz de distancia que en ultimas es la matriz con
+				la que se realizan los demas calculos.
+		idea 2. super matriz con todos los valores.
 
 10. [ok] El desvanecimiento lento es una suma al balance del enlace, pero el rayleigh no. El rayleigh modifica
 las perdidas o el balance simple, se convierte a unidades lineales y finalmente logaritmicas.
