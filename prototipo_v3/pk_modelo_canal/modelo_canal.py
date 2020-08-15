@@ -213,7 +213,7 @@ class Modelo_Canal:
 		B=44.9-6.55*np.log10(hb)
 		E=3.2*(np.log10(11.75*hm))**2 -4.97 #[dB] para ciudades grandes y fc>300 MHz
 		#E=8.29*(np.log10(1.54*hm))**2 -1.1 #[dB] para ciudades grandes y fc<300 MHz
-		print("okumura_hata, says->A,B:",A,B)
+		#print("okumura_hata, says->A,B:",A,B)
 		#print("distancias")
 		#print(self.distancias)
 		self.resultado_path_loss_antes=A+B*np.log10(self.distancias)-E
@@ -347,8 +347,8 @@ class Modelo_Canal:
 		'''
 
 		#
-		print("\n[modelo_canal.func.mcl] MCL")
-		print(np.maximum(self.balance_simplificado, mcl))
+		#print("\n[modelo_canal.func.mcl] MCL")
+		#print(np.maximum(self.balance_simplificado, mcl))
 		self.resultado_balance=self.tx_prw-np.maximum(self.balance_simplificado, mcl)
 		self.resultado_margen=self.resultado_balance-self.rx_sens
 

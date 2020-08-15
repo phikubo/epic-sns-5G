@@ -60,6 +60,7 @@ class Sistema_Celular:
 		#----------------------------------------------------------------------
 		self.cel_fig, self.cels_ax=plt.subplots(1)
 		#cordenadas centrales de celdas
+		print("[sistema.init.mc.coordenadas_nceldas]")
 		self.origen_cel_x, self.origen_cel_y=mc.coordenadas_nceldas(self.num_celdas, self.radio)
 		#----------------------------------------------------------------------
 		#SALIDA
@@ -92,10 +93,12 @@ class Sistema_Celular:
 		#crea las coordenadas de los usuarios segun una distribucion
 		self.inicializar_distribucion() #falta implementar otras distribuciones: thomas cluster
 		#self.ue_x, self.ue_y contiene los usuarios del cluster
-		#Gestiona los usuarios
-		self.inicializar_usuarios_base()
+		#Gestiona los usuarios en un hiper clustes, en coordendas, distancias y angulos.
+		self.inicializar_hiperc_usuarios()
+		#re dimensiona los arreglos de: hiper distancia, hiper angulos, []
+
 		#Almacena usuarios en cada celda del cluster
-		self.inicializar_cluster_usuarios()
+		#################################################self.inicializar_cluster_usuarios()
 		#Crea la clase antena, outputs ganancia relativa.
 		self.inicializar_antenas()
 		#crea el modelo del mod_canal, frecuencia_central, distancias, ganancia relativa
@@ -109,6 +112,7 @@ class Sistema_Celular:
 
 	def inicializar_cluster_celdas(self):
 		'''Init. Almacena las celdas unicas en un cluster de celdas para control y gestion.'''
+		print("[sistema.inicializar_cluster_celdas]")
 		#creo objetos tipo celda y les asigno su coordenada central
 		for x,y in zip(self.origen_cel_x, self.origen_cel_y):
 			#creo celdas con cada coordenada x,y y las asigno a sus propias coordendas
@@ -119,6 +123,7 @@ class Sistema_Celular:
 
 	def inicializar_distribucion(self):
 		'''Init. Crea coordenadas de usuario de acuerdo a una proceso de distribucion.'''
+		print("[sistema.inicializar_distribucion]")
 		if self.intensidad != 0:
 			if self.distribucion=="ppp":
 				self.ue_x, self.ue_y=ppp.distribuir_en_celdas(self.radio, self.origen_cel_x,
@@ -132,7 +137,6 @@ class Sistema_Celular:
 				##print("[sis.init.dist] 3. Logitud dato celda[0]:\n",len(self.ue_x[0]))
 				##print("[sis.init.dist] 4. Estructura de celdas\n",self.ue_x)
 
-
 			elif self.distribucion=="random":
 				pass
 			elif self.distribucion=="prueba_unitaria":
@@ -144,48 +148,89 @@ class Sistema_Celular:
 
 
 	def inicializar_cluster_usuarios(self):
-		'''Init. Almacena coordenadas de usuarios a su respectiva celda.'''
+		#depleted.
+		'''Init. Almacena coordenadas de usuarios a su respectiva celda.
+		Depleted reason: Ya no es necesario que cada celda guarde informacion de sus usuarios, pues
+		guarda la informacion de todos los usuarios.'''
 		#append distancias
 		#self.distancias_celdas
 		for celda_unica, su_x, su_y in zip(self.cluster, self.ue_x, self.ue_y):
 			#print(celda_unica, su_x, su_y)
 			celda_unica.user_x=su_x
 			celda_unica.user_y=su_y
-			celda_unica.distancia_gnodeb_ue()
+			#celda_unica.distancia_gnodeb_ue()
 			self.distancias_celdas.append(celda_unica.distancias)
 			#print("---inicializar_cluster",celda_unica.distancias)
-		self.distancias_celdas=np.array(self.distancias_celdas)
+		#self.distancias_celdas=np.array(self.distancias_celdas)
 		#print(len(self.cluster),len(self.ue_x), "********usuarios")
 		self.no_usuarios_total=len(self.cluster)*len(self.ue_x[0]) #todos las celdas=#usuarios
 		#print("---aki2",self.distancias_celdas)
 		#print("---tipo:",type(self.distancias_celdas
 
 
+	def configurar_dimension_arreglos(self, target):
+		'''Funcion que re dimensiona un arreglo de la forma [ [ [celda 1][celda2][celda3] ] [ [celda 1][celda2][celda3] ]]
+		a una organizacion de usuarios por celda.
+		'''
+		print("[sistema.configuracion_dimension_arreglos]")
+		organizacion=[0 for i in range(self.num_celdas)]
+		temporal=[]
+		#itero sobre el numero de celdas
+		#print("[sistema.configurar] \n", type(target))
+		#print("[sistema.configurar] \n", target)
+		for target_users in range(self.num_celdas):
+			#itero sobre el arreglo
+			for ind,celda in enumerate(target):
+				arreglo=celda[target_users]
+				temporal.append(arreglo)
+			#guardo los arrays en stack en una lista
+			organizacion[target_users]=np.stack(temporal,axis=-1)
+			#convierto la lista en ndarray para ejecutar operaciones numpy.
+			organizacion=np.asarray(organizacion)
+			#limpio la lista temporal para guardar la siguiente iteracion de la celdas
+			temporal=[]
+		#print("[sistema.debug.organizacion] \n", organizacion)
+		return np.stack(organizacion)
 
-
-	def inicializar_usuarios_base(self):
+	def inicializar_hiperc_usuarios(self):
 		'''Init. crea la clase usuario en cada coordenada.'''
-		print('[debug init usuarios base]')
+		print("[sistema.inicializar_hiperc_usuarios]")
+		self.no_usuarios_total=len(self.cluster)*len(self.ue_x[0])
+		counter=0
 		for celda_unica in self.cluster:
-			celda_unica.interf_user_x=self.ue_x
-			celda_unica.interf_user_y=self.ue_y
+			celda_unica.interf_user_x=self.ue_x #todos los usuarios.
+			celda_unica.interf_user_y=self.ue_y ##todos los usuarios.
 			celda_unica.distancia_all_estacion_base_usuarios()#a cual celda hace esto?
 			celda_unica.angulos_all_estacion_base_usuarios()
-
+			#las dos variables siguientes, son las que originan los demas calculos.
 			self.hiperc_distancias.append(celda_unica.interf_distancias)
 			self.hiperc_angulos.append(celda_unica.interf_angulos)
 			#rta, a cada celda, por es una instancia de clase.
-			print('end of usuarios_base')
-			#print(celda_unica.interf_user_x)
-			#if c==3:
-			#	break
+			print('[sistema] end of: hiperc_usuarios. Celda->',counter)
+			counter+=1
+
+		#convierto a numpy:
+		self.hiperc_distancias=np.stack(self.hiperc_distancias, axis=0)
+		self.hiperc_angulos=np.stack(self.hiperc_angulos, axis=0)
+		#reconfigurar.
+		#print("[sistema.hiper.usuarios]\n",type(self.hiperc_distancias), type(self.hiperc_angulos))
+		self.hiperc_distancias=self.configurar_dimension_arreglos(self.hiperc_distancias)
+		self.hiperc_angulos=self.configurar_dimension_arreglos(self.hiperc_angulos)
+		#print("[sistema.hiper.usuarios]:\n", test1,"\n", test2)
+		#print(type(test1))
+		#print(type(test1))
+		#print("[sistema.debug]\n",self.hiperc_distancias)
+		#self.hiperc_angulos=self.configurar_dimension_arreglos(self.hiperc_angulos)
 		'''
 		La funcion recibe todas las cordenadas de todos los usuarios en las celdas: [c1,c2,..,cn]
 		con ci={xi,yi}, con xi,yi, i={1,2,...}
 		'''
+
+
 	def inicializar_antenas(self):
 		'''Init. Crea un modelo de antena especificado. Calcula la ganancia relativa de
 		un conjunto de angulos de usuario'''
+		print("[sistema.inicializar_antenas]")
 		#hpbw=55
 		#amin=20
 		#ref="4g"
@@ -198,7 +243,7 @@ class Sistema_Celular:
 		self.params_antena.append(self.hiperc_angulos)
 		#print("ant", self.params_antena)
 		self.hiperc_antena=ant.Antena(self.params_antena)
-		self.hiperc_ganancia_relativa=self.hiperc_antena.hiper_ganancias #**condierar quitar
+		self.hiperc_ganancia_relativa=self.hiperc_antena.hiper_ganancias #**considerar quitar
 
 	def inicializar_modelo_canal(self):
 		'''Init. Crea un modelo del canal aplicado a todo el sistema.
@@ -206,12 +251,10 @@ class Sistema_Celular:
 		#diseno:
 		#"tipo", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad
 		#pasar parametros de perdidas:
-		print("init. modelo canal")
+		print("[sistema.inicializar_modelo_canal]")
 
 		#self.modelo_canal=moca.Modelo_Canal(self.params_perdidas,params_sim, params_desv)
 
-		#convierto la lista en array numpy
-		self.hiperc_distancias=np.stack(self.hiperc_distancias, axis=0)
 		#ya incluye unididades.
 		params_sim=[self.frequencia_operacion, (self.hiperc_distancias, "m")] #distancia siempre en metros.
 		params_desv=self.params_perdidas[0][2]
@@ -237,14 +280,7 @@ class Sistema_Celular:
 		#self.modelo_canal.balance_del_enlace_simple()
 		#self.hiperc_modelo_canal.balance_del_enlace_simple()->implementado en modelo del canal
 
-		#
-		#
-		#
-		#
-		#
-		#
-		#
-		#
+
 
 
 
