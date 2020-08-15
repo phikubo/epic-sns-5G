@@ -1243,6 +1243,7 @@ def prueba_sistema_v044():
 	sim_colmena.ver_usuarios_colores()
 	sim_colmena.ver_usuarios()
 	sim_colmena.ver_todo()
+
 	#
 	#sim_colmena.hiperc_antena.observar_patron()
 	plt.grid(True)
@@ -1333,4 +1334,5 @@ Pero cuando se usa la ecuacion mcl, el patron no responde. Investigar y arreglar
 	si es profundo:
 		a. res=ray(pathloss+etc)
 		b. usar ecuacion.
+ 11. Integrar las vistas en ver todo.
 '''
