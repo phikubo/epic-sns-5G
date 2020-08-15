@@ -1166,10 +1166,11 @@ def prueba_sistema_v043():
 
 def prueba_sistema_v044():
 	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 4: datos por usuario.'''
-	n_cel=5
+	n_cel=19
 	radio_cel=1000 #DEFINICION, SIEMPRE EN METROS. La distancia tambien es en metros.
 	frecuencia=(1500,'mhz')
-	intensidad=10/radio_cel**2
+	intensidad=90000/radio_cel**2
+	print("INTENSIDAD DE ENTRADA: ",intensidad)
 	distribucion=('ppp', intensidad)
 	#verificar mcl
 	#x_prueba=np.array([[1000, 0, 1000, 0],[1500, 1000, 1000, 1500]])
@@ -1216,7 +1217,7 @@ def prueba_sistema_v044():
 	sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
 	print("\n**************************")
 	print("[top] Por celda: ",len(sim_colmena.ue_x[0]), " usuarios.")
-	print("[top]. Total usuarios",sim_colmena.no_usuarios_total)
+	print("[top]. Total usuarios en {} celdas".format(n_cel),sim_colmena.no_usuarios_total)
 	print("************")
 	print("[top]. Tipo hiper-dato: ",type(sim_colmena.hiperc_ganancia_relativa))
 	print("************")
@@ -1237,17 +1238,17 @@ def prueba_sistema_v044():
 	print(sim_colmena.hiperc_modelo_canal.resultado_margen)
 	'''
 	#plt.title("Escenario: "+propagacion[0])
-	sim_colmena.ver_celdas()
-	sim_colmena.ver_circulos()
-	sim_colmena.ver_estaciones_base()
-	sim_colmena.ver_usuarios_colores()
-	sim_colmena.ver_usuarios()
-	sim_colmena.ver_todo()
+	#sim_colmena.ver_celdas()
+	#sim_colmena.ver_circulos()
+	#sim_colmena.ver_estaciones_base()
+	#sim_colmena.ver_usuarios_colores()
+	#sim_colmena.ver_usuarios()
+	#sim_colmena.ver_todo()
 
 	#
 	#sim_colmena.hiperc_antena.observar_patron()
-	plt.grid(True)
-	plt.show()
+	#plt.grid(True)
+	#plt.show()
 
 if __name__=="__main__":
 	#REGLAS:
