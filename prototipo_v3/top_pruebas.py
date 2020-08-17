@@ -1195,7 +1195,7 @@ def prueba_sistema_v044():
 	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
 	#
 	propagacion=['okumura_hata', params_prop, params_desv]
-	pot_tx=18 #dBm
+	pot_tx=19 #dBm
 	loss_tx=5
 	gan_tx=15#
 	gan_rx=8
