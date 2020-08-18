@@ -1166,10 +1166,10 @@ def prueba_sistema_v043():
 
 def prueba_sistema_v044():
 	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 4: datos por usuario.'''
-	n_cel=19
+	n_cel=5
 	radio_cel=1000 #DEFINICION, SIEMPRE EN METROS. La distancia tambien es en metros.
 	frecuencia=(1500,'mhz')
-	intensidad=90000/radio_cel**2
+	intensidad=2/radio_cel**2
 	print("INTENSIDAD DE ENTRADA: ",intensidad)
 	distribucion=('ppp', intensidad)
 	#verificar mcl
@@ -1232,11 +1232,66 @@ def prueba_sistema_v044():
 	print(sim_colmena.hiperc_modelo_canal.resultado_path_loss) #ya no aplica, ahora aplica en el balance
 	print("\n[top]. POTENCIA RECIBIDA, simplificado, sin tx. ")
 	print(sim_colmena.hiperc_modelo_canal.balance_simplificado_antes)
-	print("\n[top]. POTENCIA RECIBIDA + Desva (si aplica) ")
-	print(sim_colmena.hiperc_modelo_canal.resultado_balance)
+
 	print("\n[top]. MARGEN")
 	print(sim_colmena.hiperc_modelo_canal.resultado_margen)
 	'''
+	print("\n[top]. POTENCIA RECIBIDA + Desva (si aplica) ")
+	print(sim_colmena.hiperc_modelo_canal.resultado_balance.shape)
+	#import dask.dataframe as dd
+	#darr = dd.from_array(sim_colmena.hiperc_modelo_canal.resultado_balance[0])
+	print(sim_colmena.hiperc_modelo_canal.resultado_balance)
+	print("-")
+
+	#np.savetxt('test1.txt', sim_colmena.hiperc_modelo_canal.resultado_balance[0])
+
+	'''Stacking:
+	Convertir arreglo a 2 dimensiones de la forma:
+			celdas	+
+	usuarios ...
+	+
+
+	concatenar: [   [a]   [b]    [c]  ... [z]   ]
+	n=2
+	aux=a+b
+	aux=aux+c
+
+	n=n
+
+	for ind,celda in zip(concatenar):
+		0, celda=a, concatenar[0+1]=b
+		if ind == 0:
+			aux=celda
+		else:
+			pass
+		#1: aux=a+b, concatenar[1+1]=c
+		aux=concatenate(aux,concatenar[i+1])
+
+	In the general case of a (l, m, n) ndarray:
+	numpy.reshape(a, (l*m, n)) should be used.
+	numpy.reshape(a, (a.shape[0]*a.shape[1], a.shape[2]))
+
+	'''
+	'''
+	In the general case of a (l, m, n) ndarray:
+	numpy.reshape(a, (l*m, n)) should be used.
+	numpy.reshape(a, (a.shape[0]*a.shape[1], a.shape[2]))
+	'''
+	potencia_recibida_dB=sim_colmena.hiperc_modelo_canal.resultado_balance
+	l,m,n=sim_colmena.hiperc_modelo_canal.resultado_balance.shape
+	potencia_recibida_dB_2D=np.reshape(potencia_recibida_dB, (l*m, n))
+	print("------reshape 3D->2D-------")
+	print(potencia_recibida_dB_2D)
+	print("-----transpuesta, primera columna--------")
+	print(np.transpose(potencia_recibida_dB_2D)[0])
+	c0=np.transpose(potencia_recibida_dB_2D)[0]
+	c=np.sum(potencia_recibida_dB_2D, axis=1, keepdims=True)
+	print(c.shape) #initial no funciona
+	print("------transpuesta, re dimensionamiento-------")
+	c01=c0.reshape(c.shape)
+	print(c0.reshape(c.shape))
+	print("--------operacion interferencia. no unidades ----------")
+	print(c-c01)
 	#plt.title("Escenario: "+propagacion[0])
 	#sim_colmena.ver_celdas()
 	#sim_colmena.ver_circulos()
@@ -1249,6 +1304,104 @@ def prueba_sistema_v044():
 	#sim_colmena.hiperc_antena.observar_patron()
 	#plt.grid(True)
 	#plt.show()
+
+
+def prueba_sistema_v045():
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 4: sinr y contabilidad'''
+	n_cel=6
+	radio_cel=1000 #DEFINICION, SIEMPRE EN METROS. La distancia tambien es en metros.
+	frecuencia=(1500,'mhz')
+	bw=(20, 'mhz') #1.4, 3, 5, 10, 15, 20, ..., 50, 100, 200, 400
+	intensidad=6/radio_cel**2
+	print("INTENSIDAD DE ENTRADA: ",intensidad)
+	distribucion=('ppp', intensidad)
+	#verificar mcl
+	#x_prueba=np.array([[1000, 0, 1000, 0],[1500, 1000, 1000, 1500]])
+	#y_prueba=np.array([[0,	 10, 550, 580],[500, 1500, 1000, 1750]])
+	#distribucion=("prueba_unitaria",(np.array([[1000, 250],[1500, 1000]]),np.array([[0, 250],[500, 1500]]))) #celdas=2
+	#distribucion=("prueba_unitaria",(x_prueba,y_prueba) ) #celdas=2
+
+	params_simulacion=[n_cel,radio_cel, distribucion, frecuencia, bw]
+	#propagacion='okumura_hata' #si no: se pone, se escribe o se escribe bien, el pathloss es 0
+	hb=30 #m
+	alfa=0
+	hm=1.5
+	params_prop=[hb, alfa, hm]
+	#
+	#params desv
+	tipo_desv='normal'
+	alpha_n=3.1
+	sigma_xn=8.1
+	mu=0
+	play_desv=True
+	#el tercer valor va en el mismo orden, dependiendo del desvanecimiento
+	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
+	#
+	propagacion=['okumura_hata', params_prop, params_desv]
+	pot_tx=19 #dBm
+	loss_tx=5
+	gan_tx=15#
+	gan_rx=8
+	loss_rx=0
+	sensibilidad=-92
+	params_perdidas=[propagacion, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
+	#
+	hpbw=55
+	amin=20
+	ref="4g"
+	gtx=params_perdidas[3]
+	#apunt=mc.calcular_angulo_v3(45,120) #inicio,angulo de particion.
+	#tar=np.array([45, 90, 180, -1, -179])
+	params_transmision=[ref, hpbw, gtx, amin] #se adjunta luego: apunt, tar
+	#
+	params_recepcion=[0]
+
+	#INICIO DE LA SIMULACION
+	sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
+	print("\n**************************")
+	print("[top] Por celda: ",len(sim_colmena.ue_x[0]), " usuarios.")
+	print("[top]. Total usuarios en {} celdas".format(n_cel),sim_colmena.no_usuarios_total)
+	print("************")
+	print("[top]. Tipo hiper-dato: ",type(sim_colmena.hiperc_ganancia_relativa))
+	print("************")
+	print("[top]. Forma hiper-dato: ",sim_colmena.hiperc_ganancia_relativa.shape)
+	print("**************************")
+	print("\n[top]. POTENCIA RECIBIDA + Desva (si aplica) ")
+	print(sim_colmena.hiperc_modelo_canal.resultado_balance.shape)
+	#import dask.dataframe as dd
+	#darr = dd.from_array(sim_colmena.hiperc_modelo_canal.resultado_balance[0])
+	print(sim_colmena.hiperc_modelo_canal.resultado_balance)
+	print("***************************")
+
+	#np.savetxt('test1.txt', sim_colmena.hiperc_modelo_canal.resultado_balance[0])
+
+	'''
+	In the general case of a (l, m, n) ndarray:
+	numpy.reshape(a, (l*m, n)) should be used.
+	numpy.reshape(a, (a.shape[0]*a.shape[1], a.shape[2]))
+	'''
+	potencia_recibida_dB=sim_colmena.hiperc_modelo_canal.resultado_balance
+	l,m,n=sim_colmena.hiperc_modelo_canal.resultado_balance.shape
+	potencia_recibida_dB_2D=np.reshape(potencia_recibida_dB, (l*m, n))
+	potencia_recibida_v_2D=(10**(potencia_recibida_dB_2D/10))
+	print("array 2D, veces\n", potencia_recibida_v_2D)
+	maximo=np.nanmax(potencia_recibida_v_2D,axis=-1)
+	print("res maximo\n", maximo)
+
+	indices=[]
+	for maxx, arr in zip(maximo, potencia_recibida_v_2D):
+		print(arr,maxx)
+		indice=np.where(arr==maxx)
+		print(indice[0])
+		indices.append(indice[0])
+	ind_np=np.stack(indices)
+	print("Celdas destino",ind_np, ind_np.shape)
+	celdas_usuarios_conectados=[]
+	for cnt in range(n_cel): #range numero de celdas
+		celdas_usuarios_conectados.append(np.count_nonzero(ind_np==cnt))
+	#cuentas_0=np.count_nonzero(ind_np==0)
+	print("En su orden, usuarios conectados:",celdas_usuarios_conectados)
+
 
 if __name__=="__main__":
 	#REGLAS:
@@ -1285,7 +1438,8 @@ if __name__=="__main__":
 	#prueba_sistema_v041()
 	#prueba_sistema_v042()
 	#prueba_sistema_v043()
-	prueba_sistema_v044()
+	#prueba_sistema_v044()
+	prueba_sistema_v045() #pruebas de sinr
 
 
 else:

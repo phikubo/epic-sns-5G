@@ -40,7 +40,7 @@ class Sistema_Celular:
 		#----------------------------------------------------------------------
 		#--------------------------ENTRADA-------------------------------------
 		#----------------------------------------------------------------------
-		#params_simulacion=[n_cel,radio_cel, distribucion, frecuencia]
+		#params_simulacion=[n_cel,radio_cel, distribucion, frecuencia, bw]
 		self.num_celdas=params_simulacion[0]
 		#radio externo
 		self.radio=params_simulacion[1]
@@ -58,6 +58,13 @@ class Sistema_Celular:
 		#----------------------------------------------------------------------
 		#AUXILIAR
 		#----------------------------------------------------------------------
+		#Ruido térmico para un ancho de banda de 1 Hz a temperatura ambiente -174 dBm
+		self.bw_usuario=params_simulacion[0]
+		self.potencia_ruido=(-174.2855251)+10*np.log10(self.bw_usuario*10**6)
+		self.potencia_ruido_veces=(10**(self.potencia_ruido/10))
+		#print(self.potencia_ruido, self.potencia_ruido_veces)
+
+
 		self.cel_fig, self.cels_ax=plt.subplots(1)
 		#cordenadas centrales de celdas
 		print("[sistema.init.mc.coordenadas_nceldas]")
@@ -94,9 +101,8 @@ class Sistema_Celular:
 		self.inicializar_distribucion() #falta implementar otras distribuciones: thomas cluster
 		#self.ue_x, self.ue_y contiene los usuarios del cluster
 		#Gestiona los usuarios en un hiper clustes, en coordendas, distancias y angulos.
-		self.inicializar_hiperc_usuarios()
+		self.inicializar_hiperc_usuarios() #CONFIGURAR DIMENSION
 		#re dimensiona los arreglos de: hiper distancia, hiper angulos, []
-
 		#Almacena usuarios en cada celda del cluster
 		#################################################self.inicializar_cluster_usuarios()
 		#Crea la clase antena, outputs ganancia relativa.
@@ -109,6 +115,30 @@ class Sistema_Celular:
 	------------------------------------FUNCIONES DE INICIALIZACION-----------------------------
 	--------------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------------'''
+
+	def configurar_dimension_arreglos(self, target):
+		'''Funcion que re dimensiona un arreglo de la forma [ [ [celda 1][celda2][celda3] ] [ [celda 1][celda2][celda3] ]]
+		a una organizacion de usuarios por celda.
+		'''
+		print("[sistema.configuracion_dimension_arreglos]")
+		organizacion=[0 for i in range(self.num_celdas)]
+		temporal=[]
+		#itero sobre el numero de celdas
+		#print("[sistema.configurar] \n", type(target))
+		#print("[sistema.configurar] \n", target)
+		for target_users in range(self.num_celdas):
+			#itero sobre el arreglo
+			for ind,celda in enumerate(target):
+				arreglo=celda[target_users]
+				temporal.append(arreglo)
+			#guardo los arrays en stack en una lista
+			organizacion[target_users]=np.stack(temporal,axis=-1)
+			#convierto la lista en ndarray para ejecutar operaciones numpy.
+			organizacion=np.asarray(organizacion)
+			#limpio la lista temporal para guardar la siguiente iteracion de la celdas
+			temporal=[]
+		#print("[sistema.debug.organizacion] \n", organizacion)
+		return np.stack(organizacion)
 
 	def inicializar_cluster_celdas(self):
 		'''Init. Almacena las celdas unicas en un cluster de celdas para control y gestion.'''
@@ -167,30 +197,6 @@ class Sistema_Celular:
 		#print("---aki2",self.distancias_celdas)
 		#print("---tipo:",type(self.distancias_celdas
 
-
-	def configurar_dimension_arreglos(self, target):
-		'''Funcion que re dimensiona un arreglo de la forma [ [ [celda 1][celda2][celda3] ] [ [celda 1][celda2][celda3] ]]
-		a una organizacion de usuarios por celda.
-		'''
-		print("[sistema.configuracion_dimension_arreglos]")
-		organizacion=[0 for i in range(self.num_celdas)]
-		temporal=[]
-		#itero sobre el numero de celdas
-		#print("[sistema.configurar] \n", type(target))
-		#print("[sistema.configurar] \n", target)
-		for target_users in range(self.num_celdas):
-			#itero sobre el arreglo
-			for ind,celda in enumerate(target):
-				arreglo=celda[target_users]
-				temporal.append(arreglo)
-			#guardo los arrays en stack en una lista
-			organizacion[target_users]=np.stack(temporal,axis=-1)
-			#convierto la lista en ndarray para ejecutar operaciones numpy.
-			organizacion=np.asarray(organizacion)
-			#limpio la lista temporal para guardar la siguiente iteracion de la celdas
-			temporal=[]
-		#print("[sistema.debug.organizacion] \n", organizacion)
-		return np.stack(organizacion)
 
 	def inicializar_hiperc_usuarios(self):
 		'''Init. crea la clase usuario en cada coordenada.'''
