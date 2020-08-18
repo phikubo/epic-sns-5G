@@ -1305,14 +1305,13 @@ def prueba_sistema_v044():
 	#plt.grid(True)
 	#plt.show()
 
-
-def prueba_sistema_v045():
-	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 4: sinr y contabilidad'''
-	n_cel=6
+def parametros_de_prueba():
+	'''Parametros centralizados'''
+	n_cel=3
 	radio_cel=1000 #DEFINICION, SIEMPRE EN METROS. La distancia tambien es en metros.
 	frecuencia=(1500,'mhz')
 	bw=(20, 'mhz') #1.4, 3, 5, 10, 15, 20, ..., 50, 100, 200, 400
-	intensidad=6/radio_cel**2
+	intensidad=1/radio_cel**2
 	print("INTENSIDAD DE ENTRADA: ",intensidad)
 	distribucion=('ppp', intensidad)
 	#verificar mcl
@@ -1356,6 +1355,12 @@ def prueba_sistema_v045():
 	#
 	params_recepcion=[0]
 
+	return params_simulacion, params_transmision, params_perdidas
+
+def prueba_sistema_v045():
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 4: sinr y contabilidad'''
+	params_simulacion, params_transmision, params_perdidas=parametros_de_prueba()
+	n_cel=3
 	#INICIO DE LA SIMULACION
 	sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
 	print("\n**************************")
@@ -1376,31 +1381,78 @@ def prueba_sistema_v045():
 	#np.savetxt('test1.txt', sim_colmena.hiperc_modelo_canal.resultado_balance[0])
 
 	'''
+	Requerimiento, calcular sinr:
+		1. identificar celda de conexion, criterio: mayor potencia recibida.
+			1.1 reemplazar con 0 las potencias maximas.
+		2. sumar las potencias interferentes en veces
+			2.1 convertir a dB.
+		3. calcular la sinr, relacionado Max_ptx, pn y ptx_interf; con la ecuacion dada en dB.
 	In the general case of a (l, m, n) ndarray:
 	numpy.reshape(a, (l*m, n)) should be used.
 	numpy.reshape(a, (a.shape[0]*a.shape[1], a.shape[2]))
 	'''
+	#creo la variable local de trabajo
 	potencia_recibida_dB=sim_colmena.hiperc_modelo_canal.resultado_balance
+	#obtenengo las dimensiones del arreglo cluster
 	l,m,n=sim_colmena.hiperc_modelo_canal.resultado_balance.shape
+	#redimensiono la potencia recibida de un arreglo 3D a 2D.
 	potencia_recibida_dB_2D=np.reshape(potencia_recibida_dB, (l*m, n))
+	#convierto a veces
 	potencia_recibida_v_2D=(10**(potencia_recibida_dB_2D/10))
+	#
 	print("array 2D, veces\n", potencia_recibida_v_2D)
+	#
+	#filtro y obtengo los valores maximos en veces.
 	maximo=np.nanmax(potencia_recibida_v_2D,axis=-1)
+	#
 	print("res maximo\n", maximo)
-
+	#creo una variable auxiliar
 	indices=[]
+	#itero sobre el maximo y el array 2D.
+	indx=0
 	for maxx, arr in zip(maximo, potencia_recibida_v_2D):
-		print(arr,maxx)
+		print("componentes:\n",arr,maxx)
+		print("arreglo:\n",potencia_recibida_v_2D[indx])
+		#obtengo el lugar (indice) en el array donde esta el valor maximo de potencia
 		indice=np.where(arr==maxx)
+		#reeemplazo los valores maximos con 0
+		potencia_recibida_v_2D[indx][indice]=0
 		print(indice[0])
+		#guardo el indice.
 		indices.append(indice[0])
+		indx+=1
+	#convierto a una dimension el array.
 	ind_np=np.stack(indices)
+	#
 	print("Celdas destino",ind_np, ind_np.shape)
 	celdas_usuarios_conectados=[]
+
+	#contamos cuantos usuarios por celda fueron conectados a la mayor potencia recibida.
 	for cnt in range(n_cel): #range numero de celdas
 		celdas_usuarios_conectados.append(np.count_nonzero(ind_np==cnt))
 	#cuentas_0=np.count_nonzero(ind_np==0)
 	print("En su orden, usuarios conectados:",celdas_usuarios_conectados)
+
+	print("Arreglo limpio en potencia recibidad maxima")
+	print(potencia_recibida_v_2D)
+	#sumo en el eje x, manteniendo la dimension. #DIMENION SE PUEDE MANTENER PARA OPTIMIZAR
+	suma_interf=np.sum(potencia_recibida_v_2D, axis=1, keepdims=True)
+	print("Suma en Arreglo limpio en potencia recibidad maxima")
+	print(suma_interf) #ok
+	#re definimos la dimension de la potencia recibida en veces
+	prx_veces=maximo.reshape(suma_interf.shape) #
+
+	print("--------operacion interferencia. no unidades ----------\n", prx_veces)
+	pn=sim_colmena.potencia_ruido_veces
+	SINR_dB=10*np.log10(prx_veces)-10*np.log10(suma_interf+pn)
+	print("SIRN[dB]: \n",SINR_dB)
+
+	plt.title("Escenario: "+ params_perdidas[0][0])
+	sim_colmena.ver_todo()
+	#sim_colmena.hiperc_antena.observar_patron()
+	plt.grid(True)
+	plt.show()
+	
 
 
 if __name__=="__main__":

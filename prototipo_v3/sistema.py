@@ -365,6 +365,8 @@ class Sistema_Celular:
 		self.ver_celdas()
 		self.ver_estaciones_base()
 		self.ver_sectores()
+		self.ver_circulos()
+		self.ver_usuarios_colores()
 
 	def info_celda_unica(self, target):
 		'''Funcion para ver toda la información de una celda específica'''
