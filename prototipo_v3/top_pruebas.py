@@ -1444,15 +1444,21 @@ def prueba_sistema_v045():
 
 	print("--------operacion interferencia. no unidades ----------\n", prx_veces)
 	pn=sim_colmena.potencia_ruido_veces
+	#calculo sinr de acuerdo a la ecuacion
 	SINR_dB=10*np.log10(prx_veces)-10*np.log10(suma_interf+pn)
 	print("SIRN[dB]: \n",SINR_dB)
+	print("----")
+	for a,b in zip(ind_np,SINR_dB):
+		print("celda |---| sinr")
+		print(a, "  |---|",b)
+
 
 	plt.title("Escenario: "+ params_perdidas[0][0])
 	sim_colmena.ver_todo()
 	#sim_colmena.hiperc_antena.observar_patron()
 	plt.grid(True)
 	plt.show()
-	
+
 
 
 if __name__=="__main__":
