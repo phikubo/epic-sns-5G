@@ -22,11 +22,11 @@ try:
 
 except:
 	print("ATENCION: Uno o mas modulos no pudo ser importado... ")
-	print("...desde un archivo externo. Ignorar si la ejecucion es interna. ")
+	print("...desde un archivo externo.Ignorar si la ejecucion es interna. ")
 #
 #bloque de carga de modulos - final
 #
-#bloque de funciones - inicio
+#bloque de funciones - inicio 
 #
 
 '''Tarea: los parametros de entrada, se designan como: params_<name> y

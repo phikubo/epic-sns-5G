@@ -1166,7 +1166,7 @@ def prueba_sistema_v043():
 
 def prueba_sistema_v044():
 	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 4: datos por usuario.'''
-	n_cel=19
+	n_cel=8
 	radio_cel=1000 #DEFINICION, SIEMPRE EN METROS. La distancia tambien es en metros.
 	frecuencia=(1500,'mhz')
 	intensidad=90000/radio_cel**2
@@ -1177,7 +1177,7 @@ def prueba_sistema_v044():
 	#y_prueba=np.array([[0,	 10, 550, 580],[500, 1500, 1000, 1750]])
 	#distribucion=("prueba_unitaria",(np.array([[1000, 250],[1500, 1000]]),np.array([[0, 250],[500, 1500]]))) #celdas=2
 	#distribucion=("prueba_unitaria",(x_prueba,y_prueba) ) #celdas=2
-
+  	
 	params_simulacion=[n_cel,radio_cel, distribucion, frecuencia]
 	#propagacion='okumura_hata' #si no: se pone, se escribe o se escribe bien, el pathloss es 0
 	hb=30 #m
