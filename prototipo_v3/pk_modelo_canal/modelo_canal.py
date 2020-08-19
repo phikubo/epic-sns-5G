@@ -62,50 +62,16 @@ class Modelo_Canal:
 		self.resultado_path_loss=0
 		self.resultado_balance=0
 		self.resultado_margen=0
+
+		self.resultado_balance_v=0
+
 		#self.inicializar_distancias()
 		self.inicializar_tipo()
 		#se altera el orden para poder obtener los valores de perdidas, en el
 		#desvanecimiento rayleight, y luego, adicionar ese desvanecimiento al balance del enlace
 		#self.configurar_desvanecimiento()
-		self.balance_del_enlace_mcl()
+		self.balance_del_enlace_mcl() #f(configurar_desvanecimiento())
 		#self.inicializar_balance()
-
-
-	def inicializar_tipo(self):
-		'''Segun el modelo de propagacion escogido, inicizalizar selecciona la funcion que calcula las perdidas'''
-		if self.tipo_perdidas =="espacio_libre":
-			#km, GHz
-			if self.unidades_dist=="m":
-				#convierto a kilometros
-				self.distancias=self.distancias/1000
-			else:
-				pass #opcion kilometro, no cambia.
-
-			if self.unidades_freq=="mhz":
-				#convierto a gigaherz
-				self.unidades_freq=self.unidades_freq/1000
-			else:
-				pass #opcion gigahez, no cambia.
-			self.perdidas_espacio_libre_ghz()
-
-
-
-		elif self.tipo_perdidas =="okumura_hata":
-			#km, mhz
-			if self.unidades_dist=="m":
-				#convierto a kilometros
-				self.distancias=self.distancias/1000
-			else:
-				pass #opcion kilometro, no cambia.
-			if self.unidades_freq=="ghz":
-				#convierto a megaherz
-				self.unidades_freq=self.unidades_freq*1000
-			else:
-				pass #opcion megaherz, no cambia.
-			self.perdidas_okumura_hata_mhz()
-
-		else:
-			pass
 
 	def configurar_desvanecimiento(self):
 		'''Crea un array de desvanecimiento, dependiendo del tipo y especificaciones extras'''
@@ -186,6 +152,44 @@ class Modelo_Canal:
 			'''Idea2. al balance rayleig, se sumo la N, de la distribucion normal. Opcion viable.'''
 		else:
 			pass
+			
+
+	def inicializar_tipo(self):
+		'''Segun el modelo de propagacion escogido, inicizalizar selecciona la funcion que calcula las perdidas'''
+		if self.tipo_perdidas =="espacio_libre":
+			#km, GHz
+			if self.unidades_dist=="m":
+				#convierto a kilometros
+				self.distancias=self.distancias/1000
+			else:
+				pass #opcion kilometro, no cambia.
+
+			if self.unidades_freq=="mhz":
+				#convierto a gigaherz
+				self.unidades_freq=self.unidades_freq/1000
+			else:
+				pass #opcion gigahez, no cambia.
+			self.perdidas_espacio_libre_ghz()
+
+
+
+		elif self.tipo_perdidas =="okumura_hata":
+			#km, mhz
+			if self.unidades_dist=="m":
+				#convierto a kilometros
+				self.distancias=self.distancias/1000
+			else:
+				pass #opcion kilometro, no cambia.
+			if self.unidades_freq=="ghz":
+				#convierto a megaherz
+				self.unidades_freq=self.unidades_freq*1000
+			else:
+				pass #opcion megaherz, no cambia.
+			self.perdidas_okumura_hata_mhz()
+
+		else:
+			pass
+
 
 	def perdidas_espacio_libre_ghz(self):
 		#outs dB
