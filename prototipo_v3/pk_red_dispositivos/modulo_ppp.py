@@ -13,7 +13,7 @@ def distribuir_en_sector():
 	'''Funcion. Distribuye usuarios en un sector. Retorna una matriz por celda mas no por sector.'''
 	pass
 
-def distribuir_en_celdas(r, x_origen, y_origen, intensidad):
+def distribuir_en_celdas(r, x_origen, y_origen, intensidad, debug):
 	'''Funcion principal. Distribuye un conjunto de usuarios en un conjunto de celdas. El resultado
 	es las coordenadas de usuarios por celda, empaquetados en una matriz. Con esta matriz se
 	calcula la distancia. Retorna una matriz de matrices (matriz de celda).'''
@@ -22,7 +22,8 @@ def distribuir_en_celdas(r, x_origen, y_origen, intensidad):
 	cantidad_de_puntos = np.random.poisson(intensidad*area_total)
 	#de esta forma todas las celdas tiene el mismo numero de usuarios.
 	#llamar funcion
-	print("[NOK] mod ppp-->", distribuir_en_celdas.__name__, "| puntos de entrada: ", len(x_origen),)
+	if debug:
+		print("[NOK] mod ppp-->", distribuir_en_celdas.__name__, "| puntos de entrada: ", len(x_origen),)
 
 	'''Recordar que x_origen y y_origen de esta funcion tiene un formato dinamico
 	esto debe ser tenido en cuenta como se hizo para la sectorizacion.(revisar si

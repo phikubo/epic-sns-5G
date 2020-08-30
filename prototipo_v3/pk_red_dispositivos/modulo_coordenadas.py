@@ -104,7 +104,7 @@ def patron_circular_final(nivel):
 	return(patron)
 
 
-def distancia_entre_celdas(nivel, radio_ext):
+def distancia_entre_celdas(nivel, radio_ext, debug3):
 	'''Funcion que genera el valor de la distancia entre el origen y las celdas por nivel. Puede ser util para calcular el
 	radio de todo el sistema. Calcula la distancia con la mitad del radio que genera patron 3nr'''
 	#print(radio_ext)
@@ -113,16 +113,18 @@ def distancia_entre_celdas(nivel, radio_ext):
 	#este nivel debe ser constante cuando se llama en el mapeo, porque?
 	#Rta, debido a que la distancia entre celdas, se ve afectada por 2/3*seno(60)(x-z), por esto dec
 	#no debe ser ajustable porque esa distancia se ajusta en la ecuacion de arriba.
-	print("[OK] mod_cel->",distancia_entre_celdas.__name__,3*(nivel)*r_med)
+	if debug3:
+		print("[OK] mod_cel->",distancia_entre_celdas.__name__,3*(nivel)*r_med)
 	#print(r_med, nivel)
 	return 3*(nivel)*r_med
 
 
-def mapear_coordenadas_cartesianas(coordenadas_axiales, nivel,radio_ext):
+def mapear_coordenadas_cartesianas(coordenadas_axiales, nivel,radio_ext, debug2):
 	'''Funcion para crear coordenadas x,y en el plano cartesiano a partir de coordenadas axiales'''
 	#task 1: crear x,y #terminado x
 	#task 2: dibjar puntos
-	print("---------------------")
+	if debug2:
+		print("---------------------")
 	coordenadas_cartesianas_horizontal = []
 	coordenadas_cartesianas_vertical = []
 
@@ -131,7 +133,8 @@ def mapear_coordenadas_cartesianas(coordenadas_axiales, nivel,radio_ext):
 		#print("nivel: ",nvl)
 		#IMPORTANTE: antes estaba distancia_entre_celdas(nvl,radio_ext) parece que esto no funciona y si como sigue
 		#investigar por que
-		dec = distancia_entre_celdas(1, radio_ext) ####################################checkear
+		debug3=debug2
+		dec = distancia_entre_celdas(1, radio_ext, debug3) ####################################checkear
 		#print("distancia ", dec)
 
 		for axial in lista:
@@ -147,10 +150,11 @@ def mapear_coordenadas_cartesianas(coordenadas_axiales, nivel,radio_ext):
 		#print("---------------------")
 		#print("---------------------")
 		#print("---------------------")
-	for i in range(len(coordenadas_axiales)):
-		print("Proceso en Celda #", i, "[OK]")
+	if debug2:
+		for i in range(len(coordenadas_axiales)):
+			print("Proceso en Celda #", i, "[OK]")
 
-	print("---------------------")
+		print("---------------------")
 	return coordenadas_cartesianas_horizontal, coordenadas_cartesianas_vertical
 
 
@@ -171,7 +175,7 @@ def ensamblar(nivel, radio):
 		return pat_cir
 
 
-def coordenadas_nceldas(num,radio):
+def coordenadas_nceldas(num,radio,debug1):
 	"""
 	Determina el nivel de celdas e imprime solo el numero de coordenadas cartesianas deseadas.
 	Tambien puedo programar logica adentro
@@ -211,7 +215,8 @@ def coordenadas_nceldas(num,radio):
 		pass
 	#return nivel
 	pat_cir=ensamblar(nivel,radio)
-	cord_x,cord_y=mapear_coordenadas_cartesianas(pat_cir, nivel, radio)
+	debug2=debug1
+	cord_x,cord_y=mapear_coordenadas_cartesianas(pat_cir, nivel, radio, debug2)
 	cord_x=cord_x[0:num]
 	cord_y=cord_y[0:num]
 	return cord_x,cord_y

@@ -86,6 +86,7 @@ def tri_sectorizar(angulo_x,angulo_y, radio_ext, cartesian_x, cartesian_y, ax):
 			hexagonal_trisec = RegularPolygon((0.5*radio_ext*x+cartx, 0.5*radio_ext*y+carty), numVertices=6, radius=radio_ext*0.5*1,
 								orientation=np.radians(60), facecolor=color, alpha=0.2, edgecolor='k')
 			ax.add_patch(hexagonal_trisec)
+	return ax
 
 
 def prueba_angulos_v30():

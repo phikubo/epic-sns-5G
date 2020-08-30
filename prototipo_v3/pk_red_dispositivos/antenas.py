@@ -22,9 +22,24 @@ class Antena:
 		self.apuntamiento=params[4]
 		self.hiper_angulos=params[5] #angulos de usuarios
 
+
+		'''
+		print("-------------------------------------")
+		print("-------------------------------------")
+		print("-------------------------------------")
+		print("-------------------------------------")
+		print("[DEBUG.Antenas]")
+		print("parametros",params[0], "-",params[1], "-",params[2], "-",params[3], "-",params[4], "-",params[5].shape)
+		print("-------------------------------------")
+		print("-------------------------------------")
+		print("-------------------------------------")
+		'''
 		#auxiliar
-		apunt_intersec=np.array(params[3])
+		#retoma los valores de
+		apunt_intersec=np.asarray(params[4])
+		#print(apunt_intersec)
 		self.apunt_trisec=np.where(apunt_intersec>180, apunt_intersec-360, apunt_intersec)
+		#print(self.apunt_trisec)
 		#
 		#self.angulos=0 #0 cuando no este en pruebas
 		#se define la ecuacion de patron de radiacion para -180,180.
@@ -89,6 +104,7 @@ class Antena:
 
 
 	def calcular_interseccion_not(self):
+		#depleted
 		'''Dado una lista de angulos y el hpdw, calcula los nuevos angulos de interseccion'''
 		print(self.apunt_trisec)
 		for angulo in self.apunt_trisec:

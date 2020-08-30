@@ -13,6 +13,158 @@ import sistema as ss
 #https://stackabuse.com/python-data-visualization-with-matplotlib/
 
 
+
+def parametros_de_prueba():
+	'''Parametros centralizados'''
+	debug=False #[6]
+	n_cel=15
+	resolucion=3
+	radio_cel=500 #DEFINICION, SIEMPRE EN METROS. La distancia tambien es en metros.
+	frecuencia=(700,'mhz')
+	bw=20 #'mhz') #1.4, 3, 5, 10, 15, 20, ..., 50, 100, 200, 400
+	intensidad=40/radio_cel**2
+	fr=6 #dB
+	print("INTENSIDAD DE ENTRADA: ",intensidad)
+	if n_cel>7:
+		mul=4.6
+	else:
+		mul=3
+	x_prueba=np.arange(-mul*radio_cel,mul*radio_cel,resolucion) #depende del radio_cel y numero de celdas.
+	y_prueba=np.arange(-mul*radio_cel,mul*radio_cel,resolucion)
+	xx,yy=np.meshgrid(x_prueba,y_prueba)
+	mapa_calor=(False, (xx,yy))
+	distribucion=('ppp', intensidad, mapa_calor)
+	#verificar mcl
+	#x_prueba=np.array([[1000, 0, 1000, 0],[1500, 1000, 1000, 1500]])
+	#y_prueba=np.array([[0,	 10, 550, 580],[500, 1500, 1000, 1750]])
+	#distribucion=("prueba_unitaria",(np.array([[1000, 250],[1500, 1000]]),np.array([[0, 250],[500, 1500]]))) #celdas=2
+	#distribucion=("prueba_unitaria",(x_prueba,y_prueba) ) #celdas=2
+
+	params_simulacion=[n_cel,radio_cel, distribucion, frecuencia, bw, fr, debug]
+	#propagacion='okumura_hata' #si no: se pone, se escribe o se escribe bien, el pathloss es 0
+	hb=30 #m
+	alfa=0
+	hm=1.5
+	params_prop=[hb, alfa, hm]
+	#
+	#params desv
+	tipo_desv='normal'
+	alpha_n=3.1
+	sigma_xn=8.1
+	mu=0
+	play_desv=True
+
+
+	#el tercer valor va en el mismo orden, dependiendo del desvanecimiento
+	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
+	#
+	propagacion=['okumura_hata', params_prop, params_desv]
+	pot_tx=19 #dBm
+	loss_tx=5
+	gan_tx=15#
+	gan_rx=8
+	loss_rx=0
+	sensibilidad=-92
+	params_perdidas=[propagacion, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
+	#
+	hpbw=65
+	amin=20
+	ref="4g"
+	gtx=params_perdidas[3]
+	#apunt=mc.calcular_angulo_v3(45,120) #inicio,angulo de particion.
+	#tar=np.array([45, 90, 180, -1, -179])
+	params_transmision=[ref, hpbw, gtx, amin] #se adjunta luego: apunt, tar
+	#
+	params_recepcion=[0]
+	'''Requerimiento:
+	Dados unos parametros fijos, siendo la distribucion cualquiera (menos la malla_rectangular),
+	segun una bandera, puedo simular tanto los usuarios aleatorios, como los usuarios de la imagen.
+	Pero ambos siguen un flujo de simulacion diferente.
+	Si la bandera es verdadera, las dimensiones deben conservarse en todo el proceso.
+	'''
+
+	return params_simulacion, params_transmision, params_perdidas
+
+def parametros_de_prueba_unitaria():
+	'''Parametros centralizados. La intensidad es un parametro independiente de la prueba
+	mapa del calor, pues la intensidad del mapa del calor es basicamente la resolucion o espaciamiento
+	entre los puntos.'''
+	debug=False #[6]
+	resolucion=10
+	n_cel=3
+	"""Experimento:
+	Con 2 celdas.
+	Se varia el radio de la celda.
+	-2 cel, En 1000 se obtiene aproximadamente 60-63%.
+	-3 cel, en 1000,900,800, ... 48+/-3%
+	-3 cel, en 600,500,400,300,200 ... 50+/-2%
+	-3 cel, en 100, ... 1+-0.5%
+	-3 cel, en <100, 0%.
+	Conclusion del experimento"""
+	radio_cel=1000#DEFINICION, SIEMPRE EN METROS. La distancia tambien es en metros.
+
+	frecuencia=(900,'mhz')
+	bw=20 #'mhz') #1.4, 3, 5, 10, 15, 20, ..., 50, 100, 200, 400
+	intensidad=1/radio_cel**2
+	fr=6 #dB
+
+	if n_cel>7:
+		mul=4.6
+	else:
+		mul=3
+	x_prueba=np.arange(-mul*radio_cel,mul*radio_cel,resolucion) #depende del radio_cel y numero de celdas.
+	y_prueba=np.arange(-mul*radio_cel,mul*radio_cel,resolucion)
+	xx,yy=np.meshgrid(x_prueba,y_prueba)
+	mapa_calor=(False, (xx,yy))
+	print("[debug.parametros_unitaria]: ", xx.shape)
+	print("INTENSIDAD DE ENTRADA: ",intensidad)
+	distribucion=('ppp', intensidad, mapa_calor)
+
+	#x_prueba=np.array([[1000, 0, 1000, 0],[1500, 1000, 1000, 1500]])
+	#y_prueba=np.array([[0,	 10, 550, 580],[500, 1500, 1000, 1750]])
+
+
+	#distribucion=("prueba_unitaria",(np.array([[1000, 250],[1500, 1000]]),np.array([[0, 250],[500, 1500]]))) #celdas=2
+	#distribucion=("malla_rectangular",(xx,yy) ) #celdas=2
+
+	params_simulacion=[n_cel,radio_cel, distribucion, frecuencia, bw, fr, debug]
+	#propagacion='okumura_hata' #si no: se pone, se escribe o se escribe bien, el pathloss es 0
+	hb=30 #m
+	alfa=0
+	hm=1.5
+	params_prop=[hb, alfa, hm]
+	#
+	#params desv
+	tipo_desv='normal'
+	alpha_n=3.1
+	sigma_xn=8.1
+	mu=0
+	play_desv=False
+	#el tercer valor va en el mismo orden, dependiendo del desvanecimiento
+	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
+	#
+	propagacion=['okumura_hata', params_prop, params_desv]
+	pot_tx=30 #dBm #para un 1w, 10 watts para rural.
+	loss_tx=1 #dB
+	gan_tx=15#dBi
+	gan_rx=8 #dBi
+	loss_rx=1 #dB
+	sensibilidad=-92 #antes -92 #dBm
+	params_perdidas=[propagacion, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
+	#
+	hpbw=65
+	amin=20
+	ref="4g"
+	gtx=params_perdidas[3]
+	#apunt=mc.calcular_angulo_v3(45,120) #inicio,angulo de particion.
+	#tar=np.array([45, 90, 180, -1, -179])
+	params_transmision=[ref, hpbw, gtx, amin] #se adjunta luego: apunt, tar
+	#
+	params_recepcion=[0]
+
+	return params_simulacion, params_transmision, params_perdidas
+
+
 def prueba_perdidas_basicas():
 	'''Funcion de prueba para crear las perdidas basicas (espacio libre)'''
 	#pasos:
@@ -112,6 +264,7 @@ def prueba_externa_0():
 
 def prueba_top_1_balance_del_enlace():
 	'''Prueba para validar un balance del enlace simple (no 5G)
+
 	1.DESIGN:
 	1.1 Generar escenario (celdas->1, usuarios->1)
 	1.2 Calcular distancias a la base
@@ -133,6 +286,7 @@ def prueba_top_1_balance_del_enlace():
 	+Cables y conectores Rx -5 dB
 	+Sensibilidad del receptor -92 dBm
 	***Total: (margen) + 13 dB
+
 	El margen de este enlace es de 13 dB, adecuado para ambientes urbanos y la potencia irradiada es de
 	18 dBm (<100 mW), quiere decir que el enlace es legal en cualquier país.
 	1.5 Generar graficas.
@@ -197,6 +351,7 @@ def prueba_top_1_balance_del_enlace():
 
 def prueba_top_2_balance_del_enlace():
 	'''Prueba para validar un balance del enlace simple (no 5G), al comparar esta prueba y la implementacion.
+
 	1.DESIGN:
 	#0.implementar para celdas>1, con los mismos usuarios. Ok para celda=2. Probar para c=n {con sus propios uusarios}
 	#1. empaquetar el modelo del canal, balancel del enlace. para cumplir lo de arriba.
@@ -414,10 +569,10 @@ def prueba_sistema_v035():
 	#simulacion del escenario al crear un sistema celular
 	sim_colmena=ss.Sistema_Celular((celdas,freq),radio, distribucion, param_perdidas)
 	print("[top] 1. El cluster tiene ahora,", len(sim_colmena.cluster), "celdas.")
-	print("[top] 2. Tipo de dato  ",type(sim_colmena.ue_x)) #muestra la estructura de los datos.
-	print("[top] 3. Logitud dato celda[0]-usuarios/celda: ",len(sim_colmena.ue_x[0]), " usuarios.")
+	print("[top] 2. Tipo de dato  ",type(sim_colmena.usuario_x)) #muestra la estructura de los datos.
+	print("[top] 3. Logitud dato celda[0]-usuarios/celda: ",len(sim_colmena.usuario_x[0]), " usuarios.")
 	print("[top] 5. Total usuarios",sim_colmena.no_usuarios_total)
-	#print("[top] 4. Estructura de celdas\n",sim_colmena.ue_x)
+	#print("[top] 4. Estructura de celdas\n",sim_colmena.usuario_x)
 	print("[top] 6. distancia all usuarios c0",sim_colmena.cluster[0].interf_distancias)
 	print("[top] 7. origen celda",sim_colmena.cluster[0].pos_x, sim_colmena.cluster[0].pos_y)
 
@@ -446,6 +601,13 @@ def prueba_sistema_v035():
 		b. perdidas del modelo de propagacion correspondiente
 		c. potencia recibida
 	2. 	Con la potencia recibida asignar a usuario.
+
+
+
+
+
+
+
 	'''
 	sim_colmena.ver_todo()
 	plt.grid(True)
@@ -545,7 +707,7 @@ def prueba_sistema_v038():
 	print("--------------------------------------------------")
 	print("stack2[0]", stack_test[0])
 	print("stack3[0][0]", stack_test[0][0])
-	print("[top] 3. Logitud dato celda[0]-usuarios/celda: ",len(sim_colmena.ue_x[0]), " usuarios.")
+	print("[top] 3. Logitud dato celda[0]-usuarios/celda: ",len(sim_colmena.usuario_x[0]), " usuarios.")
 	print("[top] 5. Total usuarios",sim_colmena.no_usuarios_total)
 	print("[top] 6'. Forma",stack_test.shape)
 	print("--------------------------------------------test")
@@ -581,15 +743,17 @@ def prueba_sistema_v038():
 	for test in np.array(sim_colmena.distancias_hiper_cluster):
 		print(test)
 		print("*")
+
 	print("...")
 	#usuarios
 	for cel in range(celdas):
 		#celdas.
-		for usrs in range(len(sim_colmena.ue_x[0])):
+		for usrs in range(len(sim_colmena.usuario_x[0])):
 			print(usrs,cel)
 			print("\n output", stack_test[usrs][cel])
 			#print(stack_test[i][j])
 			#print("\n")
+
 	'''
 
 
@@ -612,6 +776,7 @@ def prueba_sistema_v039():
 		y contra las manecillas del reloj. Listo
 	1.2.Definir una funcion que recibe una lista, y calcula el angulo que forma respecto al punto indicado. Ok
 	1.3 Definir una funcion que recibe un array numpy, y calcula el angulo que forma respecto al punto indicado. OK
+
 	2. Para cada angulo en el arrary 1.3, calcular la ganancia que debe recibir con 1 lobulo.
 	2.2 Para cada angulo en el arrary 1.3, calcular la ganancia que debe recibir cuando existen 3 lobulos.
 	2.3 Para cada angulo en el arrary 1.3, calcular la ganancia que debe recibir cuando existen n lobulos.
@@ -638,7 +803,7 @@ def prueba_sistema_v039():
 	sim_colmena=ss.Sistema_Celular((celdas,freq),radio, distribucion, param_perdidas)
 	print("------------------------")
 	print("coordenadas de usuarios")
-	print(sim_colmena.ue_x)
+	print(sim_colmena.usuario_x)
 	print(sim_colmena.ue_y)
 	print("------------------------")
 	print("angulos hiper cluster grados -180,180")
@@ -663,7 +828,7 @@ def prueba_sistema_v040():
 	n_cel=3
 	radio_cel=1000
 	frecuencia=(1500,'mhz')
-	intensidad=1/radio_cel**2
+	intensidad=10/radio_cel**2
 	distribucion=('ppp', intensidad)
 
 	params_simulacion=[n_cel,radio_cel, distribucion, frecuencia]
@@ -924,7 +1089,7 @@ def prueba_sistema_v043():
 	#INICIO DE LA SIMULACION
 	sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
 	print("\n**************************")
-	print("[top] Por celda: ",len(sim_colmena.ue_x[0]), " usuarios.")
+	print("[top] Por celda: ",len(sim_colmena.usuario_x[0]), " usuarios.")
 	print("[top]. Total usuarios",sim_colmena.no_usuarios_total)
 	print("************")
 	print("[top]. Tipo hiper-dato: ",type(sim_colmena.hiperc_ganancia_relativa))
@@ -942,14 +1107,18 @@ def prueba_sistema_v043():
 	print(sim_colmena.hiperc_distancias[ind_celda])
 	print("**************************")
 	print("**************************")
+
 	ind_celda_1=1
 	print("\n**************************distancias[a][b]->indice [b] (usuarios creados en celda a, distancia usuarios en celda b) -->CELDA[{}][{}]".format(ind_celda,ind_celda_1))
 	print(sim_colmena.hiperc_distancias[ind_celda][ind_celda_1])
+
 	print("**************************")
 	print("**************************")
+
 	ind_us=0
 	print("\n**************************\ndistancias[a][b][c]->indice [c] (usuario {} creados en celda a, distancia usuarios en celda b) -->CELDA[{}][{}][{}]".format(ind_us,ind_celda,ind_celda_1,ind_us))
 	print(sim_colmena.hiperc_distancias[ind_celda][ind_celda_1][ind_us])
+
 	print("\n**************************")
 	print("\n**************************")
 	print("\n******* INICIO DE LA PRUEBA 1 ************")
@@ -965,6 +1134,7 @@ def prueba_sistema_v043():
 		print(celda[0])
 		test.append(celda[0])
 		print("************************\n")
+
 	print(test)
 	'''
 	print("\n**************************")
@@ -998,6 +1168,7 @@ def prueba_sistema_v043():
 	def configurar_dimension():
 		#Funcion que re dimensiona un arreglo de la forma [ [ [celda 1][celda2][celda3] ] [ [celda 1][celda2][celda3] ]]
 		a una organizacion de usuarios por celda.
+
 		#itero sobre el numero de celdas
 		for users in range(n_cel):
 			#itero sobre el arreglo
@@ -1053,6 +1224,8 @@ def prueba_sistema_v043():
 	print("**************************")
 	print("**************************")
 	print("**************************")
+
+
 	'''
 	pass
 
@@ -1070,11 +1243,15 @@ def prueba_sistema_v043():
 	print(sim_colmena.hiperc_modelo_canal.resultado_balance)
 	print("\n[top]. MARGEN")
 	print(sim_colmena.hiperc_modelo_canal.resultado_margen)
+
+
 	Requerimiento:
 	Es deseable para cada usuario, conocer: distancia, ganancia, perdidas, potencia recibida, de todas las celdas.
+
 	------
 	Idea 1.
 	Crear n_cel matrices con la forma:
+
 	Matriz 1 para distancia, usuarios creados en la celda 1:
 		us1 usd2 usd3 ... usdi
 	cel1
@@ -1082,6 +1259,8 @@ def prueba_sistema_v043():
 	cel3
 	...
 	celj
+
+
 	Matriz 2 para distancia, usuarios creados en la celda 2:
 		us1 usd2 usd3 ... usdi
 	cel1
@@ -1089,7 +1268,9 @@ def prueba_sistema_v043():
 	cel3
 	...
 	celj
+
 	...
+
 	Matriz k para distancia, usuarios creados en la celda k:
 		us1 usd2 usd3 ... usdi
 	cel1
@@ -1097,22 +1278,30 @@ def prueba_sistema_v043():
 	cel3
 	...
 	celj
+
+
 	Se crean n_cel matrices para cada parametro distancia, ganancia, perdidas, potencia recibida.
 	Iniciar con distancia y aplicar el mismo modelo a los demas parámetros.
+
 	------
 	Idea 2:
+
 	Crear una matriz unica, con todos los usuarios de todas las estaciones.
+
 		us1 us2 ... usi .. us21 us22 ... us2i .. .. usni
 	cel1
 	cel2
 	cel3
 	...
 	celj
+
 	***********************************
 	crear ambas matrices y comparar cual seria mejor usar.
+
 	Idea 1: desing:
 	Requerimiento lv3:
 	La estructura tiene el siguiente diseno: [-  [-[] [] []-]   [-[] [] []-]   [-[] [] []-] -]
+
 	'''
 
 	#plt.title("Escenario: "+propagacion[0])
@@ -1179,7 +1368,7 @@ def prueba_sistema_v044():
 	#INICIO DE LA SIMULACION
 	sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
 	print("\n**************************")
-	print("[top] Por celda: ",len(sim_colmena.ue_x[0]), " usuarios.")
+	print("[top] Por celda: ",len(sim_colmena.usuario_x[0]), " usuarios.")
 	print("[top]. Total usuarios en {} celdas".format(n_cel),sim_colmena.no_usuarios_total)
 	print("************")
 	print("[top]. Tipo hiper-dato: ",type(sim_colmena.hiperc_ganancia_relativa))
@@ -1195,6 +1384,7 @@ def prueba_sistema_v044():
 	print(sim_colmena.hiperc_modelo_canal.resultado_path_loss) #ya no aplica, ahora aplica en el balance
 	print("\n[top]. POTENCIA RECIBIDA, simplificado, sin tx. ")
 	print(sim_colmena.hiperc_modelo_canal.balance_simplificado_antes)
+
 	print("\n[top]. MARGEN")
 	print(sim_colmena.hiperc_modelo_canal.resultado_margen)
 	'''
@@ -1212,11 +1402,14 @@ def prueba_sistema_v044():
 			celdas	+
 	usuarios ...
 	+
+
 	concatenar: [   [a]   [b]    [c]  ... [z]   ]
 	n=2
 	aux=a+b
 	aux=aux+c
+
 	n=n
+
 	for ind,celda in zip(concatenar):
 		0, celda=a, concatenar[0+1]=b
 		if ind == 0:
@@ -1225,9 +1418,11 @@ def prueba_sistema_v044():
 			pass
 		#1: aux=a+b, concatenar[1+1]=c
 		aux=concatenate(aux,concatenar[i+1])
+
 	In the general case of a (l, m, n) ndarray:
 	numpy.reshape(a, (l*m, n)) should be used.
 	numpy.reshape(a, (a.shape[0]*a.shape[1], a.shape[2]))
+
 	'''
 	'''
 	In the general case of a (l, m, n) ndarray:
@@ -1262,57 +1457,30 @@ def prueba_sistema_v044():
 	#plt.grid(True)
 	#plt.show()
 
-def parametros_de_prueba():
-	'''Parametros centralizados'''
-	n_cel=3
-	radio_cel=1000 #DEFINICION, SIEMPRE EN METROS. La distancia tambien es en metros.
-	frecuencia=(1500,'mhz')
-	bw=(20, 'mhz') #1.4, 3, 5, 10, 15, 20, ..., 50, 100, 200, 400
-	intensidad=1/radio_cel**2
-	print("INTENSIDAD DE ENTRADA: ",intensidad)
-	distribucion=('ppp', intensidad)
-	#verificar mcl
-	#x_prueba=np.array([[1000, 0, 1000, 0],[1500, 1000, 1000, 1500]])
-	#y_prueba=np.array([[0,	 10, 550, 580],[500, 1500, 1000, 1750]])
-	#distribucion=("prueba_unitaria",(np.array([[1000, 250],[1500, 1000]]),np.array([[0, 250],[500, 1500]]))) #celdas=2
-	#distribucion=("prueba_unitaria",(x_prueba,y_prueba) ) #celdas=2
+def main2(x,y):
+	fig=plt.figure()
+	ax=fig.add_subplot(111)
+	#ax.set_title('click on points')
+	#x=np.array([1.41010145,2,3,4])
+	#y=np.array([1,2.28282828289,3,4])
+	line,=ax.plot(x,y,'ro',picker=6)
+	def onpick(event):
+		thisline=event.artist
+		xdata=thisline.get_xdata()
+		#todas las coordenadas
+		ydata=thisline.get_ydata()
+		#todas las coordenadas
+		#print(xdata, ydata)
+		ind=event.ind
+		points=tuple(zip(xdata[ind], ydata[ind]))
+		print("on pick points", points, type(points[0][0]))
+		print("x :",np.around(points[0][0],6))
+		print("y :",np.around(points[0][1],6))
+	fig.canvas.mpl_connect('pick_event',onpick)
+	#plt.show()
 
-	params_simulacion=[n_cel,radio_cel, distribucion, frecuencia, bw]
-	#propagacion='okumura_hata' #si no: se pone, se escribe o se escribe bien, el pathloss es 0
-	hb=30 #m
-	alfa=0
-	hm=1.5
-	params_prop=[hb, alfa, hm]
-	#
-	#params desv
-	tipo_desv='normal'
-	alpha_n=3.1
-	sigma_xn=8.1
-	mu=0
-	play_desv=True
-	#el tercer valor va en el mismo orden, dependiendo del desvanecimiento
-	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
-	#
-	propagacion=['okumura_hata', params_prop, params_desv]
-	pot_tx=19 #dBm
-	loss_tx=5
-	gan_tx=15#
-	gan_rx=8
-	loss_rx=0
-	sensibilidad=-92
-	params_perdidas=[propagacion, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
-	#
-	hpbw=55
-	amin=20
-	ref="4g"
-	gtx=params_perdidas[3]
-	#apunt=mc.calcular_angulo_v3(45,120) #inicio,angulo de particion.
-	#tar=np.array([45, 90, 180, -1, -179])
-	params_transmision=[ref, hpbw, gtx, amin] #se adjunta luego: apunt, tar
-	#
-	params_recepcion=[0]
 
-	return params_simulacion, params_transmision, params_perdidas
+
 
 def prueba_sistema_v045():
 	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 4: sinr y contabilidad'''
@@ -1321,7 +1489,7 @@ def prueba_sistema_v045():
 	#INICIO DE LA SIMULACION
 	sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
 	print("\n**************************")
-	print("[top] Por celda: ",len(sim_colmena.ue_x[0]), " usuarios.")
+	print("[top] Por celda: ",len(sim_colmena.usuario_x[0]), " usuarios.")
 	print("[top]. Total usuarios en {} celdas".format(n_cel),sim_colmena.no_usuarios_total)
 	print("************")
 	print("[top]. Tipo hiper-dato: ",type(sim_colmena.hiperc_ganancia_relativa))
@@ -1400,22 +1568,494 @@ def prueba_sistema_v045():
 	prx_veces=maximo.reshape(suma_interf.shape) #
 
 	print("--------operacion interferencia. no unidades ----------\n", prx_veces)
-	pn=sim_colmena.potencia_ruido_veces
+	pn=10**(sim_colmena.potencia_ruido/10) #en veces
 	#calculo sinr de acuerdo a la ecuacion
 	SINR_dB=10*np.log10(prx_veces)-10*np.log10(suma_interf+pn)
 	print("SIRN[dB]: \n",SINR_dB)
 	print("----")
+	print("celda |---| sinr")
 	for a,b in zip(ind_np,SINR_dB):
-		print("celda |---| sinr")
+
 		print(a, "  |---|",b)
 
+	#print(sim_colmena.usuario_x.flatten())
+	#print(sim_colmena.usuario_y.flatten())
+	x=sim_colmena.usuario_x.flatten()
+	y=sim_colmena.usuario_y.flatten()
+	print(np.around(x,6))
+	print(np.around(y,6))
 
 	plt.title("Escenario: "+ params_perdidas[0][0])
 	sim_colmena.ver_todo()
+	main2(x,y)
 	#sim_colmena.hiperc_antena.observar_patron()
 	plt.grid(True)
 	plt.show()
 
+
+def prueba_sistema_v045_1():
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 4: sinr y contabilidad'''
+	params_simulacion, params_transmision, params_perdidas=parametros_de_prueba()
+	n_cel=3
+	#INICIO DE LA SIMULACION
+	sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
+	print("\n**********Inicio de la prueba [top]****************")
+	print("[top] Por celda: ",len(sim_colmena.usuario_x[0]), " usuarios.")
+	print("[top]. Total usuarios en {} celdas".format(n_cel),sim_colmena.no_usuarios_total)
+	print("***************************")
+	'''
+	#creo la variable local de trabajo
+	potencia_recibida_dB=sim_colmena.hiperc_modelo_canal.resultado_balance
+	#obtenengo las dimensiones del arreglo cluster
+	l,m,n=sim_colmena.hiperc_modelo_canal.resultado_balance.shape
+	#redimensiono la potencia recibida de un arreglo 3D a 2D.
+	potencia_recibida_dB_2D=np.reshape(potencia_recibida_dB, (l*m, n))
+	#convierto a veces
+	potencia_recibida_v_2D=(10**(potencia_recibida_dB_2D/10))
+	#
+	#print("array 2D, veces\n", potencia_recibida_v_2D)
+	#
+	#filtro y obtengo los valores maximos en veces.
+	maximo=np.nanmax(potencia_recibida_v_2D,axis=-1)
+	#
+	#print("res maximo\n", maximo)
+	#creo una variable auxiliar
+	indices=[]
+	#itero sobre el maximo y el array 2D.
+	indx=0
+	for maxx, arr in zip(maximo, potencia_recibida_v_2D):
+		#print("componentes:\n",arr,maxx)
+		#print("arreglo:\n",potencia_recibida_v_2D[indx])
+		#obtengo el lugar (indice) en el array donde esta el valor maximo de potencia
+		indice=np.where(arr==maxx)
+		#reeemplazo los valores maximos con 0
+		potencia_recibida_v_2D[indx][indice]=0
+		#print(indice[0])
+		#guardo el indice.
+		indices.append(indice[0])
+		indx+=1
+	#convierto a una dimension el array.
+	ind_np=np.stack(indices)
+	#
+	#print("Celdas destino",ind_np, ind_np.shape)
+	celdas_usuarios_conectados=[]
+
+	#contamos cuantos usuarios por celda fueron conectados a la mayor potencia recibida.
+	for cnt in range(n_cel): #range numero de celdas
+		celdas_usuarios_conectados.append(np.count_nonzero(ind_np==cnt))
+	#cuentas_0=np.count_nonzero(ind_np==0)
+	#("En su orden, usuarios conectados:",celdas_usuarios_conectados)
+
+	#print("Arreglo limpio en potencia recibidad maxima")
+	#print(potencia_recibida_v_2D)
+	#sumo en el eje x, manteniendo la dimension. #DIMENION SE PUEDE MANTENER PARA OPTIMIZAR
+	suma_interf=np.sum(potencia_recibida_v_2D, axis=1, keepdims=True)
+	#print("Suma en Arreglo limpio en potencia recibidad maxima")
+	#print(suma_interf) #ok
+	#re definimos la dimension de la potencia recibida en veces
+	prx_veces=maximo.reshape(suma_interf.shape) #
+	print("inteferente en veces \n", prx_veces )
+
+	pn=10**(sim_colmena.potencia_ruido/10) #en veces
+	print("potencia de ruido <---------\n", pn)
+	#calculo sinr de acuerdo a la ecuacion
+	SINR_dB=10*np.log10(prx_veces)-10*np.log10(suma_interf+pn)
+	print("SIRN[dB]: \n",SINR_dB)
+	print("----")
+	print("celda |---| sinr")
+	for a,b in zip(ind_np,SINR_dB):
+
+		print(a, "  |---|",b)
+	'''
+	print("***************************")
+	sim_colmena.info_sinr()
+
+
+def prueba_sistema_v045_2():
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 4: montecarlo'''
+	params_simulacion, params_transmision, params_perdidas=parametros_de_prueba()
+	n_cel=params_simulacion[0]
+	print("**************************************************")
+	print("**********Inicio de la prueba [top]****************")
+	print("**************************************************")
+	iteracion=1#
+	#INICIO DE LA SIMULACION
+	#sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
+	#print("[top] Por celda: ",len(sim_colmena.usuario_x[0]), " usuarios.")
+	#print("[top]. Total usuarios en {} celdas".format(n_cel),sim_colmena.no_usuarios_total)
+
+
+	coleccion_simulacion=[]
+	it=0
+	for n in range(iteracion):
+		print("**********SIMULACION {}*****************".format(it))
+		coleccion_simulacion.append(ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas))
+		it+=1
+
+	coleccion_relacion_conexion=[]
+	for simulacion in coleccion_simulacion:
+		#simulacion.ver_todo() # ok.
+		coleccion_relacion_conexion.append(simulacion.medida_conexion)
+	#coleccion_relacion_conexion=np.stack(coleccion_relacion_conexion)
+
+
+
+	plt.figure()
+	plt.plot(coleccion_relacion_conexion,'b*-')
+	coleccion_relacion_conexion=np.sort(coleccion_relacion_conexion)
+	plt.plot(coleccion_relacion_conexion,'r*-')
+	p=1.*np.arange(len(coleccion_relacion_conexion))/(len(coleccion_relacion_conexion)-1)
+	#print(p)
+	'''
+	eje_x=np.arange(1,len(coleccion_relacion_conexion)+1)
+	#coleccion_relacion_conexion=np.sort(coleccion_relacion_conexion)#
+
+	acomulativa=np.cumsum(coleccion_relacion_conexion) #normalizado
+	print(eje_x, acomulativa, max(acomulativa))
+
+	#
+	'''
+	fig=plt.figure()
+	ax1=fig.add_subplot(121)
+	ax1.plot(p,coleccion_relacion_conexion, 'g-')
+	ax1.set_xlabel("$Dist P$")
+	ax1.set_ylabel("$Conexion$")
+
+	ax2=fig.add_subplot(122)
+	ax2.plot(coleccion_relacion_conexion,p, 'k-')
+	ax2.set_xlabel("$Conexion$")
+	ax2.set_ylabel("$Dist P$")
+
+	plt.figure()
+	plt.hist(coleccion_relacion_conexion)
+
+
+	'''Definicion prueba de montecarlo:
+	El sistema celular tiene la siguiente propiedad:
+	self.medida_conexion=self.conexion_total/self.no_usuarios_total
+
+	La prueba de montecarlo del hexagono fue definida asi:
+	montecarlo=(area_hexagono/area_circulo), en terminos de radio, seria:
+	P(x: x C Hexagono)=(area_hexagono/area_circulo)
+	P(...) -> P(x: x esta contenido en Hexagono)
+	Despejando el área del hexagono obtenemos:
+	 -> area_hexagono= ( P(...) * pi*r**2)
+	 N_a=sum(puntos)
+	 N=len(puntos)
+	 P_a=N_a/N
+	 print("probabilidad de exito", P_a)
+	 print("area del hexagono: ", math.pi*self.radio**2*P_a)
+	 acomulativa=np.cumsum(puntos)
+
+	Luego,
+	P(x: x E conexion) = conexion_total/no_usuarios_total
+	conexion_total: x: x>12 dB
+	no_usuarios_total=n
+
+	N_a=conexion_total
+	N=no_usuarios_total
+	P_a=N_a/N
+
+	Luego:
+	Luego, cual es la relacion de P_a, con la probabilidad de outage? cual seria la ecuacion.
+	Sera que P_a = Probabilida de outage?
+	'''
+	plt.figure()
+	N=len(coleccion_relacion_conexion)
+	eje_x=np.arange(1,N+1)
+	#print(eje_x)
+
+	plt.show()
+
+
+def prueba_sistema_v046():
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 4: usuarios por color, si iteracion==1.'''
+	params_simulacion, params_transmision, params_perdidas=parametros_de_prueba()
+	n_cel=params_simulacion[0]
+	print("**************************************************")
+	print("**********Inicio de la prueba [top]****************")
+	print("**************************************************")
+	iteracion=1#
+	#INICIO DE LA SIMULACION
+	#sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
+	#print("[top] Por celda: ",len(sim_colmena.usuario_x[0]), " usuarios.")
+	#print("[top]. Total usuarios en {} celdas".format(n_cel),sim_colmena.no_usuarios_total)
+
+
+	coleccion_simulacion=[]
+	it=0
+	for n in range(iteracion):
+		print("**********SIMULACION {}*****************".format(it))
+		coleccion_simulacion.append(ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas))
+		it+=1
+
+	print(coleccion_simulacion[0].usuario_x.shape)
+	###print(coleccion_simulacion[0].usuario_x)
+	#este procedimiento no es el correcto.
+	##coordendas_nuevas_x=coleccion_simulacion[0].configurar_organizar_arreglos(coleccion_simulacion[0].usuario_x)
+	#print(coordendas_nuevas_x.shape)
+	'''El requerimiento es crear 1 arreglo 2D a 1D'''
+	coordendas_nuevas_x=coleccion_simulacion[0].configurar_disminuir_dim(coleccion_simulacion[0].usuario_x)
+	coordendas_nuevas_y=coleccion_simulacion[0].configurar_disminuir_dim(coleccion_simulacion[0].usuario_y)
+	print("[Top.pruebas] 1",coordendas_nuevas_x.shape, coordendas_nuevas_x.shape)
+	#print("[Top.pruebas] 2",coordendas_nuevas_x)
+	#print("[Top.pruebas] 3",coordendas_nuevas_y)
+
+	###plt.plot(coordendas_nuevas_x,coordendas_nuevas_y, "+") ok.
+
+	#coleccion_simulacion[0].info_sinr()
+	'''
+	Requerimiento 1:
+		Distinguir los usuarios conectados de los que no.
+	Requerimiento 2:
+		Distinguir los usuarios por celda, y ademas requerimiento 1.
+
+	'''
+	mapa=coleccion_simulacion[0].mapa_conexion_usuario
+	sinr=coleccion_simulacion[0].sinr_db
+	conexion=np.where(sinr>12,1,0)
+	mapa_estacion=coleccion_simulacion[0].mapa_conexion_estacion
+	print(mapa_estacion)
+	ind=0
+	print("usuario---conex?--celda--sinr")
+	for bandera,t1,t2 in zip(conexion,mapa,sinr):
+		print("     {}   {}     {}     {}".format(ind,bandera, t1,t2))
+		ind+=1
+
+	'''Solo necesito 3 arreglos: ind, bandera, y mapa. Sinr no pues mapa se deriva de sinr.
+	Si, considero la bandera, 0 indica desconexion. Luego, si reemplazo en esa misma posicion -1 en mapa.
+	Obtengo un mapa de ncel variables + -1 indicando desconexion.
+	'''
+	#plt.figure()
+	for usuario, (bandera, map) in enumerate(zip(conexion, mapa)):
+		#print(usuario, bandera, map)
+		if bandera==0:
+			mapa[usuario]=-1
+	#ctest=[map/max(i) for i in range()]
+	#print(ctest)
+	'''
+	colores=0
+	for usuario, map in enumerate(mapa):
+		thisx=coordendas_nuevas_x[usuario]
+		thisy=coordendas_nuevas_y[usuario]
+		if map==-1:
+			plt.plot(thisx,thisy,'k+')
+		else:
+			#color=np.array([map/max(mapa),0,0])
+			plt.plot(thisx,thisy,'go')
+	#print(mapa)
+	'''
+	#OPCION PANDAS.
+	import pandas as pd
+	testx=coordendas_nuevas_x
+	testy=coordendas_nuevas_y
+	mapa=np.reshape(mapa, testx.shape)
+	print(mapa.shape)
+	print(testx.shape, testy.shape, mapa.shape)
+
+	data=pd.DataFrame({"X value":testx, "Y value":testy, "Category":mapa})
+	print(data)
+	grupos=data.groupby("Category")
+	'''
+	for name, group in grupos:
+		#thisx=coordendas_nuevas_x[usuario]
+		#thisy=coordendas_nuevas_y[usuario]
+		plt.plot(group["X value"], group["Y value"], marker="o", linestyle="", label=name)
+	plt.legend()
+	'''
+	med=coleccion_simulacion[0].conexion_total
+	print("Medida:",med)
+	coleccion_simulacion[0].ver_todo()
+	coleccion_simulacion[0].info_sinr()
+
+	#PRUEBA TERMINADA EXITOSAMENTE.
+	plt.show()
+
+
+def prueba_sistema_v046_1():
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 4: usuarios por color, si iteracion==1.'''
+	params_simulacion, params_transmision, params_perdidas=parametros_de_prueba()
+	n_cel=params_simulacion[0]
+	print("**************************************************")
+	print("**********Inicio de la prueba [top]****************")
+	print("**************************************************")
+	iteracion=1#
+	#INICIO DE LA SIMULACION
+	#sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
+	#print("[top] Por celda: ",len(sim_colmena.usuario_x[0]), " usuarios.")
+	#print("[top]. Total usuarios en {} celdas".format(n_cel),sim_colmena.no_usuarios_total)
+
+
+	coleccion_simulacion=[]
+	it=0
+	for n in range(iteracion):
+		print("**********SIMULACION {}*****************".format(it))
+		coleccion_simulacion.append(ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas))
+		it+=1
+
+	#coleccion_simulacion[0].ver_todo()
+	#coleccion_simulacion[0].info_sinr()
+	print("De {} usuarios, {} cumplen BER objetivo. P_a: {}".format(coleccion_simulacion[0].no_usuarios_total,
+	 	coleccion_simulacion[0].conexion_total, coleccion_simulacion[0].medida_conexion))
+	#PRUEBA TERMINADA EXITOSAMENTE.
+	plt.show()
+
+def prueba_sistema_v046_2():
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 4: intensida sinr, si iteracion==1.'''
+	params_simulacion, params_transmision, params_perdidas=parametros_de_prueba()
+	n_cel=params_simulacion[0]
+	print("**************************************************")
+	print("**********Inicio de la prueba [top]****************")
+	print("**************************************************")
+	iteracion=1#
+	#INICIO DE LA SIMULACION
+	#sim_colmena=ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas)
+	#print("[top] Por celda: ",len(sim_colmena.usuario_x[0]), " usuarios.")
+	#print("[top]. Total usuarios en {} celdas".format(n_cel),sim_colmena.no_usuarios_total)
+
+
+	coleccion_simulacion=[]
+	it=0
+	for n in range(iteracion):
+		print("**********SIMULACION {}*****************".format(it))
+		coleccion_simulacion.append(ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas))
+		it+=1
+
+	#coleccion_simulacion[0].ver_todo()
+	coleccion_simulacion[0].info_sinr() #.info_sinr(True)
+	simtest=coleccion_simulacion[0]
+	test=simtest.sinr_db
+
+	#print(test)
+	#print(test.shape)
+	intensidad=simtest.configurar_disminuir_dim(test)
+	#print(intensidad)
+	#print(intensidad.shape)
+	colormap=plt.cm.cool
+	normalize=plt.Normalize(vmin=min(intensidad), vmax=max(intensidad))
+	coordendas_nuevas_x=coleccion_simulacion[0].configurar_disminuir_dim(coleccion_simulacion[0].usuario_x)
+	coordendas_nuevas_y=coleccion_simulacion[0].configurar_disminuir_dim(coleccion_simulacion[0].usuario_y)
+	testx=coordendas_nuevas_x
+	#print(testx)
+	testy=coordendas_nuevas_y
+
+	plt.scatter(testx, y=testy,c=intensidad, cmap=colormap,marker='o')
+
+	#a=[4,5,2,5,6,20,1,34]
+	#colormap=plt.cm.cool
+	plt.show()
+
+
+def prueba_sistema_v046_3():
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 4: intensida potencia recibida, si iteracion==1.'''
+	params_simulacion, params_transmision, params_perdidas=parametros_de_prueba_unitaria()
+	n_cel=params_simulacion[0]
+	print("**************************************************")
+	print("**********Inicio de la prueba [top]****************")
+	print("**************************************************")
+	iteracion=1#
+	coleccion_simulacion=[]
+	it=0
+	for n in range(iteracion):
+		print("**********SIMULACION {}*****************".format(it))
+		coleccion_simulacion.append(ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas))
+		it+=1
+
+	simtest=coleccion_simulacion[0]
+	simtest.info_sinr() #.info_sinr(True) para imprimir la sinr
+	#test=simtest.sinr_db
+	#simtest.ver_todo(1,False)
+	#print(simtest.malla_x.shape)
+	'''Crear matriz con ceros, reeemplazar cada valor con el maximo. Con la misma shape original.
+	Crear otra matriz con el indice de la potencia mayor'''
+	#print(simtest.hiperc_malla_distancias.shape)
+	hiperm_ang=simtest.hiperc_malla_ganancia_relativa
+	#print(hiperm_ang[1])
+	#celdas=2, 2 matrices.
+	#shape original de x,y
+	'''
+	print("------")
+	print("shape original")
+	print(simtest.malla_x)
+	print("---")
+	print(simtest.malla_y)
+	print("------")
+
+	#distancias hiper matriz.
+	print("shape distancias", simtest.hiperc_malla_distancias.shape)
+	print(simtest.hiperc_malla_distancias[0])
+	print("---")
+	print(simtest.hiperc_malla_distancias[1])
+	#angulos hiper angulos
+	print("---")
+	print("hiper malla angulos")
+	print(simtest.hiperc_malla_angulos.shape) #ok
+	print("---------")
+	#ganancia relativa.
+	print("shape ganancia relativa ")
+	print(simtest.hiperc_malla_ganancia_relativa.shape)
+	print("--")
+	print(simtest.hiperc_malla_ganancia_relativa)
+	print("-------")
+	#paths loss
+	print("path loss")
+	print(simtest.hiperc_malla_modelo_canal.resultado_path_loss)
+	#potencia recibida.
+	'''
+	print("balance mcl")
+	#print(simtest.hiperc_modelo_canal.resultado_balance)
+	#print(simtest.hiperc_malla_modelo_canal.resultado_balance)
+
+	pr=simtest.hiperc_malla_modelo_canal.resultado_balance
+	prmax_v=np.maximum(pr[0],pr[1])
+	pr_max=pr[0]
+	for ind,pr_i in enumerate(pr):
+		print("indice",ind)
+		pr_max=np.maximum(pr_max, pr_i)
+	#print(pr_max)
+	pr_max=pr_max[:-1,:-1]
+	z_min,z_max=-np.abs(pr_max).max(), np.abs(pr_max).max()
+	print(z_min, z_max)
+	fig,ax=plt.subplots()
+	xx=simtest.malla_x
+	yy=simtest.malla_y
+	#c=ax.pcolormesh(xx,yy,pr_max, cmap='RdBu', vmin=z_min, vmax=z_max)
+	c=ax.pcolormesh(xx,yy,pr_max, cmap='plasma', vmin=z_min, vmax=-40)
+	fig.colorbar(c,ax=ax)
+	#sinr.
+	#compilado de matrices.
+	#graficar.
+	#plt.figure()
+	#plt.plot(simtest.malla_x, simtest.malla_y, 'ro')
+	#plt.plot(simtest.origen_cel_x,simtest.origen_cel_y,'gv')
+	plt.grid(True)
+	plt.show()
+
+def prueba_sistema_v046_4():
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Parte 4: intensida sinr, si iteracion==1.'''
+	params_simulacion, params_transmision, params_perdidas=parametros_de_prueba_unitaria()
+	n_cel=params_simulacion[0]
+	print("**************************************************")
+	print("**********Inicio de la prueba [top]****************")
+	print("**************************************************")
+	iteracion=1#
+	coleccion_simulacion=[]
+	it=0
+	for n in range(iteracion):
+		print("**********SIMULACION {}*****************".format(it))
+		coleccion_simulacion.append(ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas))
+		it+=1
+
+	simtest=coleccion_simulacion[0]
+	print("total",simtest.no_usuarios_total)
+	simtest.info_sinr() #.info_sinr(True) para imprimir la sinr
+
+	#test=simtest.sinr_db
+	simtest.ver_todo(1,False)
+	plt.show()
+	#print(simtest.malla_x.shape)
+	'''Crear matriz con ceros, reeemplazar cada valor con el maximo. Con la misma shape original.
+	Crear otra matriz con el indice de la potencia mayor'''
 
 
 if __name__=="__main__":
@@ -1454,26 +2094,37 @@ if __name__=="__main__":
 	#prueba_sistema_v042()
 	#prueba_sistema_v043()
 	#prueba_sistema_v044()
-	prueba_sistema_v045() #pruebas de sinr
-
+	#prueba_sistema_v045() #pruebas de sinr, 12db, conexino por color.
+	#prueba_sistema_v045_1() #implementacion y comparacion
+	#prueba_sistema_v045_2() #montecarlo
+	#prueba_sistema_v046() #usuarios por celda, conectados vs desconectados, colores
+	#prueba_sistema_v046_1() #verificacion prueba 46.
+	#prueba_sistema_v046_2() #pruebas de mapa de intensidad de sinr_db. ok, pero no es conveniente.
+	#prueba_sistema_v046_3() #pruebas con fixed data: pruebas con meshgrid. potencia recibida
+	prueba_sistema_v046_4() ##pruebas con fixed data: pruebas con meshgrid. sinr
 
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")
 
 '''Requerimientos:
+
 1. [ok] Si cada modelo de propagacion tiene sus propias variables, como las recibo? ->parametros de entrada del modelo,
 	reciben el nombre del modelo y sus parametros. Cada funcino interna del modelo del canal, selecciona
 	sus parametros internos de acuerdo a un orden establecido.
 2. [ok] Seleccionar el modelo de canal segun las unidades de freccuencia y distancia.
 O, convertir todo a una misma unidad para efectos de uso. -> funcion modelocanal.inicializar_tipo()
+
 3. -----Supongamos que tenemos n realizaciones de instancias de la clase Sistema_Celular. Cada instancia tiene
 diferentes longitudes de usuarios, por ser el resutlado de un numero poisson.
 Luego, como realizar una comparacion entre simulaciones?. Que es lo que se compara en cobertura?
 	a. idea 1: la probabilidad de outage es un valor unico en cada simulacion, puede compararse.
 		1.1 debe ser un kpi comparable, que sea unico a pesar de los diferentes usuarios.
+
 4. [OK] La funcion normal especifica un numero de puntos asociados, pero si estos no son especificados?
 Por ejemplo, tengo un array numpy y deseo operar sobre ellos, como deberia operar? ->solucionado,np.random.normal, funciona con np.shape.
+
 5. [OK] Deseo como parametro de entrada, especificar si quiero incorporar el desvanecimiento o no. ->
+
 6. [ok] Modelo del canal debe especificar cuando se hace el balance del enlace, no la clase sistema.->todo se inicializa en modelo del canal
 7. [OK] Revisar ecuacion del balance
 	->corregido la sensibilidad. Ahora la sensibilidad se define negativo.
@@ -1486,6 +2137,7 @@ Por ejemplo, tengo un array numpy y deseo operar sobre ellos, como deberia opera
 				para cada parametro, o ejecutar 1 vez la funcion a la matriz de distancia que en ultimas es la matriz con
 				la que se realizan los demas calculos.
 		idea 2. super matriz con todos los valores.
+
 10. [ok] El desvanecimiento lento es una suma al balance del enlace, pero el rayleigh no. El rayleigh modifica
 las perdidas o el balance simple, se convierte a unidades lineales y finalmente logaritmicas.
 Pero cuando se usa la ecuacion mcl, el patron no responde. Investigar y arreglar este inconveniente.
@@ -1498,5 +2150,9 @@ Pero cuando se usa la ecuacion mcl, el patron no responde. Investigar y arreglar
 	si es profundo:
 		a. res=ray(pathloss+etc)
 		b. usar ecuacion.
- 11. Integrar las vistas en ver todo.
+ 11. [OK] Integrar las vistas en ver todo.
+
+
+ 12. [parcialmente terminado] implementar el borrado de variables locales, para optimizar el simulador, para varias simulaciones.
+ 12. Implementar grafico de intensidad, en funcion de sinr y coordendas de usuario.
 '''

@@ -39,15 +39,24 @@ class Celda:
 		#
 		self.interf_user_x=0
 		self.interf_user_y=0
+
+		self.interf_malla_x=0
+		self.interf_malla_y=0
+
 		self.interf_distancias=[]
+		self.interf_malla_distancias=[]
 		#Array de perdidas de propagaion hacia cada usuario
 		self.interf_angulos=[]
+		self.interf_malla_angulos=[]
 		self.basic_path_loss=0
 		#
 		self.frecuencia=0
 
+		self.mapa_bandera=0
+
 
 	def distancia_gnodeb_ue(self):
+		#depleted
 		'''Funcion que calcula la distancia entre la posicion de la estacion base hasta cada usuario en ella.'''
 		#Procedimiento
 		#0 al ejecutar esta funcion, la celda ya debe tener la informacion
@@ -64,6 +73,11 @@ class Celda:
 			distancia_celda=np.sqrt((self.pos_x-origen_x)**2+(self.pos_y-origen_y)**2)
 			self.interf_distancias.append(distancia_celda)
 
+		if self.mapa_bandera:
+			self.interf_malla_distancias=np.sqrt((self.pos_x-self.interf_malla_x)**2+(self.pos_y-self.interf_malla_y)**2)
+		else:
+			pass
+
 	def angulos_all_estacion_base_usuarios(self):
 		'''Funcion que calcula el angulo entre la posicion de la estacion base hasta todos los usuarios'''
 		for origen_x, origen_y in zip(self.interf_user_x, self.interf_user_y):
@@ -75,6 +89,10 @@ class Celda:
 			#theta=np.where(theta<0, 360+theta, theta) #el patron solo acepta entre -180 a 180.
 
 			self.interf_angulos.append(theta)
+		if self.mapa_bandera:
+			self.interf_malla_angulos=np.degrees(np.arctan2(self.interf_malla_y-self.pos_y,self.interf_malla_x-self.pos_x))
+		else:
+			pass
 
 	def asignar_perdidas_espacio_libre(self, perdidas):
 		'''Funcion que asigna las perdidas basicas, con un parametro externo'''
