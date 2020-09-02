@@ -2057,6 +2057,48 @@ def prueba_sistema_v046_4():
 	'''Crear matriz con ceros, reeemplazar cada valor con el maximo. Con la misma shape original.
 	Crear otra matriz con el indice de la potencia mayor'''
 
+def prueba_sistema_v047():
+	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Guardar y cargar datos de configuracion.'''
+	#params_simulacion, params_transmision, params_perdidas=parametros_de_prueba_unitaria()
+	#n_cel=params_simulacion[0]
+	print("**************************************************")
+	print("**********Inicio de la prueba [top]****************")
+	print("**************************************************")
+	from utilidades import config as cfg
+	import sistema2 as ss2
+	import json
+	#with open("utilidades/configs.json") as json_data_file:
+	#	data = json.load(json_data_file)
+
+	configuracion=cfg.cargar_variables(target_path="utilidades/")
+	'''
+	print("---------------")
+	print(configuracion['cfg_simulador']['params_general'])
+	print("---------------")
+	print(configuracion['cfg_simulador']['params_propagacion'])
+
+	print("---------------")
+	print(configuracion['cfg_simulador']['params_balance'])
+	print("---------------")
+	print(configuracion['cfg_simulador']['params_antena'])
+	'''
+	pass
+	'''Requerimiento 2:
+		generar coordenadas de estacion base, que son fijas, por fuera de la simulacion. Optimizar.'''
+	iteracion=1#
+	coleccion_simulacion=[]
+	it=0
+	for n in range(iteracion):
+		print("**********SIMULACION {}*****************".format(it))
+		coleccion_simulacion.append(ss2.Sistema_Celular(params_simulacion, params_transmision, params_perdidas))
+		it+=1
+
+
+	simtest=coleccion_simulacion[0]
+	
+
+
+
 
 if __name__=="__main__":
 	#REGLAS:
@@ -2101,7 +2143,8 @@ if __name__=="__main__":
 	#prueba_sistema_v046_1() #verificacion prueba 46.
 	#prueba_sistema_v046_2() #pruebas de mapa de intensidad de sinr_db. ok, pero no es conveniente.
 	#prueba_sistema_v046_3() #pruebas con fixed data: pruebas con meshgrid. potencia recibida
-	prueba_sistema_v046_4() ##pruebas con fixed data: pruebas con meshgrid. sinr
+	#prueba_sistema_v046_4() ##pruebas con fixed data: pruebas con meshgrid. sinr . En espera
+	prueba_sistema_v047() #pruebas de archivo de configuracion.
 
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")
@@ -2154,5 +2197,8 @@ Pero cuando se usa la ecuacion mcl, el patron no responde. Investigar y arreglar
 
 
  12. [parcialmente terminado] implementar el borrado de variables locales, para optimizar el simulador, para varias simulaciones.
- 12. Implementar grafico de intensidad, en funcion de sinr y coordendas de usuario.
+ 13. Implementar grafico de intensidad, en funcion de sinr y coordendas de usuario.
+ 14. Implementar ARCHIVO DE CONFIGURACION.
+ 	14.1 "prueba_unitaria". Si prueba unitaria, descartar valor intensidad o poner 0, usar datos_prueba_unitaria.txt, con los valores de usuarios a probar.
+	14.2 Si iteracion >1, play_intensidad=False. play_desv[1]->potencia recibida, play_intensidad[2]:sinr.
 '''
