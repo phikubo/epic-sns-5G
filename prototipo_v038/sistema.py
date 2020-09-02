@@ -89,8 +89,9 @@ class Sistema_Celular:
 		#Gestiona los usuarios en un hiper clustes, en coordendas, distancias y angulos.
 		self.inicializar_hiperc_usuarios() #Depens_on(CONFIGURAR DIMENSION)
 		#Crea la clase antena, outputs ganancia relativa.
-		print("\n--------------------------")
 		self.inicializar_antenas()
+		print("\n--------------------------")
+		self.inicializar_modelo_canal()
 		print("\n--------------------------")
 
 		time.sleep(50)
@@ -177,7 +178,7 @@ class Sistema_Celular:
 		#Almacena usuarios en cada celda del cluster
 		#################################################self.inicializar_cluster_usuarios()
 		#Crea la clase antena, outputs ganancia relativa.
-		self.inicializar_antenas()
+		##self.inicializar_antenas()
 		#crea el modelo del mod_canal, frecuencia_central, distancias, ganancia relativa
 		self.inicializar_modelo_canal() #depende de la frec y cluster_usuarios, cluster_ganancia
 		#self.configurar_
@@ -409,26 +410,34 @@ class Sistema_Celular:
 		#se adjunta luego: apunt, tar
 		#parametros=[ref, hpbw, gtx, amin, apunt, self.hiperc_angulos]
 
-		self.params_antena.append(apunt)
+		##self.params_antena.append(apunt)
 		#tienen el mismo apuntamiento.
-		self.params_malla_antena=self.params_antena.copy()
+		##self.params_malla_antena=self.params_antena.copy()
 		#print("[tracebak1]",self.hiperc_angulos.shape)
-		self.params_antena.append(self.hiperc_angulos)
+		###self.params_antena.append(self.hiperc_angulos)
 		#print("[tracebak2]",self.params_antena[5].shape)
 		#print("ant", self.params_antena)
-		self.hiperc_antena=ant.Antena(self.params_antena)
-		self.hiperc_ganancia_relativa=self.hiperc_antena.hiper_ganancias #**considerar quitar
+		if self.cfg_top["debug"]:
+			pass
+			#time.sleep(15)
+		#agrego una variable procesada del apuntamiento
+		self.cfg_ant["params_ant"][0]=apunt
+		#agrego la variable de ganancia de trasmision maxima:
+		self.cfg_ant["params_ant"][1]=self.cfg_bal["gtx"]
+		#print(self.cfg_ant)
+		#time.sleep(15)
+		self.hiperc_antena=ant.Antena(self.cfg_ant,self.hiperc_angulos)
+		#self.hiperc_ganancia_relativa=self.hiperc_antena.hiper_ganancias #**considerar quitar
 
-		if self.mapa_calor[0]:
+		if self.cfg_top["graficar_intensidad"][0]:
 
 			#print("[tracebak1]",self.hiperc_angulos.shape)
-			self.params_malla_antena.append(self.hiperc_malla_angulos)
-			self.hiperc_malla_antena=ant.Antena(self.params_malla_antena)
-			self.hiperc_malla_ganancia_relativa=self.hiperc_malla_antena.hiper_ganancias
+			self.params_malla_antena.append(self.cfg_ant,self.hiperc_malla_angulos)
+			self.hiperc_malla_antena=ant.Antena(self.cfg_ant,self.hiperc_malla_angulos)
+			#self.hiperc_malla_ganancia_relativa=self.hiperc_malla_antena.hiper_ganancias
 
 
 	def inicializar_modelo_canal(self):
-
 		'''Init. Crea un modelo del canal aplicado a todo el sistema.
 		 Calcula perdidas, dependiendo del tipo de modelo indicado.'''
 		#diseno:
@@ -451,7 +460,7 @@ class Sistema_Celular:
 		#otro modelo de canal, pero con las hiper distancias.
 		self.hiperc_modelo_canal=moca.Modelo_Canal(self.params_perdidas,params_sim, params_desv)
 		#calculo las perdidas del modelo del canal segun el tipo de modelo de propagacion
-		if self.mapa_calor[0]:
+		if self.cfg_top["graficar_intensidad"][0]:
 			self.params_malla_perdidas[3]=self.hiperc_malla_ganancia_relativa
 			params_malla_sim=[self.frequencia_operacion, (self.hiperc_malla_distancias, "m"), self.cfg_top['debug'], self.mapa_calor[0]] #distancia siempre en metros.
 			params_malla_desv=self.params_malla_perdidas[0][2]
@@ -459,19 +468,6 @@ class Sistema_Celular:
 			#otro modelo de canal, pero con las hiper distancias.
 			self.hiperc_malla_modelo_canal=moca.Modelo_Canal(self.params_malla_perdidas,params_malla_sim, params_malla_desv)
 
-		#IMPLEMENTACION DE PERDIDAS, NO DEBERIA ESTAR EN EL MODULO?. Cambiado.
-		'''
-		if self.params_perdidas[0]=="espacio_libre":
-			self.modelo_canal.perdidas_espacio_libre_ghz()
-
-		elif self.params_perdidas[0]=="okumura_hata":
-			self.modelo_canal.perdidas_okumura_hata_mhz()
-			#################
-			self.hiperc_modelo_canal.perdidas_okumura_hata_mhz()
-		'''
-		#con los calculos anteriores, calculo el balance del enlace.
-		#self.modelo_canal.balance_del_enlace_simple()
-		#self.hiperc_modelo_canal.balance_del_enlace_simple()->implementado en modelo del canal
 
 	'''-----------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------------

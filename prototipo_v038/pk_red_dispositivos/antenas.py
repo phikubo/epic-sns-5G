@@ -13,14 +13,18 @@ import time
 
 class Antena:
 	'''Clase que modela el patron de radiacion de una antena deseada'''
-	def __init__(self, params):
+	def __init__(self, cfg, angs):
 		#entrada
-		self.referencia=params[0]
-		self.hpbw=params[1]
-		self.ganancia_tx=params[2]
-		self.a_min=params[3]
-		self.apuntamiento=params[4]
-		self.hiper_angulos=params[5] #angulos de usuarios
+		self.cfg=cfg
+		self.hiper_angulos=angs #angulos de usuarios
+		#para mayor claridad
+		self.ganancia_tx=self.cfg["params_ant"][1]
+		#self.referencia=cfg["tipo"]
+		#self.cfg["hpbw"]=cfg[1]
+		#self.ganancia_tx=cfg[2]
+		#self.cfg["atmin"]=cfg[3]
+		#self.apuntamiento=cfg[4]
+
 
 
 		'''
@@ -29,16 +33,16 @@ class Antena:
 		print("-------------------------------------")
 		print("-------------------------------------")
 		print("[DEBUG.Antenas]")
-		print("parametros",params[0], "-",params[1], "-",params[2], "-",params[3], "-",params[4], "-",params[5].shape)
+		print("parametros",cfg[0], "-",cfg[1], "-",cfg[2], "-",cfg[3], "-",cfg[4], "-",cfg[5].shape)
 		print("-------------------------------------")
 		print("-------------------------------------")
 		print("-------------------------------------")
 		'''
 		#auxiliar
 		#retoma los valores de
-		apunt_intersec=np.asarray(params[4])
+		#####################apunt_intersec=np.asarray(cfg[4])
 		#print(apunt_intersec)
-		self.apunt_trisec=np.where(apunt_intersec>180, apunt_intersec-360, apunt_intersec)
+		###########self.apunt_trisec=np.where(apunt_intersec>180, apunt_intersec-360, apunt_intersec)
 		#print(self.apunt_trisec)
 		#
 		#self.angulos=0 #0 cuando no este en pruebas
@@ -52,9 +56,9 @@ class Antena:
 		self.hiper_ganancias=0 #ganancia resultante
 		#
 		#inicializar
-		if self.referencia=="4g":
+		if self.cfg["tipo"]=="4g":
 			self.inicializar_ts_38942()
-		elif self.referencia=="5G":
+		elif self.cfg["tipo"]=="5G":
 			pass
 		else:
 			pass
@@ -72,12 +76,12 @@ class Antena:
 		'''Modela el tipo de antena TS 36.942, en tres sectores
 		Ver: https://www.etsi.org/deliver/etsi_tr/136900_136999/136942/08.02.00_60/tr_136942v080200p.pdf'''
 		#ecuacion de la ts
-		self.relacion_angulos=12.0*((self.angulos/self.hpbw)**2) #antes at_int
+		self.relacion_angulos=12.0*((self.angulos/self.cfg["hpbw"])**2) #antes at_int
 		#sector, con corrimiento en angulos para desplazarlos en x, el numero de grados necesarios.
 		#se eleva la funcion al piso 0 para sumarlas despues.
-		sector_1=np.roll(self.a_min-1*np.minimum(self.relacion_angulos, self.a_min), 45)
-		sector_2=np.roll(self.a_min-1*np.minimum(self.relacion_angulos, self.a_min), 165)
-		sector_3=np.roll(self.a_min-1*np.minimum(self.relacion_angulos, self.a_min), 285)
+		sector_1=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), 45)
+		sector_2=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), 165)
+		sector_3=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), 285)
 		self.patron_radiacion_3s=[sector_1,sector_2,sector_3]
 
 
@@ -95,7 +99,7 @@ class Antena:
 		patron_completo=np.where(patron_completo<=0, limite, patron_completo)
 		#relaciono el patron de radiacion con la ganancia de trasmision, al disminuir la grafica
 		#del valor piso de atenuacion, la diferencia entre la ganancia y el piso.
-		self.patron_radiacion=patron_completo-(self.a_min-self.ganancia_tx)
+		self.patron_radiacion=patron_completo-(self.cfg["atmin"]-self.ganancia_tx)
 
 
 	def interpolar_resultados(self):
@@ -104,11 +108,11 @@ class Antena:
 
 
 	def calcular_interseccion_not(self):
-		#depleted
+		#DEPLETED
 		'''Dado una lista de angulos y el hpdw, calcula los nuevos angulos de interseccion'''
 		print(self.apunt_trisec)
 		for angulo in self.apunt_trisec:
-			print(angulo+self.hpbw*0.5, angulo-self.hpbw*0.5, )
+			print(angulo+self.cfg["hpbw"]*0.5, angulo-self.cfg["hpbw"]*0.5, )
 
 
 	def calcular_interseccion(self, patron1,patron2):
@@ -127,7 +131,7 @@ class Antena:
 	def observar_patron(self):
 		'''Grafica los patrones de radiacion. No terminado'''
 		plt.figure()
-		patron_original=-1*np.minimum(self.relacion_angulos, self.a_min)
+		patron_original=-1*np.minimum(self.relacion_angulos, self.cfg["atmin"])
 		plt.plot(self.angulos, patron_original)
 		plt.title("Patron original, piso a_min")
 
@@ -142,14 +146,14 @@ class Antena:
 		plt.title("[CART] Patron final sumado. f(gtx, a_min)")
 
 		plt.figure()
-		patron_original=-1*np.minimum(self.relacion_angulos, self.a_min)
+		patron_original=-1*np.minimum(self.relacion_angulos, self.cfg["atmin"])
 		plt.polar(np.radians(self.angulos)+math.radians(45), patron_original, '-r')
 		plt.polar(np.radians(self.angulos)+math.radians(165), patron_original, '-r')
 		plt.polar(np.radians(self.angulos)+math.radians(285), patron_original, '-r')
 		plt.title("[POL] Patron original superpuesto, desplazado, piso a_min")
 
 		plt.figure()
-		plt.polar(np.radians(self.angulos), self.patron_radiacion+(self.a_min-self.ganancia_tx), '-r')
+		plt.polar(np.radians(self.angulos), self.patron_radiacion+(self.cfg["atmin"]-self.ganancia_tx), '-r')
 		plt.title("[POL] Patron final, piso 0 (invertido)")
 
 		plt.figure()

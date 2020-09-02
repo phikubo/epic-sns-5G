@@ -8,6 +8,8 @@ import pk_red_dispositivos.celda as pkcel #ya no es necesario
 import utilidades.savedata as persistencia
 import pk_modelo_canal.modelo_canal as moca
 import sistema as ss
+from utilidades import config as cfg
+import json
 #http://research.iac.es/sieinvens/python-course/source/matplotlib.html #graficar datos
 #me ga bru tal https://jakevdp.github.io/PythonDataScienceHandbook/04.05-histograms-and-binnings.html
 #https://stackabuse.com/python-data-visualization-with-matplotlib/
@@ -99,9 +101,9 @@ def prueba_sistema_v047():
 	print("**************************************************")
 	print("**********Inicio de la prueba [top]****************")
 	print("**************************************************")
-	from utilidades import config as cfg
-	import v2_sistema as ss2
-	import json
+
+	#import v2_sistema as ss2
+
 	#with open("utilidades/configs.json") as json_data_file:
 	#	data = json.load(json_data_file)
 
@@ -115,7 +117,7 @@ def prueba_sistema_v047():
 	it=0
 	for n in range(iteracion):
 		print("**********SIMULACION {}*****************".format(it))
-		coleccion_simulacion.append(ss2.Sistema_Celular(configuracion))
+		coleccion_simulacion.append(ss.Sistema_Celular(configuracion))
 		it+=1
 
 
