@@ -51,7 +51,7 @@ class Sistema_Celular:
 
 		self.debug=params_simulacion[6]
 
-		self.ber_sinr=0
+		self.ber_sinr=0.75
 
 		self.num_celdas=params_simulacion[0]
 		#radio externo

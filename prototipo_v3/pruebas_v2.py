@@ -28,7 +28,7 @@ def parametros_de_prueba_unitaria():
 	-3 cel, en 100, ... 1+-0.5%
 	-3 cel, en <100, 0%.
 	Conclusion del experimento"""
-	radio_cel=1000#DEFINICION, SIEMPRE EN METROS. La distancia tambien es en metros.
+	radio_cel=1732#DEFINICION, SIEMPRE EN METROS. La distancia tambien es en metros.
 
 	frecuencia=(900,'mhz')
 	bw=20 #'mhz') #1.4, 3, 5, 10, 15, 20, ..., 50, 100, 200, 400
@@ -71,7 +71,7 @@ def parametros_de_prueba_unitaria():
 	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
 	#
 	propagacion=['okumura_hata', params_prop, params_desv]
-	pot_tx=46 #dBm #para un 1w, 10 watts para rural.
+	pot_tx=38 #dBm #para un 1w, 10 watts para rural.
 	loss_tx=1 #dB
 	gan_tx=15#dBi
 	gan_rx=5 #dBi
