@@ -16,7 +16,7 @@ import math
 
 class Modelo_Canal:
 	"""Clase que define el modelo del canal, calcula las perdidas del sistema. No adiciona AWGN ni Ruido."""
-	def __init__(self, params_perdidas, params_sim, params_desvanecimiento): #usar args and kwards, recibir tipo de primero, y sus parametros.
+	def __init__(self, cfg, arreglos): #usar args and kwards, recibir tipo de primero, y sus parametros.
 		#params_perdidas[0]:tipo de perdidas
 		#params_perdidas[1]:potencia de tx
 		#params_perdidas[2]:perdidas en tx
@@ -27,7 +27,14 @@ class Modelo_Canal:
 		#print("from modelo canal", frecuencia)
 		#RX_PWR = TX_PWR – Max (pathloss – G_TX – G_RX, MCL)
 		#ENTRADA
-		#print(params_sim)
+
+		#self.cfg=cfg
+		self.cfg_gen=cfg['params_general']
+		self.cfg_prop=cfg['params_propagacion']
+		self.cfg_bal=cfg['params_balance']
+
+
+
 		self.debug=params_sim[2]#true si local, false si externo.
 		try:
 			self.mapa_calor=params_sim[3]
@@ -104,7 +111,6 @@ class Modelo_Canal:
 					print("-------------------------------------")
 					print("-------------------------------------")
 					print("-------------------------------------")
-
 
 				self.balance_simplificado=self.resultado_path_loss-self.tx_grel-self.rx_g+self.tx_loss+self.rx_loss
 				#solo en debug

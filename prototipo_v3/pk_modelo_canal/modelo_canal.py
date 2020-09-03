@@ -182,7 +182,7 @@ class Modelo_Canal:
 
 	def inicializar_tipo(self):
 		'''Segun el modelo de propagacion escogido, inicizalizar selecciona la funcion que calcula las perdidas'''
-		print("distancias\n", self.distancias)
+		#print("distancias\n", self.distancias)
 		if self.tipo_perdidas =="espacio_libre":
 			#km, GH
 			if self.unidades_dist=="m":
@@ -252,8 +252,8 @@ class Modelo_Canal:
 
 		self.resultado_path_loss_antes=A+B*np.log10(self.distancias)-E
 		self.resultado_path_loss=A+(B*np.log10(self.distancias))-E #+ self.desvanecimiento
-		print("angulos\n", self.tx_grel)
-		print("okumura-h\n",self.resultado_path_loss)
+		#print("angulos\n", self.tx_grel)
+		#print("okumura-h\n",self.resultado_path_loss)
 
 
 
@@ -387,7 +387,7 @@ class Modelo_Canal:
 		#print("\n[modelo_canal.func.mcl] MCL")
 		#print(np.maximum(self.balance_simplificado, mcl))
 		self.resultado_balance=self.tx_prw-np.maximum(self.balance_simplificado, mcl)
-
+		#print("resultado potencia recibida MCL\n",self.resultado_balance)
 		self.resultado_margen=self.resultado_balance-self.rx_sens
 
 	def balance_del_enlace_LTE(self):

@@ -32,8 +32,8 @@ def parametros_de_prueba_unitaria():
 
 	frecuencia=(900,'mhz')
 	bw=20 #'mhz') #1.4, 3, 5, 10, 15, 20, ..., 50, 100, 200, 400
-	intensidad=1/radio_cel**2
-	fr=6 #dB
+	intensidad=10/radio_cel**2
+	fr=5 #dB
 
 	if n_cel>7:
 		mul=4.6
@@ -51,7 +51,7 @@ def parametros_de_prueba_unitaria():
 	#y_prueba=np.array([[0,	 10, 550, 580],[500, 1500, 1000, 1750]])
 
 
-	#distribucion=("prueba_unitaria",(np.array([[1000, 250],[1500, 1000]]),np.array([[0, 250],[500, 1500]]))) #celdas=2
+	#distribucion=("prueba_unitaria",(np.array([[1000, 250],[1500, 1000]]),np.array([[0, 250],[500, 1500]])), mapa_calor) #celdas=2
 	#distribucion=("malla_rectangular",(xx,yy) ) #celdas=2
 
 	params_simulacion=[n_cel,radio_cel, distribucion, frecuencia, bw, fr, debug]
@@ -71,10 +71,10 @@ def parametros_de_prueba_unitaria():
 	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
 	#
 	propagacion=['okumura_hata', params_prop, params_desv]
-	pot_tx=30 #dBm #para un 1w, 10 watts para rural.
+	pot_tx=46 #dBm #para un 1w, 10 watts para rural.
 	loss_tx=1 #dB
 	gan_tx=15#dBi
-	gan_rx=8 #dBi
+	gan_rx=5 #dBi
 	loss_rx=1 #dB
 	sensibilidad=-92 #antes -92 #dBm
 	params_perdidas=[propagacion, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
@@ -94,7 +94,7 @@ def parametros_de_prueba_unitaria():
 
 def prueba_sistema_v047():
 	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Guardar y cargar datos de configuracion.'''
-	#params_simulacion, params_transmision, params_perdidas=parametros_de_prueba_unitaria()
+	params_simulacion, params_transmision, params_perdidas=parametros_de_prueba_unitaria()
 	#n_cel=params_simulacion[0]
 	print("**************************************************")
 	print("**********Inicio de la prueba [top]****************")
@@ -115,11 +115,13 @@ def prueba_sistema_v047():
 	it=0
 	for n in range(iteracion):
 		print("**********SIMULACION {}*****************".format(it))
-		coleccion_simulacion.append(ss2.Sistema_Celular(configuracion))
+		coleccion_simulacion.append(ss.Sistema_Celular(params_simulacion, params_transmision, params_perdidas))
 		it+=1
 
 
 	simtest=coleccion_simulacion[0]
+	simtest.info_sinr(True)
+	simtest.ver_todo()
 
 
 

@@ -45,7 +45,7 @@ class Sistema_Celular:
 		#----------------------------------------------------------------------
 
 
-
+		self.cfg=configuracion['cfg_simulador']
 		self.cfg_top=configuracion['cfg_simulador']['params_general']
 		self.cfg_prop=configuracion['cfg_simulador']['params_propagacion']
 		self.cfg_bal=configuracion['cfg_simulador']['params_balance']
@@ -81,6 +81,10 @@ class Sistema_Celular:
 		self.hiperc_malla_antena=0
 		self.hiperc_malla_ganancia_relativa=[]
 
+		#auxiliar
+		self.hiper_arreglos=[0, 0, 0, 0, 0, 0]
+		self.hiper_malla_arreglos=[0, 0, 0, 0, 0, 0]
+
 		#inicializa objetos tipo celda y las almacena en self.cluster
 		self.inicializar_cluster_celdas()
 		#crea las coordenadas de los usuarios segun una distribucion
@@ -105,7 +109,7 @@ class Sistema_Celular:
 
 
 
-		self.ber_sinr=12
+		self.ber_sinr=3
 
 		self.cfg_top["n_celdas"]=params_simulacion[0]
 		#radio externo
@@ -445,28 +449,24 @@ class Sistema_Celular:
 		#pasar parametros de perdidas:
 		if self.cfg_top['debug']:
 			print("[sistema.inicializar_modelo_canal]")
-
-		#self.modelo_canal=moca.Modelo_Canal(self.params_perdidas,params_sim, params_desv)
-
-		#ya incluye unididades.
-		params_sim=[self.frequencia_operacion, (self.hiperc_distancias, "m"), self.cfg_top['debug']] #distancia siempre en metros.
-		params_desv=self.params_perdidas[0][2]
+		#centralizo los arreglos en una sola variable.
+		self.hiper_arreglos[0]=(self.hiperc_distancias, "m")
+		self.hiper_arreglos[1]=self.hiperc_ganancia_relativa
 		#Creo un modelo del canal con todas las distancias.
-		#
+
 		#copio los parametros para no alterarlos.
-		self.params_malla_perdidas=self.params_perdidas.copy()
+		##self.params_malla_perdidas=self.params_perdidas.copy()
 		#la ganacia de tx, ahora es la ganancia relativa de cada usuario.
-		self.params_perdidas[3]=self.hiperc_ganancia_relativa
+		##self.params_perdidas[3]=self.hiperc_ganancia_relativa
 		#otro modelo de canal, pero con las hiper distancias.
-		self.hiperc_modelo_canal=moca.Modelo_Canal(self.params_perdidas,params_sim, params_desv)
+		self.hiperc_modelo_canal=moca.Modelo_Canal(self.cfg, self.hiper_arreglos)
 		#calculo las perdidas del modelo del canal segun el tipo de modelo de propagacion
 		if self.cfg_top["graficar_intensidad"][0]:
-			self.params_malla_perdidas[3]=self.hiperc_malla_ganancia_relativa
-			params_malla_sim=[self.frequencia_operacion, (self.hiperc_malla_distancias, "m"), self.cfg_top['debug'], self.mapa_calor[0]] #distancia siempre en metros.
-			params_malla_desv=self.params_malla_perdidas[0][2]
+			self.hiper_malla_arrreglos[0]=(self.hiperc_malla_distancias, "m")
+			self.hiper_malla_arrreglos[1]=self.hiperc_malla_ganancia_relativa
 			#Creo un modelo del canal con todas las distancias.
 			#otro modelo de canal, pero con las hiper distancias.
-			self.hiperc_malla_modelo_canal=moca.Modelo_Canal(self.params_malla_perdidas,params_malla_sim, params_malla_desv)
+			self.hiperc_malla_modelo_canal=moca.Modelo_Canal(self.cfg, self.hiper_malla_arrreglos)
 
 
 	'''-----------------------------------------------------------------------------------------
@@ -577,6 +577,7 @@ class Sistema_Celular:
 		'''
 		#self.mapa_conexion_desconexion
 		#Reemplaza 1 donde sinr>12, 0 en caso contrario.
+		
 		self.mapa_conexion_desconexion=np.where(self.sinr_db>self.ber_sinr,1,0) #escribe 1 si true, 0 si false.
 		#cuenta cuantos usuarios se conectaron.
 		self.conexion_total=np.count_nonzero(self.mapa_conexion_desconexion==1)

@@ -51,7 +51,7 @@ class Sistema_Celular:
 
 		self.debug=params_simulacion[6]
 
-		self.ber_sinr=12
+		self.ber_sinr=0
 
 		self.num_celdas=params_simulacion[0]
 		#radio externo
@@ -75,7 +75,7 @@ class Sistema_Celular:
 		self.bw_usuario=params_simulacion[4]
 		self.figura_ruido=params_simulacion[5]
 
-		self.potencia_ruido=(-174.2855251)+10*np.log10(self.bw_usuario*10**6)
+		self.potencia_ruido=0
 
 		#print(self.potencia_ruido, self.potencia_ruido_veces)
 
@@ -146,6 +146,7 @@ class Sistema_Celular:
 		self.inicializar_modelo_canal() #depende de la frec y cluster_usuarios, cluster_ganancia
 		#self.configurar_
 		self.calcular_sinr()
+		
 
 	'''-----------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------------
@@ -468,17 +469,25 @@ class Sistema_Celular:
 		'''
 		if self.debug:
 			print("[sistema.calcular_sinr]")
+		self.bw_usuario=self.bw_usuario/(self.no_usuarios_total/self.num_celdas)
+		print("bw: ",self.bw_usuario)
+		self.bw_usuario=9
+		print("bw: ",self.bw_usuario)
+		self.potencia_ruido=(-174.2855251)+10*np.log10(self.bw_usuario*10**6)
 		#creo la variable local de trabajo
+		print("distancias \n",self.hiperc_distancias)
+		print("ganancia \n",self.hiperc_ganancia_relativa)
 		potencia_recibida_dB=self.hiperc_modelo_canal.resultado_balance
-
+		
 		#obtenengo las dimensiones del arreglo cluster, pues esta segmentado en 3D
 		l,m,n=self.hiperc_modelo_canal.resultado_balance.shape
 		#redimensiono la potencia recibida de un arreglo 3D a 2D.
 		potencia_recibida_dB_2D=np.reshape(potencia_recibida_dB, (l*m, n))
+		print("potencia_recibida\n",potencia_recibida_dB_2D)
 		#convierto a veces
 		#potencia_recibida_v_2D=(10**(potencia_recibida_dB_2D/10))
 		potencia_recibida_v_2D=self.configurar_unidades_veces(potencia_recibida_dB_2D)
-		print("potencia entregada (sin margen)\n", 10*np.log10(potencia_recibida_v_2D))
+		######print("potencia entregada (sin margen)\n", 10*np.log10(potencia_recibida_v_2D))
 		#filtro y obtengo los valores de potencia recibida pr_maximo_vs en veces, de cada usuario.(seleccionar la pr maxima,)
 		pr_maximo_v=np.nanmax(potencia_recibida_v_2D,axis=-1)
 		print("potencia maxima a la que se conecta\n", 10*np.log10(pr_maximo_v))
@@ -514,7 +523,7 @@ class Sistema_Celular:
 			self.mapa_conexion_estacion.append(np.count_nonzero(self.mapa_conexion_usuario==cnt))
 		#sumo en el eje x, manteniendo la dimension, array con 0 en potencia maxima.
 		suma_interf_v=np.sum(potencia_recibida_v_2D, axis=1, keepdims=True)
-		print("inter",10*np.log10(suma_interf_v))
+		######print("inter",10*np.log10(suma_interf_v))
 
 		#re definimos la dimension de la potencia, para propositos de compatibilidad de arrays.
 		prx_veces=pr_maximo_v.reshape(suma_interf_v.shape)
@@ -528,7 +537,7 @@ class Sistema_Celular:
 		pn=pn_v*fr_v
 		#calculo sinr de acuerdo a la ecuacion
 		self.sinr_db=10*np.log10(prx_veces)-10*np.log10(suma_interf_v+pn)
-		print("sinr\n", self.sinr_db)
+		#####print("sinr\n", self.sinr_db)
 
 		'''
 		Diseño sinr de minima conexion.
