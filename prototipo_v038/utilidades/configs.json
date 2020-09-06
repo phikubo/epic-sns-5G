@@ -6,7 +6,7 @@
       "n_celdas":2,
       "radio_cel":1000,
       "distribucion":["ppp",0.01],
-      "graficar_intensidad":[false,false],
+      "display_intensidad":[false,false],
       "frecuencia":[900,"mhz"],
 
       "bw":[20, "mhz"],
@@ -17,9 +17,9 @@
       "modelo_perdidas":"okumura_hata",
       "params_modelo":[30, 0, 1.5, 0, 0, 0, 0, 0, 0, 0],
       "params_desv":{
-        "play":false,
+        "display":false,
         "tipo":"normal",
-        "params_desv":[3.1, 8.1, 0, 0, 0]
+        "params":[3.1, 8.1, 0, 0, 0]
         }
     },
     "params_balance":{
@@ -28,7 +28,8 @@
       "ltx":1,
       "lrx":1,
       "grx":8,
-      "sensibilidad":-92
+      "sensibilidad":-92,
+      "mcl":70
       },
     "params_antena":{
       "tipo":"4g",

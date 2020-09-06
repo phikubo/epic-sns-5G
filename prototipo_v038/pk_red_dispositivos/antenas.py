@@ -4,6 +4,7 @@ import numpy as np
 import math
 import random
 import time
+import os
 #http://webs.ucm.es/info/aocg/python/optica/interferencias/index.html
 #http://stg-pepper.blogspot.com/2015/03/grafica-de-un-patron-de-radiacion-3d.html
 
@@ -186,4 +187,4 @@ if __name__=="__main__":
 
 
 else:
-	print("Modulo Antena importado")
+	print("Modulo Importado: [", os.path.basename(__file__), "]")

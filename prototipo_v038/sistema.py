@@ -44,15 +44,12 @@ class Sistema_Celular:
 		#--------------------------ENTRADA-------------------------------------
 		#----------------------------------------------------------------------
 
-
 		self.cfg=configuracion['cfg_simulador']
 		self.cfg_top=configuracion['cfg_simulador']['params_general']
 		self.cfg_prop=configuracion['cfg_simulador']['params_propagacion']
 		self.cfg_bal=configuracion['cfg_simulador']['params_balance']
 		self.cfg_ant=configuracion['cfg_simulador']['params_antena']
 
-		#self.cfg_top['debug']=cfg_top['debug']
-		'''y si en lugar de tener self.cfg_top['debug'], se tiene cfg_top['debug']'''
 		print("--------------------------inicio----------------------")
 		#DECLARACION DE VARIABLES GLOBALES.
 		self.cluster=[]
@@ -84,6 +81,15 @@ class Sistema_Celular:
 		#auxiliar
 		self.hiper_arreglos=[0, 0, 0, 0, 0, 0]
 		self.hiper_malla_arreglos=[0, 0, 0, 0, 0, 0]
+		self.potencia_ruido=0
+
+		#OUTPUTS
+		self.mapa_conexion_usuario=0
+		self.mapa_conexion_estacion=[]
+		self.mapa_conexion_desconexion=0
+		self.sinr_db=0
+		self.conexion_total=0
+		self.medida_conexion=0
 
 		#inicializa objetos tipo celda y las almacena en self.cluster
 		self.inicializar_cluster_celdas()
@@ -94,10 +100,11 @@ class Sistema_Celular:
 		self.inicializar_hiperc_usuarios() #Depens_on(CONFIGURAR DIMENSION)
 		#Crea la clase antena, outputs ganancia relativa.
 		self.inicializar_antenas()
-		print("\n--------------------------")
+		#crea el modelo del mod_canal, frecuencia_central, distancias, ganancia relativa
 		self.inicializar_modelo_canal()
 		print("\n--------------------------")
-
+		self.calcular_sinr()
+		print("\n--------------------------")
 		time.sleep(50)
 
 		#params_simulacion=params_simulacion.copy()
@@ -133,7 +140,8 @@ class Sistema_Celular:
 		self.bw_usuario=params_simulacion[4]
 		self.figura_ruido=params_simulacion[5]
 
-		self.potencia_ruido=(-174.2855251)+10*np.log10(self.bw_usuario*10**6)
+
+		self.potencia_ruido=0
 
 		#print(self.potencia_ruido, self.potencia_ruido_veces)
 
@@ -184,7 +192,7 @@ class Sistema_Celular:
 		#Crea la clase antena, outputs ganancia relativa.
 		##self.inicializar_antenas()
 		#crea el modelo del mod_canal, frecuencia_central, distancias, ganancia relativa
-		self.inicializar_modelo_canal() #depende de la frec y cluster_usuarios, cluster_ganancia
+		#self.inicializar_modelo_canal() #depende de la frec y cluster_usuarios, cluster_ganancia
 		#self.configurar_
 		self.calcular_sinr()
 
@@ -319,7 +327,7 @@ class Sistema_Celular:
 				##print("[sis.init.dist] 2. Tipo de dato\n",type(self.usuario_x)) #muestra la estructura de los datos.
 				##print("[sis.init.dist] 3. Logitud dato celda[0]:\n",len(self.usuario_x[0]))
 				##print("[sis.init.dist] 4. Estructura de celdas\n",self.usuario_x)
-				if self.cfg_top["graficar_intensidad"][0]: #si true, genera el mapa de calor.
+				if self.cfg_top["display_intensidad"][0]: #si true, genera el mapa de calor.
 					self.malla_x,self.malla_y=self.mapa_calor[1]
 				else:
 					pass
@@ -354,8 +362,8 @@ class Sistema_Celular:
 			celda_unica.interf_user_x=self.usuario_x #todos los usuarios.
 			celda_unica.interf_user_y=self.usuario_y ##todos los usuarios.
 
-			if self.cfg_top["graficar_intensidad"][0]: #si true, then
-				celda_unica.mapa_bandera=self.cfg_top["graficar_intensidad"][0]
+			if self.cfg_top["display_intensidad"][0]: #si true, then
+				celda_unica.mapa_bandera=self.cfg_top["display_intensidad"][0]
 				celda_unica.interf_malla_x=self.malla_x #todos los usuarios.
 				celda_unica.interf_malla_y=self.malla_y
 
@@ -364,7 +372,7 @@ class Sistema_Celular:
 			#las dos variables siguientes, son las que originan los demas calculos.
 			self.hiperc_distancias.append(celda_unica.interf_distancias)
 			self.hiperc_angulos.append(celda_unica.interf_angulos)
-			if self.cfg_top["graficar_intensidad"][0]:
+			if self.cfg_top["display_intensidad"][0]:
 				self.hiperc_malla_distancias.append(celda_unica.interf_malla_distancias)
 				self.hiperc_malla_angulos.append(celda_unica.interf_malla_angulos)
 			#rta, a cada celda, por es una instancia de clase.
@@ -433,7 +441,7 @@ class Sistema_Celular:
 		self.hiperc_antena=ant.Antena(self.cfg_ant,self.hiperc_angulos)
 		#self.hiperc_ganancia_relativa=self.hiperc_antena.hiper_ganancias #**considerar quitar
 
-		if self.cfg_top["graficar_intensidad"][0]:
+		if self.cfg_top["display_intensidad"][0]:
 
 			#print("[tracebak1]",self.hiperc_angulos.shape)
 			self.params_malla_antena.append(self.cfg_ant,self.hiperc_malla_angulos)
@@ -449,9 +457,11 @@ class Sistema_Celular:
 		#pasar parametros de perdidas:
 		if self.cfg_top['debug']:
 			print("[sistema.inicializar_modelo_canal]")
+
 		#centralizo los arreglos en una sola variable.
-		self.hiper_arreglos[0]=(self.hiperc_distancias, "m")
-		self.hiper_arreglos[1]=self.hiperc_ganancia_relativa
+		self.hiper_arreglos[0]=(self.hiperc_distancias, "m") #siempre en metros.
+		self.hiper_arreglos[1]=self.hiperc_antena.hiper_ganancias
+		####self.hiper_arreglos[3]=self.mapa_calor
 		#Creo un modelo del canal con todas las distancias.
 
 		#copio los parametros para no alterarlos.
@@ -459,11 +469,12 @@ class Sistema_Celular:
 		#la ganacia de tx, ahora es la ganancia relativa de cada usuario.
 		##self.params_perdidas[3]=self.hiperc_ganancia_relativa
 		#otro modelo de canal, pero con las hiper distancias.
+
 		self.hiperc_modelo_canal=moca.Modelo_Canal(self.cfg, self.hiper_arreglos)
 		#calculo las perdidas del modelo del canal segun el tipo de modelo de propagacion
-		if self.cfg_top["graficar_intensidad"][0]:
+		if self.cfg_top["display_intensidad"][0]:
 			self.hiper_malla_arrreglos[0]=(self.hiperc_malla_distancias, "m")
-			self.hiper_malla_arrreglos[1]=self.hiperc_malla_ganancia_relativa
+			self.hiper_malla_arrreglos[1]=self.hiperc_malla_antena.hiper_ganancias
 			#Creo un modelo del canal con todas las distancias.
 			#otro modelo de canal, pero con las hiper distancias.
 			self.hiperc_malla_modelo_canal=moca.Modelo_Canal(self.cfg, self.hiper_malla_arrreglos)
@@ -497,7 +508,6 @@ class Sistema_Celular:
 			print("[sistema.calcular_sinr]")
 		#creo la variable local de trabajo
 		potencia_recibida_dB=self.hiperc_modelo_canal.resultado_balance
-
 		#obtenengo las dimensiones del arreglo cluster, pues esta segmentado en 3D
 		l,m,n=self.hiperc_modelo_canal.resultado_balance.shape
 		#redimensiono la potencia recibida de un arreglo 3D a 2D.
@@ -505,10 +515,10 @@ class Sistema_Celular:
 		#convierto a veces
 		#potencia_recibida_v_2D=(10**(potencia_recibida_dB_2D/10))
 		potencia_recibida_v_2D=self.configurar_unidades_veces(potencia_recibida_dB_2D)
-		print("potencia entregada (sin margen)\n", 10*np.log10(potencia_recibida_v_2D))
+		######################################print("potencia entregada (sin margen)\n", 10*np.log10(potencia_recibida_v_2D))
 		#filtro y obtengo los valores de potencia recibida pr_maximo_vs en veces, de cada usuario.(seleccionar la pr maxima,)
 		pr_maximo_v=np.nanmax(potencia_recibida_v_2D,axis=-1)
-		print("potencia maxima a la que se conecta\n", 10*np.log10(pr_maximo_v))
+		###########################################print("potencia maxima a la que se conecta\n", 10*np.log10(pr_maximo_v))
 		#por cada usuario, indica a cual celda recibio mayor potencia.
 		indices=[]
 		#auxiliar para iterar sobre todas las celdas (columnas)
@@ -541,16 +551,16 @@ class Sistema_Celular:
 			self.mapa_conexion_estacion.append(np.count_nonzero(self.mapa_conexion_usuario==cnt))
 		#sumo en el eje x, manteniendo la dimension, array con 0 en potencia maxima.
 		suma_interf_v=np.sum(potencia_recibida_v_2D, axis=1, keepdims=True)
-		print("inter",10*np.log10(suma_interf_v))
-
+		#############################################print("inter",10*np.log10(suma_interf_v))
 		#re definimos la dimension de la potencia, para propositos de compatibilidad de arrays.
 		prx_veces=pr_maximo_v.reshape(suma_interf_v.shape)
 
 		#convertimos la figura de ruido a veces:
 		#fr_v=(10**(self.figura_ruido/10))
-		fr_v=self.configurar_unidades_veces(self.figura_ruido)
+		fr_v=self.configurar_unidades_veces(self.cfg_top["nf"][0])
 		#calculamos potencia de ruido en veces.
 		#pn_v=(10**(self.potencia_ruido/10))
+		self.potencia_ruido=(-174.2855251)+10*np.log10(self.bw_usuario*10**6)
 		pn_v=self.configurar_unidades_veces(self.potencia_ruido)
 		pn=pn_v*fr_v
 		#calculo sinr de acuerdo a la ecuacion
@@ -577,7 +587,7 @@ class Sistema_Celular:
 		'''
 		#self.mapa_conexion_desconexion
 		#Reemplaza 1 donde sinr>12, 0 en caso contrario.
-		
+
 		self.mapa_conexion_desconexion=np.where(self.sinr_db>self.ber_sinr,1,0) #escribe 1 si true, 0 si false.
 		#cuenta cuantos usuarios se conectaron.
 		self.conexion_total=np.count_nonzero(self.mapa_conexion_desconexion==1)

@@ -204,4 +204,8 @@ Pero cuando se usa la ecuacion mcl, el patron no responde. Investigar y arreglar
  14. Implementar ARCHIVO DE CONFIGURACION.
  	14.1 "prueba_unitaria". Si prueba unitaria, descartar valor intensidad o poner 0, usar datos_prueba_unitaria.txt, con los valores de usuarios a probar.
 	14.2 Si iteracion >1, play_intensidad=False. play_desv[1]->potencia recibida, play_intensidad[2]:sinr.
+
+15. Corregir la prueba de instensidad.
+16. Generar vistas info de los datos, parametrizado.
+17. Generar el mapa de parametros de algunas funciones.
 '''
