@@ -446,7 +446,7 @@ class Sistema_Celular:
 		pr_maximo_v=np.nanmax(potencia_recibida_v_2D,axis=-1)
 		###########################################print("potencia maxima a la que se conecta\n", 10*np.log10(pr_maximo_v))
 		#por cada usuario, indica a cual celda recibio mayor potencia.
-		indices=[]
+		indices=[] 
 		#auxiliar para iterar sobre todas las celdas (columnas)
 		indx=0
 		#itero sobre el pr_maximo_v y el array 2D
