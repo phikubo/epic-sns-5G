@@ -1,3 +1,3 @@
-*.json
+utilidades/*.json
 __pycache__/
 
