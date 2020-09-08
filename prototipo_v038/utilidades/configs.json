@@ -15,8 +15,8 @@
       "modelo_perdidas":"okumura_hata",
       "params_modelo":[30, 0, 1.5, 0, 0, 0, 0, 0, 0, 0],
       "params_desv":{
-        "display":true,
-        "tipo":"mixto",
+        "display":false,
+        "tipo":"normal",
         "params":[3.1, 8.1, 0, 0, 0]
         }
     },
