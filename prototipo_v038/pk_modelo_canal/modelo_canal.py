@@ -65,12 +65,12 @@ class Modelo_Canal:
 
 		self.balance_simplificado=self.resultado_path_loss-self.tx_grel-self.cfg_bal["grx"]+self.cfg_bal["ltx"]+self.cfg_bal["lrx"]
 
-		if self.cfg_gen['debug']:
+		if self.cfg_prop["params_desv"]["display"]:
 			print("[ok]-----configurar_desv. copia del balance.")
-			self.balance_simplificado_antes=self.balance_simplificado
+			self.balance_simplificado_antes=self.balance_simplificado.copy()
 
 		if self.cfg_prop["params_desv"]["display"]:
-			print("[ok].debug: desvanecimiento activado.")
+			#print("[ok].debug: desvanecimiento activado.")
 			if self.cfg_prop["params_desv"]["tipo"]=="normal":
 				sigma_xn=self.cfg_prop["params_desv"]["params"][0]
 				mu=self.cfg_prop["params_desv"]["params"][1]
@@ -112,7 +112,8 @@ class Modelo_Canal:
 				self.desvanecimiento=10*np.log10(bray) #bray_dB
 				self.balance_simplificado=-self.desvanecimiento
 		else:
-			print("[ok].debug:balance simplificado no cambia.")
+			#print("[ok].debug:balance simplificado no cambia.")
+			pass
 
 
 	def inicializar_tipo(self):
@@ -187,9 +188,11 @@ class Modelo_Canal:
 		#E=8.29*(np.log10(1.54*hm))**2 -1.1 #[dB] para ciudades grandes y fc<300 MHz
 		#print("okumura_hata, says->A,B:",A,B)
 		#se guarda en un valor aparte, no es necesario, pero sirve de debug.
-		if self.cfg_gen['debug']:
+
+		if self.cfg_prop["params_desv"]["display"]:
 			self.resultado_path_loss_antes=A+B*np.log10(self.distancias)-E
 		self.resultado_path_loss=A+(B*np.log10(self.distancias))-E #+ self.desvanecimiento
+
 
 	def balance_del_enlace_mcl(self):
 		'''Funcion que calcula un balance del enlace, teniendo en cuenta el mcl.

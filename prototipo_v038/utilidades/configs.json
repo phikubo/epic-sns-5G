@@ -2,23 +2,21 @@
   "cfg_simulador":{
 
     "params_general":{
-      "debug":true,
-      "n_celdas":2,
+      "debug":false,
+      "n_celdas":3,
       "radio_cel":1000,
-      "distribucion":["ppp",0.01],
+      "distribucion":["ppp",0.0000005],
       "display_intensidad":[false,false],
       "frecuencia":[900,"mhz"],
-
-      "bw":[20, "mhz"],
       "nf":[6,"dB"],
-      "ber_sirn":12
+      "ber_sinr":12
     },
     "params_propagacion":{
       "modelo_perdidas":"okumura_hata",
       "params_modelo":[30, 0, 1.5, 0, 0, 0, 0, 0, 0, 0],
       "params_desv":{
-        "display":false,
-        "tipo":"normal",
+        "display":true,
+        "tipo":"mixto",
         "params":[3.1, 8.1, 0, 0, 0]
         }
     },
@@ -37,11 +35,19 @@
       "atmin":20,
       "apuntamiento":[45,120],
       "params_ant":[0, 0, 0]
-      }
+    },
+    "params_asignacion":{
+      "tipo":"rr",
+      "bw":[20, "mhz"]
+    }
 
   },
   "cfg_gui":{
 
     "params":0
+  },
+  "cfg_path":{
+    "path_heatmap":"/base_datos/heatmap.txt",
+    "path_":""
   }
 }

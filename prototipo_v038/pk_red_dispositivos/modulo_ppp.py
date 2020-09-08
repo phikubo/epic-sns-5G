@@ -20,6 +20,11 @@ def distribuir_en_celdas(r, x_origen, y_origen, intensidad, debug):
 
 	area_total=np.pi*r**2
 	cantidad_de_puntos = np.random.poisson(intensidad*area_total)
+	if cantidad_de_puntos==0:
+		#eliminamos error division por cero.
+		#Atencion, puede alterar estadisticas.
+		cantidad_de_puntos=1
+	#print("test1",cantidad_de_puntos, type(cantidad_de_puntos))
 	#de esta forma todas las celdas tiene el mismo numero de usuarios.
 	#llamar funcion
 	if debug:

@@ -7,9 +7,9 @@ def cargar_variables(target_path):
 	with open(target_path+"configs.json") as json_data_file:
 		data = json.load(json_data_file)
 	#print(data)
-	print("--")
+	#print("--")
 	#print(data["cfg_simulador"]["params_general"])
-	print(type(data))
+	#print(type(data))
 	return data
 
 def guardar_variables(data):

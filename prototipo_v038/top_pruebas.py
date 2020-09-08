@@ -122,6 +122,8 @@ def prueba_sistema_v047():
 
 
 	simtest=coleccion_simulacion[0]
+	simtest.info_sinr()
+	simtest.info_general()
 
 
 
@@ -206,6 +208,6 @@ Pero cuando se usa la ecuacion mcl, el patron no responde. Investigar y arreglar
 	14.2 Si iteracion >1, play_intensidad=False. play_desv[1]->potencia recibida, play_intensidad[2]:sinr.
 
 15. Corregir la prueba de instensidad.
-16. Generar vistas info de los datos, parametrizado.
-17. Generar el mapa de parametros de algunas funciones.
+16. [OK] Generar vistas info de los datos, parametrizado.
+17. Generar el mapa de parametros de algunas funciones. (escribir)""
 '''

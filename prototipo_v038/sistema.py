@@ -22,6 +22,7 @@ try:
 	from pk_red_dispositivos import modulo_circulos as mcir
 	#
 	import pk_modelo_canal.modelo_canal as moca
+	import pk_gestion_recursos.planificador as plan
 
 except:
 	print("ATENCION: Uno o mas modulos no pudo ser importado... ")
@@ -49,8 +50,9 @@ class Sistema_Celular:
 		self.cfg_prop=configuracion['cfg_simulador']['params_propagacion']
 		self.cfg_bal=configuracion['cfg_simulador']['params_balance']
 		self.cfg_ant=configuracion['cfg_simulador']['params_antena']
+		self.cfg_plan=configuracion['cfg_simulador']['params_asignacion']
 
-		print("--------------------------inicio----------------------")
+		print("[ok].debug: simulacion creada.")
 		#DECLARACION DE VARIABLES GLOBALES.
 		self.cluster=[]
 		self.origen_cel_x, self.origen_cel_y=mc.coordenadas_nceldas(self.cfg_top["n_celdas"],
@@ -64,9 +66,10 @@ class Sistema_Celular:
 		self.hiperc_antena=0
 		self.hiperc_distancias=[]
 		self.hiperc_angulos=[]
-		self.hiperc_ganancia_relativa=[]
+		#self.hiperc_ganancia_relativa=[]
 		#falta las distancias totales?
 		self.no_usuarios_total=0
+		self.no_usuarios_celda=0
 		#variables para graficar la intensidad.
 		self.params_malla_antena=0
 		self.params_malla_perdidas=0
@@ -82,14 +85,15 @@ class Sistema_Celular:
 		self.hiper_arreglos=[0, 0, 0, 0, 0, 0]
 		self.hiper_malla_arreglos=[0, 0, 0, 0, 0, 0]
 		self.potencia_ruido=0
+		self.bw_usuario=0
 
 		#OUTPUTS
 		self.mapa_conexion_usuario=0
 		self.mapa_conexion_estacion=[]
 		self.mapa_conexion_desconexion=0
 		self.sinr_db=0
-		self.conexion_total=0
-		self.medida_conexion=0
+		self.conexion_total_sinr=0
+		self.medida_conexion_sinr=0
 
 		#inicializa objetos tipo celda y las almacena en self.cluster
 		self.inicializar_cluster_celdas()
@@ -102,99 +106,11 @@ class Sistema_Celular:
 		self.inicializar_antenas()
 		#crea el modelo del mod_canal, frecuencia_central, distancias, ganancia relativa
 		self.inicializar_modelo_canal()
-		print("\n--------------------------")
+		#inicializa el efecto del ancho de banda, segun parametros fijos o procesamiento de alguna variable, eg. potencia recibida.
+		self.inicializar_asignacion()
+		#calcula la sinr dado.
 		self.calcular_sinr()
-		print("\n--------------------------")
-		time.sleep(50)
 
-		#params_simulacion=params_simulacion.copy()
-		#params_transmision=params_transmision.copy()
-		#params_perdidas=params_perdidas.copy()
-		#params_simulacion=[n_cel,radio_cel, distribucion, frecuencia, bw, fr, DEBUG]
-		self.tipo_modelo=params_perdidas[0][0]
-		self.frecuencia_operacion=str(params_simulacion[3][0])+params_simulacion[3][1]
-
-
-
-		self.ber_sinr=3
-
-		self.cfg_top["n_celdas"]=params_simulacion[0]
-		#radio externo
-		self.radio=params_simulacion[1]
-		#
-		#1.tupla con (intensidad, distribucion)
-		#1.1 si la distribucion no tiene una intensidad, intensidad=0
-		self.distribucion,self.intensidad, self.mapa_calor=params_simulacion[2]
-
-		self.frequencia_operacion=params_simulacion[3]
-		#
-		self.params_perdidas=params_perdidas #"tipo", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad
-		#
-		self.params_antena=params_transmision
-
-		#
-		#----------------------------------------------------------------------
-		#AUXILIAR
-		#----------------------------------------------------------------------
-		#Ruido térmico para un ancho de banda de 1 Hz a temperatura ambiente -174 dBm
-		self.bw_usuario=params_simulacion[4]
-		self.figura_ruido=params_simulacion[5]
-
-
-		self.potencia_ruido=0
-
-		#print(self.potencia_ruido, self.potencia_ruido_veces)
-
-
-		#self.cel_fig, self.cels_ax=plt.subplots(1)
-
-		#cordenadas centrales de celdas
-		if self.cfg_top['debug']:
-			print("[sistema.init.mc.coordenadas_nceldas]")
-		self.origen_cel_x, self.origen_cel_y=mc.coordenadas_nceldas(self.cfg_top["n_celdas"], self.radio, self.cfg_top['debug'])
-		#----------------------------------------------------------------------
-		#SALIDA
-		#----------------------------------------------------------------------
-
-
-
-		# usuario_x
-		self.modelo_canal=0 #modelo de canal unico *depleted
-		self.distancias_celdas=[] #distancias unica celda *depleted
-
-
-
-		#todas las perdidas
-		self.perdidas_celdas=[]
-		#OUTPUTS
-		self.mapa_conexion_usuario=0
-		self.mapa_conexion_estacion=[]
-		self.mapa_conexion_desconexion=0
-		self.sinr_db=0
-		self.conexion_total=0
-		self.medida_conexion=0
-		#self.
-		#self.probabilidad_degradacion=0
-		#----------------------------------------------------------------------
-		#---------------------------INICIALIZAR--------------------------------
-		#----------------------------------------------------------------------
-		#inicializa objetos tipo celda y las almacena en self.cluster
-		#self.inicializar_cluster_celdas()
-
-		#crea las coordenadas de los usuarios segun una distribucion
-		##self.inicializar_distribucion() #falta implementar otras distribuciones: thomas cluster
-		#self.usuario_x, self.usuario_y contiene los usuarios del cluster
-		#Gestiona los usuarios en un hiper clustes, en coordendas, distancias y angulos.
-		##self.inicializar_hiperc_usuarios() #CONFIGURAR DIMENSION
-		#re dimensiona los arreglos de: hiper distancia, hiper angulos, []
-		#Almacena usuarios en cada celda del cluster
-		#################################################self.inicializar_cluster_usuarios()
-		#Crea la clase antena, outputs ganancia relativa.
-		##self.inicializar_antenas()
-		#crea el modelo del mod_canal, frecuencia_central, distancias, ganancia relativa
-		#self.inicializar_modelo_canal() #depende de la frec y cluster_usuarios, cluster_ganancia
-		#self.configurar_
-		self.calcular_sinr()
 
 
 
@@ -357,6 +273,7 @@ class Sistema_Celular:
 		if self.cfg_top['debug']: #self.cfg_top['debug']
 			print("[sistema.inicializar_hiperc_usuarios]")
 		self.no_usuarios_total=len(self.cluster)*len(self.usuario_x[0])
+		self.no_usuarios_celda=len(self.usuario_x[0])
 		counter=0
 		for celda_unica in self.cluster:
 			celda_unica.interf_user_x=self.usuario_x #todos los usuarios.
@@ -480,11 +397,20 @@ class Sistema_Celular:
 			self.hiperc_malla_modelo_canal=moca.Modelo_Canal(self.cfg, self.hiper_malla_arrreglos)
 
 
+	def inicializar_asignacion(self):
+		'''Permite gestionar el recurso de ancho de banda sobre los usuarios en cada celda'''
+		target=self.no_usuarios_celda
+		self.planificador=plan.Planificador(self.cfg_plan,target)#por sector, etc.
+		self.bw_usuario=self.planificador.asignacion
+
 	'''-----------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------------
 	------------------------------------FUNCIONES DE DESEMPEÑO------------------------------
 	--------------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------------'''
+
+
+
 	def calcular_sinr(self):
 		'''Permite calcular el valor de sinr de un sistema celular.
 		Procedimiento: sinr=pr/pint+pn, pr: potencia recibida maxima,
@@ -506,6 +432,7 @@ class Sistema_Celular:
 		'''
 		if self.cfg_top['debug']:
 			print("[sistema.calcular_sinr]")
+		self.potencia_ruido=(-174.2855251)+10*np.log10(self.bw_usuario*10**6)
 		#creo la variable local de trabajo
 		potencia_recibida_dB=self.hiperc_modelo_canal.resultado_balance
 		#obtenengo las dimensiones del arreglo cluster, pues esta segmentado en 3D
@@ -515,7 +442,6 @@ class Sistema_Celular:
 		#convierto a veces
 		#potencia_recibida_v_2D=(10**(potencia_recibida_dB_2D/10))
 		potencia_recibida_v_2D=self.configurar_unidades_veces(potencia_recibida_dB_2D)
-		######################################print("potencia entregada (sin margen)\n", 10*np.log10(potencia_recibida_v_2D))
 		#filtro y obtengo los valores de potencia recibida pr_maximo_vs en veces, de cada usuario.(seleccionar la pr maxima,)
 		pr_maximo_v=np.nanmax(potencia_recibida_v_2D,axis=-1)
 		###########################################print("potencia maxima a la que se conecta\n", 10*np.log10(pr_maximo_v))
@@ -524,7 +450,6 @@ class Sistema_Celular:
 		#auxiliar para iterar sobre todas las celdas (columnas)
 		indx=0
 		#itero sobre el pr_maximo_v y el array 2D
-
 		for maxx, arr in zip(pr_maximo_v, potencia_recibida_v_2D):
 			#print("componentes:\n",arr,maxx)
 			#print("arreglo:\n",potencia_recibida_v_2D[indx])
@@ -532,68 +457,36 @@ class Sistema_Celular:
 			#obtengo el lugar (indice) en el array donde esta el valor pr_maximo_v de potencia
 			indice=np.where(arr==maxx)
 			#cambiar por 0 donde la pr fue maxima,
-
 			if len(indice[0])>1:
 				#Algunos casos se obtiene valores repetidos, se escoge cualquiera.
-
 				indice=(np.array([np.random.choice(indice[0])]),)
-
 			#guardo el indice
 			potencia_recibida_v_2D[indx][indice]=0
 			indices.append(indice[0])
 			indx+=1 #
 		#convierto a una dimension el array.
-
 		self.mapa_conexion_usuario=np.stack(indices)
-
 		#sumo la cantidad de veces que la celda_i tuvo una potencia maxima.
 		for cnt in range(self.cfg_top["n_celdas"]): #range numero de celdas
 			self.mapa_conexion_estacion.append(np.count_nonzero(self.mapa_conexion_usuario==cnt))
 		#sumo en el eje x, manteniendo la dimension, array con 0 en potencia maxima.
 		suma_interf_v=np.sum(potencia_recibida_v_2D, axis=1, keepdims=True)
-		#############################################print("inter",10*np.log10(suma_interf_v))
 		#re definimos la dimension de la potencia, para propositos de compatibilidad de arrays.
 		prx_veces=pr_maximo_v.reshape(suma_interf_v.shape)
-
 		#convertimos la figura de ruido a veces:
-		#fr_v=(10**(self.figura_ruido/10))
 		fr_v=self.configurar_unidades_veces(self.cfg_top["nf"][0])
 		#calculamos potencia de ruido en veces.
-		#pn_v=(10**(self.potencia_ruido/10))
-		self.potencia_ruido=(-174.2855251)+10*np.log10(self.bw_usuario*10**6)
 		pn_v=self.configurar_unidades_veces(self.potencia_ruido)
 		pn=pn_v*fr_v
 		#calculo sinr de acuerdo a la ecuacion
 		self.sinr_db=10*np.log10(prx_veces)-10*np.log10(suma_interf_v+pn)
-		print("sinr\n", self.sinr_db)
-
-		'''
-		Diseño sinr de minima conexion.
-		sensibidad=snr_min*pn*fr
-		snr_min=sensibidad/pn*fr
-
-		sensibidad=self.params_perdidas[6]
-		sensibidad_dB=self.configurar_unidades_veces(sensibidad)
-		sinr_min=sensibidad_dB/pn
-		print("[debug.calcular_sinr]")
-		print("sinr_min, en dB: ", 10*np.log10(sinr_min))
-		print("--")
-		print(pn, 10*np.log10(pn))
-
-		Incorrecto.
-
-		Requerimiento:
-		reorganizar por celda y contabilizar.
-		'''
-		#self.mapa_conexion_desconexion
 		#Reemplaza 1 donde sinr>12, 0 en caso contrario.
-
-		self.mapa_conexion_desconexion=np.where(self.sinr_db>self.ber_sinr,1,0) #escribe 1 si true, 0 si false.
+		self.mapa_conexion_desconexion=np.where(self.sinr_db>self.cfg_top["ber_sinr"],1,0) #escribe 1 si true, 0 si false.
 		#cuenta cuantos usuarios se conectaron.
-		self.conexion_total=np.count_nonzero(self.mapa_conexion_desconexion==1)
+		self.conexion_total_sinr=np.count_nonzero(self.mapa_conexion_desconexion==1)
 		#calcula la probabilidad de conexion o probabilidad de exito de conexion.
-		self.medida_conexion=self.conexion_total/self.no_usuarios_total
-		#print((self.medida_conexion)*100) #a porcentaje
+		self.medida_conexion_sinr=self.conexion_total_sinr/self.no_usuarios_total
+		#print((self.medida_conexion_sinr)*100) #a porcentaje
 
 		limpiar=[potencia_recibida_dB,potencia_recibida_dB_2D,pr_maximo_v,suma_interf_v,prx_veces]
 		self.configurar_limpieza_parcial(limpiar)
@@ -726,15 +619,12 @@ class Sistema_Celular:
 					self.ver_relacion_usuarios_originales()
 		else:
 			 self.ver_usuarios_colores()
-
-
 		self.ver_celdas()
 		self.ver_estaciones_base()
 		self.ver_sectores()
 		self.ver_circulos()
-
 		#no hay relacion entre los patchs y los plt.plots()
-		titulo= "Esc:"+self.tipo_modelo+", F:"+self.frecuencia_operacion+", Ues:"+str(self.conexion_total)+"/"+str(self.no_usuarios_total)
+		titulo= "Esc:"+self.tipo_modelo+", F:"+self.frecuencia_operacion+", Ues:"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
 		plt.title(titulo)
 		plt.grid(True)
 		plt.show()
@@ -745,7 +635,7 @@ class Sistema_Celular:
 
 	def info_sinr(self, *args):
 		'''Permite observar numericamente los valores de sinr por usuario y celda'''
-		print("[debug.calcular_sinr]")
+		print("\n-----[debug.calcular_sinr]:")
 
 		if args:
 			if args:
@@ -757,8 +647,79 @@ class Sistema_Celular:
 			else:
 				pass
 		print("Mapa de conexion por estacion: ", self.mapa_conexion_estacion)
-		print("Medida de conexion: ", self.medida_conexion)
-		print("De {} usuarios, {} cumplen BER objetivo.".format(self.no_usuarios_total, self.conexion_total))
+		print("Medida de conexion: ", self.medida_conexion_sinr)
+		print("De {} usuarios, {} cumplen BER objetivo.".format(self.no_usuarios_total, self.conexion_total_sinr))
+		print("-----[debug.calcular_sinr].")
+
+
+	def info_distancia(self,*args):
+		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
+		print("[info_distancia]")
+
+
+	def info_angulos(self,*args):
+		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
+		print("[info_angulos]")
+
+	def info_ganancia(self,*args):
+		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
+		print("[info_ganancia]")
+
+	def info_potencia(self,*args):
+		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
+		print("[info_potencia]")
+
+	def info_general(self, *target):
+		'''Permite observar parametros generales de cada simulacion.'''
+		if target =="potencia":
+			print("[info_potencia]")
+			print(self.hiperc_modelo_canal.resultado_balance)
+		elif target=="distancia":
+			print("[info_distancia]")
+			print(self.hiperc_distancias)
+		elif target=="angulos":
+			print("[info_angulos]")
+			print(self.hiperc_angulos)
+		elif target=="ganancia":
+			print("[info_ganancia]")
+			print(self.hiperc_ganancia_relativa)
+		elif target=="General":
+			print("\n-----[info_general]:")
+			print("Celdas:",self.cfg_top["n_celdas"])
+			print("Usuarios por celda",self.no_usuarios_celda)
+			print("Usuarios total",self.no_usuarios_total)
+			#print("",)
+			print("-----[info_general].")
+		else:
+			print("\n-----[info_arreglos]:")
+
+			print("\n[info_distancia]")
+			print(self.hiperc_distancias)
+
+			print("\n[info_angulos]")
+			print(self.hiperc_angulos)
+
+			print("\n[info_ganancia]")
+			print(self.hiperc_antena.hiper_ganancias)
+
+			if self.cfg_prop["params_desv"]["display"]:
+				print("\n[info_balance_simplificado_antes]")
+				print(self.hiperc_modelo_canal.balance_simplificado_antes)
+				print("\n[info_balance_simplificado]")
+				print(self.hiperc_modelo_canal.balance_simplificado)
+			else:
+				pass
+
+			print("\n[info_perdidas]")
+			print(self.hiperc_modelo_canal.resultado_path_loss)
+
+			print("\n[info_potencia]")
+			print(self.hiperc_modelo_canal.resultado_balance)
+
+			print("\n[info_margen]")
+			print(self.hiperc_modelo_canal.resultado_margen)
+			print("-----[info_arreglos]:")
+			#todos
 
 
 	'''------------------------------------------------------------------------------------------
@@ -766,115 +727,7 @@ class Sistema_Celular:
 	------------------------------------FUNCIONES DE EXPERIMENTALES------------------------------
 	---------------------------------------------------------------------------------------------
 	---------------------------------------------------------------------------------------------'''
-
-	def monte_carlo(self):
-		pass
-
-	def montecarlo_hexagono(self):
-		'''Funcion para probar logica de montecarlo e impacto en el sistema'''
-		#procedimiento
-		#1. calcular coordenadas cartesianas de la figura
-		#1.2 definir la figura con shapely.Polygon
-		#1.3 definir los puntos con shapely.point
-		#2. definir funcion de conteo montecarlo::quiza sea necesario crear una libreria
-		#3. los puntos de prueba son los usuarios del sistema, usar shapely.point o alternativa
-		#4. Aplicar definicion montecarlo: usar polygon.contains(point) con todos los puntos
-		#5. Obtener resultado
-		#5.2 Obtener funcion acumulativa
-		#6. Obtener conclusiones
-
-		#...
-		#1. De una figura centrada en 0. En este caso no interesa que este ubicada # -*- coding: utf-8 -*-
-			#otra coordenada, desde que el area es la misma.
-
-		angulos=mcir.calcular_angulo_v3(angulo_inicial=0, angulo_particion=60)
-		angx_norm,angy_norm=mcir.angulos_2_cartesiano_norm(angulos)
-		px_hex,py_hex=mcir.angulos_2_cartesiano(angx_norm,angy_norm,self.radio)
-
-		#1.2. Se define la figura con los calculos anteriores
-		pi=[]
-		for pa,pb in zip(px_hex,py_hex):
-			pi.append((pa,pb))
-		polygon_hex = Polygon(pi)
-
-		#1.3. Se define los puntos con la variable
-		##print(self.usuario_x[0])
-		##print(self.usuario_y[0])
-
-		#point
-		#punto=Point(self.usuario_x[0][0], self.usuario_y[0][0])
-		#2,3, 4. Las tres se resumen en el siguiente procedimiento:
-		puntos=[polygon_hex.contains(Point(a,b)) for a,b in zip(self.usuario_x[0], self.usuario_y[0])] #solo para celda de origen
-		##print(puntos)
-		##print(len(puntos)-sum(puntos)) #los falsos, pero solo necesito los verdaderos lol
-
-
-		'''
-		montecarlo=(area_hexagono/area_circulo), en terminos de radio, seria:
-		P(x: x C Hexagono)=(area_hexagono/area_circulo)
-		P(...) -> P(x: x esta contenido en Hexagono)
-		Despejando el área del hexagono obtenemos:
-		 -> area_hexagono= ( P(...) * pi*r**2)
-		'''
-
-
-		N_a=sum(puntos)
-		N=len(puntos)
-		P_a=N_a/N
-		print("probabilidad de exito", P_a)
-		print("area del hexagono: ", math.pi*self.radio**2*P_a)
-		acomulativa=np.cumsum(puntos)
-		print(acomulativa)
-		eje_x=np.arange(1,len(puntos)+1)
-
-		plt.plot(eje_x,acomulativa/eje_x)
-
-
-
-
-
-
-#bloque de funciones - final
-
-def prueba_interna_v3_1():
-	'''Funcion de prueba para comprobar estado del sistema'''
-	celdas=3
-	radio=20
-	intensidad=10
-	distribucion=(intensidad/radio**2,"ppp") #0 en el primer valor si es otra distribucion (no necesario)
-	mod_canal=None
-	sc=Sistema_Celular(celdas,radio, distribucion, mod_canal)
-	#print(sc.cluster[0].radio) #[ok], inicializar_cluster_celdas
-	#print(sc.usuario_x) #[ok], inicializar_distribucion
-	sc.ver_todo() #[ok],
-	plt.axis("equal")
-	plt.grid(True)
-	plt.show()
-	##print(sc.cluster[0].user_x) #[ok], inicializar_cluster_usuarios
-	##print(sc.cluster[0].distancias) #[ok] funcion interna, distancias
-
-def prueba_interna_v3_montecarlo():
-	'''Esta funcion comprueba el funcionamiento de una simulacion sencilla de montecarlo.'''
-	celdas=3
-	radio=20
-	intensidad=20000
-	distribucion=(intensidad/radio**2,"ppp") #0 en el primer valor si es otra distribucion (no necesario)
-	mod_canal=None
-
-	sc=Sistema_Celular(celdas,radio, distribucion, mod_canal)
-	#sc.ver_celdas()
-	#sc.ver_usuarios()
-	#sc.ver_usuarios(0) # La funcion puede definirse con o sin parametros
-	#angulos=mcir.calcular_angulo_v3(angulo_inicial=0, angulo_particion=60)
-	#angx_norm,angy_norm=mcir.angulos_2_cartesiano_norm(angulos)
-	#x,y=mcir.angulos_2_cartesiano(angx_norm,angy_norm,radio)
-	sc.montecarlo_hexagono()
-
-	#ok.
-	#plt.axis("equal")
-	plt.grid(True)
-	plt.show()
-
+	#pass
 
 if __name__=="__main__":
 	#Prototipo:
