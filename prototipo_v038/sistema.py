@@ -71,7 +71,7 @@ class Sistema_Celular:
 		self.no_usuarios_total=0
 		self.no_usuarios_celda=0
 		#variables para graficar la intensidad.
-		self.params_malla_antena=0
+		self.params_malla_antena=[]
 		self.params_malla_perdidas=0
 		self.hiperc_malla_modelo_canal=0
 		self.malla_x=0
@@ -84,6 +84,7 @@ class Sistema_Celular:
 		#auxiliar
 		self.hiper_arreglos=[0, 0, 0, 0, 0, 0]
 		self.hiper_malla_arreglos=[0, 0, 0, 0, 0, 0]
+		 
 		self.potencia_ruido=0
 		self.bw_usuario=0
 
@@ -108,6 +109,8 @@ class Sistema_Celular:
 		self.inicializar_modelo_canal()
 		#inicializa el efecto del ancho de banda, segun parametros fijos o procesamiento de alguna variable, eg. potencia recibida.
 		self.inicializar_asignacion()
+		#opera sobre el margen del balance
+		self.calcular_margen()
 		#calcula la sinr dado.
 		self.calcular_sinr()
 
@@ -243,8 +246,16 @@ class Sistema_Celular:
 				##print("[sis.init.dist] 2. Tipo de dato\n",type(self.usuario_x)) #muestra la estructura de los datos.
 				##print("[sis.init.dist] 3. Logitud dato celda[0]:\n",len(self.usuario_x[0]))
 				##print("[sis.init.dist] 4. Estructura de celdas\n",self.usuario_x)
-				if self.cfg_top["display_intensidad"][0]: #si true, genera el mapa de calor.
-					self.malla_x,self.malla_y=self.mapa_calor[1]
+				if self.cfg_top["imagen"]["display"][0]: #si true, genera el mapa de calor.
+
+					with open('base_datos/datos/test_x.npy', 'rb') as f:
+
+						self.malla_x=np.load(f)
+					with open('base_datos/datos/test_y.npy', 'rb') as f:
+
+						self.malla_y=np.load(f)
+					print("++Test 1")
+					#self.malla_x,self.malla_y=self.mapa_calor[1]
 				else:
 					pass
 
@@ -279,8 +290,8 @@ class Sistema_Celular:
 			celda_unica.interf_user_x=self.usuario_x #todos los usuarios.
 			celda_unica.interf_user_y=self.usuario_y ##todos los usuarios.
 
-			if self.cfg_top["display_intensidad"][0]: #si true, then
-				celda_unica.mapa_bandera=self.cfg_top["display_intensidad"][0]
+			if self.cfg_top["imagen"]["display"][0]: #si true, then
+				celda_unica.mapa_bandera=self.cfg_top["imagen"]["display"][0]
 				celda_unica.interf_malla_x=self.malla_x #todos los usuarios.
 				celda_unica.interf_malla_y=self.malla_y
 
@@ -289,7 +300,7 @@ class Sistema_Celular:
 			#las dos variables siguientes, son las que originan los demas calculos.
 			self.hiperc_distancias.append(celda_unica.interf_distancias)
 			self.hiperc_angulos.append(celda_unica.interf_angulos)
-			if self.cfg_top["display_intensidad"][0]:
+			if self.cfg_top["imagen"]["display"][0]:
 				self.hiperc_malla_distancias.append(celda_unica.interf_malla_distancias)
 				self.hiperc_malla_angulos.append(celda_unica.interf_malla_angulos)
 			#rta, a cada celda, por es una instancia de clase.
@@ -358,10 +369,11 @@ class Sistema_Celular:
 		self.hiperc_antena=ant.Antena(self.cfg_ant,self.hiperc_angulos)
 		#self.hiperc_ganancia_relativa=self.hiperc_antena.hiper_ganancias #**considerar quitar
 
-		if self.cfg_top["display_intensidad"][0]:
+		if self.cfg_top["imagen"]["display"][0]:
 
 			#print("[tracebak1]",self.hiperc_angulos.shape)
-			self.params_malla_antena.append(self.cfg_ant,self.hiperc_malla_angulos)
+			self.params_malla_antena.append(self.cfg_ant)
+			self.params_malla_antena.append(self.hiperc_malla_angulos)
 			self.hiperc_malla_antena=ant.Antena(self.cfg_ant,self.hiperc_malla_angulos)
 			#self.hiperc_malla_ganancia_relativa=self.hiperc_malla_antena.hiper_ganancias
 
@@ -389,12 +401,14 @@ class Sistema_Celular:
 
 		self.hiperc_modelo_canal=moca.Modelo_Canal(self.cfg, self.hiper_arreglos)
 		#calculo las perdidas del modelo del canal segun el tipo de modelo de propagacion
-		if self.cfg_top["display_intensidad"][0]:
-			self.hiper_malla_arrreglos[0]=(self.hiperc_malla_distancias, "m")
-			self.hiper_malla_arrreglos[1]=self.hiperc_malla_antena.hiper_ganancias
+		if self.cfg_top["imagen"]["display"][0]:
+			self.hiper_malla_arreglos[0]=(self.hiperc_malla_distancias, "m")
+			self.hiper_malla_arreglos[1]=self.hiperc_malla_antena.hiper_ganancias
 			#Creo un modelo del canal con todas las distancias.
 			#otro modelo de canal, pero con las hiper distancias.
-			self.hiperc_malla_modelo_canal=moca.Modelo_Canal(self.cfg, self.hiper_malla_arrreglos)
+			self.hiperc_malla_modelo_canal=moca.Modelo_Canal(self.cfg, self.hiper_malla_arreglos)
+
+
 
 
 	def inicializar_asignacion(self):
@@ -403,13 +417,28 @@ class Sistema_Celular:
 		self.planificador=plan.Planificador(self.cfg_plan,target)#por sector, etc.
 		self.bw_usuario=self.planificador.asignacion
 
+
 	'''-----------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------------
 	------------------------------------FUNCIONES DE DESEMPEÑO------------------------------
 	--------------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------------'''
 
-
+	def calcular_margen(self):
+		'''Permite calcular el valor de conexion del margen del balance del enlace'''
+		margen_dB=self.hiperc_modelo_canal.resultado_margen
+		#obtenengo las dimensiones del arreglo cluster, pues esta segmentado en 3D
+		l,m,n=margen_dB.shape
+		#redimensiono la potencia recibida de un arreglo 3D a 2D.
+		margen_dB_2D=np.reshape(margen_dB, (l*m, n))
+		margen_maximo=np.nanmax(margen_dB_2D,axis=-1)
+		#print("test 2", margen_maximo)
+		self.mapa_conexion_desconexion_margen=np.where(margen_maximo>0,1,0)
+		#print("test 3",self.mapa_conexion_desconexion_margen)
+		self.conexion_total_margen=np.count_nonzero(self.mapa_conexion_desconexion_margen==1)
+		#calcula la probabilidad de conexion o probabilidad de exito de conexion.
+		self.medida_conexion_margen=self.conexion_total_margen/self.no_usuarios_total
+		print("medida de conexion: ", self.medida_conexion_margen)
 
 	def calcular_sinr(self):
 		'''Permite calcular el valor de sinr de un sistema celular.
@@ -446,7 +475,7 @@ class Sistema_Celular:
 		pr_maximo_v=np.nanmax(potencia_recibida_v_2D,axis=-1)
 		###########################################print("potencia maxima a la que se conecta\n", 10*np.log10(pr_maximo_v))
 		#por cada usuario, indica a cual celda recibio mayor potencia.
-		indices=[] 
+		indices=[]
 		#auxiliar para iterar sobre todas las celdas (columnas)
 		indx=0
 		#itero sobre el pr_maximo_v y el array 2D
@@ -671,6 +700,8 @@ class Sistema_Celular:
 
 	def info_general(self, *target):
 		'''Permite observar parametros generales de cada simulacion.'''
+		print(target)
+		target=target[0]
 		if target =="potencia":
 			print("[info_potencia]")
 			print(self.hiperc_modelo_canal.resultado_balance)
@@ -683,11 +714,14 @@ class Sistema_Celular:
 		elif target=="ganancia":
 			print("[info_ganancia]")
 			print(self.hiperc_ganancia_relativa)
-		elif target=="General":
+		elif target=="general":
 			print("\n-----[info_general]:")
 			print("Celdas:",self.cfg_top["n_celdas"])
 			print("Usuarios por celda",self.no_usuarios_celda)
 			print("Usuarios total",self.no_usuarios_total)
+			print("Ancho de banda:",self.bw_usuario, "[Mhz]")
+			print("Margen de conexion: ", self.medida_conexion_margen)
+			print("Conexion Sinr, calidad ",self.cfg_top["ber_sinr"], ":",self.medida_conexion_sinr)
 			#print("",)
 			print("-----[info_general].")
 		else:
@@ -719,6 +753,7 @@ class Sistema_Celular:
 			print("\n[info_margen]")
 			print(self.hiperc_modelo_canal.resultado_margen)
 			print("-----[info_arreglos]:")
+
 			#todos
 
 

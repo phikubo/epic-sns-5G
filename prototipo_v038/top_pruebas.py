@@ -112,6 +112,25 @@ def prueba_sistema_v047():
 	Requerimiento 2:
 		generar coordenadas de estacion base, que son fijas, por fuera de la simulacion. Optimizar.
 	'''
+	n_cel=configuracion["cfg_simulador"]["params_general"]["n_celdas"]
+	resolucion=configuracion["cfg_simulador"]["params_general"]["imagen"]["resolucion"]
+	radio_cel=configuracion["cfg_simulador"]["params_general"]["radio_cel"]
+	if configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0]:
+		if n_cel>7:
+			mul=4.6
+		else:
+			mul=3
+		print("--Generando data--")
+		x_prueba=np.arange(-mul*radio_cel,mul*radio_cel,resolucion) #depende del radio_cel y numero de celdas.
+		y_prueba=np.arange(-mul*radio_cel,mul*radio_cel,resolucion)
+		xx,yy=np.meshgrid(x_prueba,y_prueba)
+		print("--Escribiendo--")
+		with open('base_datos/datos/test_x.npy', 'wb') as f:
+			np.save(f, xx)
+		with open('base_datos/datos/test_y.npy', 'wb') as f:
+			np.save(f, yy)
+		print("Terminado ok.")
+
 	iteracion=1#
 	coleccion_simulacion=[]
 	it=0
@@ -120,13 +139,26 @@ def prueba_sistema_v047():
 		coleccion_simulacion.append(ss.Sistema_Celular(configuracion))
 		it+=1
 
-
 	simtest=coleccion_simulacion[0]
 	simtest.info_sinr()
-	simtest.info_general()
+	simtest.info_general("general")
 
+	pr=simtest.hiperc_malla_modelo_canal.resultado_balance
 
-
+	#prmax_v=np.maximum(pr[0],pr[1])
+	pr_max=pr[0]
+	for ind,pr_i in enumerate(pr):
+		print("indice",ind)
+		pr_max=np.maximum(pr_max, pr_i)
+	pr_max=pr_max[:-1,:-1]
+	z_min,z_max=-np.abs(pr_max).max(), np.abs(pr_max).max()
+	fig,ax=plt.subplots()
+	xx=simtest.malla_x
+	yy=simtest.malla_y
+	c=ax.pcolormesh(xx,yy,pr_max, cmap='plasma', vmin=z_min, vmax=-40)
+	fig.colorbar(c,ax=ax)
+	plt.grid(True)
+	plt.show()
 
 
 if __name__=="__main__":
@@ -210,4 +242,24 @@ Pero cuando se usa la ecuacion mcl, el patron no responde. Investigar y arreglar
 15. Corregir la prueba de instensidad.
 16. [OK] Generar vistas info de los datos, parametrizado.
 17. Generar el mapa de parametros de algunas funciones. (escribir)""
+
+
+18. Requerimiento de integracion base de datos: imagen,
+	a. Utilizar base de datos:
+		a1. configuracion malla  de celdas:
+			almacenar coordendas de celdas en un archivo de texto txt, cargarlo en cada simulacion.
+		a2. configuracion malla imagen:
+			2.2 Calcular cantidad de puntos de acuerdo a la resolucion.
+			2.3 Almacenar coordenadas de puntos de resolucion.
+			2.4 Cargar coordendas de puntos para generar la imagen.
+			2.5 Protocolo:
+			 	si imagen activado:
+					archivo de configuracion
+
+	b. Con la pr, distribuir ancho de banda cuando prx >0.
+		b1. Con la distribución de ancho de banda, calcular SINR1 interferente.
+		b2. Con la SINR1, distribuir nuevamente ancho de banda a
+			los usuarios cuyo SINR1>target_sinr_ber.
+		b3. Con la distribucion de ancho de banda nuevo, calcular SINR2 interferente.
+
 '''

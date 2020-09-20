@@ -6,8 +6,6 @@ class Planificador:
 		self.cfg_plan=params
 		#numero de usuarios por celda
 		self.no_usuarios=no_usuarios
-
-
 		#output:
 		self.asignacion=0 #por usuario
 		self.inicializar_tipo()
