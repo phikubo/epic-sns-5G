@@ -115,7 +115,8 @@ def prueba_sistema_v047():
 	n_cel=configuracion["cfg_simulador"]["params_general"]["n_celdas"]
 	resolucion=configuracion["cfg_simulador"]["params_general"]["imagen"]["resolucion"]
 	radio_cel=configuracion["cfg_simulador"]["params_general"]["radio_cel"]
-	if configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0]:
+	display_pic=configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0]
+	if display_pic:
 		if n_cel>7:
 			mul=4.6
 		else:
@@ -131,7 +132,7 @@ def prueba_sistema_v047():
 			np.save(f, yy)
 		print("Terminado ok.")
 
-	iteracion=1#
+	iteracion=20#
 	coleccion_simulacion=[]
 	it=0
 	for n in range(iteracion):
@@ -142,13 +143,15 @@ def prueba_sistema_v047():
 	simtest=coleccion_simulacion[0]
 	simtest.info_sinr()
 	simtest.info_general("general")
-
+	'''
 	pr=simtest.hiperc_malla_modelo_canal.resultado_balance
 
 	#prmax_v=np.maximum(pr[0],pr[1])
+	#inicializa en la primera matriz, obtiene el maximo.
 	pr_max=pr[0]
 	for ind,pr_i in enumerate(pr):
 		print("indice",ind)
+		#itera sobre las demas.
 		pr_max=np.maximum(pr_max, pr_i)
 	pr_max=pr_max[:-1,:-1]
 	z_min,z_max=-np.abs(pr_max).max(), np.abs(pr_max).max()
@@ -158,6 +161,36 @@ def prueba_sistema_v047():
 	c=ax.pcolormesh(xx,yy,pr_max, cmap='plasma', vmin=z_min, vmax=-40)
 	fig.colorbar(c,ax=ax)
 	plt.grid(True)
+	'''
+	if display_pic:
+		simtest.ver_imagen_potencia()
+		plt.show()
+	else:
+		pass
+
+	coleccion_relacion_conexion=[]
+	for simulacion in coleccion_simulacion:
+		#simulacion.ver_todo() # ok.
+		coleccion_relacion_conexion.append(simulacion.medida_conexion_sinr)
+	plt.figure()
+	plt.plot(coleccion_relacion_conexion,'b*-')
+	coleccion_relacion_conexion=np.sort(coleccion_relacion_conexion)
+	plt.plot(coleccion_relacion_conexion,'r*-')
+
+	p=1.*np.arange(len(coleccion_relacion_conexion))/(len(coleccion_relacion_conexion)-1)
+
+	fig=plt.figure()
+	ax1=fig.add_subplot(121)
+	ax1.plot(p,coleccion_relacion_conexion, 'g-')
+	ax1.set_xlabel("$Dist P$")
+	ax1.set_ylabel("$Conexion$")
+
+	ax2=fig.add_subplot(122)
+	ax2.plot(coleccion_relacion_conexion,p, 'k-')
+	ax2.set_xlabel("$Conexion$")
+	ax2.set_ylabel("$Dist P$")
+
+
 	plt.show()
 
 

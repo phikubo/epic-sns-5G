@@ -84,7 +84,7 @@ class Sistema_Celular:
 		#auxiliar
 		self.hiper_arreglos=[0, 0, 0, 0, 0, 0]
 		self.hiper_malla_arreglos=[0, 0, 0, 0, 0, 0]
-		 
+
 		self.potencia_ruido=0
 		self.bw_usuario=0
 
@@ -527,6 +527,23 @@ class Sistema_Celular:
 	--------------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------------'''
 
+
+	def ver_imagen_potencia(self):
+		'''Permite ver la imagen creada a partir de una malla de puntos'''
+		#print(self.hiperc_malla_modelo_canal.resultado_balance.shape)
+		pr_max=self.hiperc_malla_modelo_canal.resultado_balance[0]
+		for ind,pr_i in enumerate(self.hiperc_malla_modelo_canal.resultado_balance):
+			print("indice",ind)
+			#itera sobre las demas.
+			pr_max=np.maximum(pr_max, pr_i)
+		pr_max=pr_max[:-1,:-1]
+		z_min,z_max=-np.abs(pr_max).max(), np.abs(pr_max).max()
+		fig,ax=plt.subplots()
+
+		c=ax.pcolormesh(self.malla_x,self.malla_y,pr_max, cmap='plasma', vmin=z_min, vmax=-40)
+		fig.colorbar(c,ax=ax)
+		plt.grid(True)
+
 	def ver_estaciones_base(self):
 		"""Permite ver las estaciones base de forma independiente"""
 		#plt.plot(self.origen_cel_x,self.origen_cel_y, 'bv') #o b1
@@ -657,6 +674,7 @@ class Sistema_Celular:
 		plt.title(titulo)
 		plt.grid(True)
 		plt.show()
+
 
 	def info_celda_unica(self, target):
 		'''Funcion para ver toda la información de una celda específica'''
