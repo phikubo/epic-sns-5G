@@ -173,7 +173,7 @@ def prueba_sistema_v047():
 	ax2.set_xlabel("$Medida SINR$")
 	ax2.set_ylabel("$Norm Dist$")
 
-	
+
 	plt.show()
 
 
