@@ -93,6 +93,11 @@ def parametros_de_prueba_unitaria():
 
 	return params_simulacion, params_transmision, params_perdidas
 
+def prueba_sistema_v47update(alpha,beta,gamma,Xn,bw,nf,ber_sinr):
+	pass
+
+def pruebas_sistemav47getdate():
+	pass
 
 def prueba_sistema_v047():
 	'''Prueba para implemenetar el requerimiento 1e del reporte version 39. Guardar y cargar datos de configuracion.'''

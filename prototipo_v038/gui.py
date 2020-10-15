@@ -12,7 +12,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.image import AsyncImage, Image
 
 
-import pruebas as p 
+import top_pruebas as p  
 
 
 
@@ -26,8 +26,10 @@ class ModelcanalUMI(Screen):
 	radiocell = ObjectProperty(None)
 	intensidadPPP = ObjectProperty(None)
 	mrapapport = ObjectProperty(None)
+	#plc_cin_alphabg=TextInput(None)
 	#ModelcanalUMI= Widget(None)
 	current= ""
+	plc_cin_alphabg = TextInput(text="3.4",multiline=False,)
 	#umibox=Widget()
 	#umibox.add_widget(BoxLayout())
 	
@@ -129,7 +131,7 @@ class MainWindow(Screen):
 	intensidadPPP = ObjectProperty(None)
 	sr = ObjectProperty(None)
 	current= ""
-
+	
 	#layout_instance.do_layout ()
 	#Widget.canvas.ask_update ()
 

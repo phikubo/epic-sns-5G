@@ -9,7 +9,7 @@
 <ModelcanalUMI>
 	name: "sking"
 	mrap :mrapapport
-
+	plc_cin_alphabg :plc_cin_alphabg 
 
 
 	BoxLayout:
@@ -226,11 +226,10 @@
 				TextInput:
 					id: plc_cin_alphabg
 					size_hint: ( .15, 1)
-					multiline: False
-					text: '3.1'
+					#multiline: False
+					#text: '3.1'
 
 				TextInput:
-					
 					size_hint_x: 0.15
 					#size_hint: ( .20, 1)
 					id:beta
@@ -277,6 +276,8 @@
 						root.manager.transition.direction = "down" 		
 						app.root.current ="poche" #botones calcular volver
 				
+
+
 
 <ModelcanalUMA>
 	name:"king"
