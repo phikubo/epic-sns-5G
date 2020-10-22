@@ -156,7 +156,7 @@ class MainWindow(Screen):
 
 		
 
-kv = Builder.load_file("Simulator.kv")
+kv = Builder.load_file("frontend.kv")
 sm = WindowManager()
 screens = [MainWindow(name="poche"),SecondWindow(name="caz"),ModelcanalUMA(name="king"),ModelcanalUMI(name="sking")]
 for screen in screens:

@@ -1,4 +1,26 @@
 #<backend_gridview>
+#se definen las figuras para reuso de codigo
+<Cajadatos@BoxLayout>:
+	orientation: 'horizontal'
+	size_hint_y: 0.10	
+	l_text: ''
+	Label:
+		canvas.before:
+			Color:
+				rgba: 0.3,0.4,0.5,1
+			Rectangle:
+				pos:self.pos
+				size:self.size
+		text: root.l_text
+
+
+<colorlabel@>:
+	rgba: 0.3,0.4,0.5,1
+<figuralabel@Rectangle>:	
+	
+<inputdatos@TextInput>:
+	size_hint: ( .20, 1)
+	multiline: False
 
 <pruegab>
 	name: "prueba"
@@ -598,31 +620,20 @@
 	nivel: nivel
 	radiocell: radiocell
 	intensidadPPP: intensidadPPP	
-
-	
 	size: (.3, .1)
-
 	BoxLayout:
-
-
 		#orientation: 'vertical'
 		padding: 20
-
 		size: self.size
 		#size: (.3 , .5) 
 		#size: (.4, .3)
 		canvas:
-
 			Color:
 				rgba: (1, 1, 1, 1)
 				#rgba: 0,0,0.53,0.2
 			Rectangle:
 				pos:self.pos
 				size:self.size
-
-		
-	
-
 		BoxLayout:
 			padding: 5
 			orientation: 'vertical'
@@ -644,67 +655,44 @@
 			BoxLayout:
 				padding: 5	
 				orientation: 'horizontal'
-
 				BoxLayout:
-
 					padding: 10
 					orientation: 'vertical'
-
-
-					BoxLayout:
-						orientation: 'horizontal'
-						size_hint_y: 0.15
-						Label:
-							canvas.before:
-								Color:
-									rgba: 0.3,0.4,0.5,1
-								Rectangle:
-									pos:self.pos
-									size:self.size
-							text: "Nivel"
+					
+					Cajadatos:
+						l_text:"Numero de Celdas"
 						TextInput:
-							id: nivel
 							size_hint: ( .20, 1)
 							multiline: False
-
-
-					BoxLayout:
-						orientation: 'horizontal'
-						size_hint_y: 0.15
-						Label:
-							canvas.before:
-								Color:
-									rgba: 0.3,0.4,0.5,1
-								Rectangle:
-									pos:self.pos
-									size:self.size
-							text: "Radio celdas"
+							id: nivel
+					Cajadatos:	
+						l_text: "Radio celdas"
 						TextInput:
 							id: radiocell
 							size_hint: ( .20, 1)
 							multiline: False
-					
-					BoxLayout:
-						orientation: 'horizontal'
-						size_hint_y: 0.15
-   
-						Label:
-							canvas.before:
-								Color:
-									rgba: 0.3,0.4,0.5,1
-								Rectangle:
-									pos:self.pos
-									size:self.size
-							text: "Intensidad puntos Poisson:"
+					Cajadatos:
+						l_text: "Intensidad puntos Poisson:"
 						TextInput:
 							id: intensidadPPP
 							size_hint: ( .20, 1)
 							multiline: False
-
+					Cajadatos:
+						l_text: "frecuencia [Mhz]:"
+						TextInput:
+							#id: intensidadPPP
+							size_hint: ( .20, 1)
+							multiline: False
+					
+					Cajadatos:
+						l_text: "figura de Ruido NF:"
+						TextInput:
+							#id: intensidadPPP
+							size_hint: ( .20, 1)
+							multiline: False
 					BoxLayout:
 						orientation: 'vertical'
 						padding: [0, 40]
-						
 						Button:
 							id: cal
 							canvas.before:

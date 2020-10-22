@@ -11,11 +11,8 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.image import AsyncImage, Image
 
 
-import pruebas as p 
+#import pruebas as p 
 
-
-
-	
 
 
 class ModelcanalUMI(Screen):
@@ -141,7 +138,7 @@ class MainWindow(Screen):
 		nvl=int(self.nivel.text)
 		inten=float(self.intensidadPPP.text)
 
-		p.prueba_pk_dispositivos(nvl,rcell,inten)
+		#p.prueba_pk_dispositivos(nvl,rcell,inten)
 		
 		#SecondWindow.add_dato(self)
 		
@@ -150,7 +147,7 @@ class MainWindow(Screen):
 
 		
 
-kv = Builder.load_file("Simulator.kv")
+kv = Builder.load_file("Simulator-beggin.kv")
 sm = WindowManager()
 screens = [MainWindow(name="poche"),SecondWindow(name="caz"),ModelcanalUMA(name="king"),ModelcanalUMI(name="sking")]
 for screen in screens:
@@ -163,7 +160,7 @@ for screen in screens:
 	
 
 
-sm.current="sking"
+sm.current="poche"
 
 class SimulatorApp(App):
 	def build(self):
