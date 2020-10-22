@@ -25,11 +25,22 @@ class Planificador:
 
 	def asignar(self):
 		pass
-
+	
+	def f1_tose(self):
+		pass
+	
+	def f2_tose(self):
+		pass
+	
+	def f3_john(self):
+		pass
 if __name__=="__main__":
 	#Prototipo:
 	print("planificador")
 
 	plan=Planificador(params, 17)
+	
+	#REALIZAR PRUEBA DE F1,F2,F3
+	
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")
