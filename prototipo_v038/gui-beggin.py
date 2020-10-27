@@ -7,6 +7,7 @@ from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty
 from kivy.properties import StringProperty
 from kivy.properties import BooleanProperty
+from kivy.uix.dropdown import DropDown
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.image import AsyncImage, Image
 
@@ -25,9 +26,6 @@ class ModelcanalUMI(Screen):
 	current= ""
 	#umibox=Widget()
 	#umibox.add_widget(BoxLayout())
-	
-
-
 	def evaluar(self, *ingore):
 		umibox()
 
@@ -38,11 +36,6 @@ class ModelcanalUMI(Screen):
 			pass
 
 		#if noShowABG
-
-
-
-
-
 class ModelcanalUMA(Screen):
 
 	nivel = ObjectProperty(None)
@@ -50,18 +43,9 @@ class ModelcanalUMA(Screen):
 	intensidadPPP = ObjectProperty(None)
 	current= ""
 
-#	def add_datoimport(nivel,radiocell,intensidadPPP,Vsec):
-
-
-
-
-
-	
+#	def add_datoimport(nivel,radiocell,intensidadPPP,Vsec):	
 class contenedorgrilla(Screen):
 	pass
-
-
-
 class SecondWindow(Screen):
 	#sr = StringProperty('C:/Users/PIPE_PC/Documents/UNIVERSIDAD/TESIS/epic-sns-5G/prototipo/all_ppp_trisec.jpg')
 #	nivel = ObjectProperty(None)
@@ -92,35 +76,28 @@ class SecondWindow(Screen):
 		#dk.prot_funciones_especiales.prot_poissonpp.distribuir_circulo(dk.apotema,0,0,inten)
 		#		print("intensidadPPP:", intensidadPPP)
 	pass
-	
-
 class WindowManager(ScreenManager):
 	pass
-
-
-
-
-
-
-
-
 class hidenWindow(TextInput):
-
-	
 	def __init__(hidenWindow,self, **kwargs):
 		super(hidenWindow,self).__init__(**kwargs)
 		intext = TextInput(text = 'Button')
 		self.add_widget(hidenWindow)
 		self.clear_widget()
-
-
-
-
 class MainWindow(Screen):
-	nivel = ObjectProperty(None)
-	radiocell = ObjectProperty(None)
-	intensidadPPP = ObjectProperty(None)
-	sr = ObjectProperty(None)
+	fp = ObjectProperty(None)
+	bw= ObjectProperty(None)
+	isd= ObjectProperty(None)
+	ppp= ObjectProperty(None)
+	esc= ObjectProperty(None)
+	mp= ObjectProperty(None)
+	desv= ObjectProperty(None)
+	nf= ObjectProperty(None)
+	ptx= ObjectProperty(None)
+	patron= ObjectProperty(None)
+	celdas= ObjectProperty(None)
+
+
 	current= ""
 
 	#layout_instance.do_layout ()
@@ -134,9 +111,22 @@ class MainWindow(Screen):
 		#print("Nivel: ", self.nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
 		#SecondWindow.add_dato()
 		#get_dato(self.intensidadPPP.text)
-		rcell=int(self.radiocell.text)
-		nvl=int(self.nivel.text)
-		inten=float(self.intensidadPPP.text)
+		print(self.fp.text)
+		print(self.bw.text)
+		print(self.isd.text)
+		print(self.ppp.text)
+		print(self.esc.text)
+		print(self.mp.text)
+		print(self.desv.text)
+		print(self.nf.text)
+		print(self.ptx.text)
+		print(self.patron.text)
+		print(self.celdas.text)
+
+
+		#rcell=int(self.radiocell.text)
+		#nvl=int(self.nivel.text)
+		#inten=float(self.intensidadPPP.text)
 
 		#p.prueba_pk_dispositivos(nvl,rcell,inten)
 		

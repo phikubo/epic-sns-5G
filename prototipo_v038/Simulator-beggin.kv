@@ -12,16 +12,11 @@
 				pos:self.pos
 				size:self.size
 		text: root.l_text
-
-
 <colorlabel@>:
-	rgba: 0.3,0.4,0.5,1
-<figuralabel@Rectangle>:	
-	
+	rgba: 0.3,0.4,0.5,1	
 <inputdatos@TextInput>:
 	size_hint: ( .20, 1)
 	multiline: False
-
 <pruegab>
 	name: "prueba"
 	
@@ -41,10 +36,7 @@
 				#rgba: 0,0,0.53,0.2
 			Rectangle:
 				pos:self.pos
-				size:self.size
-			
-
-		
+				size:self.size		
 #	BoxLayout:
 <umibox>
 	BoxLayout:
@@ -617,10 +609,21 @@
 
 <MainWindow>
 	name:"poche"
-	nivel: nivel
-	radiocell: radiocell
-	intensidadPPP: intensidadPPP	
-	size: (.3, .1)
+	fp: b_fp
+	bw: b_bw
+	isd:b_isd
+	ppp:b_ppp
+	esc: b_esc
+	mp: b_mp
+	desv: b_desv
+	nf: b_nf
+	ptx: b_ptx
+	patron: b_patr
+	celdas: celdas
+	#nivel: nivel
+	#radiocell: radiocell
+	#intensidadPPP: intensidadPPP
+	size: (1, .1)
 	BoxLayout:
 		#orientation: 'vertical'
 		padding: 20
@@ -634,10 +637,11 @@
 			Rectangle:
 				pos:self.pos
 				size:self.size
+				source: "base_datos/img_gui/modelcanal.PNG"	
 		BoxLayout:
 			padding: 5
 			orientation: 'vertical'
-			size: (.4, .3)
+			size: (.4, .3)	
 
 			ActionBar:
 				pos_hint: {'top': 1}
@@ -655,44 +659,419 @@
 			BoxLayout:
 				padding: 5	
 				orientation: 'horizontal'
+				canvas:
+					Color:
+						rgba: (1, 1, 1, 1)
+						#rgba: 0,0,0.53,0.2		
+					Rectangle:
+						pos:self.pos
+						size:self.size
 				BoxLayout:
 					padding: 10
 					orientation: 'vertical'
-					
-					Cajadatos:
-						l_text:"Numero de Celdas"
+					BoxLayout:#Botton para la frecuencia portadora del sistema
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Frecuencia portadora'
+						Button:
+					        id: b_fp
+					        text: '24GHz' 
+					        dismiss_on_select: False
+					        on_release: d_fp.open(self)
+					        size_hint: ( 1, 1) 
+					        on_parent: d_fp.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_fp
+					        #on_select: self.dismiss()
+					        on_select: 
+					        	b_fp.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: '24GHz'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_fp.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: '73GHz'
+					            size_hint: (1, None)
+					            on_release: d_fp.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+					BoxLayout:#Botton para el ancho de banda del canal
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Ancho de banda [MHz]'
+						Button:
+					        id: b_bw
+					        text: '100MHz' 
+					        dismiss_on_select: False
+					        on_release: d_bw.open(self)
+					        size: self.size
+					        on_parent: d_bw.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_bw
+					        on_select: b_bw.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: '100MHz'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_bw.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: '200MHz'
+					            size_hint: (1, None)
+					            on_release: d_bw.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+							Button:
+					        	#id:opc2
+					            text: '400MHz'
+					            size_hint: (1, None)
+					            on_release: d_bw.select(self.text)
+								dismiss_on_select: False
+					BoxLayout:#Botton para seleccionar la intesidad de puntos poisson
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Intensiad de Puntos Poisson'
+						Button:
+					        id: b_ppp
+					        text: 'Suave' 
+					        dismiss_on_select: False
+					        on_release: d_ppp.open(self)
+					        size_hint: ( 0.3, 1)
+					        on_parent: d_ppp.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_ppp
+					        on_select: b_ppp.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: 'Suave'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_ppp.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: 'Media'
+					            size_hint: (1, None)
+					            on_release: d_ppp.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+							Button:
+					        	#id:opc2
+					            text: 'Alta'
+					            size_hint: (1, None)
+					            on_release: d_ppp.select(self.text)
+								dismiss_on_select: False
+					BoxLayout:#Botton para seleccionar de escenario UMa o UMi
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Seleccion de Escenario'
+						Button:
+					        id: b_esc
+					        text: 'UMa' 
+					        dismiss_on_select: False
+					        on_release: d_esc.open(self)
+					        size_hint: ( 0.3, 1)
+					        on_parent: d_esc.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_esc
+					        on_select: b_esc.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: 'UMa'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_esc.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: 'UMi'
+					            size_hint: (1, None)
+					            on_release: d_esc.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+					BoxLayout:#Botton para seleccionar la distancia entre celdas 
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Distancia entre celda ISD [m]'
+						Button:
+					        id: b_isd
+					        text: '250' 
+					        dismiss_on_select: False
+					        on_release: d_isd.open(self)
+					        size_hint: ( 0.2, 1)
+					        on_parent: d_isd.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_isd
+					        on_select: b_isd.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: '250'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_isd.select(self.text)
+					        Button:
+					        	#id:opc1
+					            text: '500'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_isd.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: '1000'
+					            size_hint: (1, None)
+					            on_release: d_isd.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+							Button:
+					        	#id:opc2
+					            text: '1250'
+					            size_hint: (1, None)
+					            on_release: d_isd.select(self.text)
+								dismiss_on_select: False
+					BoxLayout:#Botton para seleccionar modelo de propagación
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Modelo de Perdidas de Propagacion'
+						Button:
+					        id: b_mp
+					        text: 'CI' 
+					        dismiss_on_select: False
+					        on_release: d_mp.open(self)
+					        size_hint: ( 0.2, 1)
+					        on_parent: d_mp.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_mp
+					        on_select: b_mp.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: 'CI'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_mp.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: 'ABG'
+					            size_hint: (1, None)
+					            on_release: d_mp.select(self.text)
+								dismiss_on_select: False
+								#id: nivel					
+					BoxLayout:#Botton para el tipo de desvanecimiento
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Tipo de desvanecimiento'
+						Button:
+					        id: b_desv
+					        text: 'mixto' 
+					        dismiss_on_select: False
+					        on_release: d_desv.open(self)
+					        size_hint: ( 0.2, 1)
+					        on_parent: d_desv.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_desv
+					        on_select: b_desv.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: 'mixto'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_desv.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: 'lento'
+					            size_hint: (1, None)
+					            on_release: d_desv.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+					        Button:
+					        	#id:opc2
+					            text: 'rapido'
+					            size_hint: (1, None)
+					            on_release: d_desv.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+					BoxLayout:#Botton para seleccionar valor de figura de ruido
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Figura de ruido NF[dB]'
+						Button:
+					        id: b_nf
+					        text: '3' 
+					        dismiss_on_select: False
+					        on_release: d_nf.open(self)
+					        size_hint: ( 0.15, 1)
+					        on_parent: d_nf.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_nf
+					        on_select: b_nf.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: '3'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_nf.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: '6'
+					            size_hint: (1, None)
+					            on_release: d_nf.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+					BoxLayout:#Botton para la potencia de transmision de la estacion Base
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Potencia Tx [dBm]'
+						Button:
+					        id: b_ptx
+					        text: '38' #40 W/20w / 6W
+					        dismiss_on_select: False
+					        on_release: d_ptx.open(self)
+					        size_hint: ( 0.15, 1)
+					        on_parent: d_ptx.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_ptx
+					        on_select: b_ptx = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: '38'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_ptx.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: '43'
+					            size_hint: (1, None)
+					            on_release: d_ptx.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+					        Button:
+					        	#id:opc2
+					            text: '46'
+					            size_hint: (1, None)
+					            on_release: d_ptx.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+					BoxLayout:#Botton para seleccionar el patron de radiacion 
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Tipo de patron de radiacion'
+						Button:
+					        id: b_patr
+					        text: '4G' 
+					        dismiss_on_select: False
+					        on_release: d_patr.open(self)
+					        size_hint: ( 0.15, 1)
+					        on_parent: d_part.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_part
+					        on_select: b_part.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: '4G'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_prt.select(self.text)
+					Cajadatos:#Botton para la cantidad de las celdas
+						l_text:'Numero Celdas [Max 19]'
 						TextInput:
 							size_hint: ( .20, 1)
 							multiline: False
-							id: nivel
-					Cajadatos:	
-						l_text: "Radio celdas"
-						TextInput:
-							id: radiocell
-							size_hint: ( .20, 1)
-							multiline: False
-					Cajadatos:
-						l_text: "Intensidad puntos Poisson:"
-						TextInput:
-							id: intensidadPPP
-							size_hint: ( .20, 1)
-							multiline: False
-					Cajadatos:
-						l_text: "frecuencia [Mhz]:"
-						TextInput:
-							#id: intensidadPPP
-							size_hint: ( .20, 1)
-							multiline: False
-					
-					Cajadatos:
-						l_text: "figura de Ruido NF:"
-						TextInput:
-							#id: intensidadPPP
-							size_hint: ( .20, 1)
-							multiline: False
+							id:celdas
+
 					BoxLayout:
 						orientation: 'vertical'
-						padding: [0, 40]
+						padding: [0,50,0,50]
 						Button:
 							id: cal
 							canvas.before:
@@ -709,21 +1088,20 @@
 								root.btn()
 								app.root.current ="caz"
 
-						Button: 
-							id: back
-							canvas.before:
-								Color:
-									rgba: 0,0,1,0
-								Rectangle:
-									pos:self.pos
-									size:self.size
-							background_color: 1, 1, 1, 1
-							text: "Volver"
+#						Button: 
+#							id: back
+#							canvas.before:
+#								Color:
+#									rgba: 0,0,1,0
+#								Rectangle:
+#									pos:self.pos
+#									size:self.size
+#							background_color: 1, 1, 1, 1
+#							text: "Volver"
 				
 				BoxLayout:
 					orientation: 'horizontal'
-					padding: [0,50] 
-				
+					padding: [0,50]
 					Image:
 						size: self.texture_size
 						size_hint: 1, 1
@@ -746,12 +1124,7 @@
 		orientation: 'horizontal'
 	#	padding: 30
 		padding: [30, 120, 30, 120]
-
-		
-		
-			#source: 'all_ppp_trisec.jpg'
-		
-		
+	
 		Button: 
 			canvas.before:
 				Color:

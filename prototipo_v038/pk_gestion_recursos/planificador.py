@@ -24,6 +24,11 @@ class Planificador:
 			pass
 
 	def asignar(self):
+		#asiganar ancho de banda en Megaherz y frecuencia portadora  con el fin de asignar la numerologia necesaria
+		bwMHz=100
+		frportadoraGHz= 24
+		
+
 		pass
 	
 	def f1_tose(self):
