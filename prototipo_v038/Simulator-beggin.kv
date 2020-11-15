@@ -680,13 +680,13 @@
 								Rectangle:
 									pos:self.pos
 									size:self.size
-							text: 'Frecuencia portadora'
+							text: 'Frecuencia portadora [GHz]'
 						Button:
 					        id: b_fp
-					        text: '24GHz' 
+					        text: '24' 
 					        dismiss_on_select: False
 					        on_release: d_fp.open(self)
-					        size_hint: ( 1, 1) 
+					        size_hint: ( 0.8, 1) 
 					        on_parent: d_fp.dismiss()
 					        #text_size: self.size
 					    DropDown:
@@ -696,13 +696,19 @@
 					        	b_fp.text = '{}'.format(args[1])
 					        Button:
 					        	#id:opc1
-					            text: '24GHz'
+					            text: '3.5'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_fp.select(self.text)
+							Button:
+					        	#id:opc1
+					            text: '24'
 	        					size_hint: (1, None)
 	        					dismiss_on_select: False
 					            on_release: d_fp.select(self.text)
 					        Button:
 					        	#id:opc2
-					            text: '73GHz'
+					            text: '73'
 					            size_hint: (1, None)
 					            on_release: d_fp.select(self.text)
 								dismiss_on_select: False
@@ -721,7 +727,7 @@
 							text: 'Ancho de banda [MHz]'
 						Button:
 					        id: b_bw
-					        text: '100MHz' 
+					        text: '100' 
 					        dismiss_on_select: False
 					        on_release: d_bw.open(self)
 					        size: self.size
@@ -732,20 +738,20 @@
 					        on_select: b_bw.text = '{}'.format(args[1])
 					        Button:
 					        	#id:opc1
-					            text: '100MHz'
+					            text: '100'
 	        					size_hint: (1, None)
 	        					dismiss_on_select: False
 					            on_release: d_bw.select(self.text)
 					        Button:
 					        	#id:opc2
-					            text: '200MHz'
+					            text: '200'
 					            size_hint: (1, None)
 					            on_release: d_bw.select(self.text)
 								dismiss_on_select: False
 								#id: nivel
 							Button:
 					        	#id:opc2
-					            text: '400MHz'
+					            text: '400'
 					            size_hint: (1, None)
 					            on_release: d_bw.select(self.text)
 								dismiss_on_select: False
@@ -760,7 +766,7 @@
 								Rectangle:
 									pos:self.pos
 									size:self.size
-							text: 'Intensiad de Puntos Poisson'
+							text: 'Densidad de usuarios'
 						Button:
 					        id: b_ppp
 					        text: 'Suave' 
@@ -1044,7 +1050,7 @@
 								Rectangle:
 									pos:self.pos
 									size:self.size
-							text: 'Tipo de patron de radiacion'
+							text: "Tipo de patron de radiaci{ó}n"
 						Button:
 					        id: b_patr
 					        text: '4G' 
@@ -1062,8 +1068,18 @@
 	        					size_hint: (1, None)
 	        					dismiss_on_select: False
 					            on_release: d_prt.select(self.text)
-					Cajadatos:#Botton para la cantidad de las celdas
-						l_text:'Numero Celdas [Max 19]'
+					BoxLayout:#Botton para la cantidad de las celdas
+
+						orientation: 'horizontal'
+						size_hint_y: 0.10	
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text:"Numero de Celdas [max 19]"
 						TextInput:
 							size_hint: ( .20, 1)
 							multiline: False

@@ -11,6 +11,10 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.image import AsyncImage, Image
 
+#with open("simulator-beggin.kv", encoding='utf-8', errors="surrogateescape") as kv_file:
+#    Builder.load_string(kv_file.read())
+
+#for line in f:
 
 #import pruebas as p 
 
