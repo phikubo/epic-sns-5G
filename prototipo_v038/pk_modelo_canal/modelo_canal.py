@@ -66,7 +66,9 @@ class Modelo_Canal:
 		self.balance_simplificado=self.resultado_path_loss-self.tx_grel-self.cfg_bal["grx"]+self.cfg_bal["ltx"]+self.cfg_bal["lrx"]
 
 		if self.cfg_prop["params_desv"]["display"]:
-			print("[ok]-----configurar_desv. copia del balance.")
+			if self.cfg_gen['debug']:
+				print("[ok]-----configurar_desv. copia del balance.")
+
 			self.balance_simplificado_antes=self.balance_simplificado.copy()
 
 		if self.cfg_prop["params_desv"]["display"]:

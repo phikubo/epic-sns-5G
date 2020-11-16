@@ -112,7 +112,8 @@ def prueba_sistema_v047():
 	#with open("utilidades/configs.json") as json_data_file:
 	#	data = json.load(json_data_file)
 
-	configuracion=cfg.cargar_variables(target_path="utilidades/")
+	#configuracion=cfg.cargar_variables(target_path="utilidades/")
+	configuracion=cfg.cargar_variables(target_path="base_datos/")
 	'''
 	Requerimiento 2:
 		generar coordenadas de estacion base, que son fijas, por fuera de la simulacion. Optimizar.
@@ -141,7 +142,7 @@ def prueba_sistema_v047():
 	coleccion_simulacion=[]
 	it=0
 	for n in range(iteracion):
-		print("**********SIMULACION {}*****************".format(it))
+		print("*******************************SIMULACION {}****************************".format(it))
 		coleccion_simulacion.append(ss.Sistema_Celular(configuracion))
 		it+=1
 
@@ -166,7 +167,7 @@ def prueba_sistema_v047():
 	plt.plot(coleccion_relacion_conexion,'r*-')
 
 	p=1.*np.arange(len(coleccion_relacion_conexion))/(len(coleccion_relacion_conexion)-1)
-	print(p[:20])
+	##################################print(p[:20])
 	fig=plt.figure()
 	ax1=fig.add_subplot(121)
 	ax1.plot(p,coleccion_relacion_conexion, 'g-')
@@ -178,8 +179,61 @@ def prueba_sistema_v047():
 	ax2.set_xlabel("$Medida SINR$")
 	ax2.set_ylabel("$Norm Dist$")
 
+	#plt.show()
 
-	plt.show()
+
+def prueba_sistema_v048():
+	'''Asigna recursos y calcula interferencia por prbs.'''
+	#params_simulacion, params_transmision, params_perdidas=parametros_de_prueba_unitaria()
+	#n_cel=params_simulacion[0]
+	print("**************************************************")
+	print("**********Inicio de la prueba [top]****************")
+	print("**************************************************")
+
+	#import v2_sistema as ss2
+
+	#with open("utilidades/configs.json") as json_data_file:
+	#	data = json.load(json_data_file)
+
+	#configuracion=cfg.cargar_variables(target_path="utilidades/")
+	configuracion=cfg.cargar_variables(target_path="base_datos/")
+	'''
+	Requerimiento 2:
+		generar coordenadas de estacion base, que son fijas, por fuera de la simulacion. Optimizar.
+	'''
+	n_cel=configuracion["cfg_simulador"]["params_general"]["n_celdas"]
+	resolucion=configuracion["cfg_simulador"]["params_general"]["imagen"]["resolucion"]
+	radio_cel=configuracion["cfg_simulador"]["params_general"]["radio_cel"]
+	display_pic=configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0]
+	if display_pic:
+		if n_cel>7:
+			mul=4.6
+		else:
+			mul=3
+		print("--Generando data--")
+		x_prueba=np.arange(-mul*radio_cel,mul*radio_cel,resolucion) #depende del radio_cel y numero de celdas.
+		y_prueba=np.arange(-mul*radio_cel,mul*radio_cel,resolucion)
+		xx,yy=np.meshgrid(x_prueba,y_prueba)
+		print("--Escribiendo--")
+		with open('base_datos/datos/test_x.npy', 'wb') as f:
+			np.save(f, xx)
+		with open('base_datos/datos/test_y.npy', 'wb') as f:
+			np.save(f, yy)
+		print("Terminado ok.")
+
+	iteracion=configuracion["cfg_simulador"]["params_general"]["iteracion"]
+	coleccion_simulacion=[]
+	it=0
+	for n in range(iteracion):
+		print("*******************************SIMULACION {}****************************".format(it))
+		coleccion_simulacion.append(ss.Sistema_Celular(configuracion))
+		it+=1
+
+	simtest=coleccion_simulacion[0]
+	simtest.info_sinr()
+
+	simtest2=coleccion_simulacion[1]
+	simtest2.info_sinr()
 
 
 if __name__=="__main__":
@@ -202,7 +256,8 @@ if __name__=="__main__":
 		#etc.
 
 	#prueba_sistema_v046_4() ##pruebas con fixed data: pruebas con meshgrid. sinr . En espera
-	prueba_sistema_v047() #pruebas de archivo de configuracion.
+	#prueba_sistema_v047() #pruebas de archivo de configuracion.
+	prueba_sistema_v048() #pruebas de asignacion e interferencia.
 
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")

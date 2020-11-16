@@ -3,17 +3,21 @@ import numpy as np
 import os
 
 class Planificador:
+	'''Clase: asigna prb por usuario'''
 	def __init__(self, params, no_usuarios):
 		self.cfg_plan=params
 		#numero de usuarios por celda
 		self.no_usuarios=no_usuarios
 		#output:
 		self.asignacion=0 #por usuario
+		self.mapa_conexion=0
 		self.inicializar_tipo()
+
 		self.numerologia=[0,1,2,3]
 		self.cp_ofdm=['Normal','Extendido']
 		self.format_slot=['D','U','F']
 		self.case_use=['mMTC','eBMM','URLLC']
+
 	def inicializar_tipo(self):
 		if self.cfg_plan["tipo"]=="rr":
 			self.asignacion=self.cfg_plan["bw"][0]/self.no_usuarios
@@ -28,28 +32,26 @@ class Planificador:
 			pass
 
 
-			
+
 	def asignar_100mhz():
 		#asiganar ancho de banda en Megaherz y frecuencia portadora  con el fin de asignar la numerologia necesaria.
 		#Se tiene conciencia de que para cumplir con los 264 canales es necesario elevar la frecuencia portadora.
 		#el hecho es tener 264 canales maximos y eso se lleva acabo con tanto el espaciamiento entre portadoras.
-		#y la cantidad de subportadoras  (15KHz*2^numerologia)*12subportadoras = 720KHz Ahora el ancho de banda del sistema 
+		#y la cantidad de subportadoras  (15KHz*2^numerologia)*12subportadoras = 720KHz Ahora el ancho de banda del sistema
 		# se divide entre la el ancho del canal, dandonos el numero maxiño de 264 canales, teniendo en cuenta la banda de guarda
 		#
-		#
-		#
 		# canal compartido entre 6OKhHz para hace parte del canal compartido donde se puede apreciar que puede transmitir.
-		# datos con prefijo ciclico normal, se puede pensar en colocar el canal de sincronizacion con CP Extendido 
+		# datos con prefijo ciclico normal, se puede pensar en colocar el canal de sincronizacion con CP Extendido
 		#• Temporal structure:
 		#• 10 ms frame = 10 sub-frames of 1 ms
 		#• 1 sub-frame = 2 slots of 0.5 ms
-
-		#• 1 slot = 7 symbols OFDM (6 symbols if extended CP) 
+		#
+		#• 1 slot = 7 symbols OFDM (6 symbols if extended CP)
 		#numero de bloques de recursos salen de 38.104, banda de guarda 38.104
-		#Considerar la cantidad de bloques de recursos utilizados por el PBCH el cual se transmite cada 
+		#Considerar la cantidad de bloques de recursos utilizados por el PBCH el cual se transmite cada
 		#OFDM_CP="Extendido"
 		OFDM_CP='Normal'
-		bwmhz=100#Parametro fijo para el ancho de banda del sistema 
+		bwmhz=100#Parametro fijo para el ancho de banda del sistema
 		frportadoraGHz= 3.5
 		num=1
 		g_bw_khz=845
@@ -59,22 +61,23 @@ class Planificador:
 		trama_tol=14
 		simb_ofdm_dl=10
 		frame=10
-		bw_con_gbw=(bwmhz*1000) - (2*g_bw_khz) 
+		#
+		bw_con_gbw=(bwmhz*1000) - (2*g_bw_khz)
 		bw_usuario=(2**num)*15*sub_ofdm
 		no_rb=bw_con_gbw/bw_usuario
 		rb_conPBCH= no_rb-22
-		
-		return no_rb, bw_usuario 
-		
+
+		return no_rb, bw_usuario
+
 
 
 	def asignar_200Mhz():
 		#asiganar ancho de banda en Megaherz y frecuencia portadora  con el fin de asignar la numerologia necesaria.
 		#Se tiene conciencia de que para cumplir con los 264 canales es necesario elevar la frecuencia portadora.
 		#el hecho es tener 264 canales maximos y eso se lleva acabo con tanto el espaciamiento entre portadoras.
-		#y la cantidad de subportadoras  (15KHz*2^numerologia)*12subportadoras = 720KHz Ahora el ancho  
+		#y la cantidad de subportadoras  (15KHz*2^numerologia)*12subportadoras = 720KHz Ahora el ancho
 		OFDM_CP='Normal'
-		bwmhz=200#Parametro fijo para el ancho de banda del sistema 
+		bwmhz=200#Parametro fijo para el ancho de banda del sistema
 		frportadoraGHz= 24
 		num=2
 		g_bw_khz= 4930
@@ -84,16 +87,16 @@ class Planificador:
 		trama_tol=14
 		simb_ofdm_dl=10
 		frame=10
-		bw_con_gbw=(bwmhz*1000) - (2*g_bw_khz) 
+		bw_con_gbw=(bwmhz*1000) - (2*g_bw_khz)
 		bw_usuario=(2**num)*15*sub_ofdm
 		no_rb=bw_con_gbw/bw_usuario
-		
-		return no_rb, bw_usuario 
-	
+
+		return no_rb, bw_usuario
+
 	def asignar_400mhz():
 		#
 		OFDM_CP='Normal'
-		bwmhz=400#Parametro fijo para el ancho de banda del sistema 
+		bwmhz=400#Parametro fijo para el ancho de banda del sistema
 		frportadoraGHz= 73
 		num=3
 		g_bw_khz= 9860
@@ -103,11 +106,16 @@ class Planificador:
 		trama_tol=14
 		simb_ofdm_dl=10
 		frame=10
-		bw_con_gbw=(bwmhz*1000) - (2*g_bw_khz) 
+		bw_con_gbw=(bwmhz*1000) - (2*g_bw_khz)
 		bw_usuario=(2**num)*15*sub_ofdm
 		no_rb=bw_con_gbw/bw_usuario
-		
-		return no_rb, bw_usuario 
+
+		return no_rb, bw_usuario
+
+	def asignar_recursos(self):
+		'''Funcion que asigna ancho de banda representado en prb, a partir de la
+		frecuencia portadora y otros parametros adicionales'''
+		pass
 
 
 def prueba_asignar100():
@@ -145,7 +153,6 @@ def lista_rb():
 	print(m_rb)
 	#
 
-	pass
 
 
 if __name__=="__main__":

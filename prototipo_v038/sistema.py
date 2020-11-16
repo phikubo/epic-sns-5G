@@ -52,7 +52,9 @@ class Sistema_Celular:
 		self.cfg_ant=configuracion['cfg_simulador']['params_antena']
 		self.cfg_plan=configuracion['cfg_simulador']['params_asignacion']
 
-		print("[ok].debug: simulacion creada.")
+		if self.cfg_top['debug']:
+			print("[ok].debug: simulacion creada.")
+
 		#DECLARACION DE VARIABLES GLOBALES.
 		self.cluster=[]
 		self.origen_cel_x, self.origen_cel_y=mc.coordenadas_nceldas(self.cfg_top["n_celdas"],
@@ -108,11 +110,21 @@ class Sistema_Celular:
 		#crea el modelo del mod_canal, frecuencia_central, distancias, ganancia relativa
 		self.inicializar_modelo_canal()
 		#inicializa el efecto del ancho de banda, segun parametros fijos o procesamiento de alguna variable, eg. potencia recibida.
+		##self.inicializar_asignacion()
+		#opera sobre el margen del balance
+		##self.calcular_margen()
+		#calcula la sinr dado.
+		##self.calcular_sinr()
+		##
+		#implemeneta criterio de potencia maxima de los usuarios a todas las celdas.
+		self.calcular_celda_mayo_potencia()
+		##inicializa el efecto del ancho de banda, segun parametros fijos o 
+		###procesamiento de alguna variable, eg. potencia recibida.
 		self.inicializar_asignacion()
 		#opera sobre el margen del balance
-		self.calcular_margen()
+		##self.calcular_margen()
 		#calcula la sinr dado.
-		self.calcular_sinr()
+		##self.calcular_sinr()
 
 
 
@@ -413,8 +425,15 @@ class Sistema_Celular:
 
 	def inicializar_asignacion(self):
 		'''Permite gestionar el recurso de ancho de banda sobre los usuarios en cada celda'''
+		mapa_estaciones=self.mapa_conexion_estacion
+		dim_pr_v2D=self.potencia_recibida_v_2D.shape
+		
 		target=self.no_usuarios_celda
+		print("usuarios total por celda, inicial",target)
+		print(mapa_estaciones)
+		print(dim_pr_v2D)
 		self.planificador=plan.Planificador(self.cfg_plan,target)#por sector, etc.
+		#ancho de banda se convierte en variable y depende de cuantos prb obtiene.
 		self.bw_usuario=self.planificador.asignacion
 
 
@@ -436,6 +455,7 @@ class Sistema_Celular:
 		self.mapa_conexion_desconexion_margen=np.where(margen_maximo>0,1,0)
 		#print("test 3",self.mapa_conexion_desconexion_margen)
 		self.conexion_total_margen=np.count_nonzero(self.mapa_conexion_desconexion_margen==1)
+		#print("test4",self.conexion_total_margen)
 		#calcula la probabilidad de conexion o probabilidad de exito de conexion.
 		self.medida_conexion_margen=self.conexion_total_margen/self.no_usuarios_total
 		print("medida de conexion: ", self.medida_conexion_margen)
@@ -461,7 +481,7 @@ class Sistema_Celular:
 		'''
 		if self.cfg_top['debug']:
 			print("[sistema.calcular_sinr]")
-		self.potencia_ruido=(-174.2855251)+10*np.log10(self.bw_usuario*10**6)
+
 		#creo la variable local de trabajo
 		potencia_recibida_dB=self.hiperc_modelo_canal.resultado_balance
 		#obtenengo las dimensiones del arreglo cluster, pues esta segmentado en 3D
@@ -495,15 +515,20 @@ class Sistema_Celular:
 			indx+=1 #
 		#convierto a una dimension el array.
 		self.mapa_conexion_usuario=np.stack(indices)
+		#print("test1",potencia_recibida_v_2D)
 		#sumo la cantidad de veces que la celda_i tuvo una potencia maxima.
 		for cnt in range(self.cfg_top["n_celdas"]): #range numero de celdas
 			self.mapa_conexion_estacion.append(np.count_nonzero(self.mapa_conexion_usuario==cnt))
+
+		################################################self.planificador.mapa_conexion=self.mapa_conexion_estacion
 		#sumo en el eje x, manteniendo la dimension, array con 0 en potencia maxima.
 		suma_interf_v=np.sum(potencia_recibida_v_2D, axis=1, keepdims=True)
 		#re definimos la dimension de la potencia, para propositos de compatibilidad de arrays.
 		prx_veces=pr_maximo_v.reshape(suma_interf_v.shape)
 		#convertimos la figura de ruido a veces:
 		fr_v=self.configurar_unidades_veces(self.cfg_top["nf"][0])
+		#
+		self.potencia_ruido=(-174.2855251)+10*np.log10(self.bw_usuario*10**6)
 		#calculamos potencia de ruido en veces.
 		pn_v=self.configurar_unidades_veces(self.potencia_ruido)
 		pn=pn_v*fr_v
@@ -520,6 +545,64 @@ class Sistema_Celular:
 		limpiar=[potencia_recibida_dB,potencia_recibida_dB_2D,pr_maximo_v,suma_interf_v,prx_veces]
 		self.configurar_limpieza_parcial(limpiar)
 
+
+	def calcular_celda_mayo_potencia(self):
+		'''Prepara arreglos a utilizar en funcion de calculo sinr.'''
+		if self.cfg_top['debug']:
+			print("[sistema.calcular_celda_mayo_potencia]")
+		#variable local para eliminar
+		#self.potencia_recibida_v_2D
+		#potencia_recibida_dB
+		#potencia_recibida_dB_2D
+		#l,m,n
+		#pr_maximo_v
+
+		#creo la variable local de trabajo
+		potencia_recibida_dB=self.hiperc_modelo_canal.resultado_balance
+		#obtenengo las dimensiones del arreglo cluster, pues esta segmentado en 3D
+		l,m,n=self.hiperc_modelo_canal.resultado_balance.shape
+		#redimensiono la potencia recibida de un arreglo 3D a 2D.
+		potencia_recibida_dB_2D=np.reshape(potencia_recibida_dB, (l*m, n))
+		#convierto a veces
+		#potencia_recibida_v_2D=(10**(potencia_recibida_dB_2D/10))
+		self.potencia_recibida_v_2D=self.configurar_unidades_veces(potencia_recibida_dB_2D)
+		#filtro y obtengo los valores de potencia recibida pr_maximo_vs en veces, de cada usuario.(seleccionar la pr maxima,)
+		pr_maximo_v=np.nanmax(self.potencia_recibida_v_2D,axis=-1)
+		###########################################print("potencia maxima a la que se conecta\n", 10*np.log10(pr_maximo_v))
+		#por cada usuario, indica a cual celda recibio mayor potencia.
+		indices=[]
+		#auxiliar para iterar sobre todas las celdas (columnas)
+		indx=0
+		#itero sobre el pr_maximo_v y el array 2D
+		for maxx, arr in zip(pr_maximo_v, self.potencia_recibida_v_2D):
+			#print("componentes:\n",arr,maxx)
+			#print("arreglo:\n",self.potencia_recibida_v_2D[indx])
+			#
+			#obtengo el lugar (indice) en el array donde esta el valor pr_maximo_v de potencia
+			indice=np.where(arr==maxx)
+			#cambiar por 0 donde la pr fue maxima,
+			if len(indice[0])>1:
+				#Algunos casos se obtiene valores repetidos, se escoge cualquiera.
+				indice=(np.array([np.random.choice(indice[0])]),)
+			#guardo el indice
+			self.potencia_recibida_v_2D[indx][indice]=0
+			indices.append(indice[0])
+			indx+=1 #
+		#convierto a una dimension el array.
+		self.mapa_conexion_usuario=np.stack(indices)
+		#sumo la cantidad de veces que la celda_i tuvo una potencia maxima.
+		for cnt in range(self.cfg_top["n_celdas"]): #range numero de celdas
+			self.mapa_conexion_estacion.append(np.count_nonzero(self.mapa_conexion_usuario==cnt))
+
+
+	def calcular_interferencia():
+		'''Calcula la interferencia producida por la distribucion de prbs'''
+		#falta inicializar asignacion
+		#de acuerdo a los resultados de asignacion, valores de potencia se cancelan
+		#crear matriz que al multiplicarla, se vuelve ceros los valores donde corresponde en veces
+		suma_interf_v=np.sum(self.potencia_recibida_v_2D, axis=1, keepdims=True)
+	#inicialiar asignacion
+	#calcular sinr
 
 	'''-----------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------------
@@ -569,7 +652,7 @@ class Sistema_Celular:
 		"""Permite ver los sectores de forma independiente"""
 		azimuts=mcir.azimut_lista(angulo_inicial=30)
 
-		angulo_x, angulo_y =mcir.coordenadas_angulos(azimuts)
+		angulo_x, angulo_y=mcir.coordenadas_angulos(azimuts)
 		#estos valores deben pertenecer a la clase
 		apotema=math.sqrt(self.radio**2 -(0.5*self.radio)**2)
 		apotema_trisec= self.radio/2 #relaciono el apotema tri con el radio celda grande
@@ -682,8 +765,13 @@ class Sistema_Celular:
 
 	def info_sinr(self, *args):
 		'''Permite observar numericamente los valores de sinr por usuario y celda'''
-		print("\n-----[debug.calcular_sinr]:")
-
+		print("-----------")
+		print("[info_sinr] {}".format(args))
+		print("-----------")
+		if self.cfg_top['debug']:
+			print("\n-----[debug.calcular_sinr]:")
+		print("\n------------------------------------------[info_sinr]:")
+		#is args==True
 		if args:
 			if args:
 				ind=0
@@ -696,7 +784,7 @@ class Sistema_Celular:
 		print("Mapa de conexion por estacion: ", self.mapa_conexion_estacion)
 		print("Medida de conexion: ", self.medida_conexion_sinr)
 		print("De {} usuarios, {} cumplen BER objetivo.".format(self.no_usuarios_total, self.conexion_total_sinr))
-		print("-----[debug.calcular_sinr].")
+		print("\n------------------------------------------[info_sinr].\n")
 
 
 	def info_distancia(self,*args):
@@ -718,7 +806,10 @@ class Sistema_Celular:
 
 	def info_general(self, *target):
 		'''Permite observar parametros generales de cada simulacion.'''
-		print(target)
+		print("------------")
+		print("info_general: {}".format(target))
+		print("------------")
+
 		target=target[0]
 		if target =="potencia":
 			print("[info_potencia]")
@@ -733,15 +824,14 @@ class Sistema_Celular:
 			print("[info_ganancia]")
 			print(self.hiperc_ganancia_relativa)
 		elif target=="general":
-			print("\n-----[info_general]:")
+			print("\n------------------------------------------[info_general]:")
 			print("Celdas:",self.cfg_top["n_celdas"])
 			print("Usuarios por celda",self.no_usuarios_celda)
 			print("Usuarios total",self.no_usuarios_total)
 			print("Ancho de banda:",self.bw_usuario, "[Mhz]")
 			print("Margen de conexion: ", self.medida_conexion_margen)
 			print("Conexion Sinr, calidad ",self.cfg_top["ber_sinr"], ":",self.medida_conexion_sinr)
-			#print("",)
-			print("-----[info_general].")
+			print("------------------------------------------[info_general]\n")
 		else:
 			print("\n-----[info_arreglos]:")
 
