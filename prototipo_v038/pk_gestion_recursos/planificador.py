@@ -4,8 +4,9 @@ import os
 
 class Planificador:
 	'''Clase: asigna prb por usuario, calcula matriz de interferencia.'''
-	def __init__(self, params_cfg, params):
+	def __init__(self, params_cfg, params_cfg_gen, params):
 		self.cfg_plan=params_cfg
+		self.cfg_gen=params_cfg_gen
 		#numero de usuarios por celda
 		self.mapa_conexion=params[0]
 		#self.dim_pot_r=params[1]
@@ -16,10 +17,13 @@ class Planificador:
 
 		#self.inicializar_tipo()
 
-		self.numerologia=[0,1,2,3]
-		self.cp_ofdm=['Normal','Extendido']
-		self.format_slot=['D','U','F']
-		self.case_use=['mMTC','eBMM','URLLC']
+		#self.numerologia=[0,1,2,3]
+		#self.cp_ofdm=['Normal','Extendido']
+		#self.format_slot=['D','U','F']
+		#self.case_use=['mMTC','eBMM','URLLC']
+
+		self.configurar_tipo_asignacion()
+		self.calcular_tipo_asignacion()
 
 	def inicializar_tipo(self):
 		if self.cfg_plan["tipo"]=="rr":
@@ -28,15 +32,72 @@ class Planificador:
 			self.asignacion=self.cfg_plan["bw"][0]
 		elif self.cfg_plan["tipo"]=="arreglo":
 			#procesa arreglos, gestiona pesos.
+			#this
 			pass
 		elif self.cfg_plan["tipo"]=="futuro":
 			pass
 		else:
 			pass
 
+	def configurar_tipo_asignacion(self):
+		#ATENCION, ESTO DEBERIA SER EN OTRA PARTE, EN TOP, O EN MODELO DE CANAL.
+		#O EN GUI.
+		'''Configura variables estaticas de acuerdo a la frecuencia portadora
+		en el archivo de configuracion.'''
+
+		self.cfg_plan["trama_tol"]=14
+		self.cfg_plan["simb_ofdm_dl"]=10
+		self.cfg_plan["frame"]=10
+		self.cfg_plan["sub_ofdm"]=12
+
+		if self.cfg_gen["portadora"][0]>150 and self.cfg_gen["portadora"][0]<=1500:
+			print("frecuencia banda 900, okumura_hata")
+			self.cfg_plan["bw"][0]=10 #megaherz, SELECCION 10,20,40 MHZ.
+			self.cfg_plan["numerologia"]=1
+			self.cfg_plan["g_bw_khz"]=845
+			self.cfg_plan["n_rb_sin_gbw"]=273
+
+			self.cfg_plan["caso_de_uso"]=['mMTC']
+			#CORREGIR LOS DATOS DE ARRIBA. OK CASO DE USO.
+		elif self.cfg_gen["portadora"][0]>1500 and self.cfg_gen["portadora"][0]<=3500:
+			print("frecuencia banda 3.5")
+			#OFDM_CP='Normal'
+			#Parametro fijo para el ancho de banda del sistema
+			self.cfg_plan["bw"][0]=100
+			#frportadoraGHz= 3.5
+			self.cfg_plan["numerologia"]=1
+			self.cfg_plan["g_bw_khz"]=845
+			self.cfg_plan["n_rb_sin_gbw"]=273
+
+			self.cfg_plan["caso_de_uso"]=['URLLC','mMTC']
+
+		elif self.cfg_gen["portadora"][0]>20000 and self.cfg_gen["portadora"][0]<=24000:
+			print("frecuencia banda 20-24")
+			self.cfg_plan["bw"][0]=200
+			self.cfg_plan["numerologia"]=2
+			self.cfg_plan["g_bw_khz"]=4930
+			self.cfg_plan["n_rb_sin_gbw"]=264
+
+			self.cfg_plan["caso_de_uso"]=['URLLC','mMTC','eBMM']
 
 
-	def asignar_100mhz():
+		elif self.cfg_gen["portadora"][0]>70000 and self.cfg_gen["portadora"][0]<=73000:
+			print("frecuencia banda 70-73")
+			self.cfg_plan["bw"][0]=400
+			self.cfg_plan["numerologia"]=3
+			self.cfg_plan["g_bw_khz"]=9860
+			self.cfg_plan["n_rb_sin_gbw"]=264
+
+			self.cfg_plan["caso_de_uso"]=['URLLC','mMTC','eBMM']
+
+		else:
+			try:
+				raise Exception("PORTADORA NO SOPORTADA")
+			except Exception as error:
+				print("-----------------------------------------ERROR: {}".format(error))
+		print("self.cfg_plan",self.cfg_plan)
+
+	def calcular_tipo_asignacion(self):
 		#asiganar ancho de banda en Megaherz y frecuencia portadora  con el fin de asignar la numerologia necesaria.
 		#Se tiene conciencia de que para cumplir con los 264 canales es necesario elevar la frecuencia portadora.
 		#el hecho es tener 264 canales maximos y eso se lleva acabo con tanto el espaciamiento entre portadoras.
@@ -53,6 +114,18 @@ class Planificador:
 		#numero de bloques de recursos salen de 38.104, banda de guarda 38.104
 		#Considerar la cantidad de bloques de recursos utilizados por el PBCH el cual se transmite cada
 		#OFDM_CP="Extendido"
+		'''Asigna porcion de prbs segun parametros configurados en cfg tipo asignacion'''
+		bw_con_gbw=(self.cfg_plan["bw"][0]*1000)-(2*self.cfg_plan["g_bw_khz"])
+		bw_usuario=(2**self.cfg_plan["numerologia"])*15*self.cfg_plan["sub_ofdm"]
+		#implementar esto de otra forma.
+		no_rb=bw_con_gbw/bw_usuario
+		rb_conPBCH= no_rb-22
+		print("test",bw_con_gbw)
+		print("planificador.asignador",no_rb, bw_usuario)
+
+
+	def asignar_100mhz():
+
 		OFDM_CP='Normal'
 		bwmhz=100#Parametro fijo para el ancho de banda del sistema
 		frportadoraGHz= 3.5
@@ -118,6 +191,7 @@ class Planificador:
 	def asignar_recursos(self):
 		'''Funcion que asigna ancho de banda representado en prb, a partir de la
 		frecuencia portadora y otros parametros adicionales'''
+		#no es posible realizar prueba debido a los parametros extra.
 		pass
 
 
@@ -135,7 +209,11 @@ def prueba_asignar100():
 	print(prueba2)
 	print("-----------------------------------------------Numero de bloques de recursos 400MHz ---------------")
 	print("-----------------------------------------------(Cantidad de bloques de recuros , ancho de banda por RB) ---------------")
-	print(prueba3)
+	print("test3",prueba3)
+
+def prueba_asignar():
+	"""Comprueba implementacion de funciones asignar 100,200,400 segun parametros"""
+	prueba=Planificador.asignar_100mhz()
 
 
 def lista_rb():
@@ -166,6 +244,7 @@ if __name__=="__main__":
 	#Planificador.asignar_100mhz()
 	#REALIZAR PRUEBA DE F1,F2,F3
 	prueba_asignar100()
-	lista_rb()
+	#lista_rb()
+	#prueba_asignar()
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")

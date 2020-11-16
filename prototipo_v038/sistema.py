@@ -46,20 +46,20 @@ class Sistema_Celular:
 		#----------------------------------------------------------------------
 
 		self.cfg=configuracion['cfg_simulador']
-		self.cfg_top=configuracion['cfg_simulador']['params_general']
+		self.cfg_gen=configuracion['cfg_simulador']['params_general']
 		self.cfg_prop=configuracion['cfg_simulador']['params_propagacion']
 		self.cfg_bal=configuracion['cfg_simulador']['params_balance']
 		self.cfg_ant=configuracion['cfg_simulador']['params_antena']
 		self.cfg_plan=configuracion['cfg_simulador']['params_asignacion']
 
-		if self.cfg_top['debug']:
+		if self.cfg_gen['debug']:
 			print("[ok].debug: simulacion creada.")
 
 		#DECLARACION DE VARIABLES GLOBALES.
 		self.cluster=[]
-		self.origen_cel_x, self.origen_cel_y=mc.coordenadas_nceldas(self.cfg_top["n_celdas"],
-			self.cfg_top["radio_cel"],
-			self.cfg_top['debug'])
+		self.origen_cel_x, self.origen_cel_y=mc.coordenadas_nceldas(self.cfg_gen["n_celdas"],
+			self.cfg_gen["radio_cel"],
+			self.cfg_gen['debug'])
 		#inicio de variables de usuarios (de todas las celdas)
 		self.usuario_x=0
 		self.usuario_y=0
@@ -140,14 +140,14 @@ class Sistema_Celular:
 		'''Funcion que re dimensiona un arreglo de la forma [ [ [celda 1][celda2][celda3] ] [ [celda 1][celda2][celda3] ]]
 		a una organizacion de usuarios por celda.
 		'''
-		if self.cfg_top['debug']:
+		if self.cfg_gen['debug']:
 			print("[sistema.configuracion_dimension_arreglos]")
-		organizacion=[0 for i in range(self.cfg_top["n_celdas"])]
+		organizacion=[0 for i in range(self.cfg_gen["n_celdas"])]
 		temporal=[]
 		#itero sobre el numero de celdas
 		#print("[sistema.configurar] \n", type(target))
 		#print("[sistema.configurar] \n", target)
-		for target_users in range(self.cfg_top["n_celdas"]):
+		for target_users in range(self.cfg_gen["n_celdas"]):
 			#itero sobre el arreglo
 			for ind,celda in enumerate(target):
 				arreglo=celda[target_users]
@@ -226,30 +226,33 @@ class Sistema_Celular:
 	--------------------------------------------------------------------------------------------'''
 	def inicializar_cluster_celdas(self):
 		'''Init. Almacena las instancias de celdas unicas en un cluster de celdas para control y gestion.'''
-		if self.cfg_top["debug"]:
+		if self.cfg_gen["debug"]:
 			print("[sistema.inicializar_cluster_celdas]")
 		#creo objetos tipo celda y les asigno su coordenada central
 		for x,y in zip(self.origen_cel_x, self.origen_cel_y):
 			#creo celdas con cada coordenada x,y y las asigno a sus propias coordendas
-			self.obj=celda.Celda(x,y, self.cfg_top["radio_cel"]) #aqui deberia generar las coordenadas de usuarios
+			self.obj=celda.Celda(x,y, self.cfg_gen["radio_cel"]) #aqui deberia generar las coordenadas de usuarios
 			#agrupo las celdas creadas en una lista en las celdas para procesar despues
 			self.cluster.append(self.obj)
 		self.obj=0
 
+		
+ 
+
 
 	def inicializar_distribucion(self):
 		'''Init. Crea coordenadas de usuario de acuerdo a una proceso de distribucion.'''
-		if self.cfg_top['debug']:
+		if self.cfg_gen['debug']:
 			print("[sistema.inicializar_distribucion]")
 
-		if self.cfg_top["distribucion"][1] != 0:
-			if self.cfg_top["distribucion"][0]=="ppp":
+		if self.cfg_gen["distribucion"][1] != 0:
+			if self.cfg_gen["distribucion"][0]=="ppp":
 				self.usuario_x, self.usuario_y=ppp.distribuir_en_celdas(
-					self.cfg_top["radio_cel"],
+					self.cfg_gen["radio_cel"],
 				 	self.origen_cel_x,
 					self.origen_cel_y,
-					self.cfg_top["distribucion"][1],
-					self.cfg_top['debug'])
+					self.cfg_gen["distribucion"][1],
+					self.cfg_gen['debug'])
 				#shape es (n_celdas, n_usuarios en cada una)
 				##print(np.shape(self.usuario_x))#displays shape of arrays
 				##print(np.shape(self.usuario_y))
@@ -258,7 +261,7 @@ class Sistema_Celular:
 				##print("[sis.init.dist] 2. Tipo de dato\n",type(self.usuario_x)) #muestra la estructura de los datos.
 				##print("[sis.init.dist] 3. Logitud dato celda[0]:\n",len(self.usuario_x[0]))
 				##print("[sis.init.dist] 4. Estructura de celdas\n",self.usuario_x)
-				if self.cfg_top["imagen"]["display"][0]: #si true, genera el mapa de calor.
+				if self.cfg_gen["imagen"]["display"][0]: #si true, genera el mapa de calor.
 
 					with open('base_datos/datos/test_x.npy', 'rb') as f:
 
@@ -271,9 +274,9 @@ class Sistema_Celular:
 				else:
 					pass
 
-			elif self.cfg_top["distribucion"][0]=="random":
+			elif self.cfg_gen["distribucion"][0]=="random":
 				pass
-			elif self.cfg_top["distribucion"][0]=="prueba_unitaria":
+			elif self.cfg_gen["distribucion"][0]=="prueba_unitaria":
 				#si la intensidad es diferente de 0, y ademas la distribucion es esta, se asignan los valores.
 				#print("prueba unitaria-parametros_", self.intensidad)
 				self.usuario_x,self.usuario_y=self.intensidad
@@ -293,7 +296,7 @@ class Sistema_Celular:
 
 	def inicializar_hiperc_usuarios(self):
 		'''Init. crea la clase usuario en cada coordenada.'''
-		if self.cfg_top['debug']: #self.cfg_top['debug']
+		if self.cfg_gen['debug']: #self.cfg_gen['debug']
 			print("[sistema.inicializar_hiperc_usuarios]")
 		self.no_usuarios_total=len(self.cluster)*len(self.usuario_x[0])
 		self.no_usuarios_celda=len(self.usuario_x[0])
@@ -302,8 +305,8 @@ class Sistema_Celular:
 			celda_unica.interf_user_x=self.usuario_x #todos los usuarios.
 			celda_unica.interf_user_y=self.usuario_y ##todos los usuarios.
 
-			if self.cfg_top["imagen"]["display"][0]: #si true, then
-				celda_unica.mapa_bandera=self.cfg_top["imagen"]["display"][0]
+			if self.cfg_gen["imagen"]["display"][0]: #si true, then
+				celda_unica.mapa_bandera=self.cfg_gen["imagen"]["display"][0]
 				celda_unica.interf_malla_x=self.malla_x #todos los usuarios.
 				celda_unica.interf_malla_y=self.malla_y
 
@@ -312,11 +315,11 @@ class Sistema_Celular:
 			#las dos variables siguientes, son las que originan los demas calculos.
 			self.hiperc_distancias.append(celda_unica.interf_distancias)
 			self.hiperc_angulos.append(celda_unica.interf_angulos)
-			if self.cfg_top["imagen"]["display"][0]:
+			if self.cfg_gen["imagen"]["display"][0]:
 				self.hiperc_malla_distancias.append(celda_unica.interf_malla_distancias)
 				self.hiperc_malla_angulos.append(celda_unica.interf_malla_angulos)
 			#rta, a cada celda, por es una instancia de clase.
-			if self.cfg_top['debug']:
+			if self.cfg_gen['debug']:
 				print('[sistema] end of: hiperc_usuarios. Celda->',counter)
 			counter+=1
 
@@ -348,7 +351,7 @@ class Sistema_Celular:
 	def inicializar_antenas(self):
 		'''Init. Crea un modelo de antena especificado. Calcula la ganancia relativa de
 		un conjunto de angulos de usuario'''
-		if self.cfg_top['debug']:
+		if self.cfg_gen['debug']:
 			print("[sistema.inicializar_antenas]")
 
 		#hpbw=55
@@ -369,7 +372,7 @@ class Sistema_Celular:
 		###self.params_antena.append(self.hiperc_angulos)
 		#print("[tracebak2]",self.params_antena[5].shape)
 		#print("ant", self.params_antena)
-		if self.cfg_top["debug"]:
+		if self.cfg_gen["debug"]:
 			pass
 			#time.sleep(15)
 		#agrego una variable procesada del apuntamiento
@@ -381,7 +384,7 @@ class Sistema_Celular:
 		self.hiperc_antena=ant.Antena(self.cfg_ant,self.hiperc_angulos)
 		#self.hiperc_ganancia_relativa=self.hiperc_antena.hiper_ganancias #**considerar quitar
 
-		if self.cfg_top["imagen"]["display"][0]:
+		if self.cfg_gen["imagen"]["display"][0]:
 
 			#print("[tracebak1]",self.hiperc_angulos.shape)
 			self.params_malla_antena.append(self.cfg_ant)
@@ -396,8 +399,16 @@ class Sistema_Celular:
 		#diseno:
 		#"tipo", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad
 		#pasar parametros de perdidas:
-		if self.cfg_top['debug']:
-			print("[sistema.inicializar_modelo_canal]")
+		if self.cfg_gen['debug']:
+			print("[sistema.inicializar_modelo_canal]") 
+
+		#todas las variables en megaherz para evitar errores
+		if self.cfg_gen["portadora"][1]=="ghz":
+				#convierto a megaherz, por la ecuacion, si ya esta en megaherz, pass
+				self.cfg_gen["portadora"][0]=self.cfg_gen["portadora"][0]*1000
+				self.cfg_gen["portadora"][1]="mhz"
+		else:
+			pass
 
 		#centralizo los arreglos en una sola variable.
 		self.hiper_arreglos[0]=(self.hiperc_distancias, "m") #siempre en metros.
@@ -413,7 +424,7 @@ class Sistema_Celular:
 
 		self.hiperc_modelo_canal=moca.Modelo_Canal(self.cfg, self.hiper_arreglos)
 		#calculo las perdidas del modelo del canal segun el tipo de modelo de propagacion
-		if self.cfg_top["imagen"]["display"][0]:
+		if self.cfg_gen["imagen"]["display"][0]:
 			self.hiper_malla_arreglos[0]=(self.hiperc_malla_distancias, "m")
 			self.hiper_malla_arreglos[1]=self.hiperc_malla_antena.hiper_ganancias
 			#Creo un modelo del canal con todas las distancias.
@@ -428,13 +439,13 @@ class Sistema_Celular:
 		mapa_estaciones=self.mapa_conexion_estacion.copy()
 		dim_pr_v2D=self.potencia_recibida_v_2D.shape
 		mapa_usuarios=self.mapa_conexion_usuario.copy()
-		#target=self.no_usuarios_celda
-		#print("usuarios total por celda, inicial",target)
+		#params_asignacion=self.no_usuarios_celda
+		#print("usuarios total por celda, inicial",params_asignacion)
 		print(mapa_estaciones)
 		print(dim_pr_v2D)
 		print("maps", self.mapa_conexion_usuario)
-		target=[mapa_estaciones,dim_pr_v2D, mapa_usuarios]
-		self.planificador=plan.Planificador(self.cfg_plan,target)#por sector, etc.
+		params_asignacion=[mapa_estaciones,dim_pr_v2D, mapa_usuarios]
+		self.planificador=plan.Planificador(self.cfg_plan, self.cfg_gen, params_asignacion)#por sector, etc.
 		#ancho de banda se convierte en variable y depende de cuantos prb obtiene.
 		self.bw_usuario=self.planificador.asignacion
 
@@ -481,7 +492,7 @@ class Sistema_Celular:
 													fr:constante, figura de ruido.
 			-sinr_db=prmax_db-(10log10(pint+pn_v))
 		'''
-		if self.cfg_top['debug']:
+		if self.cfg_gen['debug']:
 			print("[sistema.calcular_sinr]")
 
 		#creo la variable local de trabajo
@@ -519,7 +530,7 @@ class Sistema_Celular:
 		self.mapa_conexion_usuario=np.stack(indices)
 		#print("test1",potencia_recibida_v_2D)
 		#sumo la cantidad de veces que la celda_i tuvo una potencia maxima.
-		for cnt in range(self.cfg_top["n_celdas"]): #range numero de celdas
+		for cnt in range(self.cfg_gen["n_celdas"]): #range numero de celdas
 			self.mapa_conexion_estacion.append(np.count_nonzero(self.mapa_conexion_usuario==cnt))
 
 		################################################self.planificador.mapa_conexion=self.mapa_conexion_estacion
@@ -528,7 +539,7 @@ class Sistema_Celular:
 		#re definimos la dimension de la potencia, para propositos de compatibilidad de arrays.
 		prx_veces=pr_maximo_v.reshape(suma_interf_v.shape)
 		#convertimos la figura de ruido a veces:
-		fr_v=self.configurar_unidades_veces(self.cfg_top["nf"][0])
+		fr_v=self.configurar_unidades_veces(self.cfg_gen["nf"][0])
 		#
 		self.potencia_ruido=(-174.2855251)+10*np.log10(self.bw_usuario*10**6)
 		#calculamos potencia de ruido en veces.
@@ -537,7 +548,7 @@ class Sistema_Celular:
 		#calculo sinr de acuerdo a la ecuacion
 		self.sinr_db=10*np.log10(prx_veces)-10*np.log10(suma_interf_v+pn)
 		#Reemplaza 1 donde sinr>12, 0 en caso contrario.
-		self.mapa_conexion_desconexion=np.where(self.sinr_db>self.cfg_top["ber_sinr"],1,0) #escribe 1 si true, 0 si false.
+		self.mapa_conexion_desconexion=np.where(self.sinr_db>self.cfg_gen["ber_sinr"],1,0) #escribe 1 si true, 0 si false.
 		#cuenta cuantos usuarios se conectaron.
 		self.conexion_total_sinr=np.count_nonzero(self.mapa_conexion_desconexion==1)
 		#calcula la probabilidad de conexion o probabilidad de exito de conexion.
@@ -550,7 +561,7 @@ class Sistema_Celular:
 
 	def calcular_celda_mayo_potencia(self):
 		'''Prepara arreglos a utilizar en funcion de calculo sinr.'''
-		if self.cfg_top['debug']:
+		if self.cfg_gen['debug']:
 			print("[sistema.calcular_celda_mayo_potencia]")
 		#variable local para eliminar
 		#self.potencia_recibida_v_2D
@@ -593,7 +604,7 @@ class Sistema_Celular:
 		#convierto a una dimension el array.
 		self.mapa_conexion_usuario=np.stack(indices)
 		#sumo la cantidad de veces que la celda_i tuvo una potencia maxima.
-		for cnt in range(self.cfg_top["n_celdas"]): #range numero de celdas
+		for cnt in range(self.cfg_gen["n_celdas"]): #range numero de celdas
 			self.mapa_conexion_estacion.append(np.count_nonzero(self.mapa_conexion_usuario==cnt))
 
 
@@ -755,7 +766,14 @@ class Sistema_Celular:
 		self.ver_sectores()
 		self.ver_circulos()
 		#no hay relacion entre los patchs y los plt.plots()
-		titulo= "Esc:"+self.tipo_modelo+", F:"+self.frecuencia_operacion+", Ues:"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
+		#
+		#
+		#
+		# CORREGIR, NO EXISTE LA VARIABLE FRECUENCIA_OPERAICON.
+		#
+		#
+		#
+		titulo= "Esc:"+self.cfg_prop["modelo_perdidas"]+", F:"+self.cfg_gen["portadora"][0]+", Ues:"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
 		plt.title(titulo)
 		plt.grid(True)
 		plt.show()
@@ -770,7 +788,7 @@ class Sistema_Celular:
 		print("-----------")
 		print("[info_sinr] {}".format(args))
 		print("-----------")
-		if self.cfg_top['debug']:
+		if self.cfg_gen['debug']:
 			print("\n-----[debug.calcular_sinr]:")
 		print("\n------------------------------------------[info_sinr]:")
 		#is args==True
@@ -827,12 +845,12 @@ class Sistema_Celular:
 			print(self.hiperc_ganancia_relativa)
 		elif target=="general":
 			print("\n------------------------------------------[info_general]:")
-			print("Celdas:",self.cfg_top["n_celdas"])
+			print("Celdas:",self.cfg_gen["n_celdas"])
 			print("Usuarios por celda",self.no_usuarios_celda)
 			print("Usuarios total",self.no_usuarios_total)
 			print("Ancho de banda:",self.bw_usuario, "[Mhz]")
 			print("Margen de conexion: ", self.medida_conexion_margen)
-			print("Conexion Sinr, calidad ",self.cfg_top["ber_sinr"], ":",self.medida_conexion_sinr)
+			print("Conexion Sinr, calidad ",self.cfg_gen["ber_sinr"], ":",self.medida_conexion_sinr)
 			print("------------------------------------------[info_general]\n")
 		else:
 			print("\n-----[info_arreglos]:")

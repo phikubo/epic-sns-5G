@@ -36,7 +36,8 @@ class Modelo_Canal:
 		#AUXILIAR
 		#self.distancias=0
 		self.distancias=0 #distancia general
-		self.frecuencia=self.cfg_gen["frecuencia"][0]
+		self.portadora=self.cfg_gen["portadora"][0]
+		
 
 		self.tx_grel=self.arreglos[1] #en cero estan los valore,s en 1 estan las unidades.
 
@@ -131,9 +132,9 @@ class Modelo_Canal:
 			else:
 				pass #opcion kilometro, no cambia.
 
-			if self.cfg_gen["frecuencia"][1]=="mhz":
+			if self.cfg_gen["portadora"][1]=="mhz":
 				#convierto a gigaherz
-				self.frecuencia=self.cfg_gen["frecuencia"][0]/1000
+				self.portadora=self.cfg_gen["portadora"][0]/1000
 			else:
 				pass #opcion gigahez, no cambia.
 			self.perdidas_espacio_libre_ghz()
@@ -149,9 +150,9 @@ class Modelo_Canal:
 				self.distancias=self.arreglos[0][0]/1000
 			else:
 				pass #opcion kilometro, no cambia.
-			if self.cfg_gen["frecuencia"][1]=="ghz":
+			if self.cfg_gen["portadora"][1]=="ghz":
 				#convierto a megaherz, por la ecuacion, si ya esta en megaherz, pass
-				self.frecuencia=self.cfg_gen["frecuencia"][0]*1000
+				self.portadora=self.cfg_gen["portadora"][0]*1000
 			else:
 				pass #opcion megaherz, no cambia.
 
@@ -164,7 +165,7 @@ class Modelo_Canal:
 	def perdidas_espacio_libre_ghz(self):
 		#outs dB
 		'''Funcion que calcula las perdidas de espacio libre en dB'''
-		self.resultado_path_loss=92.4+20*np.log10(self.frecuencia)+20*np.log10(self.distancias)
+		self.resultado_path_loss=92.4+20*np.log10(self.portadora)+20*np.log10(self.distancias)
 
 	def perdidas_okumura_hata_mhz(self):
 		#outs dB
@@ -184,7 +185,7 @@ class Modelo_Canal:
 
 		#de la forma: Lp=A+Blog10(R)
 
-		A=69.55+(26.16*np.log10(self.frecuencia))-13.82*np.log10(hb)-alfa*(hm)
+		A=69.55+(26.16*np.log10(self.portadora))-13.82*np.log10(hb)-alfa*(hm)
 		B=44.9-6.55*np.log10(hb)
 		E=3.2*(np.log10(11.75*hm))**2 -4.97 #[dB] para ciudades grandes y fc>300 MHz
 		#E=8.29*(np.log10(1.54*hm))**2 -1.1 #[dB] para ciudades grandes y fc<300 MHz
@@ -242,7 +243,7 @@ class Modelo_Canal:
 		-rango de frecuencias debajo de 30GHz'''
 		alpha_n=3.1
 		sigma_xn=8.1
-		correcion_freq_ghz=32.4+20*math.log10(self.frecuencia)
+		correcion_freq_ghz=32.4+20*math.log10(self.portadora)
 		correccion_dist_m=10*alpha_n*np.log10(self.distancias)
 		self.resultado_path_loss=correcion_freq_ghz+correccion_dist_m+sigma_xn
 
@@ -258,7 +259,7 @@ class Modelo_Canal:
 		beta=24.4
 		gamma=1.9
 		sigma_xn=8.0
-		correccion_freq_ghz=(10*gamma*math.log10(self.frecuencia))
+		correccion_freq_ghz=(10*gamma*math.log10(self.portadora))
 		correcion_dist_m=(10*alpha_n*np.log10(self.distancias))
 		self.resultado_path_loss=correccion_freq_ghz+correcion_dist_m+beta+sigma_xn
 
@@ -266,11 +267,11 @@ class Modelo_Canal:
 	def parametro_uma_pl(self, dist ,dist_ref,dist_3d):
 		'''Falta documentar, falta corregir variables locales y globales (self.dist?)'''
 		if (dist <= dist_ref) and (dist>= 10):
-			path_l=28.0+22*math.log10(dist_3d)+20*math.log10(self.frecuencia)
+			path_l=28.0+22*math.log10(dist_3d)+20*math.log10(self.portadora)
 		elif self.dist>disbp and dist<=5000:
-			path_l=13.54+39.08*math.log10(dist_3d)+20*math.log10(self.frecuencia)-0.6*(Hut-1.5)
+			path_l=13.54+39.08*math.log10(dist_3d)+20*math.log10(self.portadora)-0.6*(Hut-1.5)
 		else:
-			path_l=32.4+20*log10(self.frecuencia)+20*log10(10)
+			path_l=32.4+20*log10(self.portadora)+20*log10(10)
 		return path_l
 
 
@@ -279,7 +280,7 @@ class Modelo_Canal:
 		-distancia breakpoint: 4(Hbs-He)*(Hut-He)*fc/C
 		-rango de frecuencias para escenario UMa son por debajo de 6Ghz
 		Fuente: https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/15.00.00_60/tr_138901v150000p.pdf'''
-		frecuencia_hz= self.frecuencia*math.pow(10,9)
+		frecuencia_hz= self.portadora*math.pow(10,9)
 		distancia_3d=np.sqrt(Hbs**2+self.distancias**2)
 		dist_breakpoint=(4*(Hbs-He)*(Hut-He)*frecuencia_hz)/(3*math.pow(10, 8))
 		dist_bp=np.array(np.ones_like(self.distancias)*dist_breakpoint,dtype='int32')
