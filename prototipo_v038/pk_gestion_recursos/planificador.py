@@ -3,15 +3,18 @@ import numpy as np
 import os
 
 class Planificador:
-	'''Clase: asigna prb por usuario'''
-	def __init__(self, params, no_usuarios):
-		self.cfg_plan=params
+	'''Clase: asigna prb por usuario, calcula matriz de interferencia.'''
+	def __init__(self, params_cfg, params):
+		self.cfg_plan=params_cfg
 		#numero de usuarios por celda
-		self.no_usuarios=no_usuarios
+		self.mapa_conexion=params[0]
+		#self.dim_pot_r=params[1]
+		#self.aux_ones_interf=np.ones(params[1])
+
 		#output:
 		self.asignacion=0 #por usuario
-		self.mapa_conexion=0
-		self.inicializar_tipo()
+
+		#self.inicializar_tipo()
 
 		self.numerologia=[0,1,2,3]
 		self.cp_ofdm=['Normal','Extendido']
@@ -159,7 +162,7 @@ if __name__=="__main__":
 	#Prototipo:
 	print("planificador")
 
-	#plan=Planificador(params, 17)
+	#plan=Planificador(params_cfg, 17)
 	#Planificador.asignar_100mhz()
 	#REALIZAR PRUEBA DE F1,F2,F3
 	prueba_asignar100()

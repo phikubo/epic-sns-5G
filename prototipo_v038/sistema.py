@@ -425,13 +425,15 @@ class Sistema_Celular:
 
 	def inicializar_asignacion(self):
 		'''Permite gestionar el recurso de ancho de banda sobre los usuarios en cada celda'''
-		mapa_estaciones=self.mapa_conexion_estacion
+		mapa_estaciones=self.mapa_conexion_estacion.copy()
 		dim_pr_v2D=self.potencia_recibida_v_2D.shape
-		
-		target=self.no_usuarios_celda
-		print("usuarios total por celda, inicial",target)
+		mapa_usuarios=self.mapa_conexion_usuario.copy()
+		#target=self.no_usuarios_celda
+		#print("usuarios total por celda, inicial",target)
 		print(mapa_estaciones)
 		print(dim_pr_v2D)
+		print("maps", self.mapa_conexion_usuario)
+		target=[mapa_estaciones,dim_pr_v2D, mapa_usuarios]
 		self.planificador=plan.Planificador(self.cfg_plan,target)#por sector, etc.
 		#ancho de banda se convierte en variable y depende de cuantos prb obtiene.
 		self.bw_usuario=self.planificador.asignacion
