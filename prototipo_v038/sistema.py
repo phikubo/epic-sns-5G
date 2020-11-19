@@ -441,9 +441,12 @@ class Sistema_Celular:
 		mapa_usuarios=self.mapa_conexion_usuario.copy()
 		#params_asignacion=self.no_usuarios_celda
 		#print("usuarios total por celda, inicial",params_asignacion)
-		print(mapa_estaciones)
-		print(dim_pr_v2D)
-		print("maps", self.mapa_conexion_usuario)
+		#print(mapa_estaciones)
+		#print(dim_pr_v2D)
+		#print("potencia rec",self.potencia_recibida_v_2D)
+		#print("usuarios iniciales",self.no_usuarios_celda)
+		#print("maps", self.mapa_conexion_usuario)
+		#print("por celda", mapa_estaciones)
 		params_asignacion=[mapa_estaciones,dim_pr_v2D, mapa_usuarios]
 		self.planificador=plan.Planificador(self.cfg_plan, self.cfg_gen, params_asignacion)#por sector, etc.
 		#ancho de banda se convierte en variable y depende de cuantos prb obtiene.
@@ -653,7 +656,7 @@ class Sistema_Celular:
 		for x,y in zip(self.origen_cel_x, self.origen_cel_y):
 			#pinta triangulos en los origenes de las estaciones base
 			#plt.plot(x,y, 'b^')
-			malla_hexagonal = RegularPolygon((x, y), numVertices=6, radius=self.radio,
+			malla_hexagonal = RegularPolygon((x, y), numVertices=6, radius=self.cfg_gen["radio_cel"],
 							orientation=np.radians(30), #con 60 grados funciona perfecto, pero las coordenadas cambian. Antes 30
 							facecolor=color, alpha=0.2, edgecolor='k')
 							#cambiar radius=2. / 3. , cuando se usa coord_0
@@ -667,8 +670,8 @@ class Sistema_Celular:
 
 		angulo_x, angulo_y=mcir.coordenadas_angulos(azimuts)
 		#estos valores deben pertenecer a la clase
-		apotema=math.sqrt(self.radio**2 -(0.5*self.radio)**2)
-		apotema_trisec= self.radio/2 #relaciono el apotema tri con el radio celda grande
+		apotema=math.sqrt(self.cfg_gen["radio_cel"]**2 -(0.5*self.cfg_gen["radio_cel"])**2)
+		apotema_trisec= self.cfg_gen["radio_cel"]/2 #relaciono el apotema tri con el radio celda grande
 		radio_trisec =2*apotema_trisec* math.sqrt((4/3)) #radio a partir del apotema
 
 		self.cels_ax=mcir.tri_sectorizar(angulo_x,angulo_y, radio_trisec, self.origen_cel_x,
@@ -700,7 +703,12 @@ class Sistema_Celular:
 	def ver_usuarios_colores(self):
 		'''Permite ver los usuarios conectados a su estacion base, criterio de mayor potencia recibida'''
 		#fin, poner en otra funcion.
-		for usuario, (bandera, map) in enumerate(zip(self.mapa_conexion_desconexion, self.mapa_conexion_usuario)):
+		
+		print(self.mapa_conexion_estacion)
+		print(self.mapa_conexion_usuario)
+		print("+++++++++++++++++++colores")
+		#for usuario, (bandera, mapa_conexion_usuario) in enumerate(zip(self.mapa_conexion_desconexion, self.mapa_conexion_usuario)):
+		for usuario, (bandera, mapa_conexion_usuario) in enumerate(zip(self.mapa_conexion_estacion, self.mapa_conexion_usuario)):
 			#print(usuario, bandera, map)
 			if bandera==0:
 				#-1 donde se cumpla que sinr<12
@@ -734,12 +742,12 @@ class Sistema_Celular:
 			5. plot'''
 		for x,y in zip(self.origen_cel_x, self.origen_cel_y):
 			#print(x,y)
-			cx,cy=mcir.coordenadas_circulo(self.radio, [x,y])
+			cx,cy=mcir.coordenadas_circulo(self.cfg_gen["radio_cel"], [x,y])
 			self.cels_ax.plot(cx,cy, 'b')
 
 
 	def ver_todo(self, *args):
-		"Funcion que retorna todaslas graficas."
+		"Funcion que retorna todas las graficas."
 		self.cel_fig, self.cels_ax=plt.subplots(1)
 		#args: i, k, i:{1,0},k:{1,0}
 		#0->self.ver_usuarios()
@@ -765,6 +773,7 @@ class Sistema_Celular:
 		self.ver_estaciones_base()
 		self.ver_sectores()
 		self.ver_circulos()
+		
 		#no hay relacion entre los patchs y los plt.plots()
 		#
 		#
@@ -773,7 +782,7 @@ class Sistema_Celular:
 		#
 		#
 		#
-		titulo= "Esc:"+self.cfg_prop["modelo_perdidas"]+", F:"+self.cfg_gen["portadora"][0]+", Ues:"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
+		titulo= "Esc:"+str(self.cfg_prop["modelo_perdidas"])+", F:"+str(self.cfg_gen["portadora"][0])+", Ues:"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
 		plt.title(titulo)
 		plt.grid(True)
 		plt.show()
@@ -810,19 +819,39 @@ class Sistema_Celular:
 	def info_distancia(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_distancia]")
+		print(self.hiperc_distancias)
+		print("**************************************************\n")
 
 
 	def info_angulos(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_angulos]")
+		print(self.hiperc_angulos)
+		print("**************************************************\n")
 
 	def info_ganancia(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_ganancia]")
+		print(self.hiperc_ganancia_relativa)
+		print("**************************************************\n")
 
 	def info_potencia(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
-		print("[info_potencia]")
+		print("[info_potencia_con_desv]")
+		print(self.hiperc_modelo_canal.balance_simplificado)
+		print("**************************************************\n")
+
+	def info_potencia_sin(self,*args):
+		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
+		print("[info_potencia_sin_desv]")
+		print(self.hiperc_modelo_canal.balance_simplificado_antes)
+		print("**************************************************\n")
+	
+	def info_balance(self,*args):
+		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
+		print("[info_balance]")
+		print(self.hiperc_modelo_canal.resultado_balance)
+		print("**************************************************\n")
 
 	def info_general(self, *target):
 		'''Permite observar parametros generales de cada simulacion.'''

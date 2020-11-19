@@ -228,12 +228,24 @@ def prueba_sistema_v048():
 		print("*******************************SIMULACION {}****************************".format(it))
 		coleccion_simulacion.append(ss.Sistema_Celular(configuracion))
 		it+=1
-
+		print("*******************************FIN SIMULACION {}****************************".format(it))
+	print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+	print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+	print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+	print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+	print("Datos de simulacion, simulacion 1")
+	print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 	simtest=coleccion_simulacion[0]
 	simtest.info_sinr()
+	simtest.info_distancia()
+	simtest.info_potencia()
+	simtest.info_potencia_sin()
+	simtest.info_balance()
+	simtest.ver_todo()
+	plt.show()
 
-	simtest2=coleccion_simulacion[1]
-	simtest2.info_sinr()
+	#simtest2=coleccion_simulacion[1]
+	#simtest2.info_sinr()
 
 
 if __name__=="__main__":
