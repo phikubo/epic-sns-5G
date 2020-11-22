@@ -9,7 +9,9 @@ class Planificador:
 		self.cfg_gen=params_cfg_gen
 		#numero de usuarios por celda
 		self.mapa_conexion=params[0]
-		self.max_mapa=max(self.mapa_conexion)
+		self.dim_mapa=params[1]
+		self.mapa_usuarios=params[2]
+		self.max_usuario=max(self.mapa_conexion)
 		#self.dim_pot_r=params[1]
 		#self.aux_ones_interf=np.ones(params[1])
 		#output:
@@ -17,9 +19,15 @@ class Planificador:
 		self.nrb_total=0
 		self.nrb_total=24
 		self.nrb_con_PBCH=0
+		self.contador=0
+		self.mapa_nrb=[]
+		self.mapa_estado=[]
+		self.mapa_interferencia=[]
+		self.estado=0
 		#self.calcular_tipo_asignacion()
 		self.calcular_nrbs_celda()
 		self.calcular_nrbs_usuarios()
+		self.configurar_mapa_nrb()
 
 
 
@@ -55,14 +63,13 @@ class Planificador:
 		'''Funcion que asigna ancho de banda representado en prb, a partir de la
 		frecuencia portadora y otros parametros adicionales'''
 		if self.cfg_plan["tipo"]=="rr":
-			ress=self.nrb_total%self.max_mapa
+			ress=self.nrb_total%self.max_usuario
 			if ress!=0:
 				self.nrb_total=self.nrb_total-ress
 			else:
 				pass
-			self.asignacion=self.nrb_total/self.max_mapa
-			print("self.asignacion",self.asignacion)
-			print("mapa", self.mapa_conexion, self.max_mapa)
+			self.asignacion=self.nrb_total/self.max_usuario
+
 
 
 		elif self.cfg_plan["tipo"]=="estatico":
@@ -75,6 +82,54 @@ class Planificador:
 			pass
 		else:
 			pass
+
+	def configurar_mapa_nrb(self):
+		'''Reparte recursos C_{i}, de acuerdo al mapa de conexion de celdas.
+		C_{i}, i={1,2,3,...,n_cel}, representa cada bloque de nrb entregado a cada
+		usuario, de esta forma si se entrega a cada usuario 364 nrbs, C1 representa
+		el bloque nrb 0-363, C2 representa el bloque nrb 364-2*363 y asi sucesivamente.'''
+		#print("self.asignacion",self.asignacion)
+		print("mapa", self.mapa_conexion, self.max_usuario)
+		#print("usuarios",self.mapa_usuarios)
+		#el estado debe cambiar solo cuando el indice cambia.
+		self.contador=[0 for i in range(len(self.mapa_conexion))]
+		self.contador=np.array(self.contador)
+		self.estado=[0 for i in range(len(self.mapa_conexion))]
+		self.estado=np.array(self.estado)
+
+		for indd, celda in enumerate(self.mapa_usuarios):
+			self.contador[celda[0]]=self.contador[celda[0]]+1
+			self.estado[celda[0]]=1
+			#cambio de indice.
+			print(indd,self.mapa_usuarios[indd],self.contador, self.estado, "nrb_{}".format(sum(self.contador*self.estado)))
+			self.mapa_estado.append(self.estado.copy())
+			self.mapa_nrb.append(sum(self.contador*self.estado))
+			self.estado[celda[0]]=0
+			#print("nrb",mapa, " repetidos:",arreglo[0])
+		#convertir a numpy
+		self.mapa_nrb=np.array(self.mapa_nrb)
+		self.mapa_estado=np.stack(self.mapa_estado).reshape(self.dim_mapa)
+
+		#se vuelven extranas las cosas, pero dont worry, esto sirve para mapear la interferencia.
+		for indx, mapa in enumerate(range(1,self.max_usuario+1)):
+			arreglo=np.where(self.mapa_nrb==mapa)
+
+			#print("nrb",mapa, " repetidos:",arreglo[0])
+			mapa_semilla=[0 for i in range(len(self.mapa_conexion))]
+
+			for indxx in arreglo[0]:
+				print(indxx, self.mapa_estado[indxx])
+				mapa_semilla=self.mapa_estado[indxx] + mapa_semilla
+			print("------>semilla",mapa_semilla)
+			self.mapa_interferencia.append(mapa_semilla)
+		self.mapa_interferencia=np.stack(self.mapa_interferencia)
+		print(self.mapa_interferencia)
+		#la matriz de potencia puede obtener [0 0 0 0 ... 0] en potencia.
+		#en este caso
+
+
+
+
 
 
 

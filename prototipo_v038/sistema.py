@@ -443,7 +443,7 @@ class Sistema_Celular:
 		#print("usuarios total por celda, inicial",params_asignacion)
 		#print(mapa_estaciones)
 		#print(dim_pr_v2D)
-		#print("potencia rec",self.potencia_recibida_v_2D)
+		##print("potencia rec\n",self.potencia_recibida_v_2D)
 		#print("usuarios iniciales",self.no_usuarios_celda)
 		#print("maps", self.mapa_conexion_usuario)
 		#print("por celda", mapa_estaciones)
