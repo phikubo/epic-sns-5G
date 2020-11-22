@@ -118,7 +118,7 @@ class Sistema_Celular:
 		##
 		#implemeneta criterio de potencia maxima de los usuarios a todas las celdas.
 		self.calcular_celda_mayo_potencia()
-		##inicializa el efecto del ancho de banda, segun parametros fijos o 
+		##inicializa el efecto del ancho de banda, segun parametros fijos o
 		###procesamiento de alguna variable, eg. potencia recibida.
 		self.inicializar_asignacion()
 		#opera sobre el margen del balance
@@ -236,8 +236,8 @@ class Sistema_Celular:
 			self.cluster.append(self.obj)
 		self.obj=0
 
-		
- 
+
+
 
 
 	def inicializar_distribucion(self):
@@ -400,7 +400,7 @@ class Sistema_Celular:
 		#"tipo", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad
 		#pasar parametros de perdidas:
 		if self.cfg_gen['debug']:
-			print("[sistema.inicializar_modelo_canal]") 
+			print("[sistema.inicializar_modelo_canal]")
 
 		#todas las variables en megaherz para evitar errores
 		if self.cfg_gen["portadora"][1]=="ghz":
@@ -447,6 +447,7 @@ class Sistema_Celular:
 		#print("usuarios iniciales",self.no_usuarios_celda)
 		#print("maps", self.mapa_conexion_usuario)
 		#print("por celda", mapa_estaciones)
+		print("[inicializar_asignacion]")
 		params_asignacion=[mapa_estaciones,dim_pr_v2D, mapa_usuarios]
 		self.planificador=plan.Planificador(self.cfg_plan, self.cfg_gen, params_asignacion)#por sector, etc.
 		#ancho de banda se convierte en variable y depende de cuantos prb obtiene.
@@ -703,7 +704,7 @@ class Sistema_Celular:
 	def ver_usuarios_colores(self):
 		'''Permite ver los usuarios conectados a su estacion base, criterio de mayor potencia recibida'''
 		#fin, poner en otra funcion.
-		
+
 		print(self.mapa_conexion_estacion)
 		print(self.mapa_conexion_usuario)
 		print("+++++++++++++++++++colores")
@@ -773,7 +774,7 @@ class Sistema_Celular:
 		self.ver_estaciones_base()
 		self.ver_sectores()
 		self.ver_circulos()
-		
+
 		#no hay relacion entre los patchs y los plt.plots()
 		#
 		#
@@ -846,7 +847,7 @@ class Sistema_Celular:
 		print("[info_potencia_sin_desv]")
 		print(self.hiperc_modelo_canal.balance_simplificado_antes)
 		print("**************************************************\n")
-	
+
 	def info_balance(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_balance]")
