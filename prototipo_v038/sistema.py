@@ -98,6 +98,8 @@ class Sistema_Celular:
 		self.conexion_total_sinr=0
 		self.medida_conexion_sinr=0
 
+		self.matriz_interferente=0
+
 		#inicializa objetos tipo celda y las almacena en self.cluster
 		self.inicializar_cluster_celdas()
 		#crea las coordenadas de los usuarios segun una distribucion
@@ -447,12 +449,18 @@ class Sistema_Celular:
 		#print("usuarios iniciales",self.no_usuarios_celda)
 		#print("maps", self.mapa_conexion_usuario)
 		#print("por celda", mapa_estaciones)
-		print("[inicializar_asignacion]")
+		#print("[inicializar_asignacion]")
 		params_asignacion=[mapa_estaciones,dim_pr_v2D, mapa_usuarios]
 		self.planificador=plan.Planificador(self.cfg_plan, self.cfg_gen, params_asignacion)#por sector, etc.
 		#ancho de banda se convierte en variable y depende de cuantos prb obtiene.
 		self.bw_usuario=self.planificador.asignacion
 
+		#convierte la matriz de potencia recibida en matriz de interferencia.
+		#print("marix",self.potencia_recibida_v_2D)
+		self.matriz_interferente=self.potencia_recibida_v_2D*self.planificador.mapa_interf_distribuida
+
+		print("interferencia antes\n", self.potencia_recibida_v_2D)
+		print("interferencia ahora\n",self.matriz_interferente)
 
 	'''-----------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------------

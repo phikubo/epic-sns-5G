@@ -13,7 +13,7 @@ class Planificador:
 		self.mapa_usuarios=params[2]
 		self.max_usuario=max(self.mapa_conexion)
 		#self.dim_pot_r=params[1]
-		#self.aux_ones_interf=np.ones(params[1])
+		self.mapa_interf_distribuida=np.ones(params[1])
 		#output:
 		self.asignacion=0 #por usuario
 		self.nrb_total=0
@@ -21,6 +21,7 @@ class Planificador:
 		self.nrb_con_PBCH=0
 		self.contador=0
 		self.mapa_nrb=[]
+		self.lista_distribucion=[]
 		self.mapa_estado=[]
 		self.mapa_interferencia=[]
 		self.estado=0
@@ -89,7 +90,7 @@ class Planificador:
 		usuario, de esta forma si se entrega a cada usuario 364 nrbs, C1 representa
 		el bloque nrb 0-363, C2 representa el bloque nrb 364-2*363 y asi sucesivamente.'''
 		#print("self.asignacion",self.asignacion)
-		print("mapa", self.mapa_conexion, self.max_usuario)
+		#print("mapa", self.mapa_conexion, self.max_usuario)
 		#print("usuarios",self.mapa_usuarios)
 		#el estado debe cambiar solo cuando el indice cambia.
 		self.contador=[0 for i in range(len(self.mapa_conexion))]
@@ -110,22 +111,37 @@ class Planificador:
 		self.mapa_nrb=np.array(self.mapa_nrb)
 		self.mapa_estado=np.stack(self.mapa_estado).reshape(self.dim_mapa)
 
-		#se vuelven extranas las cosas, pero dont worry, esto sirve para mapear la interferencia.
+		#si piensas que esto es dificil, prueba computacion cuantica.
 		for indx, mapa in enumerate(range(1,self.max_usuario+1)):
 			arreglo=np.where(self.mapa_nrb==mapa)
-
-			#print("nrb",mapa, " repetidos:",arreglo[0])
+			self.lista_distribucion.append(arreglo[0])
+			##print("nrb",mapa, " repetidos:",arreglo[0])
 			mapa_semilla=[0 for i in range(len(self.mapa_conexion))]
 
 			for indxx in arreglo[0]:
-				print(indxx, self.mapa_estado[indxx])
+				#############################print(indxx, self.mapa_estado[indxx])
 				mapa_semilla=self.mapa_estado[indxx] + mapa_semilla
-			print("------>semilla",mapa_semilla)
+			#print("------>semilla",mapa_semilla)
 			self.mapa_interferencia.append(mapa_semilla)
 		self.mapa_interferencia=np.stack(self.mapa_interferencia)
-		print(self.mapa_interferencia)
+		#self.lista_distribucion=np.stack(self.lista_distribucion)
+		##print("mapa interferencia\n",self.mapa_interferencia)
+		##print("mapa estados\n",self.mapa_estado)
+		#print("aux\n",self.mapa_interf_distribuida)
+		#print("mapa_distribucion\n", self.lista_distribucion)
+		for lista, mapa_dist in zip(self.lista_distribucion, self.mapa_interferencia):
+			#print(lista, mapa_dist)
+			for indx_interf in lista:
+				self.mapa_interf_distribuida[indx_interf]=mapa_dist
+				#print(indx_interf)
+		print("mapa de usuarios iterfentes\n",self.lista_distribucion)
+		print("mapa de estados iterfentes\n",self.mapa_interferencia)
+		print("mapa distribucion\n",self.mapa_interf_distribuida)
+
+
 		#la matriz de potencia puede obtener [0 0 0 0 ... 0] en potencia.
-		#en este caso
+		#en este caso, no ha habido interferencia de otras celdas.
+
 
 
 
