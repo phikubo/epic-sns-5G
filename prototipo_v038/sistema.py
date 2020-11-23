@@ -459,8 +459,8 @@ class Sistema_Celular:
 		#print("marix",self.potencia_recibida_v_2D)
 		self.matriz_interferente=self.potencia_recibida_v_2D*self.planificador.mapa_interf_distribuida
 
-		print("interferencia antes\n", self.potencia_recibida_v_2D)
-		print("interferencia ahora\n",self.matriz_interferente)
+		#print("interferencia antes\n", self.potencia_recibida_v_2D)
+		#print("interferencia ahora\n",self.matriz_interferente)
 
 	'''-----------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------------

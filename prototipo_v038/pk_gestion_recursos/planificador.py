@@ -90,7 +90,7 @@ class Planificador:
 		usuario, de esta forma si se entrega a cada usuario 364 nrbs, C1 representa
 		el bloque nrb 0-363, C2 representa el bloque nrb 364-2*363 y asi sucesivamente.'''
 		#print("self.asignacion",self.asignacion)
-		#print("mapa", self.mapa_conexion, self.max_usuario)
+		print("mapa", self.mapa_conexion, self.max_usuario)
 		#print("usuarios",self.mapa_usuarios)
 		#el estado debe cambiar solo cuando el indice cambia.
 		self.contador=[0 for i in range(len(self.mapa_conexion))]
@@ -135,8 +135,8 @@ class Planificador:
 				self.mapa_interf_distribuida[indx_interf]=mapa_dist
 				#print(indx_interf)
 		print("mapa de usuarios iterfentes\n",self.lista_distribucion)
-		print("mapa de estados iterfentes\n",self.mapa_interferencia)
-		print("mapa distribucion\n",self.mapa_interf_distribuida)
+		#print("mapa de estados iterfentes\n",self.mapa_interferencia)
+		#print("mapa distribucion\n",self.mapa_interf_distribuida)
 
 
 		#la matriz de potencia puede obtener [0 0 0 0 ... 0] en potencia.
