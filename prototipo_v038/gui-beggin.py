@@ -11,6 +11,14 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.image import AsyncImage, Image
 
+"""
+Importamos los datos del archivo Json en la seccion de cfg_gui  llamados desde el 
+MainWindow uniendo el backen y el frontend del simulador. usando las funciones del
+archivo kivy donde se declaran las variables de la GUI para ser guardadas y 
+posteriormente evaluadas para su debido  funcionamiento 
+
+"""
+from utilidades import config as cfg 
 #with open("simulator-beggin.kv", encoding='utf-8', errors="surrogateescape") as kv_file:
 #    Builder.load_string(kv_file.read())
 
@@ -115,17 +123,25 @@ class MainWindow(Screen):
 		#print("Nivel: ", self.nivel.text," radio celda: ", self.radiocell.text, " Intensidad PPP: ", self.intensidadPPP.text)
 		#SecondWindow.add_dato()
 		#get_dato(self.intensidadPPP.text)
-		print(self.fp.text)
-		print(self.bw.text)
-		print(self.isd.text)
-		print(self.ppp.text)
-		print(self.esc.text)
-		print(self.mp.text)
-		print(self.desv.text)
-		print(self.nf.text)
-		print(self.ptx.text)
-		print(self.patron.text)
-		print(self.celdas.text)
+
+		print("**************************************************")
+		print("**********Inicio pruebas GUI-ANGELICA****************")
+		print("**************************************************")
+
+		print(int(self.fp.text))
+		print(int(self.bw.text))
+		print(int(self.isd.text))
+		print(str(self.ppp.text))
+		print(str(self.esc.text))
+		print(str(self.mp.text))
+		print(str(self.desv.text))
+		print(int(self.nf.text))
+		print(int(self.ptx.text))
+		print(str(self.patron.text))
+		print(int(self.celdas.text))
+
+		configuracion=cfg.guardar_variables(target_path="base_datos/")
+		configuracion["cgf_simulador"]
 
 
 		#rcell=int(self.radiocell.text)
