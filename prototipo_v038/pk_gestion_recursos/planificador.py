@@ -29,7 +29,6 @@ class Planificador:
 		self.configurar_mapa_nrb()
 
 
-
 	def to_khz(self,target):
 		'''return variable in khz'''
 		return target*10**3
@@ -131,14 +130,14 @@ class Planificador:
 			for indx_interf in lista:
 				self.mapa_interf_distribuida[indx_interf]=mapa_dist
 				#print(indx_interf)
-		print("mapa de usuarios iterfentes\n",self.lista_distribucion)
+		#print("mapa de usuarios iterfentes\n",self.lista_distribucion)
 		#print("mapa de estados iterfentes\n",self.mapa_interferencia)
 		#print("mapa distribucion\n",self.mapa_interf_distribuida)
 
 
 
 def prueba_asignar100():
-	#@@ -163,11 +124,7 @@ 
+	#@@ -163,11 +124,7 @@
 	print(prueba2)
 	print("-----------------------------------------------Numero de bloques de recursos 400MHz ---------------")
 	print("-----------------------------------------------(Cantidad de bloques de recuros , ancho de banda por RB) ---------------")
@@ -147,7 +146,7 @@ def prueba_asignar100():
 def prueba_asignar():
 	"""Comprueba implementacion de funciones asignar 100,200,400 segun parametros"""
 	prueba=Planificador.asignar_100mhz()
-	
+
 
 def lista_rb():
 	#lista=append

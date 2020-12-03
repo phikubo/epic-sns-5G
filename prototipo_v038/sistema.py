@@ -122,9 +122,10 @@ class Sistema_Celular:
 		self.calcular_celda_mayo_potencia()
 		##inicializa el efecto del ancho de banda, segun parametros fijos o
 		###procesamiento de alguna variable, eg. potencia recibida.
-		self.inicializar_asignacion()
 		#opera sobre el margen del balance
-		##self.calcular_margen()
+		self.calcular_margen()
+		#obtiene matriz de potencia interferente.
+		self.inicializar_asignacion()
 		#calcula la sinr dado.
 		##self.calcular_sinr()
 
@@ -472,6 +473,7 @@ class Sistema_Celular:
 		'''Permite calcular el valor de conexion del margen del balance del enlace'''
 		margen_dB=self.hiperc_modelo_canal.resultado_margen
 		#obtenengo las dimensiones del arreglo cluster, pues esta segmentado en 3D
+		#print("test1", margen_dB)
 		l,m,n=margen_dB.shape
 		#redimensiono la potencia recibida de un arreglo 3D a 2D.
 		margen_dB_2D=np.reshape(margen_dB, (l*m, n))
