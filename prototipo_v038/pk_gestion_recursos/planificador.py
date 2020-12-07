@@ -9,7 +9,11 @@ class Planificador:
 		self.mapa_conexion=params[0]
 		self.dim_mapa=params[1]
 		self.mapa_usuarios=params[2]
+		self.mapa_margen_descon=np.stack(params[3])
+		self.mapa_usr_descon=params[4]
+		self.mapa_estacion_descon=params[5]
 		self.max_usuario=max(self.mapa_conexion)
+		self.max_usuario_descon=max(self.mapa_estacion_descon)
 		#self.dim_pot_r=params[1]
 		self.mapa_interf_distribuida=np.ones(params[1])
 		#output:
@@ -86,21 +90,52 @@ class Planificador:
 		usuario, de esta forma si se entrega a cada usuario 364 nrbs, C1 representa
 		el bloque nrb 0-363, C2 representa el bloque nrb 364-2*363 y asi sucesivamente.'''
 		#print("self.asignacion",self.asignacion)
-		print("mapa", self.mapa_conexion, self.max_usuario)
+		print("mapa completo\n", self.mapa_conexion, self.max_usuario)
+		print("mapa descon\n", self.mapa_estacion_descon, self.max_usuario_descon)
 		#print("usuarios",self.mapa_usuarios)
 		#el estado debe cambiar solo cuando el indice cambia.
 		self.contador=[0 for i in range(len(self.mapa_conexion))]
+		#convierto a numpy para aprovechar multiplicacion elemento a elemnto.
 		self.contador=np.array(self.contador)
 		self.estado=[0 for i in range(len(self.mapa_conexion))]
+		#convierto a numpy para aprovechar multiplicacion elemento a elemnto.
 		self.estado=np.array(self.estado)
 
+		print("indice	descon	cel_descon	celda	contador	estado		nrb")
 		for indd, celda in enumerate(self.mapa_usuarios):
-			self.contador[celda[0]]=self.contador[celda[0]]+1
-			self.estado[celda[0]]=1
+			#print("test plafinicaodr",celda)
+			#celda[0], porque al ser numpy, genera un array[] y para acceder al
+				#array, es necesario acecder al valor [0]
+			if self.mapa_margen_descon[indd]==0:
+				#print("descon map {}, self.estado {}".format(self.mapa_margen_descon[indd], celda[0]))
+				self.estado[celda[0]]=0
+			else:
+				#si diferente de 0, sum
+				self.contador[celda[0]]=self.contador[celda[0]]+1
+				self.estado[celda[0]]=1
+			#print(self.estado)
+			#self.contador[celda[0]]=self.contador[celda[0]]+1
+			#uno donde ha habido cambio. el estado es por cada celda
+				#para indicar donde ha habido cambio.
+			#self.estado[celda[0]]=1
 			#cambio de indice.
-			print(indd,self.mapa_usuarios[indd],self.contador, self.estado, "nrb_{}".format(sum(self.contador*self.estado)))
+				#sum(self.contador*self.estado) es el valor del nrb1.
+
+			#print(indd,self.mapa_usuarios[indd],self.contador, self.estado, "nrb_{}".format(sum(self.contador*self.estado)))
+			mostrar="{}	{}	{}		{}	{}	{}	nrb_{}".format(indd,self.mapa_margen_descon[indd], self.mapa_usr_descon[indd],
+				self.mapa_usuarios[indd],self.contador, self.estado, sum(self.contador*self.estado))
+			print(mostrar)
 			self.mapa_estado.append(self.estado.copy())
-			self.mapa_nrb.append(sum(self.contador*self.estado))
+			#if bandera conexion==0:
+				#apend -1 en esa posicion. [ok]
+				#sino:
+					#pass a mapa_nrb. [ok]
+			#posible error: [ok]
+				#se salta el recurso, por que igual hay menos usuarios.
+				#revisar el mapa de conexion, debe considerar menos usuarios tambien.
+				#como realizar el descuento?
+			nrb_actual=sum(self.contador*self.estado)
+			self.mapa_nrb.append(nrb_actual)
 			self.estado[celda[0]]=0
 			#print("nrb",mapa, " repetidos:",arreglo[0])
 		#convertir a numpy
@@ -108,8 +143,15 @@ class Planificador:
 		self.mapa_estado=np.stack(self.mapa_estado).reshape(self.dim_mapa)
 
 		#si piensas que esto es dificil, prueba computacion cuantica.
-		for indx, mapa in enumerate(range(1,self.max_usuario+1)):
+		print("\n\nself.max_usuario_descon o self.max_usuario, cual es la diferencia?\n\n")
+		'''Funciona por que originalmente la matriz de estados interferentes es cero y a medida
+		que se generan la distribucion se rellena, como la matriz de distribucion solo es
+		repartida a los usuarios cuyos indices se encuentran mapeados, los indices no mapeados
+		corresponden a los indices donde no ha habido conexion desde un principio'''
+		for indx, mapa in enumerate(range(0,self.max_usuario_descon+1)):
 			arreglo=np.where(self.mapa_nrb==mapa)
+			#esta nueva lista de distribucion cuenta donde ha habido nrb0,
+			#y los reparte a la lista, por lo que el ciclo esta completo.
 			self.lista_distribucion.append(arreglo[0])
 			##print("nrb",mapa, " repetidos:",arreglo[0])
 			mapa_semilla=[0 for i in range(len(self.mapa_conexion))]
@@ -129,10 +171,15 @@ class Planificador:
 			#print(lista, mapa_dist)
 			for indx_interf in lista:
 				self.mapa_interf_distribuida[indx_interf]=mapa_dist
-				#print(indx_interf)
-		#print("mapa de usuarios iterfentes\n",self.lista_distribucion)
-		#print("mapa de estados iterfentes\n",self.mapa_interferencia)
-		#print("mapa distribucion\n",self.mapa_interf_distribuida)
+				#print(indx_interf
+		print("\nrevisar que no se este repartiendo el nrb0?-revisado [ok]\n")
+		print("mapa de usuarios iterfentes\n",self.lista_distribucion, len(self.lista_distribucion))
+		print("como cambia el mapa de estados?")
+		print("\nEl usuario no produce interferencia, pero tampoco se conecta.\n")
+		print("mapa de estados iterfentes\n",self.mapa_interferencia, len(self.mapa_interferencia))
+		print("como cambia el mapa de distribucion?\n al iniciar el rango en 0, tambien los cuenta los nrbs0 por lo que se reparte ok.")
+		print("No esta completo, no genera la matriz de interferencia completa?\n ya genera la matriz completa.")
+		print("mapa distribucion\n",self.mapa_interf_distribuida)
 
 
 
