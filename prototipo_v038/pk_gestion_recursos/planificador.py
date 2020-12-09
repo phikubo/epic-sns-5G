@@ -85,6 +85,8 @@ class Planificador:
 			self.nrb_usuario=self.nrb_total/self.max_usuario_descon
 			#print("self.max_usuario",self.nrb_usuario)
 			self.asignacion=self.nrb_usuario*self.one_resource_block*self.mapa_margen_descon
+			#quitar error:
+			self.asignacion=np.where(self.asignacion==0,0.0001,self.asignacion)
 
 
 		elif self.cfg_plan["tipo"]=="estatico":

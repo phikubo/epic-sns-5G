@@ -579,7 +579,7 @@ class Sistema_Celular:
 			###print("[!1-test",self.mapa_conexion_desconexion_margen)
 			self.mapa_conexion_estacion.append(np.count_nonzero(self.mapa_conexion_usuario==cnt))
 			#######print("test3a, cnt {}, mapa_conexion_estacion {}".format(cnt,self.mapa_conexion_estacion))
-
+		#print("test3a  mapa_conexion_estacion {}".format(self.mapa_conexion_estacion))
 		#necesario para crear cuenta de usuarios conectados por celda.
 		self.mapa_conexion_usuario_no_con=np.where(self.mapa_conexion_desconexion_margen==0,-1, self.mapa_conexion_usuario)
 		#self.mapa_conexion_usuario_no_con=np.where(self.mapa_conexion_desconexion_margen==0,-1, 1)
@@ -587,7 +587,7 @@ class Sistema_Celular:
 		for cnt in range(self.cfg_gen["n_celdas"]): #range numero de celdas
 			#mapa de las estaciones sin contar las no conectadas.
 			self.mapa_conexion_estacion_no_con.append(np.count_nonzero(self.mapa_conexion_usuario_no_con==cnt))
-			##print("test3a, cnt {}, mapa_conexion_estacion {}".format(cnt,self.mapa_conexion_estacion_no_con))
+		#print("test3a  mapa_conexion_estacion NOCON{}".format(self.mapa_conexion_estacion_no_con))
 		#relaciono el indice con la matriz de margen, si value<0, marcar con -1, sino, pass
 			#en una nuevo arreglo
 		#realizr nuevamente el conteo.
@@ -595,7 +595,8 @@ class Sistema_Celular:
 
 	def calcular_mapas_conexion(self):
 		'''Permite calcular un mapa que indica cuales usuarios han sido desconectados'''
-		self.mapa_conexion_usuario_no_con=np.where(self.mapa_conexion_desconexion_margen==0,-1, 1)
+		#self.mapa_conexion_usuario_no_con=np.where(self.mapa_conexion_desconexion_margen==0,-1, 1)
+		pass
 
 
 	def calcular_interferencia(self):
@@ -624,16 +625,14 @@ class Sistema_Celular:
 		#Reemplaza 1 donde sinr>12, 0 en caso contrario.
 		self.mapa_conexion_desconexion=np.where(self.sinr_db>self.cfg_gen["ber_sinr"],1,0) #escribe 1 si true, 0 si false.
 
-		for a,b in zip(self.mapa_conexion_desconexion_margen,self.mapa_conexion_desconexion):
-			print(a,b)
 		#cuenta cuantos usuarios se conectaron.
 		self.conexion_total_sinr=np.count_nonzero(self.mapa_conexion_desconexion==1)
 		#calcula la probabilidad de conexion o probabilidad de exito de conexion.
 		self.medida_conexion_sinr=self.conexion_total_sinr/self.no_usuarios_total
 		#print((self.medida_conexion_sinr)*100) #a porcentaje
 
-		#limpiar=[potencia_recibida_dB,potencia_recibida_dB_2D,self.pr_maximo_v,suma_interf_v,prx_veces]
-		#self.configurar_limpieza_parcial(limpiar)
+		limpiar=[suma_interf_v,prx_veces,fr_v,pn,pn_v]
+		self.configurar_limpieza_parcial(limpiar)
 
 
 		#https://www.rfwireless-world.com/calculators/5G-NR-TBS-Calculation.html
@@ -1000,7 +999,7 @@ class Sistema_Celular:
 			print("Celdas:",self.cfg_gen["n_celdas"])
 			print("Usuarios por celda",self.no_usuarios_celda)
 			print("Usuarios total",self.no_usuarios_total)
-			print("Ancho de banda:",self.bw_usuario, "[Mhz]")
+			print("Ancho de banda por usuario:",self.bw_usuario, "[Hz]")
 			print("Margen de conexion: ", self.medida_conexion_margen)
 			print("Conexion Sinr, calidad ",self.cfg_gen["ber_sinr"], ":",self.medida_conexion_sinr)
 			print("------------------------------------------[info_general]\n")
