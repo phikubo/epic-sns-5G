@@ -466,15 +466,7 @@ class Sistema_Celular:
 		mapa_margen_descon=self.mapa_conexion_desconexion_margen.copy() #check pls
 		mapa_usuarios_descon=self.mapa_conexion_usuario_no_con.copy()
 		mapa_estaciones_descon=self.mapa_conexion_estacion_no_con.copy()
-		#params_asignacion=self.no_usuarios_celda
-		#print("usuarios total por celda, inicial",params_asignacion)
-		#print(mapa_estaciones)
-		#print(dim_pr_v2D)
-		##print("potencia rec\n",self.potencia_recibida_v_2D)
-		#print("usuarios iniciales",self.no_usuarios_celda)
-		#print("maps", self.mapa_conexion_usuario)
-		#print("por celda", mapa_estaciones)
-		#print("[inicializar_asignacion]")
+
 		params_asignacion=[mapa_estaciones,dim_pr_v2D, mapa_usuarios, mapa_margen_descon,
 			mapa_usuarios_descon, mapa_estaciones_descon]
 		self.planificador=plan.Planificador(self.cfg_plan, self.cfg_gen, params_asignacion)#por sector, etc.
@@ -594,13 +586,32 @@ class Sistema_Celular:
 
 
 	def calcular_mapas_conexion(self):
+		#DEPLETED
 		'''Permite calcular un mapa que indica cuales usuarios han sido desconectados'''
 		#self.mapa_conexion_usuario_no_con=np.where(self.mapa_conexion_desconexion_margen==0,-1, 1)
 		pass
 
 
 	def calcular_interferencia(self):
-		'''Calcula la interferencia producida por la distribucion de prbs'''
+		'''Calcula la interferencia producida por la distribucion de prbs e SINR.
+		Permite calcular el valor de sinr de un sistema celular.
+		Procedimiento: sinr=pr/pint+pn, pr: potencia recibida maxima,
+										pint: potencia interferente,
+										pn: potencia de ruido.
+
+		Si pr total en dB entonces convertir a veces.
+			-seleccionar la pr maxima,
+			-cambiar por 0 donde la pr fue maxima,
+			-la potencia interferente es la suma de potencias del arreglo resultante
+				(las que no fueron maximas),
+			.
+			-convertir la fr a veces.
+			-calcular la potencia de ruido en veces: pn_v=ktb*fr, k: contante de boltzman, defecto: k
+													t: temperatura en kelvin, defecto:290
+													b: ancho de banda del canal en hz
+													fr:constante, figura de ruido.
+			-sinr_db=prmax_db-(10log10(pint+pn_v))
+		'''
 		#falta inicializar asignacion
 		#de acuerdo a los resultados de asignacion, valores de potencia se cancelan
 		#sumar las potencias interferentes en cada columna.
@@ -634,95 +645,7 @@ class Sistema_Celular:
 		limpiar=[suma_interf_v,prx_veces,fr_v,pn,pn_v]
 		self.configurar_limpieza_parcial(limpiar)
 
-
 		#https://www.rfwireless-world.com/calculators/5G-NR-TBS-Calculation.html
-
-
-
-	def calcular_sinr(self):
-		'''Permite calcular el valor de sinr de un sistema celular.
-		Procedimiento: sinr=pr/pint+pn, pr: potencia recibida maxima,
-										pint: potencia interferente,
-										pn: potencia de ruido.
-
-		Si pr total en dB entonces convertir a veces.
-			-seleccionar la pr maxima,
-			-cambiar por 0 donde la pr fue maxima,
-			-la potencia interferente es la suma de potencias del arreglo resultante
-				(las que no fueron maximas),
-			.
-			-convertir la fr a veces.
-			-calcular la potencia de ruido en veces: pn_v=ktb*fr, k: contante de boltzman, defecto: k
-													t: temperatura en kelvin, defecto:290
-													b: ancho de banda del canal en hz
-													fr:constante, figura de ruido.
-			-sinr_db=prmax_db-(10log10(pint+pn_v))
-		'''
-		if self.cfg_gen['debug']:
-			print("[sistema.calcular_sinr]")
-
-		#creo la variable local de trabajo
-		potencia_recibida_dB=self.hiperc_modelo_canal.resultado_balance
-		#obtenengo las dimensiones del arreglo cluster, pues esta segmentado en 3D
-		l,m,n=self.hiperc_modelo_canal.resultado_balance.shape
-		#redimensiono la potencia recibida de un arreglo 3D a 2D.
-		potencia_recibida_dB_2D=np.reshape(potencia_recibida_dB, (l*m, n))
-		#convierto a veces
-		#potencia_recibida_v_2D=(10**(potencia_recibida_dB_2D/10))
-		potencia_recibida_v_2D=self.configurar_unidades_veces(potencia_recibida_dB_2D)
-		#filtro y obtengo los valores de potencia recibida self.pr_maximo_vs en veces, de cada usuario.(seleccionar la pr maxima,)
-		self.pr_maximo_v=np.nanmax(potencia_recibida_v_2D,axis=-1)
-		###########################################print("potencia maxima a la que se conecta\n", 10*np.log10(self.pr_maximo_v))
-		#por cada usuario, indica a cual celda recibio mayor potencia.
-		indices=[]
-		#auxiliar para iterar sobre todas las celdas (columnas)
-		indx=0
-		#itero sobre el self.pr_maximo_v y el array 2D
-		for maxx, arr in zip(self.pr_maximo_v, potencia_recibida_v_2D):
-			#print("componentes:\n",arr,maxx)
-			#print("arreglo:\n",potencia_recibida_v_2D[indx])
-			#
-			#obtengo el lugar (indice) en el array donde esta el valor self.pr_maximo_v de potencia
-			indice=np.where(arr==maxx)
-			#cambiar por 0 donde la pr fue maxima,
-			if len(indice[0])>1:
-				#Algunos casos se obtiene valores repetidos, se escoge cualquiera.
-				indice=(np.array([np.random.choice(indice[0])]),)
-			#guardo el indice
-			potencia_recibida_v_2D[indx][indice]=0
-			indices.append(indice[0])
-			indx+=1 #
-		#convierto a una dimension el array.
-		self.mapa_conexion_usuario=np.stack(indices)
-		#print("test1",potencia_recibida_v_2D)
-		#sumo la cantidad de veces que la celda_i tuvo una potencia maxima.
-		for cnt in range(self.cfg_gen["n_celdas"]): #range numero de celdas
-			self.mapa_conexion_estacion.append(np.count_nonzero(self.mapa_conexion_usuario==cnt))
-
-		################################################self.planificador.mapa_conexion=self.mapa_conexion_estacion
-		#sumo en el eje x, manteniendo la dimension, array con 0 en potencia maxima.
-		suma_interf_v=np.sum(potencia_recibida_v_2D, axis=1, keepdims=True)
-		#re definimos la dimension de la potencia, para propositos de compatibilidad de arrays.
-		prx_veces=self.pr_maximo_v.reshape(suma_interf_v.shape)
-		#convertimos la figura de ruido a veces:
-		fr_v=self.configurar_unidades_veces(self.cfg_gen["nf"][0])
-		#
-		self.potencia_ruido=(-174.2855251)+10*np.log10(self.bw_usuario*10**6)
-		#calculamos potencia de ruido en veces.
-		pn_v=self.configurar_unidades_veces(self.potencia_ruido)
-		pn=pn_v*fr_v
-		#calculo sinr de acuerdo a la ecuacion
-		self.sinr_db=10*np.log10(prx_veces)-10*np.log10(suma_interf_v+pn)
-		#Reemplaza 1 donde sinr>12, 0 en caso contrario.
-		self.mapa_conexion_desconexion=np.where(self.sinr_db>self.cfg_gen["ber_sinr"],1,0) #escribe 1 si true, 0 si false.
-		#cuenta cuantos usuarios se conectaron.
-		self.conexion_total_sinr=np.count_nonzero(self.mapa_conexion_desconexion==1)
-		#calcula la probabilidad de conexion o probabilidad de exito de conexion.
-		self.medida_conexion_sinr=self.conexion_total_sinr/self.no_usuarios_total
-		#print((self.medida_conexion_sinr)*100) #a porcentaje
-
-		limpiar=[potencia_recibida_dB,potencia_recibida_dB_2D,self.pr_maximo_v,suma_interf_v,prx_veces]
-		self.configurar_limpieza_parcial(limpiar)
 
 
 	'''-----------------------------------------------------------------------------------------
