@@ -99,6 +99,10 @@ class Sistema_Celular:
 		self.mapa_conexion_estacion_no_con=[]
 		self.mapa_conexion_desconexion=0 #sinr.
 		self.mapa_conexion_desconexion_margen=0
+		#
+		self.pr_maximo_v=0
+		self.pr_maximo_dB=0
+		self.margen_maximo_dB=0
 		self.sinr_db=0
 		self.conexion_total_sinr=0
 		self.medida_conexion_sinr=0
@@ -126,6 +130,8 @@ class Sistema_Celular:
 		#estadistica para obtener cuantos usuarios superan el umbral de sensibilidad
 		self.calcular_medida_margen()
 		#implemeneta criterio de potencia maxima de los usuarios a todas las celdas.
+			#y de todos los usuarios. Los usuarios cuyo margen es negativo,
+				#se le reparte un nrb0 que indica desconexion.
 		self.calcular_celda_mayor_potencia()
 		#relaciona los mapas de conexion/desconexion, con la matriz de potencia,
 			#para reconfigurar la asignacion de recursos.
@@ -137,6 +143,7 @@ class Sistema_Celular:
 		#obtiene matriz de potencia interferente.
 		self.inicializar_asignacion()
 		#calcula la sinr dado.
+		self.calcular_interferencia()
 		##self.calcular_sinr()
 
 
@@ -202,6 +209,10 @@ class Sistema_Celular:
 	def configurar_unidades_veces(self, target):
 		'''Realiza la conversion de dB a veces'''
 		return np.power(10, target/10)
+
+	def configurar_unidades_dB(self,target):
+		'''Realiza la conversion de veces a dB'''
+		return 10*np.log10(target)
 
 
 	def configurar_limpieza(self):
@@ -469,7 +480,7 @@ class Sistema_Celular:
 		self.planificador=plan.Planificador(self.cfg_plan, self.cfg_gen, params_asignacion)#por sector, etc.
 		#ancho de banda se convierte en variable y depende de cuantos prb obtiene.
 		self.bw_usuario=self.planificador.asignacion
-
+		#print("bw_usuario",self.bw_usuario)
 		#convierte la matriz de potencia recibida en matriz de interferencia.
 		#print("marix",self.potencia_recibida_v_2D)
 		self.matriz_interferente=self.potencia_recibida_v_2D*self.planificador.mapa_interf_distribuida
@@ -492,10 +503,11 @@ class Sistema_Celular:
 		l,m,n=margen_dB.shape
 		#redimensiono la potencia recibida de un arreglo 3D a 2D.
 		margen_dB_2D=np.reshape(margen_dB, (l*m, n))
-		margen_maximo=np.nanmax(margen_dB_2D,axis=-1)
+		self.margen_maximo_dB=np.nanmax(margen_dB_2D,axis=-1)
+
 		##print("test 1-margen_db\n", margen_dB_2D)
-		##print("test 2-maximo db\n", margen_maximo)
-		self.mapa_conexion_desconexion_margen=np.where(margen_maximo>0,1,0)
+		##print("test 2-maximo db\n", self.margen_maximo_dB)
+		self.mapa_conexion_desconexion_margen=np.where(self.margen_maximo_dB>0,1,0)
 		##print("test 3-mapa conexion desconexion\n",self.mapa_conexion_desconexion_margen)
 		#si multiplico lo anterior por el mapa de conexion, pero
 		#	con -1 donde esta el 0, obtengo el mapa de desconexion final.
@@ -523,7 +535,7 @@ class Sistema_Celular:
 		#potencia_recibida_dB
 		#potencia_recibida_dB_2D
 		#l,m,n
-		#pr_maximo_v
+		#self.pr_maximo_v
 
 		#creo la variable local de trabajo
 		potencia_recibida_dB=self.hiperc_modelo_canal.resultado_balance
@@ -534,19 +546,20 @@ class Sistema_Celular:
 		#convierto a veces
 		#potencia_recibida_v_2D=(10**(potencia_recibida_dB_2D/10))
 		self.potencia_recibida_v_2D=self.configurar_unidades_veces(potencia_recibida_dB_2D)
-		#filtro y obtengo los valores de potencia recibida pr_maximo_vs en veces, de cada usuario.(seleccionar la pr maxima,)
-		pr_maximo_v=np.nanmax(self.potencia_recibida_v_2D,axis=-1)
-		###########################################print("potencia maxima a la que se conecta\n", 10*np.log10(pr_maximo_v))
+		#filtro y obtengo los valores de potencia recibida self.pr_maximo_vs en veces, de cada usuario.(seleccionar la pr maxima,)
+		self.pr_maximo_v=np.nanmax(self.potencia_recibida_v_2D,axis=-1)
+		self.pr_maximo_dB=self.configurar_unidades_dB(self.pr_maximo_v)
+		###########################################print("potencia maxima a la que se conecta\n", 10*np.log10(self.pr_maximo_v))
 		#por cada usuario, indica a cual celda recibio mayor potencia.
 		indices=[]
 		#auxiliar para iterar sobre todas las celdas (columnas)
 		indx=0
-		#itero sobre el pr_maximo_v y el array 2D
-		for maxx, arr in zip(pr_maximo_v, self.potencia_recibida_v_2D):
+		#itero sobre el self.pr_maximo_v y el array 2D
+		for maxx, arr in zip(self.pr_maximo_v, self.potencia_recibida_v_2D):
 			#print("componentes:\n",arr,maxx)
 			#print("arreglo:\n",self.potencia_recibida_v_2D[indx])
 			#
-			#obtengo el lugar (indice) en el array donde esta el valor pr_maximo_v de potencia
+			#obtengo el lugar (indice) en el array donde esta el valor self.pr_maximo_v de potencia
 			indice=np.where(arr==maxx)
 			#cambiar por 0 donde la pr fue maxima,
 			#si exite tupla en indice[0], varios valores son iguales en la misma columna.
@@ -567,11 +580,9 @@ class Sistema_Celular:
 			self.mapa_conexion_estacion.append(np.count_nonzero(self.mapa_conexion_usuario==cnt))
 			#######print("test3a, cnt {}, mapa_conexion_estacion {}".format(cnt,self.mapa_conexion_estacion))
 
-		#print("[!-test], mapa estacion\n {}".format(self.mapa_conexion_estacion))
-		#print("[!-test], mapa usuarios\n {}".format(self.mapa_conexion_usuario))
-		#print("[!-test], mapa margen\n {}".format(self.mapa_conexion_desconexion_margen))
+		#necesario para crear cuenta de usuarios conectados por celda.
 		self.mapa_conexion_usuario_no_con=np.where(self.mapa_conexion_desconexion_margen==0,-1, self.mapa_conexion_usuario)
-		#print("[!-test], mapa descon\n {}".format(self.mapa_conexion_usuario_no_con))
+		#self.mapa_conexion_usuario_no_con=np.where(self.mapa_conexion_desconexion_margen==0,-1, 1)
 
 		for cnt in range(self.cfg_gen["n_celdas"]): #range numero de celdas
 			#mapa de las estaciones sin contar las no conectadas.
@@ -584,17 +595,49 @@ class Sistema_Celular:
 
 	def calcular_mapas_conexion(self):
 		'''Permite calcular un mapa que indica cuales usuarios han sido desconectados'''
-		#
+		self.mapa_conexion_usuario_no_con=np.where(self.mapa_conexion_desconexion_margen==0,-1, 1)
 
 
-	def calcular_interferencia():
+	def calcular_interferencia(self):
 		'''Calcula la interferencia producida por la distribucion de prbs'''
 		#falta inicializar asignacion
 		#de acuerdo a los resultados de asignacion, valores de potencia se cancelan
-		#crear matriz que al multiplicarla, se vuelve ceros los valores donde corresponde en veces
+		#sumar las potencias interferentes en cada columna.
 		suma_interf_v=np.sum(self.potencia_recibida_v_2D, axis=1, keepdims=True)
-	#inicialiar asignacion
-	#calcular sinr
+		#re definimos la dimension de la potencia, para propositos de compatibilidad de arrays.
+		prx_veces=self.pr_maximo_v.reshape(suma_interf_v.shape)
+		#convertimos la figura de ruido a veces:
+		fr_v=self.configurar_unidades_veces(self.cfg_gen["nf"][0])
+
+		#bw en que unidades debe estar?
+		#self.potencia_ruido=(-174.2855251)+10*np.log10(self.bw_usuario*10**6)
+
+		#debe estar en hz
+		self.potencia_ruido=(-174.2855251)+10*np.log10(self.bw_usuario)
+		#calculamos potencia de ruido en veces.
+		pn_v=self.configurar_unidades_veces(self.potencia_ruido)
+		pn=pn_v*fr_v
+		#calculo sinr de acuerdo a la ecuacion
+		self.sinr_db=10*np.log10(prx_veces)-10*np.log10(suma_interf_v+pn)
+		#limpio los valores de sinr de los  usuarios sin conexion.
+		self.sinr_db=np.where(self.mapa_conexion_desconexion_margen==0,-100, self.sinr_db)
+		#Reemplaza 1 donde sinr>12, 0 en caso contrario.
+		self.mapa_conexion_desconexion=np.where(self.sinr_db>self.cfg_gen["ber_sinr"],1,0) #escribe 1 si true, 0 si false.
+
+		for a,b in zip(self.mapa_conexion_desconexion_margen,self.mapa_conexion_desconexion):
+			print(a,b)
+		#cuenta cuantos usuarios se conectaron.
+		self.conexion_total_sinr=np.count_nonzero(self.mapa_conexion_desconexion==1)
+		#calcula la probabilidad de conexion o probabilidad de exito de conexion.
+		self.medida_conexion_sinr=self.conexion_total_sinr/self.no_usuarios_total
+		#print((self.medida_conexion_sinr)*100) #a porcentaje
+
+		#limpiar=[potencia_recibida_dB,potencia_recibida_dB_2D,self.pr_maximo_v,suma_interf_v,prx_veces]
+		#self.configurar_limpieza_parcial(limpiar)
+
+
+		#https://www.rfwireless-world.com/calculators/5G-NR-TBS-Calculation.html
+
 
 
 	def calcular_sinr(self):
@@ -628,19 +671,19 @@ class Sistema_Celular:
 		#convierto a veces
 		#potencia_recibida_v_2D=(10**(potencia_recibida_dB_2D/10))
 		potencia_recibida_v_2D=self.configurar_unidades_veces(potencia_recibida_dB_2D)
-		#filtro y obtengo los valores de potencia recibida pr_maximo_vs en veces, de cada usuario.(seleccionar la pr maxima,)
-		pr_maximo_v=np.nanmax(potencia_recibida_v_2D,axis=-1)
-		###########################################print("potencia maxima a la que se conecta\n", 10*np.log10(pr_maximo_v))
+		#filtro y obtengo los valores de potencia recibida self.pr_maximo_vs en veces, de cada usuario.(seleccionar la pr maxima,)
+		self.pr_maximo_v=np.nanmax(potencia_recibida_v_2D,axis=-1)
+		###########################################print("potencia maxima a la que se conecta\n", 10*np.log10(self.pr_maximo_v))
 		#por cada usuario, indica a cual celda recibio mayor potencia.
 		indices=[]
 		#auxiliar para iterar sobre todas las celdas (columnas)
 		indx=0
-		#itero sobre el pr_maximo_v y el array 2D
-		for maxx, arr in zip(pr_maximo_v, potencia_recibida_v_2D):
+		#itero sobre el self.pr_maximo_v y el array 2D
+		for maxx, arr in zip(self.pr_maximo_v, potencia_recibida_v_2D):
 			#print("componentes:\n",arr,maxx)
 			#print("arreglo:\n",potencia_recibida_v_2D[indx])
 			#
-			#obtengo el lugar (indice) en el array donde esta el valor pr_maximo_v de potencia
+			#obtengo el lugar (indice) en el array donde esta el valor self.pr_maximo_v de potencia
 			indice=np.where(arr==maxx)
 			#cambiar por 0 donde la pr fue maxima,
 			if len(indice[0])>1:
@@ -661,7 +704,7 @@ class Sistema_Celular:
 		#sumo en el eje x, manteniendo la dimension, array con 0 en potencia maxima.
 		suma_interf_v=np.sum(potencia_recibida_v_2D, axis=1, keepdims=True)
 		#re definimos la dimension de la potencia, para propositos de compatibilidad de arrays.
-		prx_veces=pr_maximo_v.reshape(suma_interf_v.shape)
+		prx_veces=self.pr_maximo_v.reshape(suma_interf_v.shape)
 		#convertimos la figura de ruido a veces:
 		fr_v=self.configurar_unidades_veces(self.cfg_gen["nf"][0])
 		#
@@ -679,7 +722,7 @@ class Sistema_Celular:
 		self.medida_conexion_sinr=self.conexion_total_sinr/self.no_usuarios_total
 		#print((self.medida_conexion_sinr)*100) #a porcentaje
 
-		limpiar=[potencia_recibida_dB,potencia_recibida_dB_2D,pr_maximo_v,suma_interf_v,prx_veces]
+		limpiar=[potencia_recibida_dB,potencia_recibida_dB_2D,self.pr_maximo_v,suma_interf_v,prx_veces]
 		self.configurar_limpieza_parcial(limpiar)
 
 
@@ -867,14 +910,23 @@ class Sistema_Celular:
 		if args:
 			if args:
 				ind=0
-				print("usuario |---|celda |---| sinr")
-				for a,b in zip(self.mapa_conexion_usuario,self.sinr_db):
-					print(ind,"      |---|",a, " |---|",b)
+				print("usuario:	celda	conexion	pr_max			margen			sinr")
+
+				for a,b,c,d,e in zip(self.mapa_conexion_usuario,self.mapa_conexion_usuario_no_con,
+						self.pr_maximo_dB,self.margen_maximo_dB,self.sinr_db):
+					print("{}		{}	{}		{}	{}	{}".format(ind, a, b,c,d,e))
 					ind+=1
+				'''
+				for a,b,c,d in zip(self.mapa_conexion_usuario,self.mapa_conexion_usuario_no_con,
+						self.pr_maximo_dB,self.sinr_db):
+					print("{}	{}	{}	{}	{}".format(ind, a, b,c,d))
+					ind+=1
+				'''
 			else:
 				pass
-		print("Mapa de conexion por estacion: ", self.mapa_conexion_estacion)
-		print("Medida de conexion: ", self.medida_conexion_sinr)
+		print("Mapa de conexion por estacion inicial: ", self.mapa_conexion_estacion)
+		print("Mapa de conexion por estacion final: ", self.mapa_conexion_estacion_no_con)
+		print("Medida de conexion SINR: {}%".format(self.medida_conexion_sinr*100))
 		print("De {} usuarios, {} cumplen BER objetivo.".format(self.no_usuarios_total, self.conexion_total_sinr))
 		print("\n------------------------------------------[info_sinr].\n")
 
@@ -914,6 +966,14 @@ class Sistema_Celular:
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_balance]")
 		print(self.hiperc_modelo_canal.resultado_balance)
+		print("**************************************************\n")
+
+	def info_planificador(self,*args):
+		'''Permite observar las informacion contenida en el planificador.'''
+		print("[info_planificador]")
+		print("indice	descon	cel_descon	celda	contador	estado		nrb")
+		for contenido in self.planificador.info_variables:
+			print(contenido)
 		print("**************************************************\n")
 
 	def info_general(self, *target):

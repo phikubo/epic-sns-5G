@@ -17,9 +17,11 @@ class Planificador:
 		#self.dim_pot_r=params[1]
 		self.mapa_interf_distribuida=np.ones(params[1])
 		#output:
-		self.asignacion=0 #por usuario
+		self.asignacion=0
+		self.one_resource_block=0
+		self.nrb_usuario=0 #por usuario
 		self.nrb_total=0
-		self.nrb_total=24
+		#self.nrb_total=24
 		self.nrb_con_PBCH=0
 		self.contador=0
 		self.mapa_nrb=[]
@@ -27,6 +29,7 @@ class Planificador:
 		self.mapa_estado=[]
 		self.mapa_interferencia=[]
 		self.estado=0
+		self.info_variables=[]
 		#self.calcular_tipo_asignacion()
 		self.calcular_nrbs_celda()
 		self.calcular_nrbs_usuarios()
@@ -47,11 +50,15 @@ class Planificador:
 		#https://www.rfwireless-world.com/calculators/5G-NR-maximum-throughput-calculator.html
 		#https://5g-tools.com/5g-nr-throughput-calculator/
 		#https://apkpure.com/nr-5g-prb-and-data-rate-calculator/com.instinctcoder.nr5gthecal
+		#https://www.rfwireless-world.com/calculators/5G-NR-TBS-Calculation.html
+		print("POR QUE ES: 2*mu*15khz y no 2**mu*15khz")
 		delta_bw=(2*self.cfg_plan["numerologia"]*self.to_khz(15))
+		#print("dleta",delta_bw)
 		#15khz es lo minimo.
-		one_resource_block=self.cfg_plan["sub_ofdm"]*delta_bw
+		self.one_resource_block=self.cfg_plan["sub_ofdm"]*delta_bw
+		#print("one:" ,self.one_resource_block)
 		nrb_sin_gbw=self.to_mhz(self.cfg_plan["bw"][0])-2*self.to_khz(self.cfg_plan["bw_guarda"][0])
-		nrb=np.floor(nrb_sin_gbw/one_resource_block)
+		nrb=np.floor(nrb_sin_gbw/self.one_resource_block)
 
 		if self.cfg_plan["pbch"]:
 			self.nrb_con_PBCH=nrb-22
@@ -64,17 +71,24 @@ class Planificador:
 	def calcular_nrbs_usuarios(self):
 		'''Funcion que asigna ancho de banda representado en prb, a partir de la
 		frecuencia portadora y otros parametros adicionales'''
+		#self.max_usuario_descon
 		if self.cfg_plan["tipo"]=="rr":
-			ress=self.nrb_total%self.max_usuario
+			#para usuarios sin deconexion.
+			#ress=self.nrb_total%self.max_usuario
+			ress=self.nrb_total%self.max_usuario_descon
 			if ress!=0:
 				self.nrb_total=self.nrb_total-ress
 			else:
 				pass
-			self.asignacion=self.nrb_total/self.max_usuario
+			#para usuarios sin deconexion.
+			#self.nrb_usuario=self.nrb_total/self.max_usuario
+			self.nrb_usuario=self.nrb_total/self.max_usuario_descon
+			#print("self.max_usuario",self.nrb_usuario)
+			self.asignacion=self.nrb_usuario*self.one_resource_block*self.mapa_margen_descon
 
 
 		elif self.cfg_plan["tipo"]=="estatico":
-			self.asignacion=self.cfg_plan["bw"][0]
+			self.nrb_usuario=self.cfg_plan["bw"][0]
 		elif self.cfg_plan["tipo"]=="arreglo":
 				#procesa arreglos, gestiona pesos.
 				#this
@@ -89,7 +103,7 @@ class Planificador:
 		C_{i}, i={1,2,3,...,n_cel}, representa cada bloque de nrb entregado a cada
 		usuario, de esta forma si se entrega a cada usuario 364 nrbs, C1 representa
 		el bloque nrb 0-363, C2 representa el bloque nrb 364-2*363 y asi sucesivamente.'''
-		#print("self.asignacion",self.asignacion)
+		#print("self.nrb_usuario",self.nrb_usuario)
 		print("mapa completo\n", self.mapa_conexion, self.max_usuario)
 		print("mapa descon\n", self.mapa_estacion_descon, self.max_usuario_descon)
 		#print("usuarios",self.mapa_usuarios)
@@ -101,7 +115,7 @@ class Planificador:
 		#convierto a numpy para aprovechar multiplicacion elemento a elemnto.
 		self.estado=np.array(self.estado)
 
-		print("indice	descon	cel_descon	celda	contador	estado		nrb")
+		########################print("indice	descon	cel_descon	celda	contador	estado		nrb")
 		for indd, celda in enumerate(self.mapa_usuarios):
 			#print("test plafinicaodr",celda)
 			#celda[0], porque al ser numpy, genera un array[] y para acceder al
@@ -124,7 +138,8 @@ class Planificador:
 			#print(indd,self.mapa_usuarios[indd],self.contador, self.estado, "nrb_{}".format(sum(self.contador*self.estado)))
 			mostrar="{}	{}	{}		{}	{}	{}	nrb_{}".format(indd,self.mapa_margen_descon[indd], self.mapa_usr_descon[indd],
 				self.mapa_usuarios[indd],self.contador, self.estado, sum(self.contador*self.estado))
-			print(mostrar)
+			self.info_variables.append(mostrar)
+
 			self.mapa_estado.append(self.estado.copy())
 			#if bandera conexion==0:
 				#apend -1 en esa posicion. [ok]
@@ -143,7 +158,8 @@ class Planificador:
 		self.mapa_estado=np.stack(self.mapa_estado).reshape(self.dim_mapa)
 
 		#si piensas que esto es dificil, prueba computacion cuantica.
-		print("\n\nself.max_usuario_descon o self.max_usuario, cual es la diferencia?\n\n")
+		##################print("\n\nself.max_usuario_descon o self.max_usuario, cual es la diferencia?\n\n")
+		#primero es el max de cada celda incluyendo desconxion, el otro es el original que no la tiene en cuenta.
 		'''Funciona por que originalmente la matriz de estados interferentes es cero y a medida
 		que se generan la distribucion se rellena, como la matriz de distribucion solo es
 		repartida a los usuarios cuyos indices se encuentran mapeados, los indices no mapeados
@@ -172,6 +188,7 @@ class Planificador:
 			for indx_interf in lista:
 				self.mapa_interf_distribuida[indx_interf]=mapa_dist
 				#print(indx_interf
+		'''
 		print("\nrevisar que no se este repartiendo el nrb0?-revisado [ok]\n")
 		print("mapa de usuarios iterfentes\n",self.lista_distribucion, len(self.lista_distribucion))
 		print("como cambia el mapa de estados?")
@@ -180,6 +197,7 @@ class Planificador:
 		print("como cambia el mapa de distribucion?\n al iniciar el rango en 0, tambien los cuenta los nrbs0 por lo que se reparte ok.")
 		print("No esta completo, no genera la matriz de interferencia completa?\n ya genera la matriz completa.")
 		print("mapa distribucion\n",self.mapa_interf_distribuida)
+		'''
 
 
 
