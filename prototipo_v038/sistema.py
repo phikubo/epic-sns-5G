@@ -633,7 +633,7 @@ class Sistema_Celular:
 		self.sinr_db=10*np.log10(prx_veces)-10*np.log10(suma_interf_v+pn)
 		#limpio los valores de sinr de los  usuarios sin conexion.
 		self.sinr_db=np.where(self.mapa_conexion_desconexion_margen==0,-100, self.sinr_db)
-		#Reemplaza 1 donde sinr>12, 0 en caso contrario.
+		#Reemplaza 1 donde sinr>,self.cfg_gen["ber_sinr"] 0 en caso contrario.
 		self.mapa_conexion_desconexion=np.where(self.sinr_db>self.cfg_gen["ber_sinr"],1,0) #escribe 1 si true, 0 si false.
 
 		#cuenta cuantos usuarios se conectaron.
@@ -646,6 +646,9 @@ class Sistema_Celular:
 		self.configurar_limpieza_parcial(limpiar)
 
 		#https://www.rfwireless-world.com/calculators/5G-NR-TBS-Calculation.html
+
+		#EL RADIO DE LA CELDA CREA ESPACIOS NO LINEALES.
+		#COREGIR POR ISD.
 
 
 	'''-----------------------------------------------------------------------------------------

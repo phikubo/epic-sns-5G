@@ -52,14 +52,14 @@ class Planificador:
 		#https://apkpure.com/nr-5g-prb-and-data-rate-calculator/com.instinctcoder.nr5gthecal
 		#https://www.rfwireless-world.com/calculators/5G-NR-TBS-Calculation.html
 		print("POR QUE ES: 2*mu*15khz y no 2**mu*15khz")
-		delta_bw=(2*self.cfg_plan["numerologia"]*self.to_khz(15))
+		delta_bw=(2**self.cfg_plan["numerologia"]*self.to_khz(15))
 		#print("dleta",delta_bw)
 		#15khz es lo minimo.
 		self.one_resource_block=self.cfg_plan["sub_ofdm"]*delta_bw
 		#print("one:" ,self.one_resource_block)
 		nrb_sin_gbw=self.to_mhz(self.cfg_plan["bw"][0])-2*self.to_khz(self.cfg_plan["bw_guarda"][0])
 		nrb=np.floor(nrb_sin_gbw/self.one_resource_block)
-
+		#print("nrb", nrb)
 		if self.cfg_plan["pbch"]:
 			self.nrb_con_PBCH=nrb-22
 			self.nrb_total=self.nrb_con_PBCH*self.cfg_plan["trama_total"]
@@ -86,6 +86,7 @@ class Planificador:
 			#print("self.max_usuario",self.nrb_usuario)
 			self.asignacion=self.nrb_usuario*self.one_resource_block*self.mapa_margen_descon
 			#quitar error:
+			print("asignacion",self.asignacion)
 			self.asignacion=np.where(self.asignacion==0,0.0001,self.asignacion)
 
 
