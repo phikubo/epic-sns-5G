@@ -19,6 +19,7 @@ posteriormente evaluadas para su debido  funcionamiento
 
 """
 from utilidades import config as cfg 
+import json
 #with open("simulator-beggin.kv", encoding='utf-8', errors="surrogateescape") as kv_file:
 #    Builder.load_string(kv_file.read())
 
@@ -109,7 +110,7 @@ class MainWindow(Screen):
 	patron= ObjectProperty(None)
 	celdas= ObjectProperty(None)
 
-
+	
 	current= ""
 
 	#layout_instance.do_layout ()
@@ -125,7 +126,7 @@ class MainWindow(Screen):
 		#get_dato(self.intensidadPPP.text)
 
 		print("**************************************************")
-		print("**********Inicio pruebas GUI-ANGELICA****************")
+		print("**********Inicio INTERNAS GUI****************")
 		print("**************************************************")
 
 		print(int(self.fp.text))
@@ -140,10 +141,46 @@ class MainWindow(Screen):
 		print(str(self.patron.text))
 		print(int(self.celdas.text))
 
-		configuracion=cfg.guardar_variables(target_path="base_datos/")
-		configuracion["cgf_simulador"]
 
+		config2=cfg.cargar_variables(target_path="base_datos/")
+		config2["cfg_gui"]["freqport"]= int(self.fp.text)
+		config2["cfg_gui"]["bwMHz"]=int(self.bw.text)
+		config2["cfg_gui"]["ppp"]=str(self.ppp.text)
+		config2["cfg_gui"]["escenario"]=str(self.esc.text)
+		config2["cfg_gui"]["isd"]=int(self.isd.text)
+		config2["cfg_gui"]["modperdidas"]=str(self.mp.text)
+		config2["cfg_gui"]["desvanecimiento"]=str(self.desv.text)
+		config2["cfg_gui"]["nf"]=int(self.nf.text)
+		config2["cfg_gui"]["ptx"]=int(self.ptx.text)
+		config2["cfg_gui"]["patron"]=str(self.patron.text)
+		config2["cfg_gui"]["nceldas"]=int(self.celdas.text)
+		
+						
+		print("**************************************************")
+		print("**********FIN PRUEBA INTENAS GUI****************")
+		print("**************************************************")
 
+		print(config2)
+
+		print("**************************************************")
+		print("**********Inicio pruebas GUI****************")
+		print("**************************************************")
+
+		#cfg.guardar_variables(configuracion,target_path="base_datos/")
+		#print(configuracion)
+
+		print("**************************************************")
+		print("**********pruebas JSON CONFIGURACION GUI****************")
+		print("**************************************************")
+		
+
+		cfg.guardar_variables(config2,target_path="base_datos/")
+		print(config2)
+
+		print("**************************************************")
+		print("**********pruebas JSON CONFIG2 GUI****************")
+		print("**************************************************")
+		
 		#rcell=int(self.radiocell.text)
 		#nvl=int(self.nivel.text)
 		#inten=float(self.intensidadPPP.text)

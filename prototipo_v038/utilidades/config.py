@@ -12,9 +12,9 @@ def cargar_variables(target_path):
 	#print(type(data))
 	return data
 
-def guardar_variables(data):
+def guardar_variables(data,target_path):
 	'''Guarda en formato json el archivo de configuracion del simulador'''
-	with open("configs2.json", "w") as outfile:
+	with open(target_path+"configs2.json", "w") as outfile:
 		json.dump(data, outfile)
 
 if __name__=="__main__":

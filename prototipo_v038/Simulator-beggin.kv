@@ -916,7 +916,13 @@
 					            size_hint: (1, None)
 					            on_release: d_mp.select(self.text)
 								dismiss_on_select: False
-								#id: nivel					
+								#id: nivel
+							Button:
+					        	#id:opc2
+					            text: 'Okumura H'
+					            size_hint: (1, None)
+					            on_release: d_mp.select(self.text)
+								dismiss_on_select: False					
 					BoxLayout:#Botton para el tipo de desvanecimiento
 						orientation: 'horizontal'
 						size_hint_y: 0.08
@@ -1050,24 +1056,24 @@
 								Rectangle:
 									pos:self.pos
 									size:self.size
-							text: "Tipo de patron de radiaci{ó}n"
+							text: "Tipo de patron de radiacion"
 						Button:
 					        id: b_patr
 					        text: '4G' 
 					        dismiss_on_select: False
 					        on_release: d_patr.open(self)
 					        size_hint: ( 0.15, 1)
-					        on_parent: d_part.dismiss()
+					        on_parent: d_patr.dismiss()
 					        #text_size: self.size
 					    DropDown:
-					        id: d_part
-					        on_select: b_part.text = '{}'.format(args[1])
+					        id: d_patr
+					        on_select: b_patr.text = '{}'.format(args[1])
 					        Button:
 					        	#id:opc1
 					            text: '4G'
 	        					size_hint: (1, None)
 	        					dismiss_on_select: False
-					            on_release: d_prt.select(self.text)
+					            on_release: d_patr.select(self.text)
 					BoxLayout:#Botton para la cantidad de las celdas
 
 						orientation: 'horizontal'
