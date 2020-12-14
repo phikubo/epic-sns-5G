@@ -1,5 +1,7 @@
 from django.urls import path
-from . import views
+from . import views 
+from .forms import FormStepOne, FormStepTwo
+from .views import FormWizardView
 
 
 app_name='simapp'
@@ -8,7 +10,7 @@ urlpatterns = [
     path('', views.home, name='caracteristicas'),
     path('sami_v1/', views.formulario_sami_v1, name='form_sami_v1'),
     path('futuro/', views.en_desarrollo, name='futuro'),
-    #path('test/', views.test_sam, name='test'),
+    path('test/', FormWizardView.as_view([FormStepOne, FormStepTwo]), name='test'),
     
 
 ]

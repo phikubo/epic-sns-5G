@@ -18,9 +18,10 @@ from django.urls import path
 from simapp import views
 from simapp import views as views_vista
 from django.urls import include
-#app_name='simapp'
+
 urlpatterns = [
     #path('', views_vista.home, name="samiv1"),
     path('admin/', admin.site.urls),
-    path('', include('simapp.urls')),
+    path('', include('simapp.urls')), #simulador-app:simapp
+    #en adelante van las demas apps. Podrian ser diferentes a simuladores inalabricos.
 ]
