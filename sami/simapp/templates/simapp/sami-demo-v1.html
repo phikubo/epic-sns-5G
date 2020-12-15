@@ -1,0 +1,548 @@
+{% extends 'base_sami.html' %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+<!-- Form step -->
+<link href="{% static 'simapp/vendor/jquery-steps/css/jquery.steps.css' %}" rel="stylesheet">
+<!-- Custom Stylesheet -->
+<link href="{% static 'simapp/css/style.css' %}" rel="stylesheet">
+
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4>¡Bienvenido a la interfaz de simulación!</h4>
+            <p class="mb-0">Por favor configura los siguientes parámetros:</p>
+        </div>
+    </div>
+
+</div>
+<!-- row -->
+<div class="row">
+    <div class="col-xl-12 col-xxl-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Formulario de Parámetros</h4>
+            </div>
+            <div class="card-body">
+                <form action="/sent.html" id="step-form-horizontal" class="step-form-horizontal">
+                    <div>
+                        <h4>General</h4>
+                        <section>
+                            <div class="row">
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">Iteraciones</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="1" type="number" name="input1" id="input1">
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label"># Celdas</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="1" type="number" name="input2" id="input2">
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">Portadora [Mhz]</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="900" type="number" name="input1" id="input1">
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">ISD</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="1000" type="number" name="input2"
+                                            id="input2">
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Geometría Radial de Usuarios</label>
+                                        <div class="input-group">
+                                            <select class="form-control" id="debug-general" name="debug-general">
+                                                <option value="Debug Desactivado">Manual</option>
+                                                <option value="Debug Activado">Automático</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Distancia Radial [m]</label>
+                                        <div class="input-group">
+                                            <input type="text" name="phoneNumber" class="form-control"
+                                                placeholder="Desactiva si automático" required value=1000>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Tipo de espliegue de Usuarios</label>
+                                        <div class="input-group">
+                                            <select class="form-control" id="debug-general" name="debug-general">
+                                                <option value="Debug Desactivado">Proceso Puntual Poisson</option>
+                                                <option value="Debug Activado">Futuro</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Población</label>
+                                        <div class="input-group">
+                                            <select class="form-control" id="debug-general" name="debug-general">
+                                                <option value="Debug Desactivado">Baja</option>
+                                                <option value="Debug Activado">Media</option>
+                                                <option value="Debug Activado">Alta</option>
+                                                <option value="Debug Activado">Ultra</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Generar Imagen (1 simulación)</label>
+                                        <div class="input-group">
+                                            <select class="form-control" id="debug-general" name="debug-general">
+                                                <option value="Simulación Desactivado">Desactivado</option>
+                                                <option value="Simulación Activado">Activado</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Resolución [pixel]</label>
+                                        <div class="input-group">
+                                            <input type="text" name="phoneNumber" class="form-control" value=100
+                                                placeholder="" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="form-check-label">
+                                        <div class="form-group">
+                                            <input type="checkbox" class="form-check-input" value="">
+                                            <label class="text-label">Debug</label>
+                                        </div>
+
+                                </div>
+
+
+                            </div>
+                        </section>
+
+
+
+
+                        <h4>Modelo de P.P.</h4>
+                        <section>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="text-label">Modelo de Pérdidas de Propagación</label>
+                                        <div class="input-group">
+                                            <select class="form-control" id="debug-general" name="debug-general">
+                                                <option value="Okumura Hata">Modelo Okumura Hata</option>
+                                                <option value="Debug Activado">Modelo CI</option>
+                                                <option value="Debug Activado">Modelo ABG</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">Param 1</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="30.00" type="number" name="input1"
+                                            id="input1" placeholder="Parámetro 1">
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">Param 2</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="0.00" type="number" name="input2" id="input2"
+                                            placeholder="Parámetro 2">
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">Param 3</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="1.50" type="number" name="input1" id="input1"
+                                            placeholder="Parámetro 3">
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">Param 4</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="0.00" type="number" name="input2" id="input2"
+                                            placeholder="Parámetro 4">
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="text-label">Desvanecimiento</label>
+                                        <div class="input-group">
+                                            <select class="form-control" id="debug-general" name="debug-general">
+                                                <option value="Okumura Hata">Desactivado</option>
+                                                <option value="Debug Activado">Normal</option>
+                                                <option value="Debug Activado">Rayleight</option>
+                                                <option value="Debug Activado">Mixto</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">Param 1</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="3.10" type="number" name="input1" id="input1"
+                                            placeholder="Parámetro 1">
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">Param 2</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="8.10" type="number" name="input2" id="input2"
+                                            placeholder="Parámetro 2">
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">Param 3</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="0.00" type="number" name="input1" id="input1"
+                                            placeholder="Parámetro 3">
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">Param 1</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="0.00" type="number" name="input2" id="input2"
+                                            placeholder="Parámetro 4">
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">BER Objetivo</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="0.00" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Figura de Ruido [dB]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="6" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                            </div>
+                        </section>
+
+
+
+
+                        <h4>Antena y Balance</h4>
+                        <section>
+                            <div class="row">
+
+
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Potencia de Transmisión [dBm]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="28" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Ganancia de Transmisión [dB]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="15" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Pérdidas de Transmisión [dB]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="1" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Pérdidas de Recepción [dB]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="1" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Sensibilidad en Recepción</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="-110" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">MCL</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="70" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">Modelo de Antena</label>
+                                    <div class="input-group">
+                                        <select class="form-control" id="debug-general" name="debug-general">
+                                            <option value="Okumura Hata">TS 38942 Trisectorizada</option>
+                                            <option value="Debug Activado">Futuro</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">Ancho de Haz</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="65" type="number" name="input2" id="input2"
+                                            placeholder="Parámetro 2">
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">Atenuación Mínima</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="20" type="number" name="input1" id="input1"
+                                            placeholder="Parámetro 3">
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">Futuro</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="0.00" type="number" name="input2" id="input2"
+                                            placeholder="Parámetro 4">
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+                            </div>
+                        </section>
+                        <h4>Asignación</h4>
+                        <section>
+                            <div class="row">
+
+
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Tipo de Asignación</label>
+                                        <div class="input-group">
+                                            <select class="form-control" id="debug-general" name="debug-general">
+                                                <option value="Okumura Hata">Round Robin</option>
+                                                <option value="Debug Activado">Futuro</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Ancho de Banda Usuario [Mhz]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="100" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Numerología [u]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="1" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Banda de Guarda [Khz]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="845" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Suportadora [u]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="12" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Trama Total [u]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="12" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Símbolos OFDM [u]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="10" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Frame</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="10" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Futuro</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="0" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Futuro</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="0" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+                            </div>
+                        </section>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="{% static 'simapp/vendor/global/global.min.js' %}"></script>
+<script src="{% static 'simapp/js/quixnav-init.js' %}"></script>
+<script src="{% static 'simapp/js/custom.min.js' %}"></script>
+
+
+
+<script src="{% static 'simapp/vendor/jquery-steps/build/jquery.steps.min.js' %}"></script>
+<script src="{% static 'simapp/vendor/jquery-validation/jquery.validate.min.js' %}"></script>
+<!-- Form validate init -->
+<script src="{% static 'simapp/js/plugins-init/jquery.validate-init.js' %}"></script>
+
+
+
+<!-- Form step init -->
+<script src="{% static 'simapp/js/plugins-init/jquery-steps-init.js' %}"></script>
+{% endblock %}
+
