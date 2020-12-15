@@ -38,17 +38,40 @@
           <form action="" method="post">
             {% csrf_token %}
             <table>           
-
-              {{ wizard.management_form|crispy }}
+              
+              {{ wizard.management_form }}
+              
               {% if wizard.form.forms %}
-                {{ wizard.form.management_form|crispy }}
+                {{ wizard.form.management_form }}
                 {% for form in wizard.form.forms %}
                 
-                {{ form|crispy }}
+                {{ form_data|crispy }}
 
                 {% endfor %}
               {% else %}
+              
+              <div class="row">
                 {{ wizard.form|crispy }}
+              <div class="col-lg-5 mb-4">
+                <div class="form-group">
+                    <label class="text-label">Geometría Radial de Usuarios</label>
+                    <div class="input-group">
+                      {{ wizard.form.iteraciones|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="form-group">
+                    <label class="text-label">Distancia Radial [m]</label>
+                    <div class="input-group">
+                      {{ wizard.form.nombre|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+          </div>
+                
+
               {% endif %}
             </table>
             
@@ -58,8 +81,8 @@
             <button name="wizard_goto_step" type="submit" class="btn btn-primary"
               value="{{ wizard.steps.prev }}">anterior</button>
             {% endif %}
-            <!--<input type="submit" value="siguiente" />
-            -->
+            <!--<input type="submit" value="siguiente" />-->
+            
             <button type="submit" class="btn btn-primary">Siguiente</button>
             
 

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from formtools.wizard.views import SessionWizardView
 #lista de formularios
 from .forms import FormStepOne, FormStepTwo
+from .forms import FormGeneral
 #
 # Create your views here.
 def home(request):
@@ -28,7 +29,13 @@ class FormWizardView(SessionWizardView):
         return render(self.request, 'simapp/sami-en-desarrollo.html', {
             'form_data': [form.cleaned_data for form in form_list],
         })
-    
+
+
+def form_view_2(request):
+    form=FormGeneral()
+    print(request.body)
+    return render(request,'simapp/sami-form-test2.html', {"form_data":form} )
+
 #guardar cada lista de variables 
 #lo anterior por cada pagina
 #al subir la informacion final, 

@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views 
 from .forms import FormStepOne, FormStepTwo
+from .forms import FormGeneral
 from .views import FormWizardView
 
 
@@ -11,6 +12,7 @@ urlpatterns = [
     path('sami_v1/', views.form_demo_sami_v1, name='demo_form_sami_v1'),
     path('futuro/', views.en_desarrollo, name='futuro'),
     path('test/', FormWizardView.as_view([FormStepOne, FormStepTwo]), name='dev_sami'),
+    path('test2/', views.form_view_2, name='dev_sami_2'),
     
 
 ]
