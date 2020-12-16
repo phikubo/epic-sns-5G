@@ -1,0 +1,33 @@
+{% extends 'base_sami.html' %}
+
+{% block content %}
+
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-12 p-md-0">
+        <div class="row justify-content-center h-100 align-items-center">
+            <div class="col-md-5">
+                <div class="form-input-content text-center">
+                    <h1 class="error-text font-weight-bold">Parámetros Configurados Correctamente.</h1>
+                    <hr>
+                    <h2>¡Simulación Iniciada!</h2>
+                    <hr>
+                    <p>Cuando la simulación haya concluido, observe los resultados a continuación:</p>
+                    <h2 class="mt-4"><i class="icon icon-chart-bar-33"></i> </h2>
+                   
+                    
+                    <div class="mb-5">
+                        <a class="btn btn-primary" href="{% url 'simapp:simulador_estadisticas' %}">Resultados</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+    
+            
+   
+
+{% endblock %}

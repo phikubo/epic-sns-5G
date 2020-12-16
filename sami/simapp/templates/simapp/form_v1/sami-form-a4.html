@@ -1,0 +1,172 @@
+{% extends 'base_sami.html' %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4>¡Bienvenido a la interfaz de simulación!</h4>
+            <p class="mb-0">Por favor configura los siguientes parámetros:</p>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xl-12 col-xxl-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Formulario de Parámetros</h4>
+            </div>
+            <div class="card-body">
+                <hr>
+                <div>
+
+                    <form action="" method="post">
+                        {% csrf_token %}
+
+
+
+                        <section>
+                            <div class="row">
+
+
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Tipo de Asignación</label>
+                                        <div class="input-group">
+                                            <select class="form-control" id="debug-general" name="debug-general">
+                                                <option value="Okumura Hata">Round Robin</option>
+                                                <option value="Debug Activado">Futuro</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Ancho de Banda Usuario [Mhz]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="100" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Numerología [u]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="1" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Banda de Guarda [Khz]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="845" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Suportadora [u]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="12" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Trama Total [u]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="12" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Símbolos OFDM [u]</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="10" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Frame</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="10" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Futuro</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="0" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Futuro</label>
+                                        <div class="form-group">
+                                            <input class="form-control" value="0" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+                            </div>
+                        </section>
+
+
+
+
+
+                        <input type="submit" class="btn btn-primary" value="terminar" />
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

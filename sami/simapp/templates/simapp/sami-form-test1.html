@@ -51,25 +51,14 @@
               {% else %}
               
               <div class="row">
-                {{ wizard.form|crispy }}
-              <div class="col-lg-5 mb-4">
-                <div class="form-group">
-                    <label class="text-label">Geometría Radial de Usuarios</label>
-                    <div class="input-group">
-                      {{ wizard.form.iteraciones|as_crispy_field }}
-                    </div>
+                <div class="col-xl-12 col-xxl-12">
+                  <div class="card">
+                    <div class="card-body">
+                    {{ wizard.form|crispy }}
+                      </div>
+                  </div>
                 </div>
-            </div>
-
-            <div class="col-lg-6 mb-4">
-                <div class="form-group">
-                    <label class="text-label">Distancia Radial [m]</label>
-                    <div class="input-group">
-                      {{ wizard.form.nombre|as_crispy_field }}
-                    </div>
-                </div>
-            </div>
-          </div>
+              </div>
                 
 
               {% endif %}

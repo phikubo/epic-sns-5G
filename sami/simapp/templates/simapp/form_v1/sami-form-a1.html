@@ -1,0 +1,172 @@
+{% extends 'base_sami.html' %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4>¡Bienvenido a la interfaz de simulación!</h4>
+            <p class="mb-0">Por favor configura los siguientes parámetros:</p>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xl-12 col-xxl-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Formulario de Parámetros</h4>
+            </div>
+            <div class="card-body">
+                <hr>
+                <div>
+
+                    <form action="" method="post">
+                        {% csrf_token %}
+
+
+
+                        <section>
+                            <div class="row">
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--<label class="text-label">Iteraciones</label>-->
+                                    <div class="form-group">
+                                        {{ form_data.iteraciones|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+
+                                    <div class="form-group">
+                                        {{ form_data.n_celdas|as_crispy_field }}
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">Portadora [Mhz]</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="900" type="number" name="input1" id="input1">
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="text-label">ISD</label>
+                                    <div class="form-group">
+                                        <input class="form-control" value="1000" type="number" name="input2"
+                                            id="input2">
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Geometría Radial de Usuarios</label>
+                                        <div class="input-group">
+                                            <select class="form-control" id="debug-general" name="debug-general">
+                                                <option value="Debug Desactivado">Manual</option>
+                                                <option value="Debug Activado">Automático</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Distancia Radial [m]</label>
+                                        <div class="input-group">
+                                            <input type="text" name="phoneNumber" class="form-control"
+                                                placeholder="Desactiva si automático" required value=1000>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Tipo de espliegue de Usuarios</label>
+                                        <div class="input-group">
+                                            <select class="form-control" id="debug-general" name="debug-general">
+                                                <option value="Debug Desactivado">Proceso Puntual Poisson</option>
+                                                <option value="Debug Activado">Futuro</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Población</label>
+                                        <div class="input-group">
+                                            <select class="form-control" id="debug-general" name="debug-general">
+                                                <option value="Debug Desactivado">Baja</option>
+                                                <option value="Debug Activado">Media</option>
+                                                <option value="Debug Activado">Alta</option>
+                                                <option value="Debug Activado">Ultra</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-lg-5 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Generar Imagen (1 simulación)</label>
+                                        <div class="input-group">
+                                            <select class="form-control" id="debug-general" name="debug-general">
+                                                <option value="Simulación Desactivado">Desactivado</option>
+                                                <option value="Simulación Activado">Activado</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <label class="text-label">Resolución [pixel]</label>
+                                        <div class="input-group">
+                                            <input type="text" name="phoneNumber" class="form-control" value=100
+                                                placeholder="" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <label class="form-check-label">
+                                        <div class="form-group">
+                                            <input type="checkbox" class="form-check-input" value="">
+                                            <label class="text-label">Debug</label>
+                                        </div>
+
+                                </div>
+
+
+                            </div>
+
+                        </section>
+
+
+
+
+
+                        <input type="submit" class="btn btn-primary" value="siguiente" />
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

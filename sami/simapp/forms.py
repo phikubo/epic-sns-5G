@@ -5,6 +5,11 @@ class FormStepOne(forms.Form):
     nombre= forms.CharField(max_length=100,initial="name")
     Apellido = forms.CharField(max_length=100,initial="last")
     Telefono  = forms.CharField(max_length=100,initial="number")
+    otro  = forms.CharField(max_length=100,initial="number")
+    otro2  = forms.CharField(max_length=100,initial="number")
+    otro3  = forms.CharField(max_length=100,initial="number")
+    otro4  = forms.CharField(max_length=100,initial="number")
+    otro5  = forms.CharField(max_length=100,initial="number")
 
 class FormStepTwo(forms.Form):
     job = forms.CharField(max_length=100,initial="name")
@@ -14,7 +19,7 @@ class FormStepTwo(forms.Form):
 #------------------------------SIMAPP
 class FormGeneral(forms.Form):
     iteraciones=forms.IntegerField(label='Iteraciones',initial=1)
-    n_celdas=forms.IntegerField(initial=1)
+    n_celdas=forms.IntegerField(label='Cantidad de Celdas',initial=1)
     #geometria_usuarios=forms.IntegerField()
     radio_cel=forms.IntegerField(initial=1000)
     #distribucion= #choice

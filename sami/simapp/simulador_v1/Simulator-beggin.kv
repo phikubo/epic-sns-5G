@@ -1,0 +1,1186 @@
+#<backend_gridview>
+#se definen las figuras para reuso de codigo
+<Cajadatos@BoxLayout>:
+	orientation: 'horizontal'
+	size_hint_y: 0.10	
+	l_text: ''
+	Label:
+		canvas.before:
+			Color:
+				rgba: 0.3,0.4,0.5,1
+			Rectangle:
+				pos:self.pos
+				size:self.size
+		text: root.l_text
+<colorlabel@>:
+	rgba: 0.3,0.4,0.5,1	
+<inputdatos@TextInput>:
+	size_hint: ( .20, 1)
+	multiline: False
+<pruegab>
+	name: "prueba"
+	
+	BoxLayout:
+
+
+		#orientation: 'vertical'
+		padding: 20
+
+		size: self.size
+		#size: (.3 , .5) 
+		#size: (.4, .3)
+		canvas:
+
+			Color:
+				rgba: (1, 1, 1, 1)
+				#rgba: 0,0,0.53,0.2
+			Rectangle:
+				pos:self.pos
+				size:self.size		
+#	BoxLayout:
+<umibox>
+	BoxLayout:
+		group: "modelos"
+		orientation: 'vertical'
+		padding: 50
+		width: 800 if root.noShownABG  else 0
+        height: self.height
+        size_hint: (None, 1)
+        opacity: 1 if root.noShownABG else 0
+
+		canvas:
+			Color:
+				rgba: (1, 1, 1, 1)
+			Rectangle:
+				pos:self.pos
+				size:self.size
+#TITULO UMA PARA LA INTERFAZ GRAFICA 
+
+		Label:
+			canvas.before:
+				Color:
+				
+					rgba: 0.5,0.5,0.3,1
+				Rectangle:
+					pos:self.pos
+					size:self.size
+					source: "base_datos/img_gui/modelcanal.PNG"
+
+			text: "URBANO CALLEJON ESTRECHO (STREET CANYON)Rappaport"
+			font_size: 20
+
+
+		BoxLayout:			
+			#id: Vsector
+			orientation: 'horizontal'	
+			size_hint_y: 0.18		
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.4,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Distancia Intercelda (ISD) 200m"
+			TextInput:
+				id: ISD
+				size_hint: ( .15, 1)
+				multiline: False
+
+		BoxLayout:
+			orientation:'horizontal'
+			size_hint_y: 0.18
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.4,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Alto de la antena (HBs) 10m"
+			TextInput:
+				id: Hbs
+				size_hint: ( .15, 1)
+				multiline: False
+
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint_y: 0.18
+
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.4,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Distancia min BS-UE 10m"	
+			TextInput:
+				id: Dbs_ue
+				size_hint: ( .15, 1)
+				multiline: False
+
+		BoxLayout:
+			orientation:'horizontal'
+			size_hint_y: 0.18
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.5,0.5,0.4,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Altura Usuario (Hue) 2-3m"
+			TextInput:
+				id: Hue
+				size_hint: ( .15, 1)
+				multiline: False
+				
+		BoxLayout:
+			orientation: 'horizontal'
+			padding: [0, 30]
+			Button:
+				canvas.before:
+					Color:
+						rgba: 0,0,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				background_color: 1, 1, 1, 1
+				text: "calcular"
+
+				on_release: 
+					root.manager.transition.direction = "up" 		
+					app.root.current ="poche"
+
+			Button:
+				canvas.before:
+					Color:
+						rgba: 0,0,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				background_color: 1, 1, 1
+				text: "volver"
+
+				on_release: 
+					root.manager.transition.direction = "down" 		
+					app.root.current ="caz"
+
+
+
+#ESTA INTERFFAZ REALIZA EL MODELO DEL CANAL DE TIPO URBANO PARA EL SIMULADOR 
+#WindowManager:
+<ModelcanalUMI>
+	name: "sking"
+	
+
+	BoxLayout:
+		orientation: 'vertical'
+		BoxLayout:
+			orientation: 'vertical'
+			BoxLayout:
+				orientation: 'horizontal'
+				ToggleButton:
+					canvas.before:
+						Color:
+							rgba: 0,0,1
+						Rectangle:
+							pos:self.pos
+							size: self.size
+					background_color: 1, 1, 1
+					text: "Modelo CI"
+					group: "modelos"
+					#on_press: root.evaluar()
+					#on_release: 
+					#	root.noShownABG = not root.noShownABG
+
+				ToggleButton:
+					canvas.before:
+						Color:
+							rgba: 0,0,1
+						Rectangle:
+							pos:self.pos
+							size: self.size
+					background_color: 1, 1, 1
+					text: "Modelo Rappaport"
+
+					#on_press: 
+					#	root.noShownABG =  not root.noShownABG
+					#on_release: 
+					#	root.evaluar()
+				
+
+		BoxLayout:
+			id: "Plrappaport"
+			orientation: 'vertical'
+			padding: 50
+			width: 800 if root.noShownABG  else 0
+            height: self.height
+            size_hint: (None, 1)
+            opacity: 1 if root.noShownABG else 0
+
+			canvas:
+				Color:
+					rgba: (1, 1, 1, 1)
+				Rectangle:
+					pos:self.pos
+					size:self.size
+
+			#TITULO UMA PARA LA INTERFAZ GRAFICA 
+			Label:
+				canvas.before:
+					Color:
+					
+						rgba: 0.5,0.5,0.3,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+						source: "base_datos/img_gui/modelcanal.PNG"
+
+				text: "URBANO CALLEJON ESTRECHO (STREET CANYON)Rappaport"
+				font_size: 20
+
+
+			BoxLayout:			
+				#id: Vsector
+				orientation: 'horizontal'	
+				size_hint_y: 0.18		
+				Label:
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Distancia Intercelda (ISD) 200m"
+				TextInput:
+					id: ISD
+					size_hint: ( .15, 1)
+					multiline: False
+
+			BoxLayout:
+				orientation:'horizontal'
+				size_hint_y: 0.18
+				Label:
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Alto de la antena (HBs) 10m"
+				TextInput:
+					id: Hbs
+					size_hint: ( .15, 1)
+					multiline: False
+
+			BoxLayout:
+				orientation: 'horizontal'
+				size_hint_y: 0.18
+
+				Label:
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Distancia min BS-UE 10m"	
+				TextInput:
+					id: Dbs_ue
+					size_hint: ( .15, 1)
+					multiline: False
+
+			BoxLayout:
+				orientation:'horizontal'
+				size_hint_y: 0.18
+				Label:
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Altura Usuario (Hue) 2-3m"
+				TextInput:
+					id: Hue
+					size_hint: ( .15, 1)
+					multiline: False
+					
+			BoxLayout:
+				orientation: 'horizontal'
+				padding: [0, 30]
+				Button:
+					canvas.before:
+						Color:
+							rgba: 0,0,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					background_color: 1, 1, 1, 1
+					text: "calcular"
+
+					on_release: 
+						root.manager.transition.direction = "up" 		
+						app.root.current ="poche"
+
+				Button:
+					canvas.before:
+						Color:
+							rgba: 0,0,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					background_color: 1, 1, 1
+					text: "volver"
+
+					on_release: 
+						root.manager.transition.direction = "down" 		
+						app.root.current ="caz"
+
+
+
+		BoxLayout:
+			id: "Plci"
+			orientation: 'vertical'
+			padding: 50
+			width: 800 if root.noShownCI else 0
+            height: self.height
+            size_hint: (None, 1)
+            opacity: 1 if root.noShownCI else 0
+			
+			canvas:
+				Color:
+					rgba: (1, 1, 1, 1)
+				Rectangle:
+					pos:self.pos
+					size:self.size
+
+			#TITULO UMA PARA LA INTERFAZ GRAFICA 
+			Label:
+				canvas.before:
+					Color:
+					
+						rgba: 0.5,0.5,0.3,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+						source: "base_datos/img_gui/modelcanal.PNG"
+
+				text: "URBANO CALLEJON ESTRECHO (STREET CANYON)CI"
+				font_size: 20
+
+
+			BoxLayout:			
+				#id: Vsector
+				orientation: 'horizontal'	
+				size_hint_y: 0.18		
+				Label:
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Distancia Intercelda (ISD) 200m"
+				TextInput:
+					id: ISD
+					size_hint: ( .15, 1)
+					multiline: False
+
+			BoxLayout:
+				orientation:'horizontal'
+				size_hint_y: 0.18
+				Label:
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Alto de la antena (HBs) 10m"
+				TextInput:
+					id: Hbs
+					size_hint: ( .15, 1)
+					multiline: False
+
+			BoxLayout:
+				orientation: 'horizontal'
+				size_hint_y: 0.18
+
+				Label:
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Distancia min BS-UE 10m"	
+				TextInput:
+					id: Dbs_ue
+					size_hint: ( .15, 1)
+					multiline: False
+
+			BoxLayout:
+				orientation:'horizontal'
+				size_hint_y: 0.18
+				Label:
+					canvas.before:
+						Color:
+							rgba: 0.5,0.5,0.4,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					text: "Altura Usuario (Hue) 2-3m"
+				TextInput:
+					id: Hue
+					size_hint: ( .15, 1)
+					multiline: False
+					
+			BoxLayout:
+				orientation: 'horizontal'
+				padding: [0, 30]
+				Button:
+					canvas.before:
+						Color:
+							rgba: 0,0,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					background_color: 1, 1, 1, 1
+					text: "calcular"
+
+					on_release: 
+						root.manager.transition.direction = "up" 		
+						app.root.current ="poche"
+
+				Button:
+					canvas.before:
+						Color:
+							rgba: 0,0,1
+						Rectangle:
+							pos:self.pos
+							size:self.size
+					background_color: 1, 1, 1
+					text: "volver"
+
+					on_release: 
+						root.manager.transition.direction = "down" 		
+						app.root.current ="caz"
+
+		#umibox:
+			
+				
+
+
+
+
+<ModelcanalUMA>
+	name:"king"
+#	nivel: nivel
+#	radiocell: radiocell
+#	intensidadPPP: intensidadPPP
+	#Vsector: Vsector	
+
+
+	BoxLayout:
+		orientation: 'vertical'
+		padding: 50
+		canvas:
+			Color:
+				rgba: (1, 1, 1, 1)
+			Rectangle:
+				pos:self.pos
+				size:self.size
+
+
+
+#TITULO UMA PARA LA INTERFAZ GRAFICA  URBANO MACRO CELDA
+		Label:
+			canvas.before:
+				Color:
+					rgba: 0.3,0.4,0.5,1
+				Rectangle:
+					pos:self.pos
+					size:self.size
+					source: "base_datos/img_gui/modelcanal.PNG"
+
+			text: "URBANO  MACRO CELDA"
+			font_size: 20
+
+
+		BoxLayout:			
+			#id: Vsector
+			orientation: 'horizontal'	
+			size_hint_y: 0.18		
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.3,0.4,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Distancia T-R (2D)"
+			TextInput:
+				id: d2d
+				size_hint: ( .15, 1)
+				multiline: False
+
+		BoxLayout:
+			orientation:'horizontal'
+			size_hint_y: 0.18
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.3,0.4,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Alto de la antena (HBs) 25m"
+			TextInput:
+				id: Hbs
+				size_hint: ( .15, 1)
+				multiline: False
+
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint_y: 0.18
+
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.3,0.4,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Altura Usuario (Hut) 1.5-22.5m"	
+			TextInput:
+				id: Hut
+				size_hint: ( .15, 1)
+				multiline: False
+
+		BoxLayout:
+			orientation:'horizontal'
+			size_hint_y: 0.18
+			Label:
+				canvas.before:
+					Color:
+						rgba: 0.3,0.4,0.5,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				text: "Altura eficiente (He) 1m"
+			TextInput:
+				id: Hue
+				size_hint: ( .15, 1)
+				multiline: False
+				
+		BoxLayout:
+			orientation: 'horizontal'
+			padding: [0, 30]
+			Button:
+				canvas.before:
+					Color:
+						rgba: 0,0,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				background_color: 1, 1, 1, 1
+				text: "calcular"
+
+				on_release: 
+					root.manager.transition.direction = "up" 		
+					app.root.current ="poche"
+
+			Button:
+				canvas.before:
+					Color:
+						rgba: 0,0,1
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				background_color: 1, 1, 1
+				text: "volver"
+
+				on_release: 
+					root.manager.transition.direction = "down" 		
+					app.root.current ="caz"
+
+<MainWindow>
+	name:"poche"
+	fp: b_fp
+	bw: b_bw
+	isd:b_isd
+	ppp:b_ppp
+	esc: b_esc
+	mp: b_mp
+	desv: b_desv
+	nf: b_nf
+	ptx: b_ptx
+	patron: b_patr
+	celdas: celdas
+	#nivel: nivel
+	#radiocell: radiocell
+	#intensidadPPP: intensidadPPP
+	size: (1, .1)
+	BoxLayout:
+		#orientation: 'vertical'
+		padding: 20
+		size: self.size
+		#size: (.3 , .5) 
+		#size: (.4, .3)
+		canvas:
+			Color:
+				rgba: (1, 1, 1, 1)
+				#rgba: 0,0,0.53,0.2
+			Rectangle:
+				pos:self.pos
+				size:self.size
+				source: "base_datos/img_gui/modelcanal.PNG"	
+		BoxLayout:
+			padding: 5
+			orientation: 'vertical'
+			size: (.4, .3)	
+
+			ActionBar:
+				pos_hint: {'top': 1}
+				ActionView:
+					ActionPrevious:
+						title: 'Simulador Tools'
+						with_previous: False
+					ActionOverflow:
+					ActionButton:
+						text: 'Guardar datos'
+					ActionButton:
+						text: 'Cobertura'
+					ActionButton:
+						text: 'resultados'
+			BoxLayout:
+				padding: 5	
+				orientation: 'horizontal'
+				canvas:
+					Color:
+						rgba: (1, 1, 1, 1)
+						#rgba: 0,0,0.53,0.2		
+					Rectangle:
+						pos:self.pos
+						size:self.size
+				BoxLayout:
+					padding: 10
+					orientation: 'vertical'
+					BoxLayout:#Botton para la frecuencia portadora del sistema
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Frecuencia portadora [GHz]'
+						Button:
+					        id: b_fp
+					        text: '24' 
+					        dismiss_on_select: False
+					        on_release: d_fp.open(self)
+					        size_hint: ( 0.8, 1) 
+					        on_parent: d_fp.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_fp
+					        #on_select: self.dismiss()
+					        on_select: 
+					        	b_fp.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: '3.5'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_fp.select(self.text)
+							Button:
+					        	#id:opc1
+					            text: '24'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_fp.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: '73'
+					            size_hint: (1, None)
+					            on_release: d_fp.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+					BoxLayout:#Botton para el ancho de banda del canal
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Ancho de banda [MHz]'
+						Button:
+					        id: b_bw
+					        text: '100' 
+					        dismiss_on_select: False
+					        on_release: d_bw.open(self)
+					        size: self.size
+					        on_parent: d_bw.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_bw
+					        on_select: b_bw.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: '100'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_bw.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: '200'
+					            size_hint: (1, None)
+					            on_release: d_bw.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+							Button:
+					        	#id:opc2
+					            text: '400'
+					            size_hint: (1, None)
+					            on_release: d_bw.select(self.text)
+								dismiss_on_select: False
+					BoxLayout:#Botton para seleccionar la intesidad de puntos poisson
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Densidad de usuarios'
+						Button:
+					        id: b_ppp
+					        text: 'Suave' 
+					        dismiss_on_select: False
+					        on_release: d_ppp.open(self)
+					        size_hint: ( 0.3, 1)
+					        on_parent: d_ppp.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_ppp
+					        on_select: b_ppp.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: 'Suave'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_ppp.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: 'Media'
+					            size_hint: (1, None)
+					            on_release: d_ppp.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+							Button:
+					        	#id:opc2
+					            text: 'Alta'
+					            size_hint: (1, None)
+					            on_release: d_ppp.select(self.text)
+								dismiss_on_select: False
+					BoxLayout:#Botton para seleccionar de escenario UMa o UMi
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Seleccion de Escenario'
+						Button:
+					        id: b_esc
+					        text: 'UMa' 
+					        dismiss_on_select: False
+					        on_release: d_esc.open(self)
+					        size_hint: ( 0.3, 1)
+					        on_parent: d_esc.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_esc
+					        on_select: b_esc.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: 'UMa'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_esc.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: 'UMi'
+					            size_hint: (1, None)
+					            on_release: d_esc.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+					BoxLayout:#Botton para seleccionar la distancia entre celdas 
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Distancia entre celda ISD [m]'
+						Button:
+					        id: b_isd
+					        text: '250' 
+					        dismiss_on_select: False
+					        on_release: d_isd.open(self)
+					        size_hint: ( 0.2, 1)
+					        on_parent: d_isd.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_isd
+					        on_select: b_isd.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: '250'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_isd.select(self.text)
+					        Button:
+					        	#id:opc1
+					            text: '500'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_isd.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: '1000'
+					            size_hint: (1, None)
+					            on_release: d_isd.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+							Button:
+					        	#id:opc2
+					            text: '1250'
+					            size_hint: (1, None)
+					            on_release: d_isd.select(self.text)
+								dismiss_on_select: False
+					BoxLayout:#Botton para seleccionar modelo de propagación
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Modelo de Perdidas de Propagacion'
+						Button:
+					        id: b_mp
+					        text: 'CI' 
+					        dismiss_on_select: False
+					        on_release: d_mp.open(self)
+					        size_hint: ( 0.2, 1)
+					        on_parent: d_mp.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_mp
+					        on_select: b_mp.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: 'CI'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_mp.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: 'ABG'
+					            size_hint: (1, None)
+					            on_release: d_mp.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+							Button:
+					        	#id:opc2
+					            text: 'Okumura H'
+					            size_hint: (1, None)
+					            on_release: d_mp.select(self.text)
+								dismiss_on_select: False					
+					BoxLayout:#Botton para el tipo de desvanecimiento
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Tipo de desvanecimiento'
+						Button:
+					        id: b_desv
+					        text: 'mixto' 
+					        dismiss_on_select: False
+					        on_release: d_desv.open(self)
+					        size_hint: ( 0.2, 1)
+					        on_parent: d_desv.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_desv
+					        on_select: b_desv.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: 'mixto'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_desv.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: 'lento'
+					            size_hint: (1, None)
+					            on_release: d_desv.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+					        Button:
+					        	#id:opc2
+					            text: 'rapido'
+					            size_hint: (1, None)
+					            on_release: d_desv.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+					BoxLayout:#Botton para seleccionar valor de figura de ruido
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Figura de ruido NF[dB]'
+						Button:
+					        id: b_nf
+					        text: '3' 
+					        dismiss_on_select: False
+					        on_release: d_nf.open(self)
+					        size_hint: ( 0.15, 1)
+					        on_parent: d_nf.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_nf
+					        on_select: b_nf.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: '3'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_nf.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: '6'
+					            size_hint: (1, None)
+					            on_release: d_nf.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+					BoxLayout:#Botton para la potencia de transmision de la estacion Base
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: 'Potencia Tx [dBm]'
+						Button:
+					        id: b_ptx
+					        text: '38' #40 W/20w / 6W
+					        dismiss_on_select: False
+					        on_release: d_ptx.open(self)
+					        size_hint: ( 0.15, 1)
+					        on_parent: d_ptx.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_ptx
+					        on_select: b_ptx = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: '38'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_ptx.select(self.text)
+					        Button:
+					        	#id:opc2
+					            text: '43'
+					            size_hint: (1, None)
+					            on_release: d_ptx.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+					        Button:
+					        	#id:opc2
+					            text: '46'
+					            size_hint: (1, None)
+					            on_release: d_ptx.select(self.text)
+								dismiss_on_select: False
+								#id: nivel
+					BoxLayout:#Botton para seleccionar el patron de radiacion 
+						orientation: 'horizontal'
+						size_hint_y: 0.08
+						padding: 1
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text: "Tipo de patron de radiacion"
+						Button:
+					        id: b_patr
+					        text: '4G' 
+					        dismiss_on_select: False
+					        on_release: d_patr.open(self)
+					        size_hint: ( 0.15, 1)
+					        on_parent: d_patr.dismiss()
+					        #text_size: self.size
+					    DropDown:
+					        id: d_patr
+					        on_select: b_patr.text = '{}'.format(args[1])
+					        Button:
+					        	#id:opc1
+					            text: '4G'
+	        					size_hint: (1, None)
+	        					dismiss_on_select: False
+					            on_release: d_patr.select(self.text)
+					BoxLayout:#Botton para la cantidad de las celdas
+
+						orientation: 'horizontal'
+						size_hint_y: 0.10	
+						Label:
+							canvas.before:
+								Color:
+									rgba: 0.3,0.4,0.5,1
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							text:"Numero de Celdas [max 19]"
+						TextInput:
+							size_hint: ( .20, 1)
+							multiline: False
+							id:celdas
+
+					BoxLayout:
+						orientation: 'vertical'
+						padding: [0,50,0,50]
+						Button:
+							id: cal
+							canvas.before:
+								Color:
+									rgba: 0,0,1,0
+								Rectangle:
+									pos:self.pos
+									size:self.size
+							background_color: 1, 1, 1, 1
+							text: "Calcular"
+
+							on_release: 
+								root.manager.transition.direction = "up" 		
+								root.btn()
+								app.root.current ="caz"
+
+#						Button: 
+#							id: back
+#							canvas.before:
+#								Color:
+#									rgba: 0,0,1,0
+#								Rectangle:
+#									pos:self.pos
+#									size:self.size
+#							background_color: 1, 1, 1, 1
+#							text: "Volver"
+				
+				BoxLayout:
+					orientation: 'horizontal'
+					padding: [0,50]
+					Image:
+						size: self.texture_size
+						size_hint: 1, 1
+						#size: dp(56),dp(56)
+						source: 'base_datos/img_gui/Escudo_Unicauca1.png'
+<SecondWindow>
+	name:"caz"
+	canvas.before:
+		Color:
+			rgba: (1, 1, 1, 1)
+			#rgba: 0,0,0.53,0.2
+		Rectangle:
+			pos:self.pos
+			size:self.size
+			source: "base_datos/img_gui/modelcanal.PNG"
+
+
+
+	BoxLayout:
+		orientation: 'horizontal'
+	#	padding: 30
+		padding: [30, 120, 30, 120]
+	
+		Button: 
+			canvas.before:
+				Color:
+					rgba: 0,0,1
+				Rectangle:
+			
+					pos:self.pos
+					size:self.size
+			text:'MODELO DEL CANAL TIPO UMa'
+			on_release:
+				#root.add_dato()
+				#source:'all_ppp_trisec.jpg'
+				root.manager.transition.direction = "down"
+				app.root.current = "king"
+
+		Button:
+			canvas.before:
+				Color:
+					rgba: 0,0,1
+				Rectangle:
+					
+					pos:self.pos
+					size:self.size
+			text: 'MODELO DEL CANAL TIPO UMi-Street Canyon'
+			on_release:
+				#root.add_dato()
+				#source:'all_ppp_trisec.jpg'
+				root.manager.transition.direction = "down"
+				app.root.current = "sking"
+	
+#				source:root.sr
+				#source:'all_ppp_trisec.jpg'
+
+			
+#<contenedorgrilla>
+#	name:"ima"		
+	
