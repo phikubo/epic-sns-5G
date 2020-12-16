@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
+#form tools
 from formtools.wizard.views import SessionWizardView
 #lista de formularios
 from .forms import FormStepOne, FormStepTwo
@@ -26,7 +28,7 @@ def en_desarrollo(request):
     return render(request,'simapp/sami-en-desarrollo.html')
 
 def iniciar_simulacion(request):
-    if request.method == 'POST':
+    if request.method == 'GET':
         try:
             arr = os.listdir()
             print(arr)
@@ -37,7 +39,7 @@ def iniciar_simulacion(request):
         #print(exists)
         print("GET Metodo")
         top_pruebas.prueba_sistema_v048()
-    return render(request,'simapp/sami-simulador.html')
+    return render(request,'simapp/sami-iniciar-sim.html')
 
 def ver_estadisticas(request):
     return render(request,'simapp/sami-sim-estadisticas.html')
@@ -50,14 +52,25 @@ def form_a1(request):
     form=FormGeneral()
     if request.method == 'POST':
         form=FormGeneral(request.POST)
-        print(".post", request.POST)
+        print("\nHA OCURRIDO UN POST a1")
+        #nok sirve para ver los items
+        #print(request.POST.get["iteraciones"])
+        #ok
+        print(request.POST)
+        print(request.POST["iteraciones"])
+
         #iteracion= form.cleaned_data['iteraciones']
         #celdas = form.cleaned_data['n_celdas']
+        #print("contenidos?:",iteracion,celdas)
+        if form.is_valid():
+            print("PROSEGUIR")
         #-----------
         #SIGUIENTE
-        return render(request,'simapp/form_v1/sami-form-a2.html')
+        return redirect('/sim/form_a2')
     #-----------
     #ACTUAL
+    else:
+        print("HA OCURRIDO OTRA COSA a1")
     return render(request,'simapp/form_v1/sami-form-a1.html', {"form_data":form} )
 
 
@@ -65,14 +78,17 @@ def form_a2(request):
     form=FormGeneral()
     if request.method == 'POST':
         form=FormGeneral(request.POST)
-        print(".post", request.POST)
+        print("\nHA OCURRIDO UN POST a2", request.POST)
         #iteracion= form.cleaned_data['iteraciones']
         #celdas = form.cleaned_data['n_celdas']
         #-----------
         #SIGUIENTE
-        return render(request,'simapp/form_v1/sami-form-a3.html')
+        #return render(request,'simapp/form_v1/sami-form-a3.html')
+        return redirect('/sim/form_a3')
     #-----------
     #ACTUAL
+    else:
+        print("HA OCURRIDO OTRA COSA a2")
     return render(request,'simapp/form_v1/sami-form-a2.html', {"form_data":form} )
 
 
@@ -80,14 +96,17 @@ def form_a3(request):
     form=FormGeneral()
     if request.method == 'POST':
         form=FormGeneral(request.POST)
-        print("HA OCURRIDO UN POST", request.POST)
+        print("\nHA OCURRIDO UN POST a3", request.POST)
         #iteracion= form.cleaned_data['iteraciones']
         #celdas = form.cleaned_data['n_celdas']
         #-----------
         #SIGUIENTE
-        return render(request,'simapp/form_v1/sami-form-a4.html')
+        #return render(request,'simapp/form_v1/sami-form-a4.html')
+        return redirect('/sim/form_a4')
     #-----------
     #ACTUAL
+    else:
+        print("HA OCURRIDO OTRA COSA a3")
     return render(request,'simapp/form_v1/sami-form-a3.html', {"form_data":form} )
 
 
@@ -95,14 +114,16 @@ def form_a4(request):
     form=FormGeneral()
     if request.method == 'POST':
         form=FormGeneral(request.POST)
-        print(".post", request.POST)
+        print("\nHA OCURRIDO UN POST a4", request.POST)
         #iteracion= form.cleaned_data['iteraciones']
         #celdas = form.cleaned_data['n_celdas']
         #-----------
         #SIGUIENTE
-        return render(request,'simapp/sami-simulador.html')
+        return redirect('iniciar/')
     #-----------
     #ACTUAL
+    else:
+        print("HA OCURRIDO OTRA COSA a4")
     return render(request,'simapp/form_v1/sami-form-a4.html', {"form_data":form} )
 
 #AUXILIAR Y PRUEBAS

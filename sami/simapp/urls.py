@@ -9,13 +9,13 @@ app_name='simapp'
 urlpatterns = [
     #http://127.0.0.1:8000/ / 
     path('', views.home, name='caracteristicas'),
-    #simulador
-    path('sim/iniciar/', views.iniciar_simulacion, name='iniciar_sim'),
     #
     path('sim/', views.form_a1, name='sim_form_a1'),
     path('sim/form_a2', views.form_a2, name='sim_form_a2'),
     path('sim/form_a3', views.form_a3, name='sim_form_a3'),
     path('sim/form_a4', views.form_a4, name='sim_form_a4'),
+    #simulador
+    path('sim/iniciar/', views.iniciar_simulacion, name='iniciar_sim'),
     #
     path('sim/estadisticas', views.ver_estadisticas, name='simulador_estadisticas'),
     #path('simulador/tablas', views.ver_tablas, name='simulador_tablas'),
