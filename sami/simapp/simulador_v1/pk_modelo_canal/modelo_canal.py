@@ -37,7 +37,7 @@ class Modelo_Canal:
 		#self.distancias=0
 		self.distancias=0 #distancia general
 		self.portadora=self.cfg_gen["portadora"][0]
-		
+
 
 		self.tx_grel=self.arreglos[1] #en cero estan los valore,s en 1 estan las unidades.
 
@@ -158,6 +158,12 @@ class Modelo_Canal:
 
 			self.perdidas_okumura_hata_mhz()
 
+		elif self.cfg_prop["modelo_perdidas"] =="abg":
+			pass
+		elif self.cfg_prop["modelo_perdidas"] =="ci":
+			pass
+		elif self.cfg_prop["modelo_perdidas"] =="3gpp":
+			pass
 		else:
 			pass
 

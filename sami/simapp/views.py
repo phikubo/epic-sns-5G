@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from formtools.wizard.views import SessionWizardView
 #lista de formularios
 from .forms import FormStepOne, FormStepTwo
-from .forms import FormGeneral
+from .forms import FormGeneral, FormPropagacion
 #integracion simulador
 import os
 import json
@@ -100,20 +100,38 @@ def form_a1(request):
 
 
 def form_a2(request):
-    form=FormGeneral()
+    form=FormPropagacion()
     if request.method == 'POST':
-        form=FormGeneral(request.POST)
-        print("\nHA OCURRIDO UN POST a2", request.POST)
-        #iteracion= form.cleaned_data['iteraciones']
-        #celdas = form.cleaned_data['n_celdas']
+        form=FormPropagacion(request.POST)
+        print("\nHA OCURRIDO UN POST a2 \n",request.POST)
+        if form.is_valid():
+            #CONFIGURACION DE VARIABLES
+            print("[OK]-Formulario a2 Aceptado")
+            contenido=form.cleaned_data
+            print(contenido)
+            '''
+            config=cfg.cargar_variables(target_path="simapp/simulador_v1/base_datos/")
+            config["cfg_simulador"]["params_general"]["iteracion"]=contenido["iteraciones"]
+            config["cfg_simulador"]["params_general"]["n_celdas"]=contenido["n_celdas"]
+            config["cfg_simulador"]["params_general"]["portadora"][0]=contenido["portadora"]
+            config["cfg_simulador"]["params_general"]["isd"]=contenido["isd"]
+            
+            config["cfg_simulador"]["params_general"]["geometria"]=contenido["geometria_usuarios"]
+            config["cfg_simulador"]["params_general"]["radio_cel"]=contenido["radio_cel"] 
+
+            config["cfg_simulador"]["params_general"]["distribucion"][0]=contenido["tipo_distribucion"]
+            config["cfg_simulador"]["params_general"]["distribucion"][1]=float(contenido["densidad"])
+                        
+            flag_imagen=convertir_str_2_bool(contenido["imagen"])
+            config["cfg_simulador"]["params_general"]["imagen"]["display"][0]=flag_imagen
+            config["cfg_simulador"]["params_general"]["imagen"]["resolucion"]=contenido["pixeles"]
+            '''
         #-----------
         #SIGUIENTE
         #return render(request,'simapp/form_v1/sami-form-a3.html')
         return redirect('/sim/form_a3')
     #-----------
     #ACTUAL
-    else:
-        print("HA OCURRIDO OTRA COSA a2")
     return render(request,'simapp/form_v1/sami-form-a2.html', {"form_data":form} )
 
 

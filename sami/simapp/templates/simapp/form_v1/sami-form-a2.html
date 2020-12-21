@@ -42,89 +42,139 @@ SIMULADOR A NIVEL DE SISTEMA
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label class="text-label">Modelo de Pérdidas de Propagación</label>
+                                        <!--
+                                        <label class="text-label">Modelo de Pérdidas de Propagación</label> 
+                                        -->
                                         <div class="input-group">
+                                            <!--
                                             <select class="form-control" id="param2" name="param2">
                                                 <option value="Okumura Hata">Modelo Okumura Hata</option>
                                                 <option value="Debug Activado">Modelo CI</option>
                                                 <option value="Debug Activado">Modelo ABG</option>
                                             </select>
+                                            -->
+                                            {{ form_data.modelo_perdidas|as_crispy_field }}
                                         </div>
                                     </div>
                                 </div>
 
 
                                 <div class="col-4 col-sm-3 mb-4">
+                                    <!--
                                     <label class="text-label">Param 1</label>
+                                    -->
                                     <div class="form-group">
+                                        <!--
                                         <input class="form-control" value="30.00" type="number" name="inputa21"
                                             id="inputa2" placeholder="Parámetro 1">
+                                        -->
+                                        {{ form_data.mp1|as_crispy_field }}
                                     </div>
                                 </div>
                                 <div class="col-4 col-sm-3 mb-4">
+                                    <!--
                                     <label class="text-label">Param 2</label>
+                                    -->
                                     <div class="form-group">
+                                        <!--
                                         <input class="form-control" value="0.00" type="number" name="inputa22" id="inputa22"
                                             placeholder="Parámetro 2">
+                                        -->
+                                        {{ form_data.mp2|as_crispy_field }}
                                     </div>
                                 </div>
 
                                 <div class="col-4 col-sm-3 mb-4">
+                                    <!--
                                     <label class="text-label">Param 3</label>
+                                    -->
                                     <div class="form-group">
+                                        <!--
                                         <input class="form-control" value="1.50" type="number" name="input23" id="inputa23"
                                             placeholder="Parámetro 3">
+                                        -->
+                                        {{ form_data.mp3|as_crispy_field }}
                                     </div>
                                 </div>
                                 <div class="col-4 col-sm-3 mb-4">
+                                    <!--
                                     <label class="text-label">Param 4</label>
+                                    -->
                                     <div class="form-group">
+                                        <!--
                                         <input class="form-control" value="0.00" type="number" name="input24" id="input24"
                                             placeholder="Parámetro 4">
+                                        -->
+                                        {{ form_data.mp4|as_crispy_field }}
                                     </div>
                                 </div>
 
                                 <div class="col-lg-12">
                                     <div class="form-group">
+                                        <!--
                                         <label class="text-label">Desvanecimiento</label>
+                                        -->
                                         <div class="input-group">
+                                            <!--
                                             <select class="form-control" id="input25" name="input25">
                                                 <option value="Okumura Hata">Desactivado</option>
                                                 <option value="Debug Activado">Normal</option>
                                                 <option value="Debug Activado">Rayleight</option>
                                                 <option value="Debug Activado">Mixto</option>
                                             </select>
+                                            -->
+                                            {{ form_data.params_desv|as_crispy_field }}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-4 col-sm-3 mb-4">
+                                    <!--
                                     <label class="text-label">Param 1</label>
+                                    -->
                                     <div class="form-group">
+                                        <!--
                                         <input class="form-control" value="3.10" type="number" name="inputa26" id="inputa26"
                                             placeholder="Parámetro 1">
+                                        -->
+                                        {{ form_data.dp1|as_crispy_field }}
                                     </div>
                                 </div>
                                 <div class="col-4 col-sm-3 mb-4">
+                                    <!--
                                     <label class="text-label">Param 2</label>
+                                    -->
                                     <div class="form-group">
+                                        <!--
                                         <input class="form-control" value="8.10" type="number" name="input27" id="input27"
                                             placeholder="Parámetro 2">
+                                        -->
+                                        {{ form_data.dp2|as_crispy_field }}
                                     </div>
                                 </div>
 
                                 <div class="col-4 col-sm-3 mb-4">
+                                    <!--
                                     <label class="text-label">Param 3</label>
+                                    -->
                                     <div class="form-group">
+                                        <!--
                                         <input class="form-control" value="0.00" type="number" name="inputa29" id="inputa29"
                                             placeholder="Parámetro 3">
+                                        -->
+                                        {{ form_data.dp3|as_crispy_field }}
                                     </div>
                                 </div>
                                 <div class="col-4 col-sm-3 mb-4">
+                                    <!--
                                     <label class="text-label">Param 1</label>
+                                    -->
                                     <div class="form-group">
+                                        <!--
                                         <input class="form-control" value="0.00" type="number" name="input291" id="input291"
                                             placeholder="Parámetro 4">
+                                        -->
+                                        {{ form_data.dp4|as_crispy_field }}
                                     </div>
                                 </div>
 
@@ -133,20 +183,30 @@ SIMULADOR A NIVEL DE SISTEMA
 
                                 <div class="col-lg-5 mb-4">
                                     <div class="form-group">
+                                        <!--
                                         <label class="text-label">BER Objetivo</label>
+                                        -->
                                         <div class="form-group">
+                                            <!--
                                             <input class="form-control" value="0.00" type="number" name="input292"
                                                 id="input2" placeholder="">
+                                                -->
+                                                {{ form_data.ber_sinr|as_crispy_field }}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6 mb-4">
                                     <div class="form-group">
+                                        <!--
                                         <label class="text-label">Figura de Ruido [dB]</label>
+                                        -->
                                         <div class="form-group">
+                                            <!--
                                             <input class="form-control" value="6" type="number" name="input293"
                                                 id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.nf|as_crispy_field }}
                                         </div>
                                     </div>
                                 </div>
