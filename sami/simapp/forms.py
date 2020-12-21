@@ -20,8 +20,8 @@ class FormStepTwo(forms.Form):
 #------------------------------SIMAPP
 #seleccion
 geometria_choices=(
-        ('1', 'Manual'),
-        ('2', 'Automático'),
+        ('autoajustable', 'Radio proporcional a ISD'),
+        ('manual', 'Radio Customizado'),  
     )
 
 distribucion_choices=(
@@ -30,49 +30,54 @@ distribucion_choices=(
         ('fijo', 'Fijo'),
     )
 
-distribucion_choices=(
+densidad_choices=(
         (0.000002, 'Baja'),
-        (0.0000015, 'Alta'),
-        (0.0000010, 'Media'),
-        (0.000001, 'Ultra [!]'),
+        (0.000005, 'Media'),
+        (0.000009, 'Moderada'),
+        (0.00009, 'Alta [!]'),
+        (0.00001, 'Masivo [!!]'),
+        (0.0009, 'Ultra [!!!]'),
+    )
+
+imagen_choices=(
+        (False, 'Desactivado'),
+        (True, 'Activado'),
+
     )
 #end
 class FormGeneral(forms.Form):
-    #configuracion=cfg.cargar_variables(target_path="simapp/simulador_v1/base_datos/")
-    iteraciones=forms.IntegerField(label='Iteraciones',initial=1)
-    n_celdas=forms.IntegerField(label='Cantidad de Celdas',initial=1)
-    #portadora=forms.IntegerField(label='Frecuencia Portadora [Mhz, Ghz]',initial=900)
-    portadora=forms.ChoiceField(label='Geometria de Distribución de Usuarios',choices=geometria_choices)
-    isd=forms.IntegerField(label='Distancia Entre Celdas [m]',initial=1000)
-    geometria_usuarios=forms.ChoiceField(label='Geometria de Distribución de Usuarios',choices=geometria_choices)
-    radio_cel=forms.IntegerField(initial=1000)
-    #distribucion= #choice
-    distribucion=forms.ChoiceField(label='Geometria de Distribución de Usuarios',choices=geometria_choices)
-    #portadora=#choice 
-    
-    densidad=forms.ChoiceField(label='Geometria de Distribución de Usuarios',choices=geometria_choices)
-    nf=forms.IntegerField(initial=6)
-    ber_sinr=forms.IntegerField(initial=0)
-    imagen=forms.BooleanField(required=False) 
+    '''Formulario inicial. Configura parametros globales'''
+    iteraciones=forms.IntegerField(label='Iteraciones',initial=1, min_value=1)
+    n_celdas=forms.IntegerField(label='Cantidad de Celdas',initial=1, max_value=19, min_value=1)
+    portadora=forms.IntegerField(label='Frecuencia Portadora [Mhz, Ghz]',initial=900, min_value=200, max_value=75000,)
+    isd=forms.IntegerField(label='Distancia Entre Celdas [m]',initial=1000, min_value=10)
+    geometria_usuarios=forms.ChoiceField(label='Distribución de Usuarios',choices=geometria_choices)
+    radio_cel=forms.IntegerField(initial=1000, min_value=10)
+    tipo_distribucion=forms.ChoiceField(label='Tipo de Despliegue de Usuarios',choices=distribucion_choices)
+    densidad=forms.ChoiceField(label='Densidad de Población',choices=densidad_choices)
+    imagen=forms.ChoiceField(required=False,label='Imagen de Potencia Recibida',choices=imagen_choices)
+    pixeles=forms.IntegerField(required=False,initial=1000, max_value=2000, min_value=10) 
 
 
 
 class FormPropagacion(forms.Form):
+    '''Formulario para configurar variables relacionadas al modelo de perdidas de propagación'''
     job = forms.CharField(max_length=100)
     salary = forms.CharField(max_length=100)
     job_description = forms.CharField(widget=forms.Textarea)
 
 class FormBalance(forms.Form):
+    '''Formulario para configurar variables relacionadas al balance del enlace y las antenas'''
     job = forms.CharField(max_length=100)
     salary = forms.CharField(max_length=100)
     job_description = forms.CharField(widget=forms.Textarea)
 
 class FormAntenas(forms.Form):
-    job = forms.CharField(max_length=100)
-    salary = forms.CharField(max_length=100)
-    job_description = forms.CharField(widget=forms.Textarea)
+    '''Formulario para configurar variables relacionadas a las antenas. Fue Combinado en Balance.'''
+    pass
 
 class FormAsignacion(forms.Form):
+    '''Formulario para configurar variables relacionadas a la asignación de recursos radio.'''
     job = forms.CharField(max_length=100)
     salary = forms.CharField(max_length=100)
     job_description = forms.CharField(widget=forms.Textarea)

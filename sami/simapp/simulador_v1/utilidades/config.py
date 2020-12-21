@@ -16,9 +16,14 @@ def cargar_variables(target_path):
 def test_integracion(target):
 	print("Integracion")
 
-def guardar_variables(data,target_path):
+def guardar_cfg2(data,target_path):
 	'''Guarda en formato json el archivo de configuracion del simulador'''
 	with open(target_path+"configs2.json", "w") as outfile:
+		json.dump(data, outfile)
+
+def guardar_cfg(data,target_path):
+	'''Guarda en formato json el archivo de configuracion del simulador'''
+	with open(target_path+"configs.json", "w") as outfile:
 		json.dump(data, outfile)
 
 if __name__=="__main__":

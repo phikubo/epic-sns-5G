@@ -3,15 +3,14 @@
 
 {% load static %}
 
+{% block titulo_block %}
+SIMULADOR A NIVEL DE SISTEMA
+{% endblock %}
+
 {% block content %}
 
 <div class="row page-titles mx-0">
-    <div class="col-sm-6 p-md-0">
-        <div class="welcome-text">
-            <h4>¡Bienvenido a la interfaz de simulación!</h4>
-            <p class="mb-0">Por favor configura los siguientes parámetros:</p>
-        </div>
-    </div>
+    <p class="mb-0">Si desea mantener los anteriores valores, por favor use el botón <strong>atrás</strong> del navegador.</p>
 </div>
 
 
@@ -22,6 +21,12 @@
                 <h4 class="card-title">Parámetros de Asignación</h4>
             </div>
             <div class="card-body">
+
+                <div class="progress">
+                    <div class="progress-bar progress-bar-primary w-100" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+
                 <hr>
                 <div>
 
@@ -161,6 +166,7 @@
 
 
                         <input type="submit" class="btn btn-primary" value="terminar" />
+                        <a class="btn btn-warning" href="{% url 'simapp:sim_form_a1' %}">reiniciar</a>
                     </form>
 
                 </div>
