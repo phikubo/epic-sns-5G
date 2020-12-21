@@ -236,8 +236,10 @@ def prueba_sistema_v048():
 	print("Datos de simulacion, simulacion 1")
 	print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 	simtest=coleccion_simulacion[0]
-	simtest.info_planificador()
-	simtest.info_sinr(True)
+	simtest.info_general('general')
+	#simtest.info_planificador()
+	#simtest.info_sinr(True)
+
 	#simtest.info_sinr()
 	#print("margen\n",simtest.hiperc_modelo_canal.resultado_margen)
 	#simtest.info_sinr()

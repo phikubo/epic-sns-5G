@@ -925,8 +925,8 @@ class Sistema_Celular:
 			print("Celdas:",self.cfg_gen["n_celdas"])
 			print("Usuarios por celda",self.no_usuarios_celda)
 			print("Usuarios total",self.no_usuarios_total)
-			print("Ancho de banda por usuario:",self.bw_usuario, "[Hz]")
-			print("Margen de conexion: ", self.medida_conexion_margen)
+			#print("Ancho de banda por usuario:",self.bw_usuario, "[Hz]")
+			print("Margen de conexion: {}%".format(100*self.medida_conexion_margen))
 			print("Conexion Sinr, calidad ",self.cfg_gen["ber_sinr"], ":",self.medida_conexion_sinr)
 			print("------------------------------------------[info_general]\n")
 		else:

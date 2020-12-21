@@ -51,7 +51,7 @@ class Planificador:
 		#https://5g-tools.com/5g-nr-throughput-calculator/
 		#https://apkpure.com/nr-5g-prb-and-data-rate-calculator/com.instinctcoder.nr5gthecal
 		#https://www.rfwireless-world.com/calculators/5G-NR-TBS-Calculation.html
-		print("POR QUE ES: 2*mu*15khz y no 2**mu*15khz")
+		#print("POR QUE ES: 2*mu*15khz y no 2**mu*15khz")
 		delta_bw=(2**self.cfg_plan["numerologia"]*self.to_khz(15))
 		#print("dleta",delta_bw)
 		#15khz es lo minimo.
@@ -86,7 +86,7 @@ class Planificador:
 			#print("self.max_usuario",self.nrb_usuario)
 			self.asignacion=self.nrb_usuario*self.one_resource_block*self.mapa_margen_descon
 			#quitar error:
-			print("asignacion",self.asignacion)
+			#print("asignacion",self.asignacion)
 			self.asignacion=np.where(self.asignacion==0,0.0001,self.asignacion)
 
 

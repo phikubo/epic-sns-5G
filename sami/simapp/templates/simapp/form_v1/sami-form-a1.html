@@ -9,9 +9,12 @@
     <div class="col-sm-6 p-md-0">
         <div class="welcome-text">
             <h4>¡Bienvenido a la interfaz de simulación!</h4>
-            <p class="mb-0">Por favor configura los siguientes parámetros:</p>
+            <p class="mb-0">Por favor configure los siguientes parámetros.</p>
+            
         </div>
+        
     </div>
+    <p class="mb-0">Si desea mantener los anteriores valores, por favor use el botón <strong>atrás</strong> del navegador.</p>
 </div>
 
 
@@ -49,17 +52,28 @@
                                 </div>
 
                                 <div class="col-4 col-sm-3 mb-4">
-                                    <label class="text-label">Portadora [Mhz, Ghz]</label>
+                                    <!--
+                                    <label class="text-label">Portadora [Mhz, Ghz]</label> 
+                                    -->
                                     <div class="form-group">
-                                        <input class="form-control" value="900" type="number" name="portadora" id="portadora">
+                                        <!--
+                                        <input class="form-control" value="900" type="number" name="portadora" id="portadora"> 
+                                        -->
+                                        {{ form_data.portadora|as_crispy_field }}
+
                                     </div>
                                 </div>
 
 
-                                <div class="col-4 col-sm-3 mb-4">
+                                <div class="col-4 col-sm-3 mb-4"> 
+                                    <!--
                                     <label class="text-label">ISD [m]</label>
+                                    -->
                                     <div class="form-group">
-                                        <input class="form-control" value="1000" type="number" name="isd" id="isd">
+                                        <!--
+                                        <input class="form-control" value="1000" type="number" name="isd">
+                                        -->
+                                        {{ form_data.isd|as_crispy_field }}
                                     </div>
                                 </div>
 
@@ -67,13 +81,20 @@
 
                                 <div class="col-lg-5 mb-4">
                                     <div class="form-group">
+                                        <!--
                                         <label class="text-label">Geometría Radial de Usuarios</label>
+                                        -->
                                         <div class="input-group">
-                                            <select class="form-control" id="geometria" name="geometria">
+                                           <!--
+
+                                           <select class="form-control" id="geometria" name="geometria">
                                                 <option >Manual</option>
                                                 <option >Automático</option>
                                             </select>
-                                        </div>
+                                            --> 
+                                            {{ form_data.geometria_usuarios|as_crispy_field }}    
+                                        </div> 
+                                        
                                     </div>
                                 </div>
 
