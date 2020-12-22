@@ -200,8 +200,8 @@ def prueba_sistema_v048():
 	#configuracion=cfg.cargar_variables(target_path="utilidades/")
 	arr = os.listdir()
 	print(arr)
-	
-	configuracion=cfg.cargar_variables(target_path="simapp/simulador_v1/base_datos/")
+	configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
+
 	'''
 	Requerimiento 2:
 		generar coordenadas de estacion base, que son fijas, por fuera de la simulacion. Optimizar.

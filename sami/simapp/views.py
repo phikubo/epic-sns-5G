@@ -10,8 +10,11 @@ from .forms import FormGeneral, FormPropagacion, FormBalanceAntenas,FormAsignaci
 #integracion simulador
 import os
 import json
-from .simulador_v1.utilidades import config as cfg
-from .simulador_v1 import top_pruebas 
+#from .simulador_v1.utilidades import config as cfg
+#from .simulador_v1 import top_pruebas
+#static simul_sami 
+from .static.simulador import top_pruebas
+from .static.simulador.utilidades import config as cfg
 #configuracion=cfg.cargar_variables(target_path="simulador_v1/base_datos/")
 
 #INTEGRACION
@@ -56,11 +59,9 @@ def iniciar_simulacion(request):
         try:
             arr = os.listdir()
             print(arr)
-            
-
         except Exception as ex:
             print(ex)
-        #exists = os.path.isfile('/path/to/file')
+        #exists = os.path.isfile('qw2ass<z/path/to/file')
         #print(exists)
         print("GET Metodo")
         top_pruebas.prueba_sistema_v048()
@@ -83,7 +84,7 @@ def form_a1(request):
             print("[OK]-Formulario 1 Aceptado")
             contenido=form.cleaned_data
 
-            config=cfg.cargar_variables(target_path="simapp/simulador_v1/base_datos/")
+            config=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
             config["cfg_simulador"]["params_general"]["iteracion"]=contenido["iteraciones"]
             config["cfg_simulador"]["params_general"]["n_celdas"]=contenido["n_celdas"]
             config["cfg_simulador"]["params_general"]["portadora"][0]=contenido["portadora"]
@@ -98,7 +99,8 @@ def form_a1(request):
             flag_imagen=convertir_str_2_bool(contenido["imagen"])
             config["cfg_simulador"]["params_general"]["imagen"]["display"][0]=flag_imagen
             config["cfg_simulador"]["params_general"]["imagen"]["resolucion"]=contenido["pixeles"]
-            cfg.guardar_cfg2(config, target_path="simapp/simulador_v1/base_datos/")
+            cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos/")
+            config=0
         else:
             print("Oops, algo ha fallado. Retornando.")
             return redirect('/sim/')
@@ -123,7 +125,7 @@ def form_a2(request):
             print("[OK]-Formulario a2 Aceptado")
             contenido=form.cleaned_data
             
-            config=cfg.cargar_variables(target_path="simapp/simulador_v1/base_datos/")
+            config=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
             config["cfg_simulador"]["params_propagacion"]["modelo_perdidas"]=contenido["modelo_perdidas"]
             config["cfg_simulador"]["params_propagacion"]["params_modelo"][0]=float(contenido["mp1"])
             config["cfg_simulador"]["params_propagacion"]["params_modelo"][1]=float(contenido["mp2"])
@@ -140,7 +142,8 @@ def form_a2(request):
 
             config["cfg_simulador"]["params_general"]["nf"]=float(contenido["nf"])
             config["cfg_simulador"]["params_general"]["ber_sinr"]=float(contenido["ber_sinr"])
-            cfg.guardar_cfg2(config, target_path="simapp/simulador_v1/base_datos/")
+            cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos/")
+            config=0
         else:
             print("Oops, algo ha fallado. Retornando.")
             return redirect('/sim/form_a2')
@@ -164,7 +167,7 @@ def form_a3(request):
             print("[OK]-Formulario a3 Aceptado")
             print(contenido)
             
-            config=cfg.cargar_variables(target_path="simapp/simulador_v1/base_datos/")
+            config=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
             config["cfg_simulador"]["params_balance"]["ptx"]=float(contenido["ptx"])
             config["cfg_simulador"]["params_balance"]["gtx"]=float(contenido["gtx"])
             config["cfg_simulador"]["params_balance"]["ltx"]=float(contenido["ltx"])
@@ -176,15 +179,11 @@ def form_a3(request):
             config["cfg_simulador"]["params_antena"]["tipo"]=contenido["tipo_antena"]
             config["cfg_simulador"]["params_antena"]["hpbw"]=contenido["hpbw"]
             config["cfg_simulador"]["params_antena"]["atmin"]=float(contenido["atmin"])
-            cfg.guardar_cfg2(config, target_path="simapp/simulador_v1/base_datos/")
+            cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos/")
+            config=0
         else:
             print("Oops, algo ha fallado. Retornando.")
             return redirect('/sim/form_a3')
-            
-
-            
-        #iteracion= form.cleaned_data['iteraciones']
-        #celdas = form.cleaned_data['n_celdas']
         #-----------
         #SIGUIENTE
         #return render(request,'simapp/form_v1/sami-form-a4.html')
@@ -204,9 +203,9 @@ def form_a4(request):
         if form.is_valid():
             contenido=form.cleaned_data
             #CONFIGURACION DE VARIABLES
-            print("[OK]-Formulario a3 Aceptado")
+            print("[OK]-Formulario a4 Aceptado")
             print(contenido)
-            config=cfg.cargar_variables(target_path="simapp/simulador_v1/base_datos/")
+            config=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
             config["cfg_simulador"]["params_asignacion"]["tipo"]=contenido["tipo_asignacion"]
             config["cfg_simulador"]["params_asignacion"]["bw"]=float(contenido["bw"])
             config["cfg_simulador"]["params_asignacion"]["numerologia"]=float(contenido["numerologia"])
@@ -215,7 +214,8 @@ def form_a4(request):
             config["cfg_simulador"]["params_asignacion"]["trama_total"]=float(contenido["trama"])
             config["cfg_simulador"]["params_asignacion"]["simbolo_ofdm_dl"]=float(contenido["simbolos"])
             config["cfg_simulador"]["params_asignacion"]["frame"]=float(contenido["frame"])
-            cfg.guardar_cfg2(config, target_path="simapp/simulador_v1/base_datos/")
+            cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos/")
+            config=0
         else:
             print("Oops, algo ha fallado. Retornando.")
             return redirect('/sim/form_a4')
