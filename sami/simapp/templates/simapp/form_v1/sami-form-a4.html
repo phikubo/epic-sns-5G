@@ -10,7 +10,7 @@ SIMULADOR A NIVEL DE SISTEMA
 {% block content %}
 
 <div class="row page-titles mx-0">
-    <p class="mb-0">Si desea mantener los anteriores valores, por favor use el botón <strong>atrás</strong> del navegador.</p>
+    <p class="mb-0">Use la combinacion de teclas <strong>Alt+flecha izquierda</strong> para modificar los formularios anteriores. Presione <strong>terminar </strong>  para empezar a simular.</p>
 </div>
 
 
@@ -41,24 +41,28 @@ SIMULADOR A NIVEL DE SISTEMA
 
 
 
-                                <div class="col-lg-5 mb-4">
+                                
+
+                                <div class="col-lg-6 mb-4">
                                     <div class="form-group">
-                                        <label class="text-label">Tipo de Asignación</label>
-                                        <div class="input-group">
-                                            <select class="form-control" id="debug-general" name="debug-general">
-                                                <option value="Okumura Hata">Round Robin</option>
-                                                <option value="Debug Activado">Futuro</option>
-                                            </select>
+                                        <div class="form-group">
+                                            {{ form_data.tipo_asignacion|as_crispy_field }}
                                         </div>
                                     </div>
+                                
                                 </div>
 
                                 <div class="col-lg-6 mb-4">
                                     <div class="form-group">
+                                        <!--
                                         <label class="text-label">Ancho de Banda Usuario [Mhz]</label>
+                                        -->
                                         <div class="form-group">
+                                            <!--
                                             <input class="form-control" value="100" type="number" name="input2"
                                                 id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.bw|as_crispy_field }}
                                         </div>
                                     </div>
                                 </div>
@@ -67,22 +71,32 @@ SIMULADOR A NIVEL DE SISTEMA
 
 
 
-                                <div class="col-lg-5 mb-4">
+                                <div class="col-lg-6 mb-4">
                                     <div class="form-group">
+                                        <!--
                                         <label class="text-label">Numerología [u]</label>
+                                        -->
                                         <div class="form-group">
+                                            <!--
                                             <input class="form-control" value="1" type="number" name="input2"
                                                 id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.numerologia|as_crispy_field }}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6 mb-4">
                                     <div class="form-group">
+                                        <!--
                                         <label class="text-label">Banda de Guarda [Khz]</label>
+                                        -->
                                         <div class="form-group">
+                                            <!--
                                             <input class="form-control" value="845" type="number" name="input2"
                                                 id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.banda_guarda|as_crispy_field }}
                                         </div>
                                     </div>
                                 </div>
@@ -91,63 +105,93 @@ SIMULADOR A NIVEL DE SISTEMA
 
 
 
-                                <div class="col-lg-5 mb-4">
+                                <div class="col-lg-6 mb-4">
                                     <div class="form-group">
+                                        <!--
                                         <label class="text-label">Suportadora [u]</label>
+                                        -->
                                         <div class="form-group">
+                                            <!--
                                             <input class="form-control" value="12" type="number" name="input2"
                                                 id="input2" placeholder="">
+                                                -->
+                                                {{ form_data.subportadora|as_crispy_field }}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6 mb-4">
                                     <div class="form-group">
+                                        <!--
                                         <label class="text-label">Trama Total [u]</label>
+                                    -->
                                         <div class="form-group">
+                                            <!--
                                             <input class="form-control" value="12" type="number" name="input2"
                                                 id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.trama|as_crispy_field }}
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-lg-5 mb-4">
+                                <div class="col-lg-6 mb-4">
                                     <div class="form-group">
+                                        <!--
                                         <label class="text-label">Símbolos OFDM [u]</label>
+                                    -->
                                         <div class="form-group">
+                                            <!--
                                             <input class="form-control" value="10" type="number" name="input2"
                                                 id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.simbolos|as_crispy_field }}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6 mb-4">
                                     <div class="form-group">
+                                        <!--
                                         <label class="text-label">Frame</label>
+                                    -->
                                         <div class="form-group">
+                                            <!--
                                             <input class="form-control" value="10" type="number" name="input2"
                                                 id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.frame|as_crispy_field }}
                                         </div>
                                     </div>
                                 </div>
 
 
-                                <div class="col-lg-5 mb-4">
+                                <div class="col-lg-6 mb-4">
                                     <div class="form-group">
+                                        <!--
                                         <label class="text-label">Futuro</label>
+                                    -->
                                         <div class="form-group">
+                                            <!--
                                             <input class="form-control" value="0" type="number" name="input2"
                                                 id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.futuro1|as_crispy_field }}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6 mb-4">
                                     <div class="form-group">
+                                        <!--
                                         <label class="text-label">Futuro</label>
+                                    -->
                                         <div class="form-group">
+                                            <!--
                                             <input class="form-control" value="0" type="number" name="input2"
                                                 id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.futuro2|as_crispy_field }}
                                         </div>
                                     </div>
                                 </div>
