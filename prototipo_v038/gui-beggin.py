@@ -9,10 +9,22 @@ from kivy.properties import StringProperty
 from kivy.properties import BooleanProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.image import AsyncImage, Image
+from kivy.uix.dropdown import DropDown
 
 
 #import pruebas as p 
+"""	
+Importamos los datos del archivo Json en la seccion de cfg_gui  llamados desde el 	
+MainWindow uniendo el backen y el frontend del simulador. usando las funciones del	
+archivo kivy donde se declaran las variables de la GUI para ser guardadas y 	
+posteriormente evaluadas para su debido  funcionamiento 	
+"""	
+from utilidades import config as cfg 	
+import json	
+#with open("simulator-beggin.kv", encoding='utf-8', errors="surrogateescape") as kv_file:	
+#    Builder.load_string(kv_file.read())	
 
+#for line in f:
 
 
 class ModelcanalUMI(Screen):
@@ -122,7 +134,17 @@ class MainWindow(Screen):
 	intensidadPPP = ObjectProperty(None)
 	sr = ObjectProperty(None)
 	current= ""
-
+	fp = ObjectProperty(None)	
+	bw= ObjectProperty(None)	
+	isd= ObjectProperty(None)	
+	ppp= ObjectProperty(None)	
+	esc= ObjectProperty(None)	
+	mp= ObjectProperty(None)	
+	desv= ObjectProperty(None)	
+	nf= ObjectProperty(None)	
+	ptx= ObjectProperty(None)	
+	patron= ObjectProperty(None)	
+	celdas= ObjectProperty(None)
 	#layout_instance.do_layout ()
 	#Widget.canvas.ask_update ()
 
@@ -139,9 +161,65 @@ class MainWindow(Screen):
 		inten=float(self.intensidadPPP.text)
 
 		#p.prueba_pk_dispositivos(nvl,rcell,inten)
-		
+		print("**************************************************")			
+		print("**********Inicio INTERNAS GUI****************")	
+		print("**************************************************")
 		#SecondWindow.add_dato(self)
-		
+		print(int(self.fp.text))	
+		print(int(self.bw.text))	
+		print(int(self.isd.text))	
+		print(str(self.ppp.text))	
+		print(str(self.esc.text))	
+		print(str(self.mp.text))	
+		print(str(self.desv.text))	
+		print(int(self.nf.text))	
+		print(int(self.ptx.text))	
+		print(str(self.patron.text))	
+		print(int(self.celdas.text))	
+
+
+		config2=cfg.cargar_variables(target_path="base_datos/")	
+		config2["cfg_gui"]["freqport"]= int(self.fp.text)	
+		config2["cfg_gui"]["bwMHz"]=int(self.bw.text)	
+		config2["cfg_gui"]["ppp"]=str(self.ppp.text)	
+		config2["cfg_gui"]["escenario"]=str(self.esc.text)	
+		config2["cfg_gui"]["isd"]=int(self.isd.text)	
+		config2["cfg_gui"]["modperdidas"]=str(self.mp.text)	
+		config2["cfg_gui"]["desvanecimiento"]=str(self.desv.text)	
+		config2["cfg_gui"]["nf"]=int(self.nf.text)	
+		config2["cfg_gui"]["ptx"]=int(self.ptx.text)	
+		config2["cfg_gui"]["patron"]=str(self.patron.text)	
+		config2["cfg_gui"]["nceldas"]=int(self.celdas.text)	
+
+
+		print("**************************************************")	
+		print("**********FIN PRUEBA INTENAS GUI****************")	
+		print("**************************************************")	
+
+		print(config2)	
+
+		print("**************************************************")	
+		print("**********Inicio pruebas GUI****************")	
+		print("**************************************************")	
+
+		#cfg.guardar_variables(configuracion,target_path="base_datos/")	
+		#print(configuracion)	
+
+		print("**************************************************")	
+		print("**********pruebas JSON CONFIGURACION GUI****************")	
+		print("**************************************************")	
+
+
+		cfg.guardar_variables(config2,target_path="base_datos/")	
+		print(config2)	
+
+		print("**************************************************")	
+		print("**********pruebas JSON CONFIG2 GUI****************")	
+		print("**************************************************")	
+
+		#rcell=int(self.radiocell.text)	
+		#nvl=int(self.nivel.text)	
+		#inten=float(self.intensidadPPP.text)
 
 		sm.current = "caz"
 
