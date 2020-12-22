@@ -236,7 +236,7 @@ def prueba_sistema_v048():
 	print("Datos de simulacion, simulacion 1")
 	print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 	simtest=coleccion_simulacion[0]
-	simtest.info_general('general')
+	#simtest.info_general('general')
 	#simtest.info_planificador()
 	#simtest.info_sinr(True)
 
@@ -247,8 +247,9 @@ def prueba_sistema_v048():
 	#simtest.info_potencia()
 	#simtest.info_potencia_sin()
 	#simtest.info_balance()
-	#simtest.ver_todo()
-	#plt.show()
+	#simtest.ver_todo(1, False)
+	simtest.ver_todo(3, False)
+	plt.show()
 
 	#simtest2=coleccion_simulacion[1]
 	#simtest2.info_sinr()

@@ -219,8 +219,6 @@ def form_a4(request):
         else:
             print("Oops, algo ha fallado. Retornando.")
             return redirect('/sim/form_a4')
-
-            #cfg.guardar_cfg2(config, target_path="simapp/simulador_v1/base_datos/")
             
         #-----------
         #SIGUIENTE
