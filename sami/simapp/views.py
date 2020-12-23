@@ -7,6 +7,7 @@ from formtools.wizard.views import SessionWizardView
 from .forms import FormStepOne, FormStepTwo
 #fomularios simulador
 from .forms import FormGeneral, FormPropagacion, FormBalanceAntenas,FormAsignacion
+from .forms import FormCompacto
 #integracion simulador
 import os
 import json
@@ -55,6 +56,7 @@ def en_desarrollo(request):
     return render(request,'simapp/sami-en-desarrollo.html')
 
 def iniciar_simulacion(request):
+    '''Inicia la simulacion'''
     if request.method == 'GET':
         try:
             arr = os.listdir()
@@ -66,6 +68,23 @@ def iniciar_simulacion(request):
         print("GET Metodo")
         top_pruebas.prueba_sistema_v048()
     return render(request,'simapp/sami-iniciar-sim.html')
+
+
+def ver_parametros(request):
+    configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
+
+    config1=configuracion["cfg_simulador"]["params_general"]
+    config2=configuracion["cfg_simulador"]["params_propagacion"]
+    config3=configuracion["cfg_simulador"]["params_balance"]
+    config4=configuracion["cfg_simulador"]["params_antena"]
+    config5=configuracion["cfg_simulador"]["params_asignacion"]
+    #print(config)
+    #for a,b in config["params_general"].items():
+    #    print(a,b)
+    return render(request,'simapp/sami-parametros.html', {"cfg1":config1, 
+    "cfg2":config2, "cfg3":config3, "cfg4":config4, "cfg5":config5 })
+    
+
 
 def ver_estadisticas(request):
     return render(request,'simapp/sami-sim-estadisticas.html')
@@ -98,6 +117,9 @@ def form_a1(request):
                         
             flag_imagen=convertir_str_2_bool(contenido["imagen"])
             config["cfg_simulador"]["params_general"]["imagen"]["display"][0]=flag_imagen
+            if flag_imagen:
+                print("imagen activado, desactivar iteraciones.")
+                config["cfg_simulador"]["params_general"]["iteracion"]=1
             config["cfg_simulador"]["params_general"]["imagen"]["resolucion"]=contenido["pixeles"]
             cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos/")
             config=0
@@ -140,7 +162,7 @@ def form_a2(request):
             config["cfg_simulador"]["params_propagacion"]["params_desv"]["params"][2]=float(contenido["dp3"])
             config["cfg_simulador"]["params_propagacion"]["params_desv"]["params"][3]=float(contenido["dp4"])
 
-            config["cfg_simulador"]["params_general"]["nf"]=float(contenido["nf"])
+            config["cfg_simulador"]["params_general"]["nf"][0]=float(contenido["nf"])
             config["cfg_simulador"]["params_general"]["ber_sinr"]=float(contenido["ber_sinr"])
             cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos/")
             config=0
@@ -207,9 +229,9 @@ def form_a4(request):
             print(contenido)
             config=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
             config["cfg_simulador"]["params_asignacion"]["tipo"]=contenido["tipo_asignacion"]
-            config["cfg_simulador"]["params_asignacion"]["bw"]=float(contenido["bw"])
+            config["cfg_simulador"]["params_asignacion"]["bw"][0]=int(contenido["bw"])
             config["cfg_simulador"]["params_asignacion"]["numerologia"]=float(contenido["numerologia"])
-            config["cfg_simulador"]["params_asignacion"]["bw_guarda"]=float(contenido["banda_guarda"])
+            config["cfg_simulador"]["params_asignacion"]["bw_guarda"][0]=int(contenido["banda_guarda"])
             config["cfg_simulador"]["params_asignacion"]["sub_ofdm"]=float(contenido["subportadora"])
             config["cfg_simulador"]["params_asignacion"]["trama_total"]=float(contenido["trama"])
             config["cfg_simulador"]["params_asignacion"]["simbolo_ofdm_dl"]=float(contenido["simbolos"])
@@ -222,13 +244,86 @@ def form_a4(request):
             
         #-----------
         #SIGUIENTE
-        return redirect('iniciar/')
+        return redirect('parametros/')
     #-----------
     #ACTUAL
     return render(request,'simapp/form_v1/sami-form-a4.html', {"form_data":form} )
 
 
+def form_compacto(request):
+    '''Implementacion de 4 fases en 1 para agilizar la simulacion.'''
+    form=FormCompacto()
+    if request.method == 'POST':
+        form=FormCompacto(request.POST)
+        print("\nHA OCURRIDO UN POST Compacto", request.POST)
+        if form.is_valid():
+            print("[OK]-Formulario 1 Aceptado")
+            contenido=form.cleaned_data
 
+            config=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
+            config["cfg_simulador"]["params_general"]["iteracion"]=contenido["iteraciones"]
+            config["cfg_simulador"]["params_general"]["n_celdas"]=contenido["n_celdas"]
+            config["cfg_simulador"]["params_general"]["portadora"][0]=contenido["portadora"]
+            config["cfg_simulador"]["params_general"]["isd"]=contenido["isd"]
+            
+            config["cfg_simulador"]["params_general"]["geometria"]=contenido["geometria_usuarios"]
+            config["cfg_simulador"]["params_general"]["radio_cel"]=contenido["radio_cel"] 
+
+            config["cfg_simulador"]["params_general"]["distribucion"][0]=contenido["tipo_distribucion"]
+            config["cfg_simulador"]["params_general"]["distribucion"][1]=float(contenido["densidad"])
+                        
+            flag_imagen=convertir_str_2_bool(contenido["imagen"])
+            config["cfg_simulador"]["params_general"]["imagen"]["display"][0]=flag_imagen
+            if flag_imagen:
+                print("imagen activado, desactivar iteraciones.")
+                config["cfg_simulador"]["params_general"]["iteracion"]=1
+            config["cfg_simulador"]["params_general"]["imagen"]["resolucion"]=contenido["pixeles"]
+            #
+            #
+            config["cfg_simulador"]["params_propagacion"]["modelo_perdidas"]=contenido["modelo_perdidas"]
+            config["cfg_simulador"]["params_propagacion"]["params_modelo"][0]=float(contenido["mp1"])
+            config["cfg_simulador"]["params_propagacion"]["params_modelo"][1]=float(contenido["mp2"])
+            config["cfg_simulador"]["params_propagacion"]["params_modelo"][2]=float(contenido["mp3"])
+            config["cfg_simulador"]["params_propagacion"]["params_modelo"][3]=float(contenido["mp4"])
+
+            flag_desv, tipo_desv=validar_desvanecimiento(contenido["params_desv"])
+            config["cfg_simulador"]["params_propagacion"]["params_desv"]["display"]=flag_desv
+            config["cfg_simulador"]["params_propagacion"]["params_desv"]["tipo"]=tipo_desv
+            config["cfg_simulador"]["params_propagacion"]["params_desv"]["params"][0]=float(contenido["dp1"])
+            config["cfg_simulador"]["params_propagacion"]["params_desv"]["params"][1]=float(contenido["dp2"])
+            config["cfg_simulador"]["params_propagacion"]["params_desv"]["params"][2]=float(contenido["dp3"])
+            config["cfg_simulador"]["params_propagacion"]["params_desv"]["params"][3]=float(contenido["dp4"])
+
+            config["cfg_simulador"]["params_general"]["nf"][0]=float(contenido["nf"])
+            config["cfg_simulador"]["params_general"]["ber_sinr"]=float(contenido["ber_sinr"])
+            #
+            #
+            config["cfg_simulador"]["params_balance"]["ptx"]=float(contenido["ptx"])
+            config["cfg_simulador"]["params_balance"]["gtx"]=float(contenido["gtx"])
+            config["cfg_simulador"]["params_balance"]["ltx"]=float(contenido["ltx"])
+            config["cfg_simulador"]["params_balance"]["lrx"]=float(contenido["lrx"])
+            config["cfg_simulador"]["params_balance"]["grx"]=float(contenido["grx"])
+            config["cfg_simulador"]["params_balance"]["sensibilidad"]=float(contenido["sensibilidad"])
+            config["cfg_simulador"]["params_balance"]["mcl"]=float(contenido["mcl"])
+            #antenas
+            config["cfg_simulador"]["params_antena"]["tipo"]=contenido["tipo_antena"]
+            config["cfg_simulador"]["params_antena"]["hpbw"]=contenido["hpbw"]
+            config["cfg_simulador"]["params_antena"]["atmin"]=float(contenido["atmin"])
+            #
+            #
+            config["cfg_simulador"]["params_asignacion"]["tipo"]=contenido["tipo_asignacion"]
+            config["cfg_simulador"]["params_asignacion"]["bw"][0]=int(contenido["bw"])
+            config["cfg_simulador"]["params_asignacion"]["numerologia"]=float(contenido["numerologia"])
+            config["cfg_simulador"]["params_asignacion"]["bw_guarda"][0]=int(contenido["banda_guarda"])
+            config["cfg_simulador"]["params_asignacion"]["sub_ofdm"]=float(contenido["subportadora"])
+            config["cfg_simulador"]["params_asignacion"]["trama_total"]=float(contenido["trama"])
+            config["cfg_simulador"]["params_asignacion"]["simbolo_ofdm_dl"]=float(contenido["simbolos"])
+            config["cfg_simulador"]["params_asignacion"]["frame"]=float(contenido["frame"])
+            cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos/")
+            
+        return redirect('parametros/')
+    return render(request,'simapp/form_v1/sami-form-compacto.html', {"form_data":form})
+    #return render(request,'simapp/form_v1/sami-form-a4.html', {"form_data":form} )
 
 
 #AUXILIAR Y PRUEBAS

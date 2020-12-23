@@ -14,7 +14,7 @@ Punto de Control.
         <div class="row justify-content-center h-100 align-items-center">
             <div class="col-md-5">
                 <div class="form-input-content text-center">
-                    <h1 class="error-text font-weight-bold">Parámetros Configurados Correctamente.</h1>
+                    
                     <hr>
                     <h2>¡Simulación Iniciada!</h2>
                     
@@ -22,10 +22,14 @@ Punto de Control.
                     
                     <img class="logo-abbr" src="{% static 'simapp/images/samisin2.png' %}" width="128" height="128" alt="">
                     <hr>
-                    <p>Cuando la simulación haya concluido, observe los resultados a continuación:</p>
+                    <p>Cuando la simulación haya concluido, observe los resultados mediante el botón <strong>Resultados</strong>.</p>
                     
                     <div class="mb-5">
-                        <a class="btn btn-primary" href="{% url 'simapp:simulador_estadisticas' %}">Resultados</a>
+                        <a class="btn btn-secondary btn-xs" href="{% url 'simapp:sim_form_compacto' %}">Sim. Compacta</a>
+                        <a class="btn btn-secondary btn-xs" href="{% url 'simapp:sim_form_a1' %}">Sim. por Fases</a>
+                        <br>
+                        <br>
+                        <a class="btn btn-info" href="{% url 'simapp:simulador_estadisticas' %}">Resultados</a>
                     </div>
 
                 </div>

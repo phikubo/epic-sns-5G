@@ -1,8 +1,8 @@
 from django.urls import path
 from . import views 
-from .forms import FormStepOne, FormStepTwo
-from .forms import FormGeneral
-from .views import FormWizardView
+#from .forms import FormStepOne, FormStepTwo
+#from .forms import FormGeneral
+#from .views import FormWizardView
 
 
 app_name='simapp'
@@ -14,6 +14,10 @@ urlpatterns = [
     path('sim/form_a2', views.form_a2, name='sim_form_a2'),
     path('sim/form_a3', views.form_a3, name='sim_form_a3'),
     path('sim/form_a4', views.form_a4, name='sim_form_a4'),
+    #
+    path('sim/form_compacto', views.form_compacto, name='sim_form_compacto'),
+    #
+    path('sim/parametros/', views.ver_parametros, name='parametros'),
     #simulador
     path('sim/iniciar/', views.iniciar_simulacion, name='iniciar_sim'),
     #
@@ -26,8 +30,8 @@ urlpatterns = [
     path('futuro/', views.en_desarrollo, name='futuro'),
     
     #test
-    path('test_wizzard/', FormWizardView.as_view([FormStepOne, FormStepTwo]), name='dev_sami'),
-    path('test2/', views.form_view_2, name='dev_sami_2'),
+    #path('test_wizzard/', FormWizardView.as_view([FormStepOne, FormStepTwo]), name='dev_sami'),
+    #path('test2/', views.form_view_2, name='dev_sami_2'),
     
 
 ]

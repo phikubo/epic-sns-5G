@@ -220,11 +220,13 @@ def prueba_sistema_v048():
 		y_prueba=np.arange(-mul*radio_cel,mul*radio_cel,resolucion)
 		xx,yy=np.meshgrid(x_prueba,y_prueba)
 		print("--Escribiendo--")
-		with open('base_datos/datos/test_x.npy', 'wb') as f:
+
+		with open('simapp/static/simulador/base_datos/datos/test_x.npy', 'wb') as f:
 			np.save(f, xx)
-		with open('base_datos/datos/test_y.npy', 'wb') as f:
+		with open('simapp/static/simulador/base_datos/datos/test_y.npy', 'wb') as f:
 			np.save(f, yy)
-		print("Terminado ok.")
+
+		print("Terminado [Ok]")
 
 	iteracion=configuracion["cfg_simulador"]["params_general"]["iteracion"]
 	coleccion_simulacion=[]
@@ -241,8 +243,13 @@ def prueba_sistema_v048():
 	print("Datos de simulacion, simulacion 1")
 	print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 	simtest=coleccion_simulacion[0]
-	simtest.info_planificador()
-	simtest.info_sinr(True)
+	if display_pic:
+		simtest.ver_imagen_potencia()
+		#plt.show()
+	else:
+		pass
+	#simtest.info_planificador()
+	#simtest.info_sinr(True)
 	#simtest.info_sinr()
 	#print("margen\n",simtest.hiperc_modelo_canal.resultado_margen)
 	#simtest.info_sinr()

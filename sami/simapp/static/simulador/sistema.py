@@ -289,10 +289,10 @@ class Sistema_Celular:
 				##print("[sis.init.dist] 4. Estructura de celdas\n",self.usuario_x)
 				if self.cfg_gen["imagen"]["display"][0]: #si true, genera el mapa de calor.
 
-					with open('base_datos/datos/test_x.npy', 'rb') as f:
+					with open('simapp/static/simulador/base_datos/datos/test_x.npy', 'rb') as f:
 
 						self.malla_x=np.load(f)
-					with open('base_datos/datos/test_y.npy', 'rb') as f:
+					with open('simapp/static/simulador/base_datos/datos/test_y.npy', 'rb') as f:
 
 						self.malla_y=np.load(f)
 					print("++Test 1")
@@ -675,6 +675,7 @@ class Sistema_Celular:
 		c=ax.pcolormesh(self.malla_x,self.malla_y,pr_max, cmap='plasma', vmin=z_min, vmax=-40)
 		fig.colorbar(c,ax=ax)
 		plt.grid(True)
+		plt.savefig("simapp/static/simulador/base_datos/imagenes/mapa_calor.png") 
 
 	def ver_estaciones_base(self):
 		"""Permite ver las estaciones base de forma independiente"""
