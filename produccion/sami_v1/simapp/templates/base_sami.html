@@ -46,7 +46,7 @@
             Nav header start
         ***********************************-->
         <div class="nav-header">
-            <a href="#" class="brand-logo">
+            <a href="{% url 'simapp:presentacion_v1' %}" class="brand-logo">
                 <img class="logo-abbr" src="{% static 'simapp/images/logo-signal.png' %}" alt="">
                 <img class="logo-compact" src="{% static 'simapp/images/logo-text-2.png' %}" alt="">
                 <img class="brand-title" src="{% static 'simapp/images/logo-text-2.png' %}" alt="">
@@ -92,11 +92,11 @@
         <div class="quixnav">
             <div class="quixnav-scroll">
                 <ul class="metismenu" id="menu">
-                    <li class="nav-label first">Menú Principal</li>
+                    <li class="nav-label first">Presentación</li>
                     <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
                                 class="icon-badge menu-icon"></i><span class="nav-text">Características</span></a>
                         <ul aria-expanded="false">
-                            <li><a href="{% url 'simapp:caracteristicas' %}">Sami v1</a></li>
+                            <li><a href="{% url 'simapp:presentacion_v1' %}">Sami v1</a></li>
                             <li><a href="{% url 'simapp:futuro' %}">Sami v [futuro]</a></li>
                         </ul>
                     </li>
@@ -201,11 +201,22 @@
 
                      <!--NUEVO BLOQUE, CONSIDERAR BANDERAS-->
                     <li class="nav-label">Resultados</li>
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-chart-bar-33"></i><span class="nav-text">Estadisticas</span></a>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon-graph menu-icon"></i><span
+                                class="nav-text">Gráficas</span></a>
                         <ul aria-expanded="false">
-                            <li><a href="table-bootstrap-basic.html">Bootstrap</a></li>
-                            <li><a href="table-datatable-basic.html">Datatable</a></li>
+                            <li><a href="{% url 'simapp:graficas_1' %}">Dev Demo</a></li>
+                            <li><a href="{% url 'simapp:futuro' %}">Simulación y Sistema</a></li>
+                            <li><a href="{% url 'simapp:futuro' %}">Dispositivos Ideales (antena)</a></li>
+                            <li><a href="{% url 'simapp:futuro' %}">Modelo Ideal de Pérdidas de Propagación</a></li>
+                            <li><a href="{% url 'simapp:futuro' %}">[Futuro]</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-chart-bar-33"></i><span
+                                class="nav-text">Estadisticas</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="{% url 'simapp:futuro' %}">Información General</a></li>
+                            <li><a href="{% url 'simapp:futuro' %}">Información de Recursos</a></li>
                         </ul>
                     </li>
 

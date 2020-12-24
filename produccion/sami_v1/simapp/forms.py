@@ -1,21 +1,6 @@
 from django import forms
-#from .simulador_v1.utilidades import config as cfg
-#https://simpleisbetterthancomplex.com/tutorial/2018/11/28/advanced-form-rendering-with-django-crispy-forms.html
-class FormStepOne(forms.Form):
-    iteraciones=forms.IntegerField(label='Iteraciones',initial=1)
-    nombre= forms.CharField(max_length=100,initial="name")
-    Apellido = forms.CharField(max_length=100,initial="last")
-    Telefono  = forms.CharField(max_length=100,initial="number")
-    otro  = forms.CharField(max_length=100,initial="number")
-    otro2  = forms.CharField(max_length=100,initial="number")
-    otro3  = forms.CharField(max_length=100,initial="number")
-    otro4  = forms.CharField(max_length=100,initial="number")
-    otro5  = forms.CharField(max_length=100,initial="number")
 
-class FormStepTwo(forms.Form):
-    job = forms.CharField(max_length=100,initial="name")
-    salary = forms.CharField(max_length=100,initial="name")
-    job_description = forms.CharField(widget=forms.Textarea,initial="name")
+#https://simpleisbetterthancomplex.com/tutorial/2018/11/28/advanced-form-rendering-with-django-crispy-forms.html
 
 #------------------------------SIMAPP
 #seleccion

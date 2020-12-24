@@ -3,22 +3,22 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 #form tools
 from formtools.wizard.views import SessionWizardView
-#lista de formularios
-from .forms import FormStepOne, FormStepTwo
+
 #fomularios simulador
 from .forms import FormGeneral, FormPropagacion, FormBalanceAntenas,FormAsignacion
 from .forms import FormCompacto
 #integracion simulador
 import os
 import json
-#from .simulador_v1.utilidades import config as cfg
-#from .simulador_v1 import top_pruebas
-#static simul_sami 
+#
 from .static.simulador import top_pruebas
 from .static.simulador.utilidades import config as cfg
-#configuracion=cfg.cargar_variables(target_path="simulador_v1/base_datos/")
 
-#INTEGRACION
+#--------------------------------------
+#--------------------------------------
+'''Definiciones Auxiliares'''
+#--------------------------------------
+#--------------------------------------
 def convertir_str_2_bool(check):
     '''Convierte "True" o "False" a True o False'''
     res=False
@@ -26,8 +26,8 @@ def convertir_str_2_bool(check):
         res=True
     else:
         pass
-
     return res
+
 
 def validar_desvanecimiento(check):
     '''Valida el contenido de la variable desvanecimiento y ajusta los parametros'''
@@ -40,20 +40,30 @@ def validar_desvanecimiento(check):
         tipo=check
     #print(flag,tipo)
     return flag, tipo
+
+
 #----------------------------END
 
-
-#VIEWs
+#--------------------------------------
+#--------------------------------------
+'''VIEWs'''
+#--------------------------------------
+#--------------------------------------
 # Create your views here.
 def home(request):
+    '''Index: debe cambiarse a la version del simulador mas reciente'''
     return render(request,'simapp/sami-index.html')
 
-def form_demo_sami_v1(request):
-    return render(request,'simapp/sami-demo-v1.html')
-#os.path.realpath('./modules')
 
-def en_desarrollo(request):
-    return render(request,'simapp/sami-en-desarrollo.html')
+def form_demo_sami_v1(request):
+    '''Demostracion de formulario.'''
+    return render(request,'simapp/sami-demo-v1.html')
+
+
+def futuro(request):
+    '''Para mostrar pagina bajo desarrollo'''
+    return render(request,'simapp/sami-futuro.html')
+
 
 def iniciar_simulacion(request):
     '''Inicia la simulacion'''
@@ -71,6 +81,8 @@ def iniciar_simulacion(request):
 
 
 def ver_parametros(request):
+    '''Punto de control: se observan los parametros, se decide iniciar simulacion
+    o corregirlos con las opciones disponibles.'''
     configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
 
     config1=configuracion["cfg_simulador"]["params_general"]
@@ -78,18 +90,13 @@ def ver_parametros(request):
     config3=configuracion["cfg_simulador"]["params_balance"]
     config4=configuracion["cfg_simulador"]["params_antena"]
     config5=configuracion["cfg_simulador"]["params_asignacion"]
-    #print(config)
-    #for a,b in config["params_general"].items():
-    #    print(a,b)
+
     return render(request,'simapp/sami-parametros.html', {"cfg1":config1, 
     "cfg2":config2, "cfg3":config3, "cfg4":config4, "cfg5":config5 })
-    
 
 
-def ver_estadisticas(request):
-    return render(request,'simapp/sami-sim-estadisticas.html')
-#def test_sam(request):
-    return render(request,'simapp/sami-form-test1.html')
+def ver_graficas_1(request):
+    return render(request,'simapp/sami-sim-graficas-1.html')
 
 
 #FORMULARIOS V1
@@ -327,25 +334,3 @@ def form_compacto(request):
 
 
 #AUXILIAR Y PRUEBAS
-class FormWizardView(SessionWizardView):
-    template_name = "simapp/sami-form-test1.html"
-    form_list = [FormStepOne, FormStepTwo]
-    def done(self, form_list, **kwargs):
-        #
-        for form in form_list:
-            print(form.cleaned_data)
-
-        return render(self.request, 'simapp/sami-en-desarrollo.html', {
-            'form_data': [form.cleaned_data for form in form_list],
-        })
-
-
-def form_view_2(request):
-    form=FormGeneral()
-    if request.method == 'POST':
-        print("POST Metodo")
-        #iteracion= form.cleaned_data['iteraciones']
-        #celdas = form.cleaned_data['n_celdas']
-        print(".post", request.POST)
-        return render(request,'simapp/sami-en-desarrollo.html')
-    return render(request,'simapp/sami-form-test2.html', {"form_data":form} )
