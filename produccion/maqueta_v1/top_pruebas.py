@@ -221,12 +221,10 @@ def prueba_sistema_v048():
 		y_prueba=np.arange(-mul*radio_cel,mul*radio_cel,resolucion)
 		xx,yy=np.meshgrid(x_prueba,y_prueba)
 		print("--Escribiendo--")
-
 		with open('base_datos/datos/test_x.npy', 'wb') as f:
 			np.save(f, xx)
 		with open('base_datos/datos/test_y.npy', 'wb') as f:
 			np.save(f, yy)
-
 		print("Terminado [Ok]")
 
 	iteracion=configuracion["cfg_simulador"]["params_general"]["iteracion"]
@@ -246,7 +244,7 @@ def prueba_sistema_v048():
 	simtest=coleccion_simulacion[0]
 	if display_pic:
 		simtest.ver_imagen_potencia()
-		#plt.show()
+		plt.show()
 	else:
 		pass
 	#simtest.info_planificador()
@@ -263,6 +261,10 @@ def prueba_sistema_v048():
 
 	#simtest2=coleccion_simulacion[1]
 	#simtest2.info_sinr()
+def pruebas_sistema_049():
+	import simulador as sim
+	presim=sim.Simulador(tipo="presimulacion")
+	#simulacion=syst.
 
 
 if __name__=="__main__":
@@ -286,7 +288,8 @@ if __name__=="__main__":
 
 	#prueba_sistema_v046_4() ##pruebas con fixed data: pruebas con meshgrid. sinr . En espera
 	#prueba_sistema_v047() #pruebas de archivo de configuracion.
-	prueba_sistema_v048() #pruebas de asignacion e interferencia.
+	#prueba_sistema_v048() #pruebas de asignacion e interferencia.
+	pruebas_sistema_049() #pruebas de asignacion e interferencia.
 	pass
 
 else:

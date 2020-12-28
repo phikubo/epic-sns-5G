@@ -130,7 +130,8 @@ class Antena:
 	#---------------------------------------------------------------------------
 	#---------------------------------------------------------------------------
 	def observar_patron(self):
-		'''Grafica los patrones de radiacion. No terminado'''
+		#DEPLETED
+		'''Grafica los patrones de radiacion. No terminado.'''
 		plt.figure()
 		patron_original=-1*np.minimum(self.relacion_angulos, self.cfg["atmin"])
 		plt.plot(self.angulos, patron_original)
@@ -164,6 +165,16 @@ class Antena:
 		#plt.grid(True)
 		#plt.show()
 
+	#ADICIONAR01
+	def ver_patron_local(self, nombre):
+		#DEPLETED.
+		'''Unicamente para la presimulacion'''
+		plt.figure()
+		plt.polar(np.radians(self.angulos), self.patron_radiacion, '-r')
+		plt.title("[POL] Patron de Radiación Tipo: {}, Hbpw:{}.".format(self.cfg["tipo"], self.cfg["hpbw"]))
+		ruta="base_datos/imagenes/{}.png".format(nombre)
+		plt.savefig(ruta)
+
 
 if __name__=="__main__":
 	#Implementación.
@@ -174,14 +185,15 @@ if __name__=="__main__":
 	gtx=15
 	apunt=mc.calcular_angulo_v3(45,120) #inicio,angulo de particion.
 	tar=np.array([45, 90, 180, -1, -179])
+
 	#tar=np.stack(np.array([  [4,5,9.11 ,14.3 , 7.05],[3.4, 5, 6.7, 7.8, 8.9] ]))
 	#empaqueta los parametros en ese mismo orden.
 	parametros=[ref, hpbw, gtx, amin, apunt, tar]
 	#crea la instancia de antena.
-	antena_prueba=Antena(parametros)
+	antena_prueba=Antena(parametros, 0)
 	#comprueba el nuevo patron.
 	antena_prueba.observar_patron()
-	print(antena_prueba.hiper_ganancias)
+	#print(antena_prueba.hiper_ganancias)
 
 	#aprobado por phikubo
 

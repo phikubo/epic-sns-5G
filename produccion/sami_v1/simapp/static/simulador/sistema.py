@@ -819,7 +819,8 @@ class Sistema_Celular:
 		titulo= "Esc:"+str(self.cfg_prop["modelo_perdidas"])+", F:"+str(self.cfg_gen["portadora"][0])+", Ues:"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
 		plt.title(titulo)
 		plt.grid(True)
-		plt.show()
+		plt.savefig("simapp/static/simulador/base_datos/imagenes/simulacion.png")
+		#plt.show()
 
 
 	def info_celda_unica(self, target):

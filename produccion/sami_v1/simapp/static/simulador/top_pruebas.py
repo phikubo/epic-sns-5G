@@ -257,7 +257,8 @@ def prueba_sistema_v048():
 	#simtest.info_potencia()
 	#simtest.info_potencia_sin()
 	#simtest.info_balance()
-	#simtest.ver_todo()
+	simtest.ver_todo()
+	
 	#plt.show()
 
 	#simtest2=coleccion_simulacion[1]

@@ -38,6 +38,9 @@ class Modelo_Canal:
 		self.distancias=0 #distancia general
 		self.portadora=self.cfg_gen["portadora"][0]
 
+		#ADICIONAR01
+		self.custom_dist_flag=False
+		self.custom_dist=0
 
 		self.tx_grel=self.arreglos[1] #en cero estan los valore,s en 1 estan las unidades.
 
@@ -64,7 +67,13 @@ class Modelo_Canal:
 	def configurar_desvanecimiento(self):
 		'''Crea un array de desvanecimiento, dependiendo del tipo y especificaciones extras'''
 
-		self.balance_simplificado=self.resultado_path_loss-self.tx_grel-self.cfg_bal["grx"]+self.cfg_bal["ltx"]+self.cfg_bal["lrx"]
+		#ADICIONAR01
+		if self.custom_dist_flag:
+			print(np.max(self.cfg_bal["grx"]), self.resultado_path_loss.shape)
+			self.balance_simplificado=self.resultado_path_loss-np.max(self.tx_grel)-self.cfg_bal["grx"]+self.cfg_bal["ltx"]+self.cfg_bal["lrx"]
+		else:
+
+			self.balance_simplificado=self.resultado_path_loss-self.tx_grel-self.cfg_bal["grx"]+self.cfg_bal["ltx"]+self.cfg_bal["lrx"]
 
 		if self.cfg_prop["params_desv"]["display"]:
 			if self.cfg_gen['debug']:
@@ -126,7 +135,12 @@ class Modelo_Canal:
 			#km, GH
 			if self.arreglos[0][1]=="m":
 				#convierto a kilometros
-				self.distancias=self.arreglos[0][0]/1000
+				#self.distancias=self.arreglos[0][0]/1000
+				#ADICIONAR01
+				if self.custom_dist_flag==True:
+					self.distancias=self.custom_dist
+				else:
+					self.distancias=self.arreglos[0][0]/1000
 
 
 			else:
@@ -137,6 +151,7 @@ class Modelo_Canal:
 				self.portadora=self.cfg_gen["portadora"][0]/1000
 			else:
 				pass #opcion gigahez, no cambia.
+
 			self.perdidas_espacio_libre_ghz()
 
 
@@ -147,7 +162,13 @@ class Modelo_Canal:
 				#self.hiper_arreglos[0]=(self.hiperc_distancias, "m") #siempre en metros.
 				#self.hiper_arreglos[1]=(self.hiperc_ganancia_relativa, "none")
 				#convierto a kilometros
-				self.distancias=self.arreglos[0][0]/1000
+
+				#ADICIONAR01
+				if self.custom_dist_flag==True:
+					self.distancias=self.custom_dist
+				else:
+					self.distancias=self.arreglos[0][0]/1000
+
 			else:
 				pass #opcion kilometro, no cambia.
 			if self.cfg_gen["portadora"][1]=="ghz":
@@ -155,6 +176,7 @@ class Modelo_Canal:
 				self.portadora=self.cfg_gen["portadora"][0]*1000
 			else:
 				pass #opcion megaherz, no cambia.
+			#print(self.distancias.shape)
 
 			self.perdidas_okumura_hata_mhz()
 
@@ -197,7 +219,7 @@ class Modelo_Canal:
 		#E=8.29*(np.log10(1.54*hm))**2 -1.1 #[dB] para ciudades grandes y fc<300 MHz
 		#print("okumura_hata, says->A,B:",A,B)
 		#se guarda en un valor aparte, no es necesario, pero sirve de debug.
-
+		#print(self.distancias)
 		if self.cfg_prop["params_desv"]["display"]:
 			self.resultado_path_loss_antes=A+B*np.log10(self.distancias)-E
 		self.resultado_path_loss=A+(B*np.log10(self.distancias))-E #+ self.desvanecimiento
@@ -357,8 +379,48 @@ class Modelo_Canal:
 		#mismo que el de 5G
 		pass
 
+	#ADICIONAR01
+	def ver_perdidas_local(self, nombre):
+		'''Funcion para ver las perdidas por trayectoria'''
+		#cambio a un array custom
+		plt.figure()
+		self.custom_dist_flag=True
+		#EN KILOMETROS
+		self.custom_dist=np.arange(1,20,.9)
+		#realizo la simulacion con el array custom diferente.
+		self.inicializar_tipo()
+		#obtengo resutlados
+		plt.plot(self.custom_dist, self.resultado_path_loss)
+		plt.title("Pérdidas de Propagación: {}".format(self.cfg_prop["modelo_perdidas"]))
+		ruta="base_datos/imagenes/presim-{}.png".format(nombre)
+		plt.savefig(ruta)
+		print(self.cfg_prop["params_desv"])
+
+	def ver_desvanecimiento_local(self, nombre):
+		'''Funcion para ver las perdidas por trayectoria'''
+		#cambio a un array custom
+		plt.figure()
+		self.custom_dist_flag=True
+		#EN KILOMETROS
+		self.custom_dist=np.arange(1,20,.9)
+		#realizo la simulacion con el array custom diferente.
+		self.inicializar_tipo()
+		self.balance_del_enlace_mcl()
+		#obtengo resutlados
+		plt.plot(self.custom_dist, self.resultado_path_loss)
+		#si normal, sumar
+		plt.plot(self.custom_dist, self.desvanecimiento+self.resultado_path_loss)
+		#plt.plot(self.custom_dist, self.balance_simplificado )
+		#si rayl-mixto, no sumar
+		#label="normal+sin ptx, simplificado"
+		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
+		ruta="base_datos/imagenes/presim-{}.png".format(nombre)
+		plt.savefig(ruta)
+
+
 	def debug_ver_balance(self):
-		'''Funcion para observar el balance del enlace. Solo funciona localmente.'''
+		#depleted
+		'''Funcion para observar el balance del enlace. Solo funciona localmente. [ya no]'''
 		#print(self.balance_simplificado)->tiene que ser positivo
 		#self.desvanecimiento es negativo
 
@@ -473,7 +535,6 @@ def prueba_interna_desvanecimiento_prof():
 	balance=modelo_simple.resultado_balance
 	modelo_simple.debug_ver_balance()
 	plt.grid(True)
-
 	plt.show()
 
 
@@ -484,6 +545,8 @@ if __name__=="__main__":
 	#prueba interna 1.
 	#prueba_interna_resultado_path_loss()
 	#prueba_interna_desvanecimiento_normal() #se observa unos puntos planos al principo del array, se debe al mcl.
-	prueba_interna_desvanecimiento_prof()
+	#prueba_interna_desvanecimiento_prof()
+	#DEPLETED, todas las funciones se prueban desde la funcion de mayor nivel (simulador)
+	pass
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")

@@ -289,10 +289,10 @@ class Sistema_Celular:
 				##print("[sis.init.dist] 4. Estructura de celdas\n",self.usuario_x)
 				if self.cfg_gen["imagen"]["display"][0]: #si true, genera el mapa de calor.
 
-					with open('simapp/static/simulador/base_datos/datos/test_x.npy', 'rb') as f:
+					with open('base_datos/datos/test_x.npy', 'rb') as f:
 
 						self.malla_x=np.load(f)
-					with open('simapp/static/simulador/base_datos/datos/test_y.npy', 'rb') as f:
+					with open('base_datos/datos/test_y.npy', 'rb') as f:
 
 						self.malla_y=np.load(f)
 					print("++Test 1")
@@ -660,7 +660,7 @@ class Sistema_Celular:
 	--------------------------------------------------------------------------------------------'''
 
 
-	def ver_imagen_potencia(self):
+	def ver_imagen_potencia(self, nombre):
 		'''Permite ver la imagen creada a partir de una malla de puntos'''
 		#print(self.hiperc_malla_modelo_canal.resultado_balance.shape)
 		pr_max=self.hiperc_malla_modelo_canal.resultado_balance[0]
@@ -674,8 +674,19 @@ class Sistema_Celular:
 
 		c=ax.pcolormesh(self.malla_x,self.malla_y,pr_max, cmap='plasma', vmin=z_min, vmax=-40)
 		fig.colorbar(c,ax=ax)
+		#ADICIONAR01
+		titulo="{}, Ptx:{}, Desvanecimiento:{}.".format(str(self.cfg_prop["modelo_perdidas"]), self.cfg_bal["ptx"], self.cfg_prop["params_desv"]["tipo"])
+		plt.title(titulo)
 		plt.grid(True)
-		plt.savefig("simapp/static/simulador/base_datos/imagenes/mapa_calor.png")
+		ruta="base_datos/imagenes/{}.png".format(nombre)
+		plt.savefig(ruta)
+
+
+	def ver_patron_radiacion(self, nombre):
+		'''Permite ver el patron de radiación elegido'''
+		#Ya existe.
+		#hiperc_antena.ver_patron()
+		pass
 
 	def ver_estaciones_base(self):
 		"""Permite ver las estaciones base de forma independiente"""
