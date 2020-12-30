@@ -86,7 +86,8 @@ class Planificador:
 			#print("self.max_usuario",self.nrb_usuario)
 			self.asignacion=self.nrb_usuario*self.one_resource_block*self.mapa_margen_descon
 			#quitar error:
-			print("asignacion",self.asignacion)
+			#adicion01-rm
+			#print("asignacion",self.asignacion)
 			self.asignacion=np.where(self.asignacion==0,0.0001,self.asignacion)
 
 

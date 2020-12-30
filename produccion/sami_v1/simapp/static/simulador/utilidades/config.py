@@ -4,13 +4,9 @@ import json
 
 def cargar_variables(target_path):
 	'''Abre el archivo de configuracion y lo carga en el sistema.'''
-	print(target_path)
 	with open(target_path+"configs.json") as json_data_file:
 		data = json.load(json_data_file)
-	#print(data)
-	#print("--")
-	#print(data["cfg_simulador"]["params_general"])
-	#print(type(data))
+
 	return data
 
 

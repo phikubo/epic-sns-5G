@@ -12,7 +12,15 @@ import os
 import json
 #
 from .static.simulador import top_pruebas
+from .static.simulador import simulador as samiv1
 from .static.simulador.utilidades import config as cfg
+
+
+#--------------------------------------
+#--------------------------------------
+'''Definiciones Globales'''
+#--------------------------------------
+#--------------------------------------
 
 #--------------------------------------
 #--------------------------------------
@@ -76,7 +84,10 @@ def iniciar_simulacion(request):
         #exists = os.path.isfile('qw2ass<z/path/to/file')
         #print(exists)
         print("GET Metodo")
-        top_pruebas.prueba_sistema_v048()
+        #top_pruebas.prueba_sistema_v048()
+        presim=samiv1.Simulador(tipo="presimulacion")
+        #presim_graphs=presim.graficas_disponibles
+        
     return render(request,'simapp/sami-iniciar-sim.html')
 
 
@@ -96,7 +107,9 @@ def ver_parametros(request):
 
 
 def ver_graficas_1(request):
-    return render(request,'simapp/sami-sim-graficas-1.html')
+    configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
+    imagenes_disp=configuracion["cfg_gui"]["presim_graphs"]
+    return render(request,'simapp/sami-sim-graficas-1.html', {"img_disp":imagenes_disp})
 
 
 #FORMULARIOS V1

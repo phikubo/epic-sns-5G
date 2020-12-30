@@ -10,6 +10,7 @@ import os
 class Simulador:
 	def __init__(self, tipo):
 		self.tipo=tipo
+		self.graficas_disponibles=[]
 		self.configuracion=cfg.cargar_variables(target_path="base_datos/")
 		if self.tipo=="presimulacion":
 			self.configurar_presimulacion()
@@ -31,16 +32,19 @@ class Simulador:
 				mul=4.6
 			else:
 				mul=3
-			print("--Generando data--")
+			#adicion01-rm
+			#print("--Generando data--")
 			x_prueba=np.arange(-mul*radio_cel,mul*radio_cel,resolucion) #depende del radio_cel y numero de celdas.
 			y_prueba=np.arange(-mul*radio_cel,mul*radio_cel,resolucion)
 			xx,yy=np.meshgrid(x_prueba,y_prueba)
-			print("--Escribiendo--")
+			#adicion01-rm
+			#print("--Escribiendo--")
 			with open('base_datos/datos/test_x.npy', 'wb') as f:
 				np.save(f, xx)
 			with open('base_datos/datos/test_y.npy', 'wb') as f:
 				np.save(f, yy)
-			print("Terminado [Ok]")
+			#adicion01-rm
+			#print("Terminado [Ok]")
 
 
 		#simulacion
@@ -50,6 +54,7 @@ class Simulador:
 		#display de imagen potencia
 		if display_pic:
 			pre_sim.ver_imagen_potencia(nombre="imagen_potencia")
+			self.graficas_disponibles.append("imagen_potencia.png")
 			#comentar en sami
 			#plt.show()
 		else:
@@ -57,23 +62,43 @@ class Simulador:
 
 		#display de antena
 		pre_sim.hiperc_antena.ver_patron_local(nombre="patron_radiacion")
+		self.graficas_disponibles.append("patron_radiacion.png")
 		#plt.show()
 		#display de perdidas por trayectoria
 		#dist_modelo=np.array([0.1, 1, 2, 3, 4, 5, 6])
 		#pre_sim.hiperc_modelo_canal.distancias=dist_modelo
 		#print(pre_sim.hiperc_modelo_canal.distancias)
 		pre_sim.hiperc_modelo_canal.ver_perdidas_local(nombre="perdidas")
+		self.graficas_disponibles.append("perdidas.png")
 		#pre_sim.hiperc_modelo_canal.inicializar_tipo()
 		#display de desvanecimiento custom (si desvanecimiento)
 		desva=self.configuracion["cfg_simulador"]["params_propagacion"]["params_desv"]["display"]
 		if desva:
-			
 			pre_sim.hiperc_modelo_canal.ver_desvanecimiento_local(nombre="desvanecimiento")
+			self.graficas_disponibles.append("desvanecimiento.png")
+			pre_sim.hiperc_modelo_canal.ver_relaciones_local(nombre="relaciones")
+			self.graficas_disponibles.append("relaciones.png")
+			pre_sim.hiperc_modelo_canal.ver_balance_local(nombre="balance")
+			self.graficas_disponibles.append("balance.png")
 		else:
 			print("desvanecimiento desactivado, la grafica no se muestra")
-			#eliminar, si.
+			#adicionar02
+			pre_sim.hiperc_modelo_canal.ver_balance_sin_local(nombre="balance_sin")
+			self.graficas_disponibles.append("balance_sin.png")
 
-		#eliminar todo despues de pre-simular
+		#guardar nombres de imagenes diponibles en presimulacion
+		#print(self.graficas_disponibles)
+		pre_sim.ver_todo()
+		self.graficas_disponibles.append("base-sim.png")
+
+		self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles
+		#print(self.configuracion)
+		cfg.guardar_cfg(self.configuracion, target_path="base_datos/")
+
+		#guardar nombres de imagenes diponibles en presimulacion
+		#self.configuracion
+
+		#eliminar todo despues de pre-simular para desocupar la memoria.
 		pre_sim=0
 		x_prueba=0
 		y_prueba=0
@@ -83,6 +108,7 @@ class Simulador:
 	def configurar_simulacion(self):
 		'''Modulo de simulacion.'''
 		pass
+		#off imagen de potencia.
 
 
 if __name__=="__main__":

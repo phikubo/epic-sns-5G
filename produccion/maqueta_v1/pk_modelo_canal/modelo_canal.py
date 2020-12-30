@@ -69,10 +69,9 @@ class Modelo_Canal:
 
 		#ADICIONAR01
 		if self.custom_dist_flag:
-			print(np.max(self.cfg_bal["grx"]), self.resultado_path_loss.shape)
+			#print(np.max(self.cfg_bal["grx"]), self.resultado_path_loss.shape)
 			self.balance_simplificado=self.resultado_path_loss-np.max(self.tx_grel)-self.cfg_bal["grx"]+self.cfg_bal["ltx"]+self.cfg_bal["lrx"]
 		else:
-
 			self.balance_simplificado=self.resultado_path_loss-self.tx_grel-self.cfg_bal["grx"]+self.cfg_bal["ltx"]+self.cfg_bal["lrx"]
 
 		if self.cfg_prop["params_desv"]["display"]:
@@ -84,9 +83,10 @@ class Modelo_Canal:
 		if self.cfg_prop["params_desv"]["display"]:
 			#print("[ok].debug: desvanecimiento activado.")
 			if self.cfg_prop["params_desv"]["tipo"]=="normal":
-				sigma_xn=self.cfg_prop["params_desv"]["params"][0]
-				mu=self.cfg_prop["params_desv"]["params"][1]
+				mu=self.cfg_prop["params_desv"]["params"][0]
+				sigma_xn=self.cfg_prop["params_desv"]["params"][1]
 				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.distancias.shape)
+
 				self.balance_simplificado=self.balance_simplificado+self.desvanecimiento
 				if self.cfg_gen['debug']:
 					print("[ok]-----configurar_desv,  normal")
@@ -109,8 +109,8 @@ class Modelo_Canal:
 				if self.cfg_gen['debug']:
 					print("[ok]-----configurar_desv, MIXTO")
 					#plt.plot(self.distancias, -self.balance_simplificado, 'r-',  label="sin ptx, simplificado")
-				sigma_xn=self.cfg_prop["params_desv"]["params"][0]
-				mu=self.cfg_prop["params_desv"]["params"][1]
+				mu=self.cfg_prop["params_desv"]["params"][0]
+				sigma_xn=self.cfg_prop["params_desv"]["params"][1]
 				#if true, el desvanecimiento deja de ser 0 y se integra a las perdidas.
 				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.distancias.shape)
 				self.balance_simplificado=self.balance_simplificado+self.desvanecimiento
@@ -257,11 +257,7 @@ class Modelo_Canal:
 		#print("\n[modelo_canal.func.mcl] MCL")
 		#print(np.maximum(self.balance_simplificado, mcl))
 		self.resultado_balance=self.cfg_bal["ptx"]-np.maximum(self.balance_simplificado, self.cfg_bal["mcl"])
-
 		self.resultado_margen=self.resultado_balance-self.cfg_bal["sensibilidad"]
-
-
-
 
 
 	def perdidas_umi_ci(self):
@@ -324,27 +320,10 @@ class Modelo_Canal:
 		#segemento=ptx-perdidas+ganancia
 		#ATENCION, DOCUMENTAR UNIDADES
 		#"espacio_libre", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad
-		#params_perdidas[0]:tipo de perdidas
-		#params_perdidas[1]:potencia de tx
-		#params_perdidas[2]:perdidas en tx
-
-		#params_perdidas[3]:ganancia en tx
-
-		#params_perdidas[4]:ganancia en rx
-		#params_perdidas[5]:perdidas en rx
-		#params_perdidas[6]:sensibilidad de todos los usuarios #en el futuro, sensibidad variable
-		##segmento_tx=self.params_perdidas[1]-self.params_perdidas[2]+self.params_perdidas[3]
-		##segmento_rx=self.params_perdidas[4]-self.params_perdidas[5]
-		##self.resultado_balance=segmento_tx-self.resultado_path_loss+segmento_rx
-
-		##self.resultado_margen=self.resultado_balance+self.params_perdidas[6]
-
 		segmento_tx=self.tx_prw+self.tx_grel-self.tx_loss
 		segmento_rx=self.rx_g-self.rx_loss
 		self.resultado_balance=segmento_tx+segmento_rx-self.resultado_path_loss
 		self.resultado_margen=self.resultado_balance-self.rx_sens
-
-
 
 
 	def balance_del_enlace_LTE(self):
@@ -368,7 +347,6 @@ class Modelo_Canal:
 		– body block loss (dB) – interference margin (dB) – rain/ice margin (dB)
 		– slow fading margin (dB) – body block loss (dB) + UE antenna gain (dB)
 		'''
-
 		self.resultado_balance=0
 
 	def balance_del_enlace_UMa(self):
@@ -390,32 +368,136 @@ class Modelo_Canal:
 		#realizo la simulacion con el array custom diferente.
 		self.inicializar_tipo()
 		#obtengo resutlados
-		plt.plot(self.custom_dist, self.resultado_path_loss)
+		plt.plot(self.custom_dist, self.resultado_path_loss, label="Pérdidas")
+		plt.legend(loc="upper left")
 		plt.title("Pérdidas de Propagación: {}".format(self.cfg_prop["modelo_perdidas"]))
+		plt.xlabel("Distancia [km]")
+		plt.ylabel("Pérdidas [dB]")
+		plt.grid(True)
 		ruta="base_datos/imagenes/presim-{}.png".format(nombre)
 		plt.savefig(ruta)
-		print(self.cfg_prop["params_desv"])
 
+	#ADICIONAR01
 	def ver_desvanecimiento_local(self, nombre):
 		'''Funcion para ver las perdidas por trayectoria'''
 		#cambio a un array custom
 		plt.figure()
 		self.custom_dist_flag=True
 		#EN KILOMETROS
-		self.custom_dist=np.arange(1,20,.9)
+		self.custom_dist=np.arange(1,20,.5)
 		#realizo la simulacion con el array custom diferente.
 		self.inicializar_tipo()
 		self.balance_del_enlace_mcl()
+		plt.grid(True)
 		#obtengo resutlados
-		plt.plot(self.custom_dist, self.resultado_path_loss)
-		#si normal, sumar
-		plt.plot(self.custom_dist, self.desvanecimiento+self.resultado_path_loss)
-		#plt.plot(self.custom_dist, self.balance_simplificado )
+
+
+		fix_recta=np.zeros(len(self.custom_dist))
+		plt.plot(self.custom_dist, self.desvanecimiento, "*-", label="desvanecimiento")
+		plt.plot(self.custom_dist, fix_recta, "b-")
+		plt.legend(loc="lower right")
+
 		#si rayl-mixto, no sumar
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
+		plt.xlabel("Distancia [km]")
+		plt.ylabel("[dB]")
 		ruta="base_datos/imagenes/presim-{}.png".format(nombre)
 		plt.savefig(ruta)
+
+
+	#ADICIONAR01
+	def ver_balance_local(self, nombre):
+		'''Funcion para ver las perdidas por trayectoria'''
+		#cambio a un array custom
+		plt.figure()
+		self.custom_dist_flag=True
+		#EN KILOMETROS
+		self.custom_dist=np.arange(1,20,.5)
+		#realizo la simulacion con el array custom diferente.
+		self.inicializar_tipo()
+		self.balance_del_enlace_mcl()
+		plt.grid(True)
+		#obtengo resutlados
+		#negativo por que aun no tiene en cuenta el mcl
+		plt.plot(self.custom_dist, -self.balance_simplificado_antes,  label="balance antes")
+		#plt.plot(self.custom_dist, self.balance_simplificado, label="balance después")
+		plt.plot(self.custom_dist, -self.balance_simplificado, label="balance después *-1")
+		#positivo por que tiene encuenta el mcl.
+		plt.plot(self.custom_dist, self.resultado_balance, label="balance final")
+		plt.legend(loc="lower right")
+
+		#si rayl-mixto, no sumar
+		#label="normal+sin ptx, simplificado"
+		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
+		plt.xlabel("Distancia [km]")
+		plt.ylabel("[dB]")
+		ruta="base_datos/imagenes/presim-{}.png".format(nombre)
+		plt.savefig(ruta)
+
+	#ADICIONAR02
+	def ver_balance_sin_local(self, nombre):
+		'''Funcion para ver las perdidas por trayectoria'''
+		#cambio a un array custom
+		plt.figure()
+		self.custom_dist_flag=True
+		#EN KILOMETROS
+		self.custom_dist=np.arange(1,20,.5)
+		#realizo la simulacion con el array custom diferente.
+		self.inicializar_tipo()
+		self.balance_del_enlace_mcl()
+		plt.grid(True)
+		#obtengo resutlados
+		#negativo por que aun no tiene en cuenta el mcl
+		#plt.plot(self.custom_dist, -self.balance_simplificado_antes,  label="balance antes")
+
+		#plt.plot(self.custom_dist, -self.balance_simplificado, label="balance después *-1")
+		#positivo por que tiene encuenta el mcl.
+		plt.plot(self.custom_dist, self.resultado_balance, label="balance final")
+		plt.legend(loc="lower right")
+
+		#si rayl-mixto, no sumar
+		#label="normal+sin ptx, simplificado"
+		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
+		plt.xlabel("Distancia [km]")
+		plt.ylabel("[dB]")
+		ruta="base_datos/imagenes/presim-{}.png".format(nombre)
+		plt.savefig(ruta)
+
+	#ADICIONAR01
+	def ver_relaciones_local(self, nombre):
+		'''Funcion para ver las perdidas por trayectoria'''
+		#cambio a un array custom
+		plt.figure()
+		self.custom_dist_flag=True
+		#EN KILOMETROS
+		self.custom_dist=np.arange(1,20,.5)
+		#realizo la simulacion con el array custom diferente.
+		self.inicializar_tipo()
+		self.balance_del_enlace_mcl()
+		plt.grid(True)
+		#obtengo resutlados
+		plt.plot(self.custom_dist, self.resultado_path_loss, label="pérdidas")
+
+		fix_recta=np.zeros(len(self.custom_dist))
+		plt.plot(self.custom_dist, self.desvanecimiento, "*-", label="desvanecimiento")
+		plt.plot(self.custom_dist, fix_recta, "b-")
+
+		#negativo por que aun no tiene en cuenta el mcl
+		plt.plot(self.custom_dist, -self.balance_simplificado_antes,  label="balance antes")
+		plt.plot(self.custom_dist, self.balance_simplificado, label="balance después")
+		plt.plot(self.custom_dist, -self.balance_simplificado, label="balance después *-1")
+		plt.plot(self.custom_dist, self.resultado_balance, label="balance final")
+		plt.legend(loc="lower right")
+
+		#si rayl-mixto, no sumar
+		#label="normal+sin ptx, simplificado"
+		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
+		plt.xlabel("Distancia [km]")
+		plt.ylabel("[dB]")
+		ruta="base_datos/imagenes/presim-{}.png".format(nombre)
+		plt.savefig(ruta)
+
 
 
 	def debug_ver_balance(self):
@@ -536,6 +618,7 @@ def prueba_interna_desvanecimiento_prof():
 	modelo_simple.debug_ver_balance()
 	plt.grid(True)
 	plt.show()
+
 
 
 if __name__=="__main__":

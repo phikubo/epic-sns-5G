@@ -295,7 +295,8 @@ class Sistema_Celular:
 					with open('base_datos/datos/test_y.npy', 'rb') as f:
 
 						self.malla_y=np.load(f)
-					print("++Test 1")
+					#adicion01-rm
+					#print("++Test 1")
 					#self.malla_x,self.malla_y=self.mapa_calor[1]
 				else:
 					pass
@@ -518,7 +519,8 @@ class Sistema_Celular:
 		#print("test4",self.conexion_total_margen)
 		#calcula la probabilidad de conexion o probabilidad de exito de conexion.
 		self.medida_conexion_margen=self.conexion_total_margen/self.no_usuarios_total
-		print("Usuario conectados: {} %\n ".format(self.medida_conexion_margen*100))
+		#adicion01-modify
+		print("\nUsuarios conectados: {} %\n ".format(self.medida_conexion_margen*100))
 
 	def calcular_celda_mayor_potencia(self):
 		'''Prepara arreglos a utilizar en funcion de calculo sinr.'''
@@ -665,7 +667,8 @@ class Sistema_Celular:
 		#print(self.hiperc_malla_modelo_canal.resultado_balance.shape)
 		pr_max=self.hiperc_malla_modelo_canal.resultado_balance[0]
 		for ind,pr_i in enumerate(self.hiperc_malla_modelo_canal.resultado_balance):
-			print("indice",ind)
+			#adicion01-rm
+			#print("indice",ind)
 			#itera sobre las demas.
 			pr_max=np.maximum(pr_max, pr_i)
 		pr_max=pr_max[:-1,:-1]
@@ -678,7 +681,7 @@ class Sistema_Celular:
 		titulo="{}, Ptx:{}, Desvanecimiento:{}.".format(str(self.cfg_prop["modelo_perdidas"]), self.cfg_bal["ptx"], self.cfg_prop["params_desv"]["tipo"])
 		plt.title(titulo)
 		plt.grid(True)
-		ruta="base_datos/imagenes/{}.png".format(nombre)
+		ruta="base_datos/imagenes/presim-{}.png".format(nombre)
 		plt.savefig(ruta)
 
 
@@ -830,7 +833,10 @@ class Sistema_Celular:
 		titulo= "Esc:"+str(self.cfg_prop["modelo_perdidas"])+", F:"+str(self.cfg_gen["portadora"][0])+", Ues:"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
 		plt.title(titulo)
 		plt.grid(True)
-		plt.show()
+		#plt.show()
+		nombre="base-sim"
+		ruta="base_datos/imagenes/presim-{}.png".format(nombre)
+		plt.savefig(ruta)
 
 
 	def info_celda_unica(self, target):

@@ -1,17 +1,18 @@
 {% extends 'base_sami.html' %}
+{% load static %}
 
 {% block content %}
 <div class="row page-titles mx-0">
     <div class="col-sm-6 p-md-0">
         <div class="welcome-text">
-            <h4>¡Gráficas de Cobertura!</h4>
+            <h4>¡Gráficas de Pre-Simulación!</h4>
             <p class="mb-0">A continuación los resultados. Si el simulador no ha concluido su ejecución, por favor recargar la página.</p>
         </div>
     </div>
 </div>
 
 
-
+<!--
 <div class="row page-titles mx-0">
     <div class="col-sm-6 p-md-0">
         <div class="welcome-text">
@@ -19,6 +20,24 @@
             <p class="mb-0">A continuación las gráficas. Si el simulador no ha concluido su ejecución, por favor recargar la página.</p>
         </div>
     </div>
+</div>
+-->
+<div class="row">
+    {% for value in img_disp %}
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">OK</h4>
+            </div>
+            <div class="card-body">
+                 
+                <img width="450" height="350" src="{% static value %}" />
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    
 </div>
 
 {% endblock %}

@@ -172,7 +172,7 @@ class Antena:
 		plt.figure()
 		plt.polar(np.radians(self.angulos), self.patron_radiacion, '-r')
 		plt.title("[POL] Patron de Radiación Tipo: {}, Hbpw:{}.".format(self.cfg["tipo"], self.cfg["hpbw"]))
-		ruta="base_datos/imagenes/{}.png".format(nombre)
+		ruta="base_datos/imagenes/presim-{}.png".format(nombre)
 		plt.savefig(ruta)
 
 

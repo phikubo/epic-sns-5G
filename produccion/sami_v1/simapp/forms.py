@@ -25,9 +25,13 @@ densidad_choices=(
     )
 
 imagen_choices=(
-        (False, 'Desactivado'),
         (True, 'Activado'),
-
+        #(False, 'Desactivado'),
+        #funciona solo para presimulacion.
+        #si se desea generar por cada toma, es necesario desactivar las banderas
+        #correspondientes al archivo de configuracion y el modulo simulador,
+        #y el modulo sistema, y adicionmente generar un script que permita
+        #almacenar cada toma con un nombre diferente.
     )
 
 #---------------------------------

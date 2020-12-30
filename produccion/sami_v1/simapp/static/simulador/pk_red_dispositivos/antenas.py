@@ -129,7 +129,16 @@ class Antena:
 	#							VISUALIZACION
 	#---------------------------------------------------------------------------
 	#---------------------------------------------------------------------------
+	def ver_patron_local(self, nombre):
+		'''Unicamente para la presimulacion'''
+		plt.figure()
+		plt.polar(np.radians(self.angulos), self.patron_radiacion, '-r')
+		plt.title("[POL] Patron de Radiación Tipo: {}, Hbpw:{}.".format(self.cfg["tipo"], self.cfg["hpbw"]))
+		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
+		plt.savefig(ruta)
+
 	def observar_patron(self):
+		#DEPLETED
 		'''Grafica los patrones de radiacion. No terminado'''
 		plt.figure()
 		patron_original=-1*np.minimum(self.relacion_angulos, self.cfg["atmin"])
