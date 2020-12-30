@@ -109,6 +109,7 @@ def ver_parametros(request):
 def ver_graficas_1(request):
     configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
     imagenes_disp=configuracion["cfg_gui"]["presim_graphs"]
+    print(imagenes_disp)
     return render(request,'simapp/sami-sim-graficas-1.html', {"img_disp":imagenes_disp})
 
 
