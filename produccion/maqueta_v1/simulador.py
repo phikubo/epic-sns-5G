@@ -91,8 +91,12 @@ class Simulador:
 		pre_sim.ver_todo()
 		self.graficas_disponibles.append("base-sim.png")
 
-		self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles
-		#print(self.configuracion)
+		#guardar los nombres de graficas disponibles para desplegar despues.
+		#self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles
+		self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles_dic
+		#desactivar la imagen de potencia para prepara el archivo para monte-carlo.
+		self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0]=False
+		#guardar el archivo.
 		cfg.guardar_cfg(self.configuracion, target_path="base_datos/")
 
 		#guardar nombres de imagenes diponibles en presimulacion
