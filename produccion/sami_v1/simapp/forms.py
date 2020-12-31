@@ -107,7 +107,7 @@ class FormPropagacion(forms.Form):
     dp3=forms.DecimalField(label='Parámero 3',initial=0, min_value=0, max_digits=5, decimal_places=2)
     dp4=forms.DecimalField(label='Parámero 4',initial=0, min_value=0, max_digits=5, decimal_places=2)
 
-    ber_sinr=forms.DecimalField(label='BER Objetivo [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
+    ber_sinr=forms.DecimalField(label='SINR Objetivo [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     nf=forms.DecimalField(label='Figura de Ruido [dB]',initial=6, min_value=1, max_digits=5, decimal_places=2)
 
 
@@ -173,7 +173,7 @@ class FormCompacto(forms.Form):
     dp3=forms.DecimalField(label='Parámero 3',initial=0, min_value=0, max_digits=5, decimal_places=2)
     dp4=forms.DecimalField(label='Parámero 4',initial=0, min_value=0, max_digits=5, decimal_places=2)
 
-    ber_sinr=forms.DecimalField(label='BER Objetivo [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
+    ber_sinr=forms.DecimalField(label='SINR Objetivo [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     nf=forms.DecimalField(label='Figura de Ruido [dB]',initial=6, min_value=1, max_digits=5, decimal_places=2)
 
     '''Formulario para configurar variables relacionadas al balance del enlace y las antenas'''

@@ -10,7 +10,7 @@ from .utilidades import config as cfg
 class Simulador:
 	def __init__(self, tipo):
 		self.tipo=tipo
-		self.graficas_disponibles=[]
+		
 		self.graficas_disponibles_dic={}
 		self.configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
 		if self.tipo=="presimulacion":
@@ -49,6 +49,7 @@ class Simulador:
 
 
 		#simulacion
+		#APAGAR LA IMAGEN SIN ESTA ENCEIDA.
 		pre_sim=ss.Sistema_Celular(self.configuracion)
 
 
@@ -57,7 +58,7 @@ class Simulador:
 			pre_sim.ver_imagen_potencia(nombre="imagen_potencia")
 			titulo="Muestra de Potencia Recibida"
 			ruta_img="simulador/base_datos/imagenes/presim/imagen_potencia.png"
-			self.graficas_disponibles.append(ruta_img)
+			#self.graficas_disponibles.append(ruta_img)
 			self.graficas_disponibles_dic.update({titulo:ruta_img})
 			#comentar en sami
 			#plt.show()
@@ -68,14 +69,14 @@ class Simulador:
 		pre_sim.hiperc_antena.ver_patron_local(nombre="patron_radiacion")
 		titulo="Patrón de Radiación Trisectorizado"
 		ruta_img="simulador/base_datos/imagenes/presim/patron_radiacion.png"
-		self.graficas_disponibles.append(ruta_img)
+		#self.graficas_disponibles.append(ruta_img)
 		self.graficas_disponibles_dic.update({titulo:ruta_img})
 		 
 		#display de perdidas por trayectoria
 		pre_sim.hiperc_modelo_canal.ver_perdidas_local(nombre="perdidas")
 		titulo="Muestra de Pérdidas de Propagación"
 		ruta_img="simulador/base_datos/imagenes/presim/perdidas.png"
-		self.graficas_disponibles.append(ruta_img)
+		#self.graficas_disponibles.append(ruta_img)
 		self.graficas_disponibles_dic.update({titulo:ruta_img})
 		 
 		#display de desvanecimiento custom (si desvanecimiento)
@@ -84,32 +85,32 @@ class Simulador:
 			pre_sim.hiperc_modelo_canal.ver_desvanecimiento_local(nombre="desvanecimiento")
 			titulo="Muestra de Desvanecimiento"
 			ruta_img="simulador/base_datos/imagenes/presim/desvanecimiento.png"
-			self.graficas_disponibles.append(ruta_img)
+			#self.graficas_disponibles.append(ruta_img)
 			self.graficas_disponibles_dic.update({titulo:ruta_img})
 			#
 			pre_sim.hiperc_modelo_canal.ver_relaciones_local(nombre="relaciones")
 			titulo="Muestra de Relación de Gráficas"
 			ruta_img="simulador/base_datos/imagenes/presim/relaciones.png"
-			self.graficas_disponibles.append(ruta_img)
+			#self.graficas_disponibles.append(ruta_img)
 			self.graficas_disponibles_dic.update({titulo:ruta_img})
 			#
 			pre_sim.hiperc_modelo_canal.ver_balance_local(nombre="balance")
 			titulo="Muestra de Balance del Enlace"
 			ruta_img="simulador/base_datos/imagenes/presim/balance.png"
-			self.graficas_disponibles.append(ruta_img)
+			#self.graficas_disponibles.append(ruta_img)
 			self.graficas_disponibles_dic.update({titulo:ruta_img})
 		else:
 			print("desvanecimiento desactivado, la grafica no se muestra")
 			pre_sim.hiperc_modelo_canal.ver_balance_sin_local(nombre="balance_sin")
 			titulo="Muestra de Balance del Enlace (Sin desvanecimiento)"
 			ruta_img="simulador/base_datos/imagenes/presim/balance_sin.png"
-			self.graficas_disponibles.append(ruta_img)
+			#self.graficas_disponibles.append(ruta_img)
 			self.graficas_disponibles_dic.update({titulo:ruta_img})
 		
 		pre_sim.ver_todo()
 		titulo="Muestra de Escenario de Simulación"
 		ruta_img="simulador/base_datos/imagenes/presim/base-sim.png"
-		self.graficas_disponibles.append(ruta_img)
+		#self.graficas_disponibles.append(ruta_img)
 		self.graficas_disponibles_dic.update({titulo:ruta_img})
 		
 		#guardar los nombres de graficas disponibles para desplegar despues.
