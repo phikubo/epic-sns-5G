@@ -58,6 +58,14 @@ class Sistema_Celular:
 			print("[ok].debug: simulacion creada.")
 
 		#DECLARACION DE VARIABLES GLOBALES.
+		self.radio_distribucion=self.cfg_gen["radio_cel"]
+		self.cfg_gen["radio_cel"]=(2/3)*self.cfg_gen["isd"]*math.sqrt(3)/2
+		if self.cfg_gen["geometria"]=="autoajustable":
+			self.radio_distribucion=self.cfg_gen["radio_cel"]
+		else:
+			#manual, se ajusta al parametro existente en radio_cel, antes de cambiar.
+			pass
+
 		self.cluster=[]
 		self.origen_cel_x, self.origen_cel_y=mc.coordenadas_nceldas(self.cfg_gen["n_celdas"],
 			self.cfg_gen["radio_cel"],
@@ -274,7 +282,7 @@ class Sistema_Celular:
 		if self.cfg_gen["distribucion"][1] != 0:
 			if self.cfg_gen["distribucion"][0]=="ppp":
 				self.usuario_x, self.usuario_y=ppp.distribuir_en_celdas(
-					self.cfg_gen["radio_cel"],
+					self.radio_distribucion,
 				 	self.origen_cel_x,
 					self.origen_cel_y,
 					self.cfg_gen["distribucion"][1],
@@ -782,7 +790,7 @@ class Sistema_Celular:
 			5. plot'''
 		for x,y in zip(self.origen_cel_x, self.origen_cel_y):
 			#print(x,y)
-			cx,cy=mcir.coordenadas_circulo(self.cfg_gen["radio_cel"], [x,y])
+			cx,cy=mcir.coordenadas_circulo(self.radio_distribucion, [x,y])
 			self.cels_ax.plot(cx,cy, 'b')
 
 

@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import RegularPolygon
 import numpy as np
+import math
 import os
 #librerias internas
 from . import sistema as ss
@@ -23,15 +24,18 @@ class Simulador:
 		'''Modulo de pre-simulacion'''
 		n_cel=self.configuracion["cfg_simulador"]["params_general"]["n_celdas"]
 		resolucion=self.configuracion["cfg_simulador"]["params_general"]["imagen"]["resolucion"]
-		radio_cel=self.configuracion["cfg_simulador"]["params_general"]["radio_cel"]
+		radio_cel=self.configuracion["cfg_simulador"]["params_general"]["isd"]
+		radio_cel=(2/3)*radio_cel*math.sqrt(3)/2
 		#siempre es True por que es presimulacion.
 
 		#configuracion de imagen de potencia
 		display_pic=True
 		if display_pic:
 			if n_cel>7:
+				#tamaño del canvas
 				mul=4.6
 			else:
+				#tamaño del canvas
 				mul=3
 			#adicion01-rm
 			#print("--Generando data--")

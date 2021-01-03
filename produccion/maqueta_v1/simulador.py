@@ -11,11 +11,17 @@ class Simulador:
 	def __init__(self, tipo):
 		self.tipo=tipo
 		self.graficas_disponibles=[]
-		self.configuracion=cfg.cargar_variables(target_path="base_datos/")
+		#adicion03
+		#self.configuracion=cfg.cargar_variables(target_path="base_datos/")
 		if self.tipo=="presimulacion":
+			self.configuracion=cfg.cargar_variables(target_path="base_datos/")
 			self.configurar_presimulacion()
-		else:
+		elif self.tipo=="simulacion":
+			self.configuracion=cfg.cargar_variables(target_path="base_datos/")
 			self.configurar_simulacion()
+		else:
+			self.configuracion=cfg.cargar_variables(target_path="base_datos/")
+			self.configurar_montecarlo()
 
 
 	def configurar_presimulacion(self):
@@ -24,7 +30,7 @@ class Simulador:
 		resolucion=self.configuracion["cfg_simulador"]["params_general"]["imagen"]["resolucion"]
 		radio_cel=self.configuracion["cfg_simulador"]["params_general"]["radio_cel"]
 		#siempre es True por que es presimulacion.
-
+		self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0]=True
 		#configuracion de imagen de potencia
 		display_pic=True
 		if display_pic:
@@ -93,7 +99,7 @@ class Simulador:
 
 		#guardar los nombres de graficas disponibles para desplegar despues.
 		#self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles
-		self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles_dic
+		self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles
 		#desactivar la imagen de potencia para prepara el archivo para monte-carlo.
 		self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0]=False
 		#guardar el archivo.
@@ -108,11 +114,20 @@ class Simulador:
 		y_prueba=0
 		xx,yy=0,0
 
-
+	#adicionar03
 	def configurar_simulacion(self):
 		'''Modulo de simulacion.'''
+		#simulacion
+		print(self.configuracion)
+		pre_sim=ss.Sistema_Celular(self.configuracion)
+		pre_sim.ver_todo()
+		plt.show()
+		print("[ok]-terminado")
+
+	#adicionar03
+	def configurar_montecarlo(self):
+		'''Modulo de N iteraciones.'''
 		pass
-		#off imagen de potencia.
 
 
 if __name__=="__main__":

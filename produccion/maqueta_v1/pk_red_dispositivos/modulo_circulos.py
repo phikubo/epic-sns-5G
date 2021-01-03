@@ -79,6 +79,7 @@ def tri_sectorizar(angulo_x,angulo_y, radio_ext, cartesian_x, cartesian_y, ax):
 	apotema_trisec= radio_ext/2 #relaciono el apotema tri con el radio celda grande
 	radio_trisec =2*apotema_trisec* math.sqrt((4/3)) #radio a partir del apotema
 	radio_circular=radio_trisec #paso extra, no necesario
+	#print("\n\nradio_ex {} \napot_3sec {}\n radio_3sic {}\n radio_cir {}\n".format(radio_ext,apotema_trisec,radio_trisec,radio_circular))
 	colores=["Red","Red","Red"] #por que son 3 mini sectores
 	for cartx,carty in zip(cartesian_x, cartesian_y):
 		for x,y in zip(angulo_x, angulo_y):

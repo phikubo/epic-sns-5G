@@ -116,6 +116,7 @@ def distancia_entre_celdas(nivel, radio_ext, debug3):
 	if debug3:
 		print("[OK] mod_cel->",distancia_entre_celdas.__name__,3*(nivel)*r_med)
 	#print(r_med, nivel)
+	#print("[distancia entre]", 3*(nivel)*r_med, r_med, radio_ext, nivel)
 	return 3*(nivel)*r_med
 
 
@@ -135,7 +136,7 @@ def mapear_coordenadas_cartesianas(coordenadas_axiales, nivel,radio_ext, debug2)
 		#investigar por que
 		debug3=debug2
 		dec = distancia_entre_celdas(1, radio_ext, debug3) ####################################checkear
-		#print("distancia ", dec)
+		#print("[mc.mapear_coordenadas...] distancia entre celdas", dec)
 
 		for axial in lista:
 			#print("coordenada axial ")
