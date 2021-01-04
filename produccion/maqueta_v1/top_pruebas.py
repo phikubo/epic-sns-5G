@@ -265,7 +265,8 @@ def pruebas_sistema_049():
 	import simulador as sim
 	#presim=sim.Simulador(tipo="presimulacion")
 	#adicion03
-	presim=sim.Simulador(tipo="simulacion")
+	#presim=sim.Simulador(tipo="simulacion")
+	sim=sim.Simulador(tipo="montecarlo")
 	#presim=sim.Simulador(tipo="montecarlo")
 	#simulacion=syst.
 

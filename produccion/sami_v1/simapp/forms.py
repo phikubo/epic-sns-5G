@@ -118,7 +118,7 @@ class FormBalanceAntenas(forms.Form):
     ltx=forms.DecimalField(label='Pérdidas en Transmisión [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     lrx=forms.DecimalField(label='Pérdidas en Recepción [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     grx=forms.DecimalField(label='Ganancia en Recepción [dB]',initial=8, min_value=1, max_digits=5, decimal_places=2)
-    sensibilidad=forms.DecimalField(label='Sensibilidad en Recepción',initial=-110, max_digits=5, decimal_places=2)
+    sensibilidad=forms.DecimalField(label='Sensibilidad en Recepción',initial=-98, max_digits=5, decimal_places=2)
     mcl=forms.DecimalField(label='MCL',initial=70, min_value=1, max_digits=5, decimal_places=2)
     #antenas
     tipo_antena=forms.ChoiceField(label='Tipo Antena',choices=antena_choices)
@@ -182,7 +182,7 @@ class FormCompacto(forms.Form):
     ltx=forms.DecimalField(label='Pérdidas en Transmisión [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     lrx=forms.DecimalField(label='Pérdidas en Recepción [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     grx=forms.DecimalField(label='Ganancia en Recepción [dB]',initial=8, min_value=1, max_digits=5, decimal_places=2)
-    sensibilidad=forms.DecimalField(label='Sensibilidad en Recepción',initial=-110, max_digits=5, decimal_places=2)
+    sensibilidad=forms.DecimalField(label='Sensibilidad en Recepción',initial=-98, max_digits=5, decimal_places=2)
     mcl=forms.DecimalField(label='MCL',initial=70, min_value=1, max_digits=5, decimal_places=2)
     #antenas
     tipo_antena=forms.ChoiceField(label='Tipo Antena',choices=antena_choices)

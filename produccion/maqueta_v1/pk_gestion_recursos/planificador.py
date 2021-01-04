@@ -108,8 +108,8 @@ class Planificador:
 		usuario, de esta forma si se entrega a cada usuario 364 nrbs, C1 representa
 		el bloque nrb 0-363, C2 representa el bloque nrb 364-2*363 y asi sucesivamente.'''
 		#print("self.nrb_usuario",self.nrb_usuario)
-		print("mapa completo\n", self.mapa_conexion, self.max_usuario)
-		print("mapa descon\n", self.mapa_estacion_descon, self.max_usuario_descon)
+		#print("mapa completo\n", self.mapa_conexion, self.max_usuario)
+		#print("mapa descon\n", self.mapa_estacion_descon, self.max_usuario_descon)
 		#print("usuarios",self.mapa_usuarios)
 		#el estado debe cambiar solo cuando el indice cambia.
 		self.contador=[0 for i in range(len(self.mapa_conexion))]

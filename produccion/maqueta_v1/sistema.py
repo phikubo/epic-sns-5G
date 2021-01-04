@@ -508,6 +508,7 @@ class Sistema_Celular:
 		'''Permite calcular el valor de conexion del margen del balance del enlace'''
 
 		margen_dB=self.hiperc_modelo_canal.resultado_margen
+
 		#obtenengo las dimensiones del arreglo cluster, pues esta segmentado en 3D
 		#print("test1", margen_dB)
 		l,m,n=margen_dB.shape
@@ -517,6 +518,7 @@ class Sistema_Celular:
 
 		##print("test 1-margen_db\n", margen_dB_2D)
 		##print("test 2-maximo db\n", self.margen_maximo_dB)
+
 		self.mapa_conexion_desconexion_margen=np.where(self.margen_maximo_dB>0,1,0)
 		##print("test 3-mapa conexion desconexion\n",self.mapa_conexion_desconexion_margen)
 		#si multiplico lo anterior por el mapa de conexion, pero
@@ -535,7 +537,7 @@ class Sistema_Celular:
 		#calcula la probabilidad de conexion o probabilidad de exito de conexion.
 		self.medida_conexion_margen=self.conexion_total_margen/self.no_usuarios_total
 		#adicion01-modify
-		print("\nUsuarios conectados: {} %\n ".format(self.medida_conexion_margen*100))
+		#print("\nUsuarios conectados: {} %\n ".format(self.medida_conexion_margen*100))
 
 	def calcular_celda_mayor_potencia(self):
 		'''Prepara arreglos a utilizar en funcion de calculo sinr.'''
@@ -767,9 +769,9 @@ class Sistema_Celular:
 		'''Permite ver los usuarios conectados a su estacion base, criterio de mayor potencia recibida'''
 		#fin, poner en otra funcion.
 
-		print(self.mapa_conexion_estacion)
-		print(self.mapa_conexion_usuario)
-		print("+++++++++++++++++++colores")
+		#print(self.mapa_conexion_estacion)
+		#print(self.mapa_conexion_usuario)
+		#print("+++++++++++++++++++colores")
 		#for usuario, (bandera, mapa_conexion_usuario) in enumerate(zip(self.mapa_conexion_desconexion, self.mapa_conexion_usuario)):
 		for usuario, (bandera, mapa_conexion_usuario) in enumerate(zip(self.mapa_conexion_estacion, self.mapa_conexion_usuario)):
 			#print(usuario, bandera, map)
@@ -961,9 +963,12 @@ class Sistema_Celular:
 			print("Celdas:",self.cfg_gen["n_celdas"])
 			print("Usuarios por celda",self.no_usuarios_celda)
 			print("Usuarios total",self.no_usuarios_total)
-			print("Ancho de banda por usuario:",self.bw_usuario, "[Hz]")
-			print("Margen de conexion: ", self.medida_conexion_margen)
-			print("Conexion Sinr, calidad ",self.cfg_gen["ber_sinr"], ":",self.medida_conexion_sinr)
+			#print("Ancho de banda por usuario:",self.bw_usuario[:10], "[Hz]")
+			print("Margen de conexion: {}%".format(self.medida_conexion_margen*100))
+			print("SINR que supera {} dB, {} %".format(self.cfg_gen["ber_sinr"] ,self.medida_conexion_sinr*100))
+			print("Distribucion Celular,Original: ", self.planificador.mapa_conexion)
+			print("Distribucion Celular, con desconexion: ", self.planificador.mapa_estacion_descon)
+			#print(self.sinr_db)
 			print("------------------------------------------[info_general]\n")
 		else:
 			print("\n-----[info_arreglos]:")

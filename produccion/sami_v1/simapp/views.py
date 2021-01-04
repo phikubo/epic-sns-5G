@@ -75,6 +75,7 @@ def futuro(request):
 
 def iniciar_simulacion(request):
     '''Inicia la simulacion'''
+    #configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
     if request.method == 'GET':
         try:
             arr = os.listdir()

@@ -15,13 +15,18 @@ class Simulador:
 		self.graficas_disponibles_dic={}
 		self.configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
 		if self.tipo=="presimulacion":
+			print("[simulador]: Ejecutando presimulación...")
 			self.configurar_presimulacion()
 		elif self.tipo=="simulacion":
+			print("[simulador]: Ejecutando simulación...")
 			self.configuracion=cfg.cargar_variables(target_path="base_datos/")
 			self.configurar_simulacion()
-		else:
+		elif self.tipo=="montecarlo":
+			print("[simulador]: Ejecutando montecarlo...")
 			self.configuracion=cfg.cargar_variables(target_path="base_datos/")
 			self.configurar_montecarlo()
+		else:
+			print("Parametro Simulador no válido.")
 		
 		
 
@@ -32,6 +37,8 @@ class Simulador:
 		resolucion=self.configuracion["cfg_simulador"]["params_general"]["imagen"]["resolucion"]
 		radio_cel=self.configuracion["cfg_simulador"]["params_general"]["isd"]
 		radio_cel=(2/3)*radio_cel*math.sqrt(3)/2
+		#reactivo la generacion de imagenes, asi se haya desactivado antes.
+		self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0]=True
 		#siempre es True por que es presimulacion.
 
 		#configuracion de imagen de potencia
@@ -110,7 +117,7 @@ class Simulador:
 			#self.graficas_disponibles.append(ruta_img)
 			self.graficas_disponibles_dic.update({titulo:ruta_img})
 		else:
-			print("desvanecimiento desactivado, la grafica no se muestra")
+			print("[sistema]: desvanecimiento desactivado, la grafica no se genera")
 			pre_sim.hiperc_modelo_canal.ver_balance_sin_local(nombre="balance_sin")
 			titulo="Muestra de Balance del Enlace (Sin desvanecimiento)"
 			ruta_img="simulador/base_datos/imagenes/presim/balance_sin.png"
@@ -138,6 +145,7 @@ class Simulador:
 		x_prueba=0
 		y_prueba=0
 		xx,yy=0,0
+	
 
 	def configurar_simulacion(self):
 		'''Modulo de simulacion.'''
@@ -147,10 +155,59 @@ class Simulador:
 		pre_sim.ver_todo()
 		plt.show()
 		print("[ok]-terminado")
-	
+
+
 	def configurar_montecarlo(self):
 		'''Modulo de N iteraciones.'''
-		pass
+		iteracion=self.configuracion["cfg_simulador"]["params_general"]["iteracion"]
+		coleccion_simulacion=[]
+		#poisson
+		col_cobertura_usuarios=[] 
+		#margen, si supera margen
+		col_cob_conexion=[]
+		#si supera sinr objetivo
+		col_cob_conexion_sinr=[]
+		#debe calcularse como 1-cob_conexion
+		col_cob_desconexion=[]
+		it=0
+		print("[simulador]: Generando simulaciones...")
+		for n in range(iteracion):
+			#print("[simulador]:*******************************SIMULACION {}****************************".format(it))
+			sim=ss.Sistema_Celular(self.configuracion)
+			coleccion_simulacion.append(sim)
+			sim.info_general("general")
+			#libero memoria
+			sim=0
+			it+=1
+
+		for borrar, simulacion in enumerate(coleccion_simulacion):
+			print("[simulador]: Ejecutando Coleccion")
+			col_cobertura_usuarios.append(simulacion.no_usuarios_total)
+			col_cob_conexion.append(simulacion.medida_conexion_margen)
+			col_cob_conexion_sinr.append(simulacion.medida_conexion_sinr)
+			#libero memoria de los objetos recolectados.
+			coleccion_simulacion[borrar]=0
+
+		print("[simulador]: Generando Gráficas")
+		#grafica de distribucion de usuarios
+		plt.figure()
+		plt.title("distribucion")
+		plt.hist(col_cobertura_usuarios)
+
+		#grafica porcentaje de conexion
+		plt.figure()
+		plt.title("usuarios conectados")
+		plt.hist(col_cob_conexion, density=True, cumulative=True)
+
+		#grafica conexion sinr
+		plt.figure()
+		plt.title("umbral sinr")
+		plt.hist(col_cob_conexion_sinr,density=True, cumulative=True)
+
+		#grafica porcentaje de desconexion
+
+		plt.show()
+		print("[OK] montecarlo")
 
 
 if __name__=="__main__":

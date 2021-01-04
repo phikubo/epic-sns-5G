@@ -20,6 +20,9 @@ def distribuir_en_celdas(r, x_origen, y_origen, intensidad, debug):
 
 	area_total=np.pi*r**2
 	cantidad_de_puntos = np.random.poisson(intensidad*area_total)
+
+	#to_print="area t {} \n lambda {} \n radio {} \n intensidad {}".format(area_total,intensidad*area_total, r,intensidad)
+	#print(to_print)
 	if cantidad_de_puntos==0:
 		#eliminamos error division por cero.
 		#Atencion, puede alterar estadisticas.
