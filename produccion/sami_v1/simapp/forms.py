@@ -123,6 +123,7 @@ class FormBalanceAntenas(forms.Form):
     #antenas
     tipo_antena=forms.ChoiceField(label='Tipo Antena',choices=antena_choices)
     hpbw=forms.IntegerField(label='Ancho de Haz',initial=65, min_value=1)
+    apuntamiento=forms.IntegerField(label='Apuntamiento',initial=30, min_value=1)
     atmin=forms.DecimalField(label='Atenuación Mínima',initial=20, min_value=1, max_digits=5, decimal_places=2)
     
 
@@ -187,6 +188,7 @@ class FormCompacto(forms.Form):
     #antenas
     tipo_antena=forms.ChoiceField(label='Tipo Antena',choices=antena_choices)
     hpbw=forms.IntegerField(label='Ancho de Haz',initial=65, min_value=1)
+    apuntamiento=forms.IntegerField(label='Apuntamiento',initial=30, min_value=1)
     atmin=forms.DecimalField(label='Atenuación Mínima',initial=20, min_value=1, max_digits=5, decimal_places=2)
     
     '''Formulario para configurar variables relacionadas a la asignación de recursos radio.'''

@@ -670,22 +670,26 @@ class Sistema_Celular:
 
 	def ver_imagen_potencia(self, nombre):
 		'''Permite ver la imagen creada a partir de una malla de puntos'''
-		#print(self.hiperc_malla_modelo_canal.resultado_balance.shape)
-		
+		#el primer valor
 		pr_max=self.hiperc_malla_modelo_canal.resultado_balance[0]
 		
 		for ind,pr_i in enumerate(self.hiperc_malla_modelo_canal.resultado_balance):
-			#print("indice",ind)
-			#itera sobre las demas.
+			#itera sobre las demas, se rescribe el valor con el maximo en cada celda
 			pr_max=np.maximum(pr_max, pr_i)
+		#el resultado es un mapa de potencias maximas.
+		#reorganizo
 		pr_max=pr_max[:-1,:-1]
+		
 		z_min,z_max=-np.abs(pr_max).max(), np.abs(pr_max).max()
 		fig,ax=plt.subplots()
 
-		c=ax.pcolormesh(self.malla_x,self.malla_y,pr_max, cmap='plasma', vmin=z_min, vmax=-40)
-		fig.colorbar(c,ax=ax)
+		c=ax.pcolormesh(self.malla_x,self.malla_y,pr_max, cmap='plasma', vmin=z_min, vmax=-42)
+		fig.colorbar(c,ax=ax, label="Potencia Recibida [dB]")
 		titulo="{}, Ptx:{}, Desvanecimiento:{}.".format(str(self.cfg_prop["modelo_perdidas"]), self.cfg_bal["ptx"], self.cfg_prop["params_desv"]["tipo"])
 		plt.title(titulo)
+		plt.xlabel("Distancia [m]")
+		plt.ylabel("Distancia [m]")
+		 
 		plt.grid(True)
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
@@ -832,6 +836,8 @@ class Sistema_Celular:
 		#
 		titulo= "Esc:"+str(self.cfg_prop["modelo_perdidas"])+", F:"+str(self.cfg_gen["portadora"][0])+", Ues:"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
 		plt.title(titulo)
+		plt.xlabel("Distancia [m]")
+		plt.ylabel("Distancia [m]")
 		plt.grid(True)
 		#plt.savefig("simapp/static/simulador/base_datos/imagenes/simulacion.png")
 		#plt.show()

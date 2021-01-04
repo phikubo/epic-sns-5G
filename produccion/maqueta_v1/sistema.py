@@ -404,6 +404,8 @@ class Sistema_Celular:
 		angulo_inicial=self.cfg_ant["apuntamiento"][0]
 		angulo_particion=self.cfg_ant["apuntamiento"][1]
 		apunt=mcir.calcular_angulo_v3(angulo_inicial,angulo_particion) #inicio,angulo de particion.
+		#misma version que el anterior, solo que v3 incluye el angulo de particion.
+		#azimuts=mcir.azimut_lista(angulo_inicial=30)
 		#se adjunta luego: apunt, tar
 		#parametros=[ref, hpbw, gtx, amin, apunt, self.hiperc_angulos]
 
@@ -417,7 +419,8 @@ class Sistema_Celular:
 		if self.cfg_gen["debug"]:
 			pass
 			#time.sleep(15)
-		#agrego una variable procesada del apuntamiento
+		#agrego una variable procesada del apuntamiento, cambia el apuntamiento de la antena.
+		#solo funciona para aquellas que han sido configuradas 3 sectorizadas.
 		self.cfg_ant["params_ant"][0]=apunt
 		#agrego la variable de ganancia de trasmision maxima:
 		self.cfg_ant["params_ant"][1]=self.cfg_bal["gtx"]
@@ -681,18 +684,21 @@ class Sistema_Celular:
 
 	def ver_imagen_potencia(self, nombre):
 		'''Permite ver la imagen creada a partir de una malla de puntos'''
-		#print(self.hiperc_malla_modelo_canal.resultado_balance.shape)
+		#el primer valor
 		pr_max=self.hiperc_malla_modelo_canal.resultado_balance[0]
 		for ind,pr_i in enumerate(self.hiperc_malla_modelo_canal.resultado_balance):
-			#adicion01-rm
-			#print("indice",ind)
 			#itera sobre las demas.
 			pr_max=np.maximum(pr_max, pr_i)
+			#print(pr_max, pr_i)
+
 		pr_max=pr_max[:-1,:-1]
+		#print(np.max(pr_max),np.min(pr_max))
 		z_min,z_max=-np.abs(pr_max).max(), np.abs(pr_max).max()
+
+		z_max=np.max(pr_max)
 		fig,ax=plt.subplots()
 
-		c=ax.pcolormesh(self.malla_x,self.malla_y,pr_max, cmap='plasma', vmin=z_min, vmax=-40)
+		c=ax.pcolormesh(self.malla_x,self.malla_y,pr_max, cmap='plasma', vmin=z_min, vmax=z_max)
 		fig.colorbar(c,ax=ax)
 		#ADICIONAR01
 		titulo="{}, Ptx:{}, Desvanecimiento:{}.".format(str(self.cfg_prop["modelo_perdidas"]), self.cfg_bal["ptx"], self.cfg_prop["params_desv"]["tipo"])
@@ -732,6 +738,7 @@ class Sistema_Celular:
 	def ver_sectores(self):
 		"""Permite ver los sectores de forma independiente"""
 		azimuts=mcir.azimut_lista(angulo_inicial=30)
+		#print("[sistema]",azimuts)
 
 		angulo_x, angulo_y=mcir.coordenadas_angulos(azimuts)
 		#estos valores deben pertenecer a la clase

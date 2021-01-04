@@ -334,6 +334,8 @@ def form_compacto(request):
             config["cfg_simulador"]["params_antena"]["tipo"]=contenido["tipo_antena"]
             config["cfg_simulador"]["params_antena"]["hpbw"]=contenido["hpbw"]
             config["cfg_simulador"]["params_antena"]["atmin"]=float(contenido["atmin"])
+            config["cfg_simulador"]["params_antena"]["apuntamiento"][0]=int(contenido["apuntamiento"])
+
             #
             #
             config["cfg_simulador"]["params_asignacion"]["tipo"]=contenido["tipo_asignacion"]

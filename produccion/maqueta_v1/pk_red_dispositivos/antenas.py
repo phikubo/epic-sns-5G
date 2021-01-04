@@ -80,9 +80,10 @@ class Antena:
 		self.relacion_angulos=12.0*((self.angulos/self.cfg["hpbw"])**2) #antes at_int
 		#sector, con corrimiento en angulos para desplazarlos en x, el numero de grados necesarios.
 		#se eleva la funcion al piso 0 para sumarlas despues.
-		sector_1=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), 45)
-		sector_2=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), 165)
-		sector_3=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), 285)
+		#adicion04
+		sector_1=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), self.cfg["params_ant"][0][0])
+		sector_2=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), self.cfg["params_ant"][0][1])
+		sector_3=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), self.cfg["params_ant"][0][2])
 		self.patron_radiacion_3s=[sector_1,sector_2,sector_3]
 
 
