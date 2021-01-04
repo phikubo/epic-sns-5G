@@ -82,10 +82,10 @@ class Modelo_Canal:
 		if self.cfg_prop["params_desv"]["display"]:
 			#print("[ok].debug: desvanecimiento activado.")
 			if self.cfg_prop["params_desv"]["tipo"]=="normal":
-				sigma_xn=self.cfg_prop["params_desv"]["params"][0]
-				mu=self.cfg_prop["params_desv"]["params"][1]
+				mu=self.cfg_prop["params_desv"]["params"][0]
+				sigma_xn=self.cfg_prop["params_desv"]["params"][1]
 				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.distancias.shape)
-				self.balance_simplificado=self.balance_simplificado+self.desvanecimiento
+				self.balance_simplificado=self.balance_simplificado+self.desvanecimiento*-1
 				if self.cfg_gen['debug']:
 					print("[ok]-----configurar_desv,  normal")
 					#DESCOMENTAR SOLO EN DEBUG Y CUANDO SE EJECUTE ESTE MODULO LOCALMENTE.
@@ -107,8 +107,8 @@ class Modelo_Canal:
 				if self.cfg_gen['debug']:
 					print("[ok]-----configurar_desv, MIXTO")
 					#plt.plot(self.distancias, -self.balance_simplificado, 'r-',  label="sin ptx, simplificado")
-				sigma_xn=self.cfg_prop["params_desv"]["params"][0]
-				mu=self.cfg_prop["params_desv"]["params"][1]
+				mu=self.cfg_prop["params_desv"]["params"][0]
+				sigma_xn=self.cfg_prop["params_desv"]["params"][1]
 				#if true, el desvanecimiento deja de ser 0 y se integra a las perdidas.
 				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.distancias.shape)
 				self.balance_simplificado=self.balance_simplificado+self.desvanecimiento
