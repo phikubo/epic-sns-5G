@@ -75,6 +75,7 @@ def futuro(request):
 
 def iniciar_simulacion(request):
     '''Inicia la simulacion'''
+    #configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
     if request.method == 'GET':
         try:
             arr = os.listdir()
@@ -87,6 +88,7 @@ def iniciar_simulacion(request):
         #top_pruebas.prueba_sistema_v048()
         presim=samiv1.Simulador(tipo="presimulacion")
         #presim_graphs=presim.graficas_disponibles
+        #EN SIMULACION, DESACTIVAR LA GENERACION DE IMAGENES.
         
     return render(request,'simapp/sami-iniciar-sim.html')
 
@@ -109,7 +111,7 @@ def ver_parametros(request):
 def ver_graficas_1(request):
     configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
     imagenes_disp=configuracion["cfg_gui"]["presim_graphs"]
-    print(imagenes_disp)
+    #print(imagenes_disp)
     return render(request,'simapp/sami-sim-graficas-1.html', {"img_disp":imagenes_disp})
 
 
@@ -140,7 +142,9 @@ def form_a1(request):
             config["cfg_simulador"]["params_general"]["imagen"]["display"][0]=flag_imagen
             if flag_imagen:
                 print("imagen activado, desactivar iteraciones.")
-                config["cfg_simulador"]["params_general"]["iteracion"]=1
+                #config["cfg_simulador"]["params_general"]["iteracion"]=1
+                #NORMALMENTE SE DESACTIVA LAS ITERACIONES. En lugar de eso,
+                #SE DESACTIVA LA IMAGEN, PERO EN EL SIMULADOR
             config["cfg_simulador"]["params_general"]["imagen"]["resolucion"]=contenido["pixeles"]
             cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos/")
             config=0
@@ -297,7 +301,7 @@ def form_compacto(request):
             config["cfg_simulador"]["params_general"]["imagen"]["display"][0]=flag_imagen
             if flag_imagen:
                 print("imagen activado, desactivar iteraciones.")
-                config["cfg_simulador"]["params_general"]["iteracion"]=1
+                #config["cfg_simulador"]["params_general"]["iteracion"]=1
             config["cfg_simulador"]["params_general"]["imagen"]["resolucion"]=contenido["pixeles"]
             #
             #
@@ -330,6 +334,8 @@ def form_compacto(request):
             config["cfg_simulador"]["params_antena"]["tipo"]=contenido["tipo_antena"]
             config["cfg_simulador"]["params_antena"]["hpbw"]=contenido["hpbw"]
             config["cfg_simulador"]["params_antena"]["atmin"]=float(contenido["atmin"])
+            config["cfg_simulador"]["params_antena"]["apuntamiento"][0]=int(contenido["apuntamiento"])
+
             #
             #
             config["cfg_simulador"]["params_asignacion"]["tipo"]=contenido["tipo_asignacion"]

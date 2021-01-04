@@ -58,6 +58,14 @@ class Sistema_Celular:
 			print("[ok].debug: simulacion creada.")
 
 		#DECLARACION DE VARIABLES GLOBALES.
+		self.radio_distribucion=self.cfg_gen["radio_cel"]
+		self.cfg_gen["radio_cel"]=(2/3)*self.cfg_gen["isd"]*math.sqrt(3)/2
+		if self.cfg_gen["geometria"]=="autoajustable":
+			self.radio_distribucion=self.cfg_gen["radio_cel"]
+		else:
+			#manual, se ajusta al parametro existente en radio_cel, antes de cambiar.
+			pass
+
 		self.cluster=[]
 		self.origen_cel_x, self.origen_cel_y=mc.coordenadas_nceldas(self.cfg_gen["n_celdas"],
 			self.cfg_gen["radio_cel"],
@@ -274,7 +282,7 @@ class Sistema_Celular:
 		if self.cfg_gen["distribucion"][1] != 0:
 			if self.cfg_gen["distribucion"][0]=="ppp":
 				self.usuario_x, self.usuario_y=ppp.distribuir_en_celdas(
-					self.cfg_gen["radio_cel"],
+					self.radio_distribucion,
 				 	self.origen_cel_x,
 					self.origen_cel_y,
 					self.cfg_gen["distribucion"][1],
@@ -518,7 +526,7 @@ class Sistema_Celular:
 		#print("test4",self.conexion_total_margen)
 		#calcula la probabilidad de conexion o probabilidad de exito de conexion.
 		self.medida_conexion_margen=self.conexion_total_margen/self.no_usuarios_total
-		print("\nUsuarios conectados: {} %\n ".format(self.medida_conexion_margen*100))
+		#print("\nUsuarios conectados: {} %\n ".format(self.medida_conexion_margen*100))
 
 	def calcular_celda_mayor_potencia(self):
 		'''Prepara arreglos a utilizar en funcion de calculo sinr.'''
@@ -662,22 +670,26 @@ class Sistema_Celular:
 
 	def ver_imagen_potencia(self, nombre):
 		'''Permite ver la imagen creada a partir de una malla de puntos'''
-		#print(self.hiperc_malla_modelo_canal.resultado_balance.shape)
-		
+		#el primer valor
 		pr_max=self.hiperc_malla_modelo_canal.resultado_balance[0]
 		
 		for ind,pr_i in enumerate(self.hiperc_malla_modelo_canal.resultado_balance):
-			#print("indice",ind)
-			#itera sobre las demas.
+			#itera sobre las demas, se rescribe el valor con el maximo en cada celda
 			pr_max=np.maximum(pr_max, pr_i)
+		#el resultado es un mapa de potencias maximas.
+		#reorganizo
 		pr_max=pr_max[:-1,:-1]
+		
 		z_min,z_max=-np.abs(pr_max).max(), np.abs(pr_max).max()
 		fig,ax=plt.subplots()
 
-		c=ax.pcolormesh(self.malla_x,self.malla_y,pr_max, cmap='plasma', vmin=z_min, vmax=-40)
-		fig.colorbar(c,ax=ax)
+		c=ax.pcolormesh(self.malla_x,self.malla_y,pr_max, cmap='plasma', vmin=z_min, vmax=-42)
+		fig.colorbar(c,ax=ax, label="Potencia Recibida [dB]")
 		titulo="{}, Ptx:{}, Desvanecimiento:{}.".format(str(self.cfg_prop["modelo_perdidas"]), self.cfg_bal["ptx"], self.cfg_prop["params_desv"]["tipo"])
 		plt.title(titulo)
+		plt.xlabel("Distancia [m]")
+		plt.ylabel("Distancia [m]")
+		 
 		plt.grid(True)
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
@@ -744,9 +756,9 @@ class Sistema_Celular:
 		'''Permite ver los usuarios conectados a su estacion base, criterio de mayor potencia recibida'''
 		#fin, poner en otra funcion.
 
-		print(self.mapa_conexion_estacion)
-		print(self.mapa_conexion_usuario)
-		print("+++++++++++++++++++colores")
+		#print(self.mapa_conexion_estacion)
+		#print(self.mapa_conexion_usuario)
+		#print("+++++++++++++++++++colores")
 		#for usuario, (bandera, mapa_conexion_usuario) in enumerate(zip(self.mapa_conexion_desconexion, self.mapa_conexion_usuario)):
 		for usuario, (bandera, mapa_conexion_usuario) in enumerate(zip(self.mapa_conexion_estacion, self.mapa_conexion_usuario)):
 			#print(usuario, bandera, map)
@@ -782,7 +794,7 @@ class Sistema_Celular:
 			5. plot'''
 		for x,y in zip(self.origen_cel_x, self.origen_cel_y):
 			#print(x,y)
-			cx,cy=mcir.coordenadas_circulo(self.cfg_gen["radio_cel"], [x,y])
+			cx,cy=mcir.coordenadas_circulo(self.radio_distribucion, [x,y])
 			self.cels_ax.plot(cx,cy, 'b')
 
 
@@ -824,6 +836,8 @@ class Sistema_Celular:
 		#
 		titulo= "Esc:"+str(self.cfg_prop["modelo_perdidas"])+", F:"+str(self.cfg_gen["portadora"][0])+", Ues:"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
 		plt.title(titulo)
+		plt.xlabel("Distancia [m]")
+		plt.ylabel("Distancia [m]")
 		plt.grid(True)
 		#plt.savefig("simapp/static/simulador/base_datos/imagenes/simulacion.png")
 		#plt.show()
@@ -937,11 +951,14 @@ class Sistema_Celular:
 		elif target=="general":
 			print("\n------------------------------------------[info_general]:")
 			print("Celdas:",self.cfg_gen["n_celdas"])
-			print("Usuarios por celda",self.no_usuarios_celda)
+			print("Usuarios por Conexion Sinr, supera {} dB un {}%celda",self.no_usuarios_celda)
 			print("Usuarios total",self.no_usuarios_total)
-			print("Ancho de banda por usuario:",self.bw_usuario, "[Hz]")
-			print("Margen de conexion: ", self.medida_conexion_margen)
-			print("Conexion Sinr, calidad ",self.cfg_gen["ber_sinr"], ":",self.medida_conexion_sinr)
+			#print("Ancho de banda por usuario:",self.bw_usuario, "[Hz]")
+			print("Margen de conexion: {}%".format(self.medida_conexion_margen*100))
+			print("SINR que supera {} dB, {} %".format(self.cfg_gen["ber_sinr"] ,self.medida_conexion_sinr*100))
+			print("Distribucion Celular,Original: ", self.planificador.mapa_conexion)
+			print("Distribucion Celular, con desconexion: ", self.planificador.mapa_estacion_descon)
+			#print(self.sinr_db)
 			print("------------------------------------------[info_general]\n")
 		else:
 			print("\n-----[info_arreglos]:")

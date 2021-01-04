@@ -107,7 +107,7 @@ class FormPropagacion(forms.Form):
     dp3=forms.DecimalField(label='Parámero 3',initial=0, min_value=0, max_digits=5, decimal_places=2)
     dp4=forms.DecimalField(label='Parámero 4',initial=0, min_value=0, max_digits=5, decimal_places=2)
 
-    ber_sinr=forms.DecimalField(label='BER Objetivo [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
+    ber_sinr=forms.DecimalField(label='SINR Objetivo [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     nf=forms.DecimalField(label='Figura de Ruido [dB]',initial=6, min_value=1, max_digits=5, decimal_places=2)
 
 
@@ -118,11 +118,12 @@ class FormBalanceAntenas(forms.Form):
     ltx=forms.DecimalField(label='Pérdidas en Transmisión [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     lrx=forms.DecimalField(label='Pérdidas en Recepción [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     grx=forms.DecimalField(label='Ganancia en Recepción [dB]',initial=8, min_value=1, max_digits=5, decimal_places=2)
-    sensibilidad=forms.DecimalField(label='Sensibilidad en Recepción',initial=-110, max_digits=5, decimal_places=2)
+    sensibilidad=forms.DecimalField(label='Sensibilidad en Recepción',initial=-98, max_digits=5, decimal_places=2)
     mcl=forms.DecimalField(label='MCL',initial=70, min_value=1, max_digits=5, decimal_places=2)
     #antenas
     tipo_antena=forms.ChoiceField(label='Tipo Antena',choices=antena_choices)
     hpbw=forms.IntegerField(label='Ancho de Haz',initial=65, min_value=1)
+    apuntamiento=forms.IntegerField(label='Apuntamiento',initial=30, min_value=1)
     atmin=forms.DecimalField(label='Atenuación Mínima',initial=20, min_value=1, max_digits=5, decimal_places=2)
     
 
@@ -173,7 +174,7 @@ class FormCompacto(forms.Form):
     dp3=forms.DecimalField(label='Parámero 3',initial=0, min_value=0, max_digits=5, decimal_places=2)
     dp4=forms.DecimalField(label='Parámero 4',initial=0, min_value=0, max_digits=5, decimal_places=2)
 
-    ber_sinr=forms.DecimalField(label='BER Objetivo [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
+    ber_sinr=forms.DecimalField(label='SINR Objetivo [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     nf=forms.DecimalField(label='Figura de Ruido [dB]',initial=6, min_value=1, max_digits=5, decimal_places=2)
 
     '''Formulario para configurar variables relacionadas al balance del enlace y las antenas'''
@@ -182,11 +183,12 @@ class FormCompacto(forms.Form):
     ltx=forms.DecimalField(label='Pérdidas en Transmisión [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     lrx=forms.DecimalField(label='Pérdidas en Recepción [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     grx=forms.DecimalField(label='Ganancia en Recepción [dB]',initial=8, min_value=1, max_digits=5, decimal_places=2)
-    sensibilidad=forms.DecimalField(label='Sensibilidad en Recepción',initial=-110, max_digits=5, decimal_places=2)
+    sensibilidad=forms.DecimalField(label='Sensibilidad en Recepción',initial=-98, max_digits=5, decimal_places=2)
     mcl=forms.DecimalField(label='MCL',initial=70, min_value=1, max_digits=5, decimal_places=2)
     #antenas
     tipo_antena=forms.ChoiceField(label='Tipo Antena',choices=antena_choices)
     hpbw=forms.IntegerField(label='Ancho de Haz',initial=65, min_value=1)
+    apuntamiento=forms.IntegerField(label='Apuntamiento',initial=30, min_value=1)
     atmin=forms.DecimalField(label='Atenuación Mínima',initial=20, min_value=1, max_digits=5, decimal_places=2)
     
     '''Formulario para configurar variables relacionadas a la asignación de recursos radio.'''
