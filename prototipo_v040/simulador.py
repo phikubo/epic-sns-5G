@@ -122,6 +122,7 @@ class Simulador:
 		#simulacion
 		print(self.configuracion)
 		pre_sim=ss.Sistema_Celular(self.configuracion)
+		
 		pre_sim.ver_todo()
 		plt.show()
 		print("[ok]-terminado")
@@ -147,7 +148,6 @@ class Simulador:
 			sim.info_general("general")
 			sim=0
 			it+=1
-
 
 
 		for borrar, simulacion in enumerate(coleccion_simulacion):
