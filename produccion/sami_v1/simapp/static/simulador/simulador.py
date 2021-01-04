@@ -16,8 +16,14 @@ class Simulador:
 		self.configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
 		if self.tipo=="presimulacion":
 			self.configurar_presimulacion()
-		else:
+		elif self.tipo=="simulacion":
+			self.configuracion=cfg.cargar_variables(target_path="base_datos/")
 			self.configurar_simulacion()
+		else:
+			self.configuracion=cfg.cargar_variables(target_path="base_datos/")
+			self.configurar_montecarlo()
+		
+		
 
 
 	def configurar_presimulacion(self):
@@ -133,11 +139,18 @@ class Simulador:
 		y_prueba=0
 		xx,yy=0,0
 
-
 	def configurar_simulacion(self):
 		'''Modulo de simulacion.'''
+		#simulacion
+		print(self.configuracion)
+		pre_sim=ss.Sistema_Celular(self.configuracion)
+		pre_sim.ver_todo()
+		plt.show()
+		print("[ok]-terminado")
+	
+	def configurar_montecarlo(self):
+		'''Modulo de N iteraciones.'''
 		pass
-		#off imagen de potencia.
 
 
 if __name__=="__main__":
