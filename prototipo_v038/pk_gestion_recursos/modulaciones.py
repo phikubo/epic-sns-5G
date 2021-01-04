@@ -1,4 +1,5 @@
 import numpy as np
+import math
 import os
 
 class Modulacion:
@@ -41,8 +42,6 @@ def asignar_modulacion_mqam(snr_in,case_use,desv):
     #cada caso de uso este especificado para soportar cierta cantidad de errores debido al tipo de servicio que se espera
     snr_in=float(snr_in)
     #https://arxiv.org/pdf/1804.05057.pdf
-
-
     # eMBB requiere tasas de datos altas pero no especifica la confiabilidad de los datos recibidos, el tipo de informacion
     # que es enviada es considerada como datos o audio, para este caso la BER objetivo es considerada de 10**-3.
     ber_ebmm=10**(-3)
@@ -64,9 +63,6 @@ def asignar_modulacion_mqam(snr_in,case_use,desv):
     estaciones base, con el fin de tener una interferencia mas real a la hora de implementar el simulador, evitando el numero
     de desconexiones debido baja SINR'''
     ber_modqam=asignar_ber_caso_uso(case_use)
-    
-    
-
     #Para encontrar los diferentes niveles de SNR necesarios al incorporar los desvanecimientos requeridos como lo son  
     #el desvanecimiento lento y rapido, ademas de tener la incorporacion de este mismo desvanecimiento tipo mixto
     #Incorporando la codificacion LDCP para cada unao de los desvanecimientos lo que encontramos es una relacion de 
@@ -82,55 +78,69 @@ def asignar_modulacion_mqam(snr_in,case_use,desv):
     snr_ber_ebmm=6
     snr_ber_urrlc=8
     snr_ber_mmtc=2
-    snr_ninguno=[6,8,2]
+    snr_ninguno=[6.33,7.511,2.511] 
     #los parametros anteriores son tomados sin ningun tipo de desvanecimiento solo las perdidas requeridas. valores en dB
-    #lento---------------------------------------------------------------------------
+    #rapido---------------------------------------------------------------------------
+    snr_rapido_ebmm=3
+    snr_rapido_urrlc=5
+    snr_rapido_mmtc=0
+    snr_rapido=[3,5,0]
+    #mixto---------------------------------------------------------------------------
+    snr_mixto_ebmm=2
+    snr_mixto_urrlc=4
+    snr_mixto_mmtc=-1
+    snr_mixto=[2.33,4.51,-1.49]
+    #lento----------------------------------------------------------------------------
     snr_lento_ebmm=4
     snr_lento_urrlc=6
     snr_lento_mmtc=1
-    snr_lento=[4,6,1]
-    #Rapido---------------------------------------------------------------------------
-    snr_rapido_ebmm=2
-    snr_rapido_urrlc=4
-    snr_rapido_mmtc=-1
-    snr_rapido=[2,4,-1]
-    #Mixto----------------------------------------------------------------------------
-    snr_mixto_ebmm=3
-    snr_mixto_urrlc=5
-    snr_mixto_mmtc=0
-    snr_mixto=[3,5,0]
+    snr_lento=[4.33,6.511,1.51]
     ## Teniendo estos valores podemos tener un valor promedio de cuanto disminuye o aumenta la snr en favor a la 
     # codificacion LDPC contra el dosvanecimiento.
     lim_inf_snr=(snr_lento if desv=='lento' else snr_rapido if desv=='rapido' else snr_mixto)
-
     """
     La seleccion de la modulacion es escogida segun la tabla 
     """
     #La tasa de codificacion necesaria para el sistema escogida, tasas de 1/3 son mas robustas pero introduce mas redundancia
     #en el sistema, para ordenes mas altos donde es necearia transmitir mas informacion, la redundancia no es necesaria
     # asi que codificaciones entre mas cerca a 1 son mejores. pero las que tiene mejor relacion de SNR son de 1/3 
-    
     modulacion_mqam=[4 if (snr_in >= float(lim_inf_snr[0]) or snr_in < 8) and ber_modqam==10**(-3) else None]
     print(lim_inf_snr[0],ber_modqam)
     print(modulacion_mqam)
-
-
     #modulacion_mqam=[4 if (snr_in >= lim_inf_snr[1] or snr_in < 8.3) and ber_modqam=='urrlc' else None]
     #modulacion_mqam=[4 if (snr_in >= lim_inf_snr[2] or snr_in < 5.5) and ber_modqam=='mmtc' else None]
     ##
+    #
     ##
-    #modulacion_mqam=[6 if (snr_in >= 8 or snr_in<11 ) and ber_modqam=='ebmm' else None]
+    #modulacion_mqam=[6 if (snr_in >= 8 or snr_in<11) and ber_modqam=='ebmm' else None]
     #modulacion_mqam=[6 if (snr_in >= 8.3 or snr_in<11.4) and ber_modqam=='urrlc' else None]
     #modulacion_mqam=[6 if (snr_in >= 5.5 or snr_in<10) and ber_modqam=='mmtc' else None]
     ##
+    #
     ##
     #modulacion_mqam=[8 if (snr_in  >= 11 or snr_in<14 ) and ber_modqam=='ebmm' else None]
     #modulacion_mqam=[8 if (snr_in >= 11.4 or snr_in<14.3) and ber_modqam=='urrlc' else None]
     #modulacion_mqam=[8 if (snr_in >= 9.8 or snr_in<13.5) and ber_modqam=='mmtc' else None]
-
     return modulacion_mqam
     
+def evaluar_lim_inf_snr(snr_in,lim_snr):
+    if (snr_in >= lim_snr[0]):
+        return True 
+    else :
+        return False 
+def evaluar_lim_snr_sup_snr(snr_in,lim_snr):
+    if (snr_in < lim_snr[1]):
+        return True 
+    else :
+        return False 
+    pass    
+def asignar_lim_snr(sinr_cqi,desv):
+    lista_cqi=[]
+    pass
 
+def tabla_cqi(desv):    
+    
+    pass
 def asignar_r_max(m_modulacion):
     
     r_max=[658,873,948]
@@ -225,7 +235,6 @@ def throughput():
     # frecuencia portadora que esta utilice
     """
     Para el DL que es lo que nos interesa para el trabajo de grado los valores son 
-
             si Frp esta entre el rango de FR1
             0.14
             si Frp esta entre el rango de FR2
@@ -234,10 +243,35 @@ def throughput():
     oh=[0.14,0.18]
     v_oh=(1-oh[1])
     throughput_user=n_cap_mimo*m_mod*scaling_factor*r_max*(n_rb*sub_ofdm/trama)*v_oh
-    return throughput
+    return throughput_user
 
-
-
+def TBS_BLER(self,n_rb,n_ofdm,m_modulacion,v_mimo):
+    n_dmrs=24
+    n_oh=18
+    r=asignar_r_max(m_modulacion)
+    m_qam=m_modulacion
+    n_rep=n_rb*n_ofdm-n_dmrs-n_oh
+    n_re=min(156,n_rep)*n_rb
+    n_info=n_re*r*m_qam*v_mimo
+    if n_info <= 3824:
+        n=max(3,math.floor(math.log2(n_info)-6))
+        n_infop=max(24,2**n*math.floor(n_info/2**n))
+    elif n_info >3824:
+        n=math.floor(math.log2(n_info-24))-5
+        n_infop=max(3840,(2**n)*round((n_info-24)/2**n))
+    elif r <= 0.25:
+        c= math.ceil((n_infop+24)/3816)
+        tbs=8*c*math.ceil((n_infop+24)/(8*c))-24
+    
+    elif n_info > 8424:
+        c=math.ceil(n_infop+24/3816)
+        tbs=8*c*math.ceil((n_infop+24)/(8*c))
+    else:
+        tbs=8*math.ceil((n_infop+24/8))-24
+    return tbs
+def ber_sys(self,tbs):
+    ber = 1- (1-0.1)**(1/tbs)
+    return ber 
 
 if __name__=="__main__":
 	#Prototipo:
