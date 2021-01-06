@@ -143,9 +143,9 @@ def tabla_cqi():
     cqi=asignar_lim_snr()
     lim_snr=[cqi[0],cqi[3],cqi[9]]
     return lim_snr
-def asignar_modulacion():
+def asignar_modulacion(snr_in):
     lim_inf=evaluar_lim_inf_snr()
-    lim_sup=evaluar_lim_sup_snr
+    lim_sup=evaluar_lim_sup_snr()
     pass
 def asignar_r_max(m_modulacion):
     
