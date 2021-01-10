@@ -37,7 +37,7 @@ def asignar_snr_lim_mmtc():
     pass
 def asignar_snr_lim_ebmm():
     pass
-def asignar_modulacion_mqam(snr_in,case_use,desv):
+def asignar_modulacion_mqam(snr_in,case_use):
     #Las modulaciones dependen de la SINR y la BER objetivo que se hace presente en el tipo de caso de uso a utilizar
     #cada caso de uso este especificado para soportar cierta cantidad de errores debido al tipo de servicio que se espera
     snr_in=float(snr_in)
@@ -97,7 +97,8 @@ def asignar_modulacion_mqam(snr_in,case_use,desv):
     snr_lento=[4.33,6.511,1.51]
     ## Teniendo estos valores podemos tener un valor promedio de cuanto disminuye o aumenta la snr en favor a la 
     # codificacion LDPC contra el dosvanecimiento.
-    lim_inf_snr=(snr_lento if desv=='lento' else snr_rapido if desv=='rapido' else snr_mixto)
+    #lim_inf_snr=(snr_lento if desv=='lento' else snr_rapido if desv=='rapido' else snr_mixto)
+    lim_inf_snr=0
     """
     La seleccion de la modulacion es escogida segun la tabla 
     """
@@ -124,32 +125,50 @@ def asignar_modulacion_mqam(snr_in,case_use,desv):
     return modulacion_mqam
     
 def evaluar_lim_inf_snr(snr_in,lim_snr):
+    #evalua el valor minimo de SNR para la modulacion independiente de si es 16 64 o 256 QAM
     if (snr_in >= lim_snr[0]):
         return True 
     else :
         return False 
 def evaluar_lim_sup_snr(snr_in,lim_snr):
+    #evalua el valor maximo de SNR para la modulacion independiente de si es 16, 64, 256 QAM 
     if (snr_in < lim_snr[1]):
         return True 
     else :
         return False 
     pass    
 def asignar_lim_snr():
+    #Tablas para la asignacion de SNR segun la modulacion  encontradas en la tabla 5.1.1.2 TS 38.214
+    # y se puede ver en el documento. https://docs.google.com/spreadsheets/d/1Rqcdk2jZxkxgM-Hqcu3X2xAtRGrSVkkW7IKCSpS3dgI/edit#gid=0 
+    #para una BLER de 0.1 
     lista_cqi=[2.511321215,4.422894404,6.335825987,7.510369502,9.543669017,11.44647253,13.42371711,15.27114189,16.62792018,18.68554795,20.777354,22.26950728]
-    lista_cqi=[2.511321215,4.422894404,6.335825987,7.510369502,9.543669017,11.44647253,13.42371711]
+    #Para una BLER de 0.0001
+    lista_cqi2=[2.511321215,4.422894404,6.335825987,7.510369502,9.543669017,11.44647253,13.42371711]
     return lista_cqi
 
 def tabla_cqi():
     cqi=asignar_lim_snr()
-    lim_snr=[cqi[0],cqi[3],cqi[9]]
+    #se puede confirmar en las tablas de TS 38.214 y se el documento 
+    #https://docs.google.com/spreadsheets/d/1Rqcdk2jZxkxgM-Hqcu3X2xAtRGrSVkkW7IKCSpS3dgI/edit#gid=0
+    #limites con 16QAM es 2.511321215 el de 64 qam es 7.510369502 y de 256 QAM es 16.62792018 
+    # el valor maximo de SNR 
+    lim_snr=[cqi[0],cqi[3],cqi[9],cqi[12]]
     return lim_snr
-def asignar_modulacion(snr_in):
-    lim_inf=evaluar_lim_inf_snr()
-    lim_sup=evaluar_lim_sup_snr()
-    pass
+def asignar_lim_modulacion(snr_in):
+    lim_sinr=tabla_cqi()
+    modulacion_16=[4,lim_sinr[0]]
+    modulacion_64=[6,lim_sinr[1]]
+    modulacion_256=[8,lim_sinr[2]]
+    #se asigna como prueba la modulacion de 16 QAM donde los parametros de SINR limites son respectivamente 
+    # el limite inferior de la modulacion 16 QAM y el limite superior es el limite inferior de la siguiente modulacion.
+    lim_inf=evaluar_lim_inf_snr(snr_in,modulacion_16[1])
+    lim_sup=evaluar_lim_sup_snr(snr_in,modulacion_64[1])
+    return lim_inf,lim_sup,modulacion_16[0]
+
 def asignar_r_max(m_modulacion):
-    
-    r_max=[616,873,948]
+    # R_max es el valor de tasa de codificacion sujeto al valor de orden de modulacion TS 38.214
+    # ver tabla columna tasa de codificacion.  ##https://docs.google.com/spreadsheets/d/1Rqcdk2jZxkxgM-Hqcu3X2xAtRGrSVkkW7IKCSpS3dgI/edit#gid=0
+    r_max=[616,711,948]
     if m_modulacion==4:
         return r_max[0]
     elif m_modulacion==6:
@@ -158,16 +177,13 @@ def asignar_r_max(m_modulacion):
         return r_max[2]
     else:
         pass
-def throughput():
+def throughput(m_mod,r_max,n_rb,numerologia):
     """
     Los parametros para asignar el throughput son especificados en TS 38.306
     https://www.etsi.org/deliver/etsi_ts/138300_138399/138306/15.03.00_60/ts_138306v150300p.pdf
     estos parametros ya son designados por el standar y solo haremos algunas aclaraciones y justificaciones de estos valores
     """
-    sinr_obtenida=5
-    tipo_desv='mixto'
-    case_use='urrlc'
-    n_rb_sistem=264
+
     #El numero de capas MIMO usadas en el DL lo encontramos sabiendo el numero de arreglos de antena, segun tr 38.306
     #el numero maximo de capas para el DL en 5g NR esta en el orden de 8 el cual es el numero maximo de antemas en transmision
     # digamos que el numero maximo de elementos de antena es de 8x8 osea 64 elementos de antena dependiendo de como distribuyamos
@@ -187,9 +203,9 @@ def throughput():
         Para orden de modulacion 6 Rmax es de 873
         Para orden de modulacion 8 Rmax es de 948
     """
-    m_mod=asignar_modulacion_mqam(sinr_obtenida,case_use,tipo_desv)
-    r_max=asignar_r_max(m_mod)
-    numerologia=3
+    #m_mod=asignar_modulacion_mqam(sinr_obtenida,case_use,tipo_desv)
+    #r_max=asignar_r_max(m_mod)
+    #numerologia=3
     #Para el factor de escala se tienen ciertos valores preestablecidos por TS 38.306 Aunque el valor por defecto es 1
     """
     Esto se debe a que el factor de escala esta realcionado con las frecuencias portadoras de bandas agreagadas y nos referimos
@@ -251,11 +267,18 @@ def throughput():
     throughput_user=n_cap_mimo*m_mod*scaling_factor*r_max*(n_rb*sub_ofdm/trama)*v_oh
     return throughput_user
 
-def TBS_BLER(self,n_rb,n_ofdm,m_modulacion,v_mimo):
+def TBS_BLER(n_rb,n_ofdm,m_modulacion,v_mimo):
+    #numero de bloques de recursos asignados al PBCH donde el DM-RS es el canal de transmision y consume 24 bloques 
+    #de recursos. 
     n_dmrs=24
+    #Numero de bloque de recursos asignados como cabecera de la trama y que son fijos n=18
+    #ecuacion para saber la cantidad maxima de TBS segun orden se saca de TS 38.214 tabla  5.1.3.1-1
+    # y se puede ver en https://5g-tools.com/5g-nr-tbs-transport-block-size-calculator/
     n_oh=18
-    r=asignar_r_max(m_modulacion)
     m_qam=m_modulacion
+    r=asignar_r_max(m_modulacion)
+    
+    #revisar como esta el n_rb ------REVISAR-----------------------
     n_rep=n_rb*n_ofdm-n_dmrs-n_oh
     n_re=min(156,n_rep)*n_rb
     n_info=n_re*(r/1024)*m_qam*v_mimo
@@ -277,9 +300,44 @@ def TBS_BLER(self,n_rb,n_ofdm,m_modulacion,v_mimo):
     else:
         tbs=8*math.ceil((n_infop+24/8))-24
     return tbs
-def ber_sys(self,tbs):
-    ber = 1- (1-0.1)**(1/tbs)
+def ber_sys(tbs):
+    # BLER de 0.1 por las tablas de CQI  ts 38.214   esto convierte de BLER A BER  con lo TBS
+    #si esa BER cumple con los casos de uso  asignamos esa modulaccion presentada en las tablas 
+    # con la tasa codificacion 
+    bler=0.1
+    ber = 1- (1-bler)**(1/tbs)
     return ber 
+def ber_escenario(ber):
+    if ber >= 10**(-1)
+        case_use=['mMTC']
+    elif ber>=10**(-3)
+        case_use=['mMTC','eBMM']
+    elif ber>10**(-5) :
+        #para una BER mayor a 
+        case_use=['mMTC','eBMM','URRLC']
+    else :
+        print("Valor de BER menor a 10**(-1) sin caso de uso") 
+        case_use=[]
+        pass
+def main_2():
+    n_dmrs=24
+    n_oh=18
+    n_rb=100
+    n_ofdm=12
+    sinr_in=10
+    case_use='URRLC'
+    #m_modulacion=asignar_modulacion_mqam(snr_in,case_use)
+    m_modulacion=asignar_lim_modulacion(sinr_in)
+    r_max=asignar_r_max(m_modulacion)
+    v_mimo=2
+    tbs=TBS_BLER(n_rb,n_ofdm,m_modulacion,v_mimo)
+    ber=ber_sys(tbs)
+    case_use_com=ber_escenario(ber)
+    if case_use==case_use_com
+        print("Es posible cumplir con l simulacion para el caso de uso :",case_use)
+    numerologia=3
+    throughput2=throughput(m_modulacion[0],r_max,n_rb,numerologia)
+    print(throughput2)
 
 if __name__=="__main__":
 	#Prototipo:
@@ -287,13 +345,13 @@ if __name__=="__main__":
     
     print("**************************************************")
     print("**********PRUEBA INTENAS modulaciones****************")
-    print("**********desvanecimiento lento *******************")
-    print("********** caso de uso eBMM**********************")
+    print("**********desvanecimiento None *******************")
+    print("********** caso de uso eBMM para modulacion 16**********************")
     print("**************************************************")
     
-    orden_mqam=asignar_modulacion_mqam(3,'ebmm','lento')
-
-    print('orden modulacion 16qam: ', orden_mqam)
+    #orden_mqam=asignar_modulacion_mqam(3,'ebmm','lento')
+    main2()
+    #print('orden modulacion 16qam: ', orden_mqam)
     """
     print("**************************************************")
     print("********** PRUEBA INTENAS modulaciones****************")
@@ -301,10 +359,10 @@ if __name__=="__main__":
     print("********** caso de uso eBMM**********************")
     print("**************************************************")
     """
-    orden_mqam=asignar_modulacion_mqam(9,'ebmm','lento')
+    #orden_mqam=asignar_modulacion_mqam(9,'ebmm','lento')
 
 
-    print('orden modulacion 64qam: ', orden_mqam)
+    #print('orden modulacion 64qam: ', orden_mqam)
 
 
     print("**************************************************")
