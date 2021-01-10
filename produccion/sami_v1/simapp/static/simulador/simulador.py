@@ -91,7 +91,7 @@ class Simulador:
 		 
 		#display de perdidas por trayectoria
 		pre_sim.hiperc_modelo_canal.ver_perdidas_local(nombre="perdidas")
-		titulo="Muestra de Pérdidas de Propagación"
+		titulo="Muestra de Pérdidas de Propagación Ideal"
 		ruta_img="simulador/base_datos/imagenes/presim/perdidas.png"
 		#self.graficas_disponibles.append(ruta_img)
 		self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
