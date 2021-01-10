@@ -137,7 +137,7 @@ class Sistema_Celular:
 		#crea el modelo del mod_canal, frecuencia_central, distancias, ganancia relativa
 		self.inicializar_modelo_canal()
 		#inicializa el efecto del ancho de banda, segun parametros fijos o procesamiento de alguna variable, eg. potencia recibida.
-		##self.inicializar_asignacion()
+		##self.inicializar_asignacion_bw_nrbs()
 		#opera sobre el margen del balance
 		##self.calcular_medida_margen()
 		#calcula la sinr dado.
@@ -157,10 +157,16 @@ class Sistema_Celular:
 		##inicializa el efecto del ancho de banda, segun parametros fijos o
 		###procesamiento de alguna variable, eg. potencia recibida.
 		#obtiene matriz de potencia interferente.
-		self.inicializar_asignacion()
-		#calcula la sinr dado.
-		self.calcular_interferencia()
-		##self.calcular_sinr()
+		#adicion05
+		self.inicializar_asignacion_bw_nrbs()
+		#calcula la interferencia y la sinr dado los parametros.
+		#adicion05
+		self.calcular_interferencia_sinr()
+		#adicion05
+		#inicializa la clase de modulacion y asigna estados
+		#self.inicializar_modulacion()
+		#calcula recursos con sinr y modulaciones.
+		#self.calcular_recursos_tp()
 
 
 
@@ -479,7 +485,7 @@ class Sistema_Celular:
 
 
 
-	def inicializar_asignacion(self):
+	def inicializar_asignacion_bw_nrbs(self):
 		'''Permite gestionar el recurso de ancho de banda sobre los usuarios en cada celda'''
 		mapa_estaciones=self.mapa_conexion_estacion.copy()
 		dim_pr_v2D=self.potencia_recibida_v_2D.shape
@@ -616,7 +622,7 @@ class Sistema_Celular:
 		pass
 
 
-	def calcular_interferencia(self):
+	def calcular_interferencia_sinr(self):
 		'''Calcula la interferencia producida por la distribucion de prbs e SINR.
 		Permite calcular el valor de sinr de un sistema celular.
 		Procedimiento: sinr=pr/pint+pn, pr: potencia recibida maxima,
