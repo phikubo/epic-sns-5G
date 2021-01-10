@@ -40,7 +40,7 @@ def asignar_snr_lim_ebmm():
 def asignar_modulacion_mqam(snr_in,case_use):
     #Las modulaciones dependen de la SINR y la BER objetivo que se hace presente en el tipo de caso de uso a utilizar
     #cada caso de uso este especificado para soportar cierta cantidad de errores debido al tipo de servicio que se espera
-    snr_in=float(snr_in)
+    snr_in=snr_in
     #https://arxiv.org/pdf/1804.05057.pdf
     # eMBB requiere tasas de datos altas pero no especifica la confiabilidad de los datos recibidos, el tipo de informacion
     # que es enviada es considerada como datos o audio, para este caso la BER objetivo es considerada de 10**-3.
@@ -105,7 +105,7 @@ def asignar_modulacion_mqam(snr_in,case_use):
     #La tasa de codificacion necesaria para el sistema escogida, tasas de 1/3 son mas robustas pero introduce mas redundancia
     #en el sistema, para ordenes mas altos donde es necearia transmitir mas informacion, la redundancia no es necesaria
     # asi que codificaciones entre mas cerca a 1 son mejores. pero las que tiene mejor relacion de SNR son de 1/3 
-    modulacion_mqam=[4 if (snr_in >= float(lim_inf_snr[0]) or snr_in < 8) and ber_modqam==10**(-3) else None]
+    modulacion_mqam=[4 if (snr_in >= lim_inf_snr[0] or snr_in < 8) and ber_modqam==10**(-3) else None]
     print(lim_inf_snr[0],ber_modqam)
     print(modulacion_mqam)
     #modulacion_mqam=[4 if (snr_in >= lim_inf_snr[1] or snr_in < 8.3) and ber_modqam=='urrlc' else None]
@@ -126,6 +126,7 @@ def asignar_modulacion_mqam(snr_in,case_use):
     
 def evaluar_lim_inf_snr(snr_in,lim_snr):
     #evalua el valor minimo de SNR para la modulacion independiente de si es 16 64 o 256 QAM
+    print(snr_in,lim_snr,type(snr_in),type(lim_snr))
     if (snr_in >= lim_snr[0]):
         return True 
     else :
@@ -152,7 +153,7 @@ def tabla_cqi():
     #https://docs.google.com/spreadsheets/d/1Rqcdk2jZxkxgM-Hqcu3X2xAtRGrSVkkW7IKCSpS3dgI/edit#gid=0
     #limites con 16QAM es 2.511321215 el de 64 qam es 7.510369502 y de 256 QAM es 16.62792018 
     # el valor maximo de SNR 
-    lim_snr=[cqi[0],cqi[3],cqi[9],cqi[12]]
+    lim_snr=[cqi[0],cqi[3],cqi[9],cqi[11]]
     return lim_snr
 def asignar_lim_modulacion(snr_in):
     lim_sinr=tabla_cqi()
@@ -308,9 +309,9 @@ def ber_sys(tbs):
     ber = 1- (1-bler)**(1/tbs)
     return ber 
 def ber_escenario(ber):
-    if ber >= 10**(-1)
+    if ber >= 10**(-1):
         case_use=['mMTC']
-    elif ber>=10**(-3)
+    elif ber>=10**(-3):
         case_use=['mMTC','eBMM']
     elif ber>10**(-5) :
         #para una BER mayor a 
@@ -333,8 +334,10 @@ def main_2():
     tbs=TBS_BLER(n_rb,n_ofdm,m_modulacion,v_mimo)
     ber=ber_sys(tbs)
     case_use_com=ber_escenario(ber)
-    if case_use==case_use_com
+    if case_use==case_use_com:
         print("Es posible cumplir con l simulacion para el caso de uso :",case_use)
+    else :
+        pass
     numerologia=3
     throughput2=throughput(m_modulacion[0],r_max,n_rb,numerologia)
     print(throughput2)
@@ -350,7 +353,7 @@ if __name__=="__main__":
     print("**************************************************")
     
     #orden_mqam=asignar_modulacion_mqam(3,'ebmm','lento')
-    main2()
+    main_2()
     #print('orden modulacion 16qam: ', orden_mqam)
     """
     print("**************************************************")
