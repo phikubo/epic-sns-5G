@@ -120,11 +120,12 @@ class Simulador:
 	def configurar_simulacion(self):
 		'''Modulo de simulacion.'''
 		#simulacion
+		print("[simulador]: Ejecutando simulacion...")
 		print(self.configuracion)
 		pre_sim=ss.Sistema_Celular(self.configuracion)
 		pre_sim.ver_todo()
 		plt.show()
-		print("[ok]-terminado")
+		print("[OK]-terminado")
 
 	#adicionar03
 	def configurar_montecarlo(self):
