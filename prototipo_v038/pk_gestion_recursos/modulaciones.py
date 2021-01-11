@@ -127,13 +127,13 @@ def asignar_modulacion_mqam(snr_in,case_use):
 def evaluar_lim_inf_snr(snr_in,lim_snr):
     #evalua el valor minimo de SNR para la modulacion independiente de si es 16 64 o 256 QAM
     print(snr_in,lim_snr,type(snr_in),type(lim_snr))
-    if (snr_in >= lim_snr[0]):
+    if (snr_in >= lim_snr):
         return True 
     else :
         return False 
 def evaluar_lim_sup_snr(snr_in,lim_snr):
     #evalua el valor maximo de SNR para la modulacion independiente de si es 16, 64, 256 QAM 
-    if (snr_in < lim_snr[1]):
+    if (snr_in < lim_snr):
         return True 
     else :
         return False 
@@ -167,6 +167,7 @@ def asignar_lim_modulacion(snr_in):
     return lim_inf,lim_sup,modulacion_16[0]
 
 def asignar_r_max(m_modulacion):
+    print(m_modulacion)
     # R_max es el valor de tasa de codificacion sujeto al valor de orden de modulacion TS 38.214
     # ver tabla columna tasa de codificacion.  ##https://docs.google.com/spreadsheets/d/1Rqcdk2jZxkxgM-Hqcu3X2xAtRGrSVkkW7IKCSpS3dgI/edit#gid=0
     r_max=[616,711,948]
@@ -178,7 +179,7 @@ def asignar_r_max(m_modulacion):
         return r_max[2]
     else:
         pass
-def throughput(m_mod,r_max,n_rb,numerologia):
+def throughput(v_mimo,m_mod,r_max,n_rb,numerologia):
     """
     Los parametros para asignar el throughput son especificados en TS 38.306
     https://www.etsi.org/deliver/etsi_ts/138300_138399/138306/15.03.00_60/ts_138306v150300p.pdf
@@ -191,7 +192,7 @@ def throughput(m_mod,r_max,n_rb,numerologia):
     # esas capas y segun los arrelgos de antena por ejemplo 8x2 tendriamos 4 capas MIMO disponibles como el maximo arreglo de antena 
     # que se puede generar distribuyendo los elementos de antena que contempla 38.306 para el release 14 es de 8 capas 
     # y para el release 15 no ha cambiado se considera el numero maximo de arreglos de antena de este mismo valor
-    n_cap_mimo=[2,4,8]
+    #n_cap_mimo=[2,4,8]
     #Como ya se explico antes el orden de la modulacion va en relacion directa con la cantidad de bits transmitidos
     # esta relacion es considarada como el orden de modulacion que satisface la tasa de bits
     # a transmitir segun las tablas de MCS para el PDSCH en TS 38.214 para QAM y los valores van  
@@ -235,7 +236,7 @@ def throughput(m_mod,r_max,n_rb,numerologia):
     scaling_factor=[1,0.8,0.75,0.4]
     # El numero de bloques de recursos ya es tomado en otro modulo y explicado, aqui tomamos la cantidad de bloques de 
     # recursos tomados para un usuario 
-    n_rb=n_rb_sistem
+    #n_rb=n_rb_sistem
     # Los diferentes formatos para las ranuras TDD con OFDM  son consignados en TS 38.213 donde los formatos en la
     # Tabla 11.1.1-1: Slot formats for normal cyclic prefix  FORMAT 0 y FORMAT 4 o FORMAT 28 , sin usar simbolos flexibles
     #la razon por la cual no se escogen simbolos flexibles es en la parte de programacion, donde se mapea los bloques de
@@ -265,10 +266,11 @@ def throughput(m_mod,r_max,n_rb,numerologia):
     """
     oh=[0.14,0.18]
     v_oh=(1-oh[1])
-    throughput_user=n_cap_mimo*m_mod*scaling_factor*r_max*(n_rb*sub_ofdm/trama)*v_oh
+    print(v_mimo*m_mod*scaling_factor[1],r_max,n_rb,sub_ofdm,trama,v_oh)
+    throughput_user=v_mimo*m_mod*scaling_factor[1]*r_max*(n_rb*sub_ofdm/trama)*v_oh
     return throughput_user
 
-def TBS_BLER(n_rb,n_ofdm,m_modulacion,v_mimo):
+def TBS_BLER(n_rb,n_ofdm,m_modulacion,r_max,v_mimo):
     #numero de bloques de recursos asignados al PBCH donde el DM-RS es el canal de transmision y consume 24 bloques 
     #de recursos. 
     n_dmrs=24
@@ -277,12 +279,14 @@ def TBS_BLER(n_rb,n_ofdm,m_modulacion,v_mimo):
     # y se puede ver en https://5g-tools.com/5g-nr-tbs-transport-block-size-calculator/
     n_oh=18
     m_qam=m_modulacion
-    r=asignar_r_max(m_modulacion)
-    
+    r=r_max
     #revisar como esta el n_rb ------REVISAR-----------------------
     n_rep=n_rb*n_ofdm-n_dmrs-n_oh
-    n_re=min(156,n_rep)*n_rb
-    n_info=n_re*(r/1024)*m_qam*v_mimo
+    n_rei=min(156,n_rep)*n_rb
+    n_re=int(n_rei)
+    #Prueba para las variables
+    #print(n_re,r,m_qam[2],v_mimo,type(n_re),type(r),type(m_qam[2]),type(v_mimo))
+    n_info=n_re*r*m_qam[2]*v_mimo
     if n_info <= 3824:
         n=max(3,math.floor(math.log2(n_info)-6))
         n_infop=max(24,2**n*math.floor(n_info/2**n))
@@ -325,13 +329,14 @@ def main_2():
     n_oh=18
     n_rb=100
     n_ofdm=12
-    sinr_in=10
+    sinr_in=10.0
     case_use='URRLC'
+    v_mimo=2
     #m_modulacion=asignar_modulacion_mqam(snr_in,case_use)
     m_modulacion=asignar_lim_modulacion(sinr_in)
-    r_max=asignar_r_max(m_modulacion)
-    v_mimo=2
-    tbs=TBS_BLER(n_rb,n_ofdm,m_modulacion,v_mimo)
+    r_max=asignar_r_max(m_modulacion[2])
+    print(r_max)
+    tbs=TBS_BLER(n_rb,n_ofdm,m_modulacion,r_max,v_mimo)
     ber=ber_sys(tbs)
     case_use_com=ber_escenario(ber)
     if case_use==case_use_com:
@@ -339,7 +344,7 @@ def main_2():
     else :
         pass
     numerologia=3
-    throughput2=throughput(m_modulacion[0],r_max,n_rb,numerologia)
+    throughput2=throughput(v_mimo,m_modulacion[0],r_max,n_rb,numerologia)
     print(throughput2)
 
 if __name__=="__main__":
