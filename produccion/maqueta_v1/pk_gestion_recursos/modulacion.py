@@ -61,5 +61,10 @@ def asignar_tasa_modulacion(sinr_in):
 
 if __name__=="__main__":
 	#Prototipo:
-	sinr_down,sinr_up,tasa,modulacion=asignar_tasa_modulacion(sinr_in=10)
-else: print("Modulo Importado: [", os.path.basename(__file__), "]")
+	
+    sinr_down,sinr_up,tasa,modulacion=asignar_tasa_modulacion(sinr_in=10)
+    print("valor de tasa: ", tasa, modulacion)
+    #print(sinr_down, sinr_up, tasa, modulacion)
+
+else: 
+    print("Modulo Importado: [", os.path.basename(__file__), "]")
