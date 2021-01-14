@@ -25,6 +25,15 @@ class Antena:
 		#self.ganancia_tx=cfg[2]
 		#self.cfg["atmin"]=cfg[3]
 		#self.apuntamiento=cfg[4]
+		'''configuracion de antenas, relaciones de hpbw y ganancia:
+		http://www.tscm.com/antennas.pdf
+		https://www.ahsystems.com/articles/Understanding-antenna-gain-beamwidth-directivity.php
+		Victor Quintero22:18
+		https://sci-hub.do/10.1109/74.730532
+		Victor Quintero22:19
+		https://www.radartutorial.eu/06.antennas/an07.en.html
+
+		'''
 
 
 

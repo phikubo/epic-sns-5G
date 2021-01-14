@@ -22,7 +22,7 @@ def asignar_tasa_modulacion(sinr_in):
 
     #sinr_tar=lista_sinr_objetivo_original[3:]
     #tasa_tar=lista_tasa_codificion_original[3:]
-	
+
     sinr_tar=lista_sinr_objetivo_original[:]
     tasa_tar=lista_tasa_codificion_original[:]
     mod_tar=lista_modulacion_original[:]
@@ -61,5 +61,14 @@ def asignar_tasa_modulacion(sinr_in):
 
 if __name__=="__main__":
 	#Prototipo:
-	sinr_down,sinr_up,tasa,modulacion=asignar_tasa_modulacion(sinr_in=10)
+	sinr_down,sinr_up,tasa,modulacion=asignar_tasa_modulacion(sinr_in=30)
+	if modulacion==2:
+		modulacion="qpsk"
+	elif modulacion==4:
+		mudulacion="16qam"
+	elif modulacion==6:
+		modulacion="64qam"
+	elif modulacion==8:
+		modulacion="256qam"
+	print("tasa {}, modulacion {}\nsinr_up {}, sinr_down {}.".format(tasa,modulacion, sinr_up, sinr_down))
 else: print("Modulo Importado: [", os.path.basename(__file__), "]")
