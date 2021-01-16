@@ -117,19 +117,19 @@ class Simulador:
 			#self.graficas_disponibles.append(ruta_img)
 			self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
 		else:
-			print("[sistema]: desvanecimiento desactivado, la grafica no se genera")
+			print("[simulador]: desvanecimiento desactivado, la grafica no se genera")
 			pre_sim.hiperc_modelo_canal.ver_balance_sin_local(nombre="balance_sin")
 			titulo="Muestra de Balance del Enlace (Sin desvanecimiento)"
 			ruta_img="simulador/base_datos/imagenes/presim/balance_sin.png"
 			#self.graficas_disponibles.append(ruta_img)
 			self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
 		
-		pre_sim.ver_todo()
+		#pre_sim.ver_todo()
 		titulo="Escenario de Simulación"
 		ruta_img="simulador/base_datos/imagenes/presim/base-sim.png"
 		#self.graficas_disponibles.append(ruta_img)
 		self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
-		
+		print(self.graficas_disponibles_dic)
 		#guardar los nombres de graficas disponibles para desplegar despues.
 		#self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles
 		self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles_dic
@@ -145,6 +145,7 @@ class Simulador:
 		x_prueba=0
 		y_prueba=0
 		xx,yy=0,0
+		print("[simulador]: presimulacion terminado")
 	
 
 	def configurar_simulacion(self):

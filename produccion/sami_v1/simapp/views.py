@@ -208,6 +208,7 @@ def form_a3(request):
     if request.method == 'POST':
         form=FormBalanceAntenas(request.POST)
         print("\nHA OCURRIDO UN POST a3 \n")
+        print(form)
         if form.is_valid():
             #CONFIGURACION DE VARIABLES
             contenido=form.cleaned_data
@@ -226,6 +227,7 @@ def form_a3(request):
             config["cfg_simulador"]["params_antena"]["tipo"]=contenido["tipo_antena"]
             config["cfg_simulador"]["params_antena"]["hpbw"]=contenido["hpbw"]
             config["cfg_simulador"]["params_antena"]["atmin"]=float(contenido["atmin"])
+            config["cfg_simulador"]["params_antena"]["apuntamiento"][0]=int(contenido["apuntamiento"])
             cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos/")
             config=0
         else:

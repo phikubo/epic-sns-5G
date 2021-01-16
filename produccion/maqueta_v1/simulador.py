@@ -141,40 +141,54 @@ class Simulador:
 		#debe calcularse como 1-cob_conexion
 		col_cob_desconexion=[]
 		it=0
+		print("[simulador]: Ejecutando Simulación")
 		for n in range(iteracion):
-			print("[simulador]:*******************************SIMULACION {}****************************".format(it))
+			if iteracion>49:
+				pass
+			else:
+				print("[simulador]:*******************************SIMULACION {}****************************".format(it))
 			sim=ss.Sistema_Celular(self.configuracion)
 			coleccion_simulacion.append(sim)
-			sim.info_general("general")
+			if iteracion>49:
+				pass
+			else:
+				sim.info_general("general")
+				print("[simulador]:*******************************FIN SIMULACION*****************************\n\n")
 			sim=0
 			it+=1
 
-
-
+		print("[simulador]: Ejecutando Coleccion")
 		for borrar, simulacion in enumerate(coleccion_simulacion):
-			print("[simulador]: Ejecutando Coleccion")
+
 			col_cobertura_usuarios.append(simulacion.no_usuarios_total)
 			col_cob_conexion.append(simulacion.medida_conexion_margen)
 			col_cob_conexion_sinr.append(simulacion.medida_conexion_sinr)
-
 			#libero memoria de los objetos recolectados.
 			coleccion_simulacion[borrar]=0
 
 		print("[simulador]: Generando Gráficas")
+		#para todas colocar los ejes #numero de realizaciones/porcentajes de ..
 		#grafica de distribucion de usuarios
 		plt.figure()
+		#que se vea mas continua dependiendo de #iteraciones
 		plt.title("distribucion")
 		plt.hist(col_cobertura_usuarios)
 
 		#grafica porcentaje de conexion
 		plt.figure()
+		#no debe haber rango de escalon
 		plt.title("usuarios conectados")
-		plt.hist(col_cob_conexion, density=True, cumulative=True)
+		plt.hist(col_cob_conexion, density=False, cumulative=False)
 
 		#grafica conexion sinr
 		plt.figure()
 		plt.title("umbral sinr")
+		plt.hist(col_cob_conexion_sinr,density=True, cumulative=False)
+
+		plt.figure()
+		plt.title("umbral sinr cumulativa")
 		plt.hist(col_cob_conexion_sinr,density=True, cumulative=True)
+
 
 		#grafica porcentaje de desconexion
 
