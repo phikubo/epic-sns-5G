@@ -157,14 +157,32 @@ def tabla_cqi():
     return lim_snr
 def asignar_lim_modulacion(snr_in):
     lim_sinr=tabla_cqi()
+    
     modulacion_16=[4,lim_sinr[0]]
     modulacion_64=[6,lim_sinr[1]]
     modulacion_256=[8,lim_sinr[2]]
+
+    if snr_in < 7.510369502 and snr_in >= 2.511321215 : 
+        lim_inf=evaluar_lim_inf_snr(snr_in,modulacion_16[1])
+        lim_sup=evaluar_lim_sup_snr(snr_in,modulacion_64[1])
+        mod=modulacion_16[0]
+    elif snr_in < 18.68554795 and snr_in >= 7.510369502:
+        lim_inf=evaluar_lim_inf_snr(snr_in,modulacion_64[1])
+        lim_sup=evaluar_lim_sup_snr(snr_in,modulacion_256[1])    
+        mod=modulacion_64[0]
+    elif snr_in < 22.26950728 and snr_in >= 18.68554795: 
+        lim_inf=evaluar_lim_inf_snr(snr_in,modulacion_256[1])
+        lim_sup=evaluar_lim_sup_snr(snr_in,modulacion_256[1])    
+        mod=modulacion_256[0]
+    else :
+        print("SNR no esta asignada a ningun valor de Modulacion o no tiene servicio ")
+        pass
+
     #se asigna como prueba la modulacion de 16 QAM donde los parametros de SINR limites son respectivamente 
     # el limite inferior de la modulacion 16 QAM y el limite superior es el limite inferior de la siguiente modulacion.
-    lim_inf=evaluar_lim_inf_snr(snr_in,modulacion_16[1])
-    lim_sup=evaluar_lim_sup_snr(snr_in,modulacion_64[1])
-    return lim_inf,lim_sup,modulacion_16[0]
+    #lim_inf=evaluar_lim_inf_snr(snr_in,modulacion_64[1])
+    #lim_sup=evaluar_lim_sup_snr(snr_in,modulacion_256[1])
+    return lim_inf,lim_sup,mod
 
 def asignar_r_max(m_modulacion):
     print(m_modulacion)
@@ -270,35 +288,36 @@ def throughput(v_mimo,m_mod,r_max,n_rb,numerologia):
     throughput_user=v_mimo*m_mod*scaling_factor[1]*r_max*(n_rb*sub_ofdm/trama)*v_oh
     return throughput_user
 
-def TBS_BLER(n_rb,n_ofdm,m_modulacion,r_max,v_mimo):
+def TBS_BLER(n_rb,sym_ofdm,scs_ofdm,m_modulacion,r_max,v_mimo):
     #numero de bloques de recursos asignados al PBCH donde el DM-RS es el canal de transmision y consume 24 bloques 
     #de recursos. 
-    n_dmrs=24
+    n_dmrs=13
     #Numero de bloque de recursos asignados como cabecera de la trama y que son fijos n=18
     #ecuacion para saber la cantidad maxima de TBS segun orden se saca de TS 38.214 tabla  5.1.3.1-1
     # y se puede ver en https://5g-tools.com/5g-nr-tbs-transport-block-size-calculator/
-    n_oh=18
+    n_oh=5
     m_qam=m_modulacion
     r=r_max
     #revisar como esta el n_rb ------REVISAR-----------------------
-    n_rep=n_rb*n_ofdm-n_dmrs-n_oh
-    n_rei=min(156,n_rep)*n_rb
-    n_re=int(n_rei)
+    n_rep=scs_ofdm*sym_ofdm-n_dmrs-n_oh
+    n_re=min(156,n_rep)*n_rb
+    #n_re=int(n_rei)
     #Prueba para las variables
-    #print(n_re,r,m_qam[2],v_mimo,type(n_re),type(r),type(m_qam[2]),type(v_mimo))
-    n_info=n_re*r*m_qam[2]*v_mimo
+    print(n_re,r,m_qam[2],v_mimo,type(n_re),type(r),type(m_qam[2]),type(v_mimo))
+    n_info=n_re*(r/1024)*m_qam[2]*v_mimo
     if n_info <= 3824:
         n=max(3,math.floor(math.log2(n_info)-6))
-        n_infop=max(24,2**n*math.floor(n_info/2**n))
+        n_infop=max((24.2**n)*math.floor(n_info/2**n))
     elif n_info >3824:
         n=math.floor(math.log2(n_info-24))-5
         n_infop=max(3840,(2**n)*round((n_info-24)/2**n))
     else :
         pass
-    if r <= 0.25:
+    print(n_infop,n_info)
+    r_ref=r/1024
+    if r_ref <= 0.25:
         c= math.ceil((n_infop+24)/3816)
         tbs=8*c*math.ceil((n_infop+24)/(8*c))-24
-    
     elif n_info > 8424:
         c=math.ceil(n_infop+24/3816)
         tbs=8*c*math.ceil((n_infop+24)/(8*c))
@@ -327,16 +346,17 @@ def ber_escenario(ber):
 def main_2():
     n_dmrs=24
     n_oh=18
-    n_rb=100
-    n_ofdm=12
+    n_rb=30
+    scs_ofdm=12
+    sys_ofdm=12
     sinr_in=10.0
     case_use='URRLC'
-    v_mimo=2
+    v_mimo=1
     #m_modulacion=asignar_modulacion_mqam(snr_in,case_use)
     m_modulacion=asignar_lim_modulacion(sinr_in)
     r_max=asignar_r_max(m_modulacion[2])
     print(r_max)
-    tbs=TBS_BLER(n_rb,n_ofdm,m_modulacion,r_max,v_mimo)
+    tbs=TBS_BLER(n_rb,scs_ofdm,sys_ofdm,m_modulacion,r_max,v_mimo)
     ber=ber_sys(tbs)
     case_use_com=ber_escenario(ber)
     if case_use==case_use_com:
@@ -358,7 +378,7 @@ if __name__=="__main__":
     print("**************************************************")
     
     #orden_mqam=asignar_modulacion_mqam(3,'ebmm','lento')
-    main_2()
+    #main_2()
     #print('orden modulacion 16qam: ', orden_mqam)
     """
     print("**************************************************")
@@ -368,16 +388,31 @@ if __name__=="__main__":
     print("**************************************************")
     """
     #orden_mqam=asignar_modulacion_mqam(9,'ebmm','lento')
-
-
+    snr_in=18
+    m_mod=asignar_lim_modulacion(snr_in)
+    r_max=asignar_r_max(m_mod[2])
+    print(m_mod, r_max)
+    v_mimo=1
+    scs_ofdm=12
+    sym_ofdm=12
+    n_rb= 40
+    TBS=TBS_BLER(n_rb,sym_ofdm,scs_ofdm,m_mod,r_max,v_mimo)
+    print(TBS)
     #print('orden modulacion 64qam: ', orden_mqam)
 
 
     print("**************************************************")
     print("**********FIN pruebas MODULACION****************")
     print("**************************************************")
-
-	#plan=Planificador(params_cfg, 17)
+    '''sym_ofdm=12
+    scs_ofdm=12
+    n_rb=30
+    m_modulacion=6
+    r_max=948
+    v_mimo=1    
+    TBS_BLER(n_rb,sym_ofdm,scs_ofdm,m_modulacion,r_max,v_mimo)'''
+	
+    #plan=Planificador(params_cfg, 17)
 	#Planificador.asignar_100mhz()
 	#REALIZAR PRUEBA DE F1,F2,F3
 	#lista_rb()
