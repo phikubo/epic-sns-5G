@@ -165,7 +165,7 @@ class Simulador:
 			col_cob_conexion_sinr.append(simulacion.medida_conexion_sinr)
 			#libero memoria de los objetos recolectados.
 			coleccion_simulacion[borrar]=0
-
+		'''
 		print("[simulador]: Generando Gráficas")
 		#para todas colocar los ejes #numero de realizaciones/porcentajes de ..
 		#grafica de distribucion de usuarios
@@ -188,10 +188,50 @@ class Simulador:
 		plt.figure()
 		plt.title("umbral sinr cumulativa")
 		plt.hist(col_cob_conexion_sinr,density=True, cumulative=True)
-
-
+		'''
+		#import seaborn as sns
+		#kwargs = dict(hist_kws={'alpha':.6}, kde_kws={'linewidth':3})
+		#sns.distplot(col_cobertura_usuarios, color="dodgerblue", label="Distribución de Usuarios", **kwargs)
+		#plt.legend();
+		#sns.countplot(x='depth', data=col_cobertura_usuarios)
 		#grafica porcentaje de desconexion
 
+		#plt.show()
+		#print(col_cobertura_usuarios)
+
+		data,bins=np.histogram(col_cobertura_usuarios)
+		print(data)
+		print(bins)
+		print("--")
+
+		'''
+		#implementar
+		print(col_cob_conexion)
+		print("--")
+		data1,bins1=np.histogram(col_cob_conexion, 1)
+		print(data1)
+		print(bins1)
+
+
+
+		plt.figure()
+		import seaborn as sns
+		kwargs = dict(hist_kws={'alpha':.6}, kde_kws={'linewidth':3})
+		sns.distplot(col_cob_conexion, color="dodgerblue", label="Distribución de Usuarios", **kwargs)
+		plt.legend();
+		'''
+
+		#plt.figure()
+		#plt.title("usuarios conectados")
+		########plt.stem(data,"bs-")
+		#plt.stem(data)
+		#plt.hist(col_cobertura_usuarios, bins=100)
+		y=np.bincount(col_cobertura_usuarios)
+		print(y)
+		print(np.nonzero(y))
+		print(np.nonzero(y)[0])
+		plt.hist(col_cobertura_usuarios, bins=np.nonzero(y)[0])
+		#bins='auto'
 		plt.show()
 		print("[OK] montecarlo")
 
