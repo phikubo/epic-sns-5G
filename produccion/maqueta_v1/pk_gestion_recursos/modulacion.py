@@ -2,73 +2,214 @@ import numpy as np
 import math
 import os
 
+
 class Modulacion:
 	'''Clase: asigna prb por usuario, calcula matriz de interferencia.'''
+
 	def __init__(self, params_cfg, params):
-		self.cfg_plan=params_cfg
+		self.cfg_plan = params_cfg
+
 	def funcion(self):
 		'''copiar'''
 		pass
 
+
 def asignar_tasa_modulacion(sinr_in):
     '''obtiene limites de sinr, tasa de codificaion y orden de modulacion'''
-    lista_sinr_objetivo_original=[-9.533495583,-5.248540551,-0.7750688964,2.511321215,4.422894404,6.335825987,7.510369502,9.543669017,11.44647253,13.42371711,15.27114189,16.62792018,18.68554795,20.777354,22.26950728]
-    lista_tasa_codificion_original=[78,193,449,378,490,616,466,567,666,772,873,711,797,885,948]
-    lista_modulacion_original=[2,2,2,4,4,4,6,6,6,6,6,6,8,8,8]
-	#2-qpsk
-	#4-16qam
-	#6-32qam
-	#8-64qam
+    lista_sinr_objetivo_original = [-9.533495583, -5.248540551, -0.7750688964, 2.511321215, 4.422894404, 6.335825987,
+                                    7.510369502, 9.543669017, 11.44647253, 13.42371711, 15.27114189, 16.62792018, 18.68554795, 20.777354, 22.26950728]
+    lista_tasa_codificion_original = [
+        78, 193, 449, 378, 490, 616, 466, 567, 666, 772, 873, 711, 797, 885, 948]
+    lista_modulacion_original = [2, 2, 2, 4, 4, 4, 6, 6, 6, 6, 6, 6, 8, 8, 8]
+    #-1-no conectado
+    #2-qpsk
+    #4-16qam
+    #6-32qam
+    #8-64qam
 
     #sinr_tar=lista_sinr_objetivo_original[3:]
     #tasa_tar=lista_tasa_codificion_original[3:]
 
-    sinr_tar=lista_sinr_objetivo_original[:]
-    tasa_tar=lista_tasa_codificion_original[:]
-    mod_tar=lista_modulacion_original[:]
-    verificar_superior=False
-    for ind,sinr_ in enumerate(sinr_tar):
+    sinr_tar = lista_sinr_objetivo_original[:]
+    tasa_tar = lista_tasa_codificion_original[:]
+    mod_tar = lista_modulacion_original[:]
+    #verifica si sinr_in esta en el limite superior y asigna maximo
+    verificar_superior = False
+    #verifica si sinr_in es menor al limite inferior y desconecta
+    verificar_inferior = False
 
-        if sinr_in>=22.26950728:
+    for ind, sinr_ in enumerate(sinr_tar):
+        if sinr_in >= 22.26950728:
             print("{debug}:subir")
-            verificar_superior=True
-            sinr_in=22.26950727
-        elif sinr_in<-9.533495583:
-            sinr_in=-9.533495583
+            verificar_superior = True
+            sinr_in = 22.26950727
+        elif sinr_in < -9.533495583:
+            verificar_inferior = True
         else:
             pass
 
-        res=sinr_-sinr_in
-        if res>0:
-            print("comparar",sinr_)
+        res = sinr_-sinr_in
+        if res > 0:
+            print("comparar", sinr_)
             print("con ", sinr_in)
-            print("resta",sinr_-sinr_in)
+            print("resta", sinr_-sinr_in)
             print("---")
-            inferior=ind-1
-            superior=ind
-            sinr_inferior=sinr_tar[inferior]
-            sinr_superior=sinr_tar[superior]
+            inferior = ind-1
+            superior = ind
+            sinr_inferior = sinr_tar[inferior]
+            sinr_superior = sinr_tar[superior]
             print("indice down {}, up {}".format(inferior, superior))
-            print("valores: ",sinr_inferior, sinr_superior)
+            print("valores: ", sinr_inferior, sinr_superior)
             break
     #verificamos que se encuentra en el limite superior de la tabla, por tanto obtiene el mayor valor de tasa.
     if verificar_superior:
-        tasa_inferior=tasa_tar[superior]
+        #selecciona tasa mas alta
+        tasa_inferior = tasa_tar[superior]
+        mod_inferior = mod_tar[superior]
+        #se encuentra en el valor maximo
+        sinr_inferior=sinr_superior
     else:
-        tasa_inferior=tasa_tar[inferior]
-    mod_inferior=mod_tar[inferior]
-    return sinr_inferior, sinr_superior,tasa_inferior,mod_inferior
+        tasa_inferior = tasa_tar[inferior]
+        mod_inferior = mod_tar[inferior]
+        
 
-if __name__=="__main__":
+    if verificar_inferior:
+        mod_inferior = -1
+        tasa_inferior = -1
+        sinr_superior = -1
+        sinr_inferior = -1
+    else:
+        pass
+
+    return sinr_inferior, sinr_superior, tasa_inferior, mod_inferior
+
+
+def calcular_tbs_ber(n_rb,modulacion,tasa,arreglo_mimo,sym_ofdm,scs_ofdm):
+    '''Funcion para calcular tbs, dado la modulacion y tasa de bits. 
+    Numero de bloques de recursos asignados al PBCH donde el DM-RS es el canal de transmision y consume 24 bloques.'''
+    #numeros
+    constant_dmrs=13
+    const_oh=5
+    const_bler=0.1 #fijo al 10%
+
+    #[?]
+    n_rep=scs_ofdm*sym_ofdm-constant_dmrs-const_oh #12*12 - 13 - 5 ?
+    #[?]
+    n_re=min(156,n_rep)*n_rb #porque 156?
+    #[?]
+    n_info=n_re*(tasa/1024)*modulacion*arreglo_mimo #que es esto?
+
+    if n_info <= 3824:
+        n=max(3,math.floor(math.log2(n_info)-6))
+        n_infop=max((24.2**n)*math.floor(n_info/2**n))
+    elif n_info >3824:
+        #[?]
+        n=math.floor(math.log2(n_info-24))-5 #por que 5?
+        n_infop=max(3840,(2**n)*round((n_info-24)/2**n))
+    else:
+        pass 
+
+    #[?] r->tasa, ya esta divido en 1024 en [?-3]
+    #r_ref=r/1024 
+    r_ref=tasa/1024
+
+    #[!!!]: CONDICION NO COMPARA VARIABLES IGUALES.
+    if r_ref <= 0.25:
+        #[?]: porque 3816?
+        c= math.ceil((n_infop+24)/3816)
+        #[?]
+        tbs=8*c*math.ceil((n_infop+24)/(8*c))-24 #por que +24,-24
+    #[???]: por que la compara 0.25 con 8424 en diferentes variables
+    elif n_info > 8424:
+        c=math.ceil(n_infop+24/3816)
+        tbs=8*c*math.ceil((n_infop+24)/(8*c))
+    
+    #[???]: que condincion es esta?. No tiene sentido... teniendo en cuenta que el primer if
+    #y el segundo elif, no son las mismas variables, entonces este else 
+    #a que condicion hace referencia?
+    else:
+        #[?]:por que 24?
+        tbs=8*math.ceil((n_infop+24/8))-24
+    
+    ber = 1- (1-const_bler)**(1/tbs)
+    return tbs, ber
+    
+    
+
+def calcular_throughput(n_rb,modulacion,tasa,arreglo_mimo,numerologia):
+    '''Calcular el throuhgput dado valores de entrada'''
+    #v_mimo,m_mod,r_max,n_rb,numerologia
+
+    #[?]: por que se calcula? esto ya se calculo en Planificador
+    trama=10**(-3)/(14*2**numerologia)
+    #La cantidad de subportadoras OFDM es fija y es de 12 
+    #[?] por que se repite?
+    sub_ofdm=12
+
+    #que es esto?
+    scaling_factor=[1,0.8,0.75,0.4]
+
+    #[???]: como se relaciona con const_oh del calculo de tbs,ber?
+    oh=[0.14,0.18]
+    v_oh=(1-oh[1])
+
+    #[!!!]: por que se selecciona scaling_factor[1]?
+    throughput_user=arreglo_mimo*modulacion*scaling_factor[1]*tasa*(n_rb*sub_ofdm/trama)*v_oh
+    return throughput_user
+
+
+def definir_flujo():
+    #define las variables de prueba y el flujo
+    constant_dmrs=13
+    constant_oh=5
+    arreglo_mimo=2
+    n_ofdm=12
+    n_rb=100
+    sinr_in=10
+    sym_ofdm=12
+    scs_ofdm=12
+
+    case_use=["URRLC", "mmtc", "ebmm"]
+    numerologia=[0,1,2,3]
+
+    numerologia=numerologia[3]
+    case_use=case_use[0]
+
+    #asignar modulacion dado sinr
+    sinr_down, sinr_up, tasa, modulacion = asignar_tasa_modulacion(sinr_in)
+    #calcualr tbs
+    #traduccion de variables
+    #(modulacion,m_mod)
+    #(tasa, r_max)
+    #(arreglo_mimo, v_mimo)
+
+    tbs,ber=calcular_tbs_ber(n_rb,sym_ofdm,scs_ofdm,modulacion,tasa,arreglo_mimo)
+    
+    #[!!!!!!!]: por que en este calculo no se usa tbs, ber?, cual es el punto de calcularlo?
+    throughput=calcular_throughput(n_rb,modulacion,tasa,arreglo_mimo,numerologia)
+
+    print("thouhgput: {}".format(throughput))
+    
+def main_test01():
+    #prueba de modulaciones dado sinr
+    #asignar modulacion segun sinr
+    sinr_down, sinr_up, tasa, modulacion = asignar_tasa_modulacion(sinr_in=23)
+    if modulacion == 2:
+        modulacion = "qpsk"
+    elif modulacion == 4:
+        mudulacion = "16qam"
+    elif modulacion == 6:
+        modulacion = "64qam"
+    elif modulacion == 8:
+        modulacion = "256qam"
+    print("tasa {}, modulacion {}\nsinr_up {}, sinr_down {}.".format(tasa, modulacion, sinr_up, sinr_down))
+
+
+
+
+if __name__ == "__main__":
 	#Prototipo:
-	sinr_down,sinr_up,tasa,modulacion=asignar_tasa_modulacion(sinr_in=30)
-	if modulacion==2:
-		modulacion="qpsk"
-	elif modulacion==4:
-		mudulacion="16qam"
-	elif modulacion==6:
-		modulacion="64qam"
-	elif modulacion==8:
-		modulacion="256qam"
-	print("tasa {}, modulacion {}\nsinr_up {}, sinr_down {}.".format(tasa,modulacion, sinr_up, sinr_down))
-else: print("Modulo Importado: [", os.path.basename(__file__), "]")
+	#main_test01()
+    definir_flujo()
+else:
+	print("Modulo Importado: [", os.path.basename(__file__), "]")

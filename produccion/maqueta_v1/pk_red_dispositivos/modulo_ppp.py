@@ -18,15 +18,18 @@ def distribuir_en_celdas(r, x_origen, y_origen, intensidad, debug):
 	es las coordenadas de usuarios por celda, empaquetados en una matriz. Con esta matriz se
 	calcula la distancia. Retorna una matriz de matrices (matriz de celda).'''
 
-	area_total=np.pi*r**2
+	area_total=np.pi*(r**2)
+
 	cantidad_de_puntos = np.random.poisson(intensidad*area_total)
+	#print("[debug-distribuir_en_celdas-modulo_ppp]",intensidad*area_total, cantidad_de_puntos)
+
 
 	#to_print="area t {} \n lambda {} \n radio {} \n intensidad {}".format(area_total,intensidad*area_total, r,intensidad)
 	#print(to_print)
 	if cantidad_de_puntos==0:
 		#eliminamos error division por cero.
 		#Atencion, puede alterar estadisticas.
-		cantidad_de_puntos=1
+		cantidad_de_puntos=0
 	#print("test1",cantidad_de_puntos, type(cantidad_de_puntos))
 	#de esta forma todas las celdas tiene el mismo numero de usuarios.
 	#llamar funcion

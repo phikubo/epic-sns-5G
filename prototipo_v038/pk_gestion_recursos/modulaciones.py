@@ -305,6 +305,7 @@ def TBS_BLER(n_rb,sym_ofdm,scs_ofdm,m_modulacion,r_max,v_mimo):
     #Prueba para las variables
     print(n_re,r,m_qam[2],v_mimo,type(n_re),type(r),type(m_qam[2]),type(v_mimo))
     n_info=n_re*(r/1024)*m_qam[2]*v_mimo
+
     if n_info <= 3824:
         n=max(3,math.floor(math.log2(n_info)-6))
         n_infop=max((24.2**n)*math.floor(n_info/2**n))
@@ -324,6 +325,7 @@ def TBS_BLER(n_rb,sym_ofdm,scs_ofdm,m_modulacion,r_max,v_mimo):
     else:
         tbs=8*math.ceil((n_infop+24/8))-24
     return tbs
+
 def ber_sys(tbs):
     # BLER de 0.1 por las tablas de CQI  ts 38.214   esto convierte de BLER A BER  con lo TBS
     #si esa BER cumple con los casos de uso  asignamos esa modulaccion presentada en las tablas 
@@ -365,7 +367,7 @@ def main_2():
         pass
     numerologia=3
     throughput2=throughput(v_mimo,m_modulacion[0],r_max,n_rb,numerologia)
-    print(throughput2)
+    print("this tp",throughput2)
 
 if __name__=="__main__":
 	#Prototipo:

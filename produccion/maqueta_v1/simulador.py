@@ -5,6 +5,9 @@ from utilidades import config as cfg
 import matplotlib.pyplot as plt
 from matplotlib.patches import RegularPolygon
 import numpy as np
+#add change01
+from scipy.special import factorial
+import scipy.stats as stats
 import os
 
 class Simulador:
@@ -134,6 +137,7 @@ class Simulador:
 		iteracion=self.configuracion["cfg_simulador"]["params_general"]["iteracion"]
 		coleccion_simulacion=[]
 		col_cobertura_usuarios=[] #poisson
+		col_cobertura_usuarios_celda=[]#poisson celdas
 		#margen, si supera margen
 		col_cob_conexion=[]
 		#si supera sinr objetivo
@@ -161,8 +165,10 @@ class Simulador:
 		for borrar, simulacion in enumerate(coleccion_simulacion):
 
 			col_cobertura_usuarios.append(simulacion.no_usuarios_total)
+			col_cobertura_usuarios_celda.append(simulacion.no_usuarios_celda)
 			col_cob_conexion.append(simulacion.medida_conexion_margen)
 			col_cob_conexion_sinr.append(simulacion.medida_conexion_sinr)
+			print("[debug-simulador2] total-simulacion {} ,total_celda {}".format(simulacion.no_usuarios_total, simulacion.no_usuarios_celda))
 			#libero memoria de los objetos recolectados.
 			coleccion_simulacion[borrar]=0
 		'''
@@ -199,9 +205,9 @@ class Simulador:
 		#plt.show()
 		#print(col_cobertura_usuarios)
 
-		data,bins=np.histogram(col_cobertura_usuarios)
-		print(data)
-		print(bins)
+		#data,bins=np.histogram(col_cobertura_usuarios)
+		#print(data)
+		#print(bins)
 		print("--")
 
 		'''
@@ -220,19 +226,71 @@ class Simulador:
 		sns.distplot(col_cob_conexion, color="dodgerblue", label="Distribución de Usuarios", **kwargs)
 		plt.legend();
 		'''
-
+		#bins='auto'
 		#plt.figure()
 		#plt.title("usuarios conectados")
 		########plt.stem(data,"bs-")
 		#plt.stem(data)
 		#plt.hist(col_cobertura_usuarios, bins=100)
-		y=np.bincount(col_cobertura_usuarios)
+		print("test")
+		#y=np.bincount(col_cobertura_usuarios_celda)
+		#data1,bins1=np.histogram(col_cobertura_usuarios_celda, bins=np.nonzero(y)[0])
+		#suma1=np.sum(data1)
+
+		#print(data1)
+		#print(suma1)
+		print("------------------------\nendtest")
+
+
+		intensidad=self.configuracion["cfg_simulador"]["params_general"]["distribucion"][1]
+		radio=self.configuracion["cfg_simulador"]["params_general"]["radio_cel"]
+		num_celdas=self.configuracion["cfg_simulador"]["params_general"]["n_celdas"]
+		area=np.pi*(radio**2)
+
+		poisson_lamb=area*intensidad
+		print("[debug simulador]",radio, area, poisson_lamb)
+
+		#por celdas
+		y=np.bincount(col_cobertura_usuarios_celda)
 		print(y)
 		print(np.nonzero(y))
 		print(np.nonzero(y)[0])
-		plt.hist(col_cobertura_usuarios, bins=np.nonzero(y)[0])
-		#bins='auto'
+
+		'''
+		plt.hist(col_cobertura_usuarios_celda, bins=np.nonzero(y)[0], density=True)
+
+
+		t = np.arange(min(col_cobertura_usuarios_celda), max(col_cobertura_usuarios_celda), 0.7)
+		d = np.exp(-poisson_lamb)*np.power(poisson_lamb, t)/factorial(t)
+		print(t.shape,d.shape)
+		plt.plot(t, d, 'rs')
+
+
+
+		'''
+		plt.figure()
+		#por sistema
+		y=np.bincount(col_cobertura_usuarios)
+		plt.hist(col_cobertura_usuarios, bins=np.nonzero(y)[0], density=True)
+		#suma=sum(col_cobertura_usuarios)
+		#nuevo landa
+		poisson_lamb=area*intensidad
+		t = np.arange(min(col_cobertura_usuarios), max(col_cobertura_usuarios), 0.7)
+		d = np.exp(-poisson_lamb)*np.power(poisson_lamb, t)/factorial(t)
+		#d=d/np.exp(num_celdas)
+
+
+		plt.plot(t, d, 'rs')
+
+		#mu = poisson_lamb
+		#variance = 1
+		#sigma = np.sqrt(variance)
+		#x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
+		#plt.plot(x, stats.norm.pdf(x, mu, sigma))
 		plt.show()
+
+
+
 		print("[OK] montecarlo")
 
 

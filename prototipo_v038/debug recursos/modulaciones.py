@@ -383,11 +383,15 @@ def test_02():
 	#declaracion de parametros
 	#fijo
 	n_dmrs=24
+    #por que aca es 18 y en 038 es 5.
 	n_oh=18
 	#cantidad arreglos de antena
 	v_mimo=2
 	n_ofdm=12
 
+    #que es esto?
+    scs_ofdm=12
+    sym_ofdm=12
 	#variable
 	n_rb=100
 	n_rb=100
@@ -421,6 +425,12 @@ def main_2(n_dmrs,n_oh,n_rb,n_ofdm,sinr_in,case_use,v_mimo,numerologia ):
 	throughput2=throughput(v_mimo,m_modulacion[0],r_max,n_rb,numerologia)
 	print("--------------------[main_2]:case_use_com->",throughput2)
 
+
+def main_idea():
+    '''Patreon a farmer and receive montly farming gift while it get well stablished
+    Auction produce and sell. No transport include. Lower prices may have higher prices of transport.
+    Planned delivery. For restaurant but also for people. Receive produce every week based on previous buy.'''
+    pass
 
 if __name__=="__main__":
     print("**************************************************")
