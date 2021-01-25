@@ -14,6 +14,22 @@ class Modulacion:
 		pass
 
 
+def prueba_modulacion():
+    #prueba de modulaciones dado sinr
+    #asignar modulacion segun sinr
+    sinr_down, sinr_up, tasa, modulacion = asignar_tasa_modulacion(sinr_in=23)
+    if modulacion == 2:
+        modulacion = "qpsk"
+    elif modulacion == 4:
+        mudulacion = "16qam"
+    elif modulacion == 6:
+        modulacion = "64qam"
+    elif modulacion == 8:
+        modulacion = "256qam"
+    print("tasa {}, modulacion {}\nsinr_up {}, sinr_down {}.".format(tasa, modulacion, sinr_up, sinr_down))
+
+
+
 def asignar_tasa_modulacion(sinr_in):
     '''obtiene limites de sinr, tasa de codificaion y orden de modulacion'''
     lista_sinr_objetivo_original = [-9.533495583, -5.248540551, -0.7750688964, 2.511321215, 4.422894404, 6.335825987,
@@ -173,6 +189,8 @@ def definir_flujo():
     numerologia=[0,1,2,3]
 
     numerologia=numerologia[3]
+    
+    #[?]: no se usa. Por que definir entonces?
     case_use=case_use[0]
 
     #asignar modulacion dado sinr
@@ -190,26 +208,10 @@ def definir_flujo():
 
     print("thouhgput: {}".format(throughput))
     
-def main_test01():
-    #prueba de modulaciones dado sinr
-    #asignar modulacion segun sinr
-    sinr_down, sinr_up, tasa, modulacion = asignar_tasa_modulacion(sinr_in=23)
-    if modulacion == 2:
-        modulacion = "qpsk"
-    elif modulacion == 4:
-        mudulacion = "16qam"
-    elif modulacion == 6:
-        modulacion = "64qam"
-    elif modulacion == 8:
-        modulacion = "256qam"
-    print("tasa {}, modulacion {}\nsinr_up {}, sinr_down {}.".format(tasa, modulacion, sinr_up, sinr_down))
-
-
-
 
 if __name__ == "__main__":
 	#Prototipo:
-	#main_test01()
+	#prueba_modulacion()
     definir_flujo()
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")
