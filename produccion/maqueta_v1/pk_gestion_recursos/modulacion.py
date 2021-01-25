@@ -201,8 +201,10 @@ def definir_flujo():
     #(tasa, r_max)
     #(arreglo_mimo, v_mimo)
 
+    #calcualr tbs, ber
     tbs,ber=calcular_tbs_ber(n_rb,sym_ofdm,scs_ofdm,modulacion,tasa,arreglo_mimo)
     
+    #calcular thoughput
     #[!!!!!!!]: por que en este calculo no se usa tbs, ber?, cual es el punto de calcularlo?
     throughput=calcular_throughput(n_rb,modulacion,tasa,arreglo_mimo,numerologia)
 
@@ -213,5 +215,6 @@ if __name__ == "__main__":
 	#Prototipo:
 	#prueba_modulacion()
     definir_flujo()
+    #si todo funciona, felicidades ya podemos graduarnos alv.
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")
