@@ -269,7 +269,7 @@ def throughput(v_mimo,m_mod,r_max,n_rb,numerologia):
             proporciona una configuracion dedicada para el uplink y control
             proporciona al UE unb formato para DCI
     """
-    trama=10**(-3)/(14*2**numerologia)
+    trama=(10**(-3))/(14*(2**numerologia))
     ## NOTA para esta configuracion el prefijo ciclico es asumido
     ##La cantidad de subportadoras OFDM es fija y es de 12 
     sub_ofdm=12
@@ -283,9 +283,9 @@ def throughput(v_mimo,m_mod,r_max,n_rb,numerologia):
             0.18 
     """
     oh=[0.14,0.18]
-    v_oh=(1-oh[1])
-    print(v_mimo*m_mod*scaling_factor[1],r_max,n_rb,sub_ofdm,trama,v_oh)
-    throughput_user=v_mimo*m_mod*scaling_factor[1]*r_max*(n_rb*sub_ofdm/trama)*v_oh
+    v_oh=1-oh[1]
+    print(v_mimo,m_mod[2],scaling_factor[0],r_max,n_rb,sub_ofdm,trama,v_oh)
+    throughput_user=10**(-6)*(v_mimo*m_mod[2]*scaling_factor[0]*(r_max/1024)*(n_rb*sub_ofdm/trama)*v_oh)
     return throughput_user
 
 def TBS_BLER(n_rb,sym_ofdm,scs_ofdm,m_modulacion,r_max,v_mimo):
@@ -305,13 +305,12 @@ def TBS_BLER(n_rb,sym_ofdm,scs_ofdm,m_modulacion,r_max,v_mimo):
     #Prueba para las variables
     print(n_re,r,m_qam[2],v_mimo,type(n_re),type(r),type(m_qam[2]),type(v_mimo))
     n_info=n_re*(r/1024)*m_qam[2]*v_mimo
-
     if n_info <= 3824:
         n=max(3,math.floor(math.log2(n_info)-6))
-        n_infop=max((24.2**n)*math.floor(n_info/2**n))
-    elif n_info >3824:
+        n_infop=max(24,(2**n*math.floor(n_info/(2**n))))
+    elif n_info > 3824:
         n=math.floor(math.log2(n_info-24))-5
-        n_infop=max(3840,(2**n)*round((n_info-24)/2**n))
+        n_infop=max(3840,(2**n*round((n_info-24)/2**n)))
     else :
         pass
     print(n_infop,n_info)
@@ -320,8 +319,8 @@ def TBS_BLER(n_rb,sym_ofdm,scs_ofdm,m_modulacion,r_max,v_mimo):
         c= math.ceil((n_infop+24)/3816)
         tbs=8*c*math.ceil((n_infop+24)/(8*c))-24
     elif n_info > 8424:
-        c=math.ceil(n_infop+24/3816)
-        tbs=8*c*math.ceil((n_infop+24)/(8*c))
+        c=math.ceil((n_infop+24)/3816)
+        tbs=8*c*math.ceil((n_infop+24)/(8*c))-24
     else:
         tbs=8*math.ceil((n_infop+24/8))-24
     return tbs
@@ -393,13 +392,20 @@ if __name__=="__main__":
     snr_in=18
     m_mod=asignar_lim_modulacion(snr_in)
     r_max=asignar_r_max(m_mod[2])
-    print(m_mod, r_max)
+    print("ordende la modulacion y tasa de codificacion : ",m_mod, r_max)
     v_mimo=1
     scs_ofdm=12
     sym_ofdm=12
     n_rb= 40
     TBS=TBS_BLER(n_rb,sym_ofdm,scs_ofdm,m_mod,r_max,v_mimo)
-    print(TBS)
+    print("Tamaño de la informacion : ",TBS)
+    numerologia=3
+    print("**************************************************")
+    print("**********PRUEBA THROUGHPUT****************")
+    print("**************************************************")
+    print(v_mimo,m_mod,r_max,n_rb,numerologia)
+    throughput=throughput(v_mimo,m_mod,r_max,n_rb,numerologia)
+    print("throughput : " ,throughput)
     #print('orden modulacion 64qam: ', orden_mqam)
 
 
