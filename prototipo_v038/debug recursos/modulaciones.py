@@ -278,14 +278,12 @@ def throughput(v_mimo,m_mod,r_max,n_rb,numerologia):
     v_oh=(1-oh[1])
     print("Throughput")
     #print(v_mimo*m_mod*scaling_factor[1],r_max,n_rb,sub_ofdm,trama,v_oh)
-    throughput_user=v_mimo*m_mod*scaling_factor[1]*(r_max/1024)*(n_rb*sub_ofdm/trama)*v_oh
+    throughput_user=10**(-6)*(v_mimo*m_mod*scaling_factor[1]*(r_max/1024)*(n_rb*sub_ofdm/trama)*v_oh)
     return throughput_user
 
-def TBS_BLER(n_rb,n_ofdm,m_modulacion,r_max,v_mimo):
+def TBS_BLER(n_rb,n_ofdm,m_modulacion,r_max,v_mimo,n_dmrs,n_oh):
 	#numero de bloques de recursos asignados al PBCH donde el DM-RS es el canal de transmision y consume 24 bloques
-	n_dmrs=24
 	print("tbs_bler")
-	n_oh=18
 	m_qam=m_modulacion
 	r=r_max
 	#revisar como esta el n_rb ------REVISAR-----------------------
@@ -308,13 +306,13 @@ def TBS_BLER(n_rb,n_ofdm,m_modulacion,r_max,v_mimo):
 		n_infop=max(3840,(2**n)*round((n_info-24)/2**n))
 	else :
 		pass
-
-	if r <= 0.25:
+    r_ref=r/1024
+	if r_ref <= 0.25:
 		c= math.ceil((n_infop+24)/3816)
 		tbs=8*c*math.ceil((n_infop+24)/(8*c))-24
 	elif n_info > 8424:
 		c=math.ceil(n_infop+24/3816)
-		tbs=8*c*math.ceil((n_infop+24)/(8*c))
+		tbs=8*c*math.ceil((n_infop+24)/(8*c))-24
 	else:
 		tbs=8*math.ceil((n_infop+24/8))-24
 	return tbs
@@ -351,20 +349,21 @@ def test_01():
 	caso predefinido.'''
 	#declaracion de parametros
 	#fijo
-	n_dmrs=24
-	n_oh=18
+	n_dmrs=13
+	n_oh=5
 	#cantidad arreglos de antena
-	v_mimo=2
+	v_mimo=1
 	n_ofdm=12
 
 	#variable
 	n_rb=100
 	#sinr_in=10.0
-	n_rb_data=[0, 0, 100, 100, 100, 100 ]
+	#n_rb_data=[0, 0, 100, 100, 100, 100 ]
+	n_rb_data=[40, 40, 40, 40, 40, 40 ]
 
 	sinr_in_data=[-5,0,5,10,20,24]
 
-	n_rb_data=[100,100,100, 100, 100, 100 ]
+	#n_rb_data=[100,100,100, 100, 100, 100 ]
 	sinr_in_data=[-5,0,5,10,20,24]
 	case_use=["URRLC", "mmtc", "ebmm"]
 	case_use=case_use[0]
@@ -382,11 +381,13 @@ def test_02():
 	'''Funcion de prueba'''
 	#declaracion de parametros
 	#fijo
-	n_dmrs=24
-    #por que aca es 18 y en 038 es 5.
-	n_oh=18
+	n_dmrs=13
+    #por que aca es 18 y en 038 es 5.# RTA/el valor es definido por la interfaz 
+    # pero por razones de simulacion lo configuramos estandar
+    
+	n_oh=5
 	#cantidad arreglos de antena
-	v_mimo=2
+	v_mimo=1
 	n_ofdm=12
 
     #que es esto?
@@ -412,7 +413,7 @@ def main_2(n_dmrs,n_oh,n_rb,n_ofdm,sinr_in,case_use,v_mimo,numerologia ):
 	#porque array[2]?
 	r_max=asignar_r_max(m_modulacion[2])
 	print("--------------------[main_2]:r_max->",r_max)
-	tbs=TBS_BLER(n_rb,n_ofdm,m_modulacion,r_max,v_mimo)
+	tbs=TBS_BLER(n_rb,n_ofdm,m_modulacion,r_max,v_mimo,n_dmrs,n_oh)
 	print("--------------------[main_2]:tbs->",tbs)
 	ber=ber_sys(tbs)
 	print("--------------------[main_2]:ber->",ber)

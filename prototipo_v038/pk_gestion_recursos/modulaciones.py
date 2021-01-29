@@ -286,6 +286,7 @@ def throughput(v_mimo,m_mod,r_max,n_rb,numerologia):
     v_oh=1-oh[1]
     print(v_mimo,m_mod[2],scaling_factor[0],r_max,n_rb,sub_ofdm,trama,v_oh)
     throughput_user=10**(-6)*(v_mimo*m_mod[2]*scaling_factor[0]*(r_max/1024)*(n_rb*sub_ofdm/trama)*v_oh)
+    print((sub_ofdm*n_rb/trama)*(10**(-3)*v_oh))
     return throughput_user
 
 def TBS_BLER(n_rb,sym_ofdm,scs_ofdm,m_modulacion,r_max,v_mimo):

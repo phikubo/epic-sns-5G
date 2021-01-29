@@ -181,6 +181,7 @@ class Modelo_Canal:
 			self.perdidas_okumura_hata_mhz()
 
 		elif self.cfg_prop["modelo_perdidas"] =="abg":
+			
 			pass
 		elif self.cfg_prop["modelo_perdidas"] =="ci":
 			pass
@@ -265,8 +266,10 @@ class Modelo_Canal:
 		considerados por la documentacion valores en dB para sigma y veces para alpha_n
 		***articulo Simulation path loss Propagation Path Loss models for 5G urban micro and macro-cellular Scenarios
 		-rango de frecuencias debajo de 30GHz'''
-		alpha_n=3.1
-		sigma_xn=8.1
+		alpha_n=self.cfg_prop["params_modelo"][3]#valor de alpha n para el parametro CI 
+		#este parametro es de valor 3.1 fijo y tomado de https://ieeexplore.ieee.org/document/7504435
+		sigma_xn=self.cfg_prop["params_modelo"][4]#es la desviacion estandar que presenta la curva perdidas
+		# y es un valor aleatorio, con una distribucion gausiana de media SIGMA_XN
 		correcion_freq_ghz=32.4+20*math.log10(self.portadora)
 		correccion_dist_m=10*alpha_n*np.log10(self.distancias)
 		self.resultado_path_loss=correcion_freq_ghz+correccion_dist_m+sigma_xn
@@ -279,10 +282,10 @@ class Modelo_Canal:
 		-sigma_Xn[dB]:8.0 desviacion estandar.
 		***articulo Propagation Path Loss Models for 5G Urban Micro- and Macro-Cellular Scenarios✮
 		-rango de frecuencias debajo de 30GHz'''
-		alpha_n=3.5
-		beta=24.4
-		gamma=1.9
-		sigma_xn=8.0
+		alpha_n=self.cfg_prop["params_modelo"][5]
+		beta=self.cfg_prop["params_modelo"][6]
+		gamma=self.cfg_prop["params_modelo"][7]
+		sigma_xn=self.cfg_prop["params_modelo"][8]
 		correccion_freq_ghz=(10*gamma*math.log10(self.portadora))
 		correcion_dist_m=(10*alpha_n*np.log10(self.distancias))
 		self.resultado_path_loss=correccion_freq_ghz+correcion_dist_m+beta+sigma_xn
