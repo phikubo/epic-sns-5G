@@ -87,21 +87,22 @@ def asignar_tasa_modulacion(sinr_in):
     else:
         tasa_inferior = tasa_tar[inferior]
         mod_inferior = mod_tar[inferior]
-        
+
 
     if verificar_inferior:
-        mod_inferior = -1
-        tasa_inferior = -1
-        sinr_superior = -1
-        sinr_inferior = -1
+        mod_inferior = -300
+        tasa_inferior = -300
+        sinr_superior = -300
+        sinr_inferior = -300
     else:
         pass
+    print(mod_inferior, tasa_inferior)
 
     return sinr_inferior, sinr_superior, tasa_inferior, mod_inferior
 
 
 def calcular_tbs_ber(n_rb,modulacion,tasa,arreglo_mimo,sym_ofdm,scs_ofdm):
-    '''Funcion para calcular tbs, dado la modulacion y tasa de bits. 
+    '''Funcion para calcular tbs, dado la modulacion y tasa de bits.
     Numero de bloques de recursos asignados al PBCH donde el DM-RS es el canal de transmision y consume 24 bloques.'''
     #numeros
     constant_dmrs=13
@@ -123,10 +124,10 @@ def calcular_tbs_ber(n_rb,modulacion,tasa,arreglo_mimo,sym_ofdm,scs_ofdm):
         n=math.floor(math.log2(n_info-24))-5 #por que 5?
         n_infop=max(3840,(2**n)*round((n_info-24)/2**n))
     else:
-        pass 
+        pass
 
     #[?] r->tasa, ya esta divido en 1024 en [?-3]
-    #r_ref=r/1024 
+    #r_ref=r/1024
     r_ref=tasa/1024
 
     #[!!!]: CONDICION NO COMPARA VARIABLES IGUALES.
@@ -139,18 +140,19 @@ def calcular_tbs_ber(n_rb,modulacion,tasa,arreglo_mimo,sym_ofdm,scs_ofdm):
     elif n_info > 8424:
         c=math.ceil(n_infop+24/3816)
         tbs=8*c*math.ceil((n_infop+24)/(8*c))
-    
+
     #[???]: que condincion es esta?. No tiene sentido... teniendo en cuenta que el primer if
-    #y el segundo elif, no son las mismas variables, entonces este else 
+    #y el segundo elif, no son las mismas variables, entonces este else
     #a que condicion hace referencia?
     else:
         #[?]:por que 24?
         tbs=8*math.ceil((n_infop+24/8))-24
-    
+
     ber = 1- (1-const_bler)**(1/tbs)
     return tbs, ber
-    
-    
+
+
+
 
 def calcular_throughput(n_rb,modulacion,tasa,arreglo_mimo,numerologia):
     '''Calcular el throuhgput dado valores de entrada'''
@@ -158,7 +160,7 @@ def calcular_throughput(n_rb,modulacion,tasa,arreglo_mimo,numerologia):
 
     #[?]: por que se calcula? esto ya se calculo en Planificador
     trama=10**(-3)/(14*2**numerologia)
-    #La cantidad de subportadoras OFDM es fija y es de 12 
+    #La cantidad de subportadoras OFDM es fija y es de 12
     #[?] por que se repite?
     sub_ofdm=12
 
@@ -170,7 +172,8 @@ def calcular_throughput(n_rb,modulacion,tasa,arreglo_mimo,numerologia):
     v_oh=(1-oh[1])
 
     #[!!!]: por que se selecciona scaling_factor[1]?
-    throughput_user=arreglo_mimo*modulacion*scaling_factor[1]*tasa*(n_rb*sub_ofdm/trama)*v_oh
+    print(arreglo_mimo, modulacion, scaling_factor[0], tasa, n_rb, sub_ofdm, trama, v_oh)
+    throughput_user=10**(-6)*arreglo_mimo*modulacion*scaling_factor[0]*(tasa/1024)*(n_rb*sub_ofdm/trama)*v_oh
     return throughput_user
 
 
@@ -178,7 +181,7 @@ def definir_flujo():
     #define las variables de prueba y el flujo
     constant_dmrs=13
     constant_oh=5
-    arreglo_mimo=2
+    arreglo_mimo=1
     n_ofdm=12
     n_rb=100
     sinr_in=10
@@ -188,8 +191,8 @@ def definir_flujo():
     case_use=["URRLC", "mmtc", "ebmm"]
     numerologia=[0,1,2,3]
 
-    numerologia=numerologia[3]
-    
+    numerologia=numerologia[1]
+
     #[?]: no se usa. Por que definir entonces?
     case_use=case_use[0]
 
@@ -199,17 +202,16 @@ def definir_flujo():
     #traduccion de variables
     #(modulacion,m_mod)
     #(tasa, r_max)
-    #(arreglo_mimo, v_mimo)
-
+    #(arreglo_mimo, v_mimoprint(modulacion)
     #calcualr tbs, ber
     tbs,ber=calcular_tbs_ber(n_rb,sym_ofdm,scs_ofdm,modulacion,tasa,arreglo_mimo)
-    
+
     #calcular thoughput
     #[!!!!!!!]: por que en este calculo no se usa tbs, ber?, cual es el punto de calcularlo?
     throughput=calcular_throughput(n_rb,modulacion,tasa,arreglo_mimo,numerologia)
 
     print("thouhgput: {}".format(throughput))
-    
+
 
 if __name__ == "__main__":
 	#Prototipo:
