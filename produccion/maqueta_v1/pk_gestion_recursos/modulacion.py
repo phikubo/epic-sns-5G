@@ -151,6 +151,28 @@ def calcular_tbs_ber(n_rb,modulacion,tasa,arreglo_mimo,sym_ofdm,scs_ofdm):
     ber = 1- (1-const_bler)**(1/tbs)
     return tbs, ber
 
+    '''
+    #paso1a cuantizar nre
+    #paso2a calcular ninfo
+    #paso2b:
+
+        if ninfo<=3824:
+            #paso3->tbs_tablas
+        else:
+            #paso4
+            #quantizar ninfo_p
+            #calcular n
+            if r<=1/4:
+                #calcular tbs1
+            else:
+                if ninfo_p>8424:
+                    #calcular tbs2
+                else:
+                    #calcular tbs3
+    '''
+                
+
+
 
 
 
