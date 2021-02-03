@@ -290,8 +290,75 @@ def throughput(v_mimo,m_mod,r_max,n_rb,numerologia):
     return throughput_user
 
 def TBS_BLER(n_rb,sym_ofdm,scs_ofdm,m_modulacion,r_max,v_mimo):
-    #numero de bloques de recursos asignados al PBCH donde el DM-RS es el canal de transmision y consume 24 bloques
-    #de recursos.
+    #numero de bloques de recursos asignados al PBCH donde el DM-RS es el canal de transmision y consume 20 bloques
+    #de recursos ya que depende de los SSblock generados periodicamente cada 2 slot .
+    # los valores de DM-RS se encuentran en los SS-BLOCKs y el valor para los TBS hace referencia a la cantidad de 
+    # bloques de recursos asignados para el DM-RS en el SS-BLOCK este valor depende de la frecuencia portadora
+    # y depende del espaciamiento entre sub portadoras. la cantidad de bloques de recursos usados para el DM-RS
+    # en un SSBLOCK es de 144 elementos de recursos usados en el PBCH
+    """
+    los SS-BLOCk siempre ocupan 20 RB
+
+    Nota: el PBCH se transmite en los SS-BLOCK con una periodicidad, el SS -block ocupa 20 RBs
+    distribuyendo 240 sub portadoras en 4 symbolos OFDM.
+
+    el PBCH ocupa de un SS-block  240 subportadoras en 2 simbolos OFDM (el 2 y 4 de un SS-block) 
+    y en el 3 simbolo ocupa 48 subportadoras por encima y por debajo dando un total de 576 subportadoras
+
+    la carga util del PBCH seria 576-(144:N_dmrs)=432 
+    """
+
+    #Numero de bloque de recursos asignados como cabecera de la trama es de y que son fijos n_oh=2
+    #n_dm-rs=[1,2,3] inforlacion sacada de 3GPP TS 38.211, 38.212, 38.213, 38.331, 38.300, 38.104,
+    #TR 38.912
+    #  http://howltestuffworks.blogspot.com/2019/10/5g-nr-synchronization-signalpbch-block.html
+    n_dmrs=1
+    n_oh=2
+    #ecuacion para saber la cantidad maxima de TBS segun orden se saca de TS 38.214 tabla  5.1.3.1-1
+    # y se puede ver en https://5g-tools.com/5g-nr-tbs-transport-block-size-calculator/
+    m_qam=m_modulacion
+    r=r_max
+    # n_rep es la informacion de referencia para evaluar la cantidad de informacion enviada
+    # donde los n_rb son los bloques de recursos disponibles para los usuarios con servicio
+    # y la informacion de referencia seria: N_rb*(SCS_OFDM*SYM_OFDM-N_DMRS-N_OH)
+    # SCS_OFDM es el espaciamiento entre subportadora
+    # SYM_OFDM son los simbolos OFDM usados en la trama para los slot(ranuras) para el Downlink
+    # 
+    """
+    Nota: esa trama es asignada sin contar con los simbolos flexibles para la trama los slot
+    lo que quiere decir que solo se tienen en cuenta los simbolos OFDM asignados al Downlink
+    de lo contrario, si la red no asigna la disposicion de estos simbolos por defecto para NR 
+    se consideran simbolos flexibles.
+    """
+    n_rep=scs_ofdm*sym_ofdm-n_dmrs-n_oh
+    n_re=min(156,n_rep)*n_rb
+    #n_re=int(n_rei)
+    #Prueba para las variables
+    print(n_re,r,m_qam[2],v_mimo,type(n_re),type(r),type(m_qam[2]),type(v_mimo))
+    n_info=n_re*(r/1024)*m_qam[2]*v_mimo
+    if n_info <= 3824:
+        n=max(3,math.floor(math.log2(n_info)-6))
+        n_infop=max(24,(2**n*math.floor(n_info/(2**n))))
+    elif n_info > 3824:
+        n=math.floor(math.log2(n_info-24))-5
+        n_infop=max(3840,(2**n*round((n_info-24)/2**n)))
+    else :
+        pass
+    print(n_infop,n_info)
+    r_ref=r/1024
+    if r_ref <= 0.25:
+        c= math.ceil((n_infop+24)/3816)
+        tbs=8*c*math.ceil((n_infop+24)/(8*c))-24
+    elif n_info > 8424:
+        c=math.ceil((n_infop+24)/3816)
+        tbs=8*c*math.ceil((n_infop+24)/(8*c))-24
+    else:
+        tbs=8*math.ceil((n_infop+24/8))-24
+    return tbs
+
+def TBS_BLER_2(n_rb,sym_ofdm,scs_ofdm,m_modulacion,r_max,v_mimo):
+    #numero de bloques de recursos asignados al PBCH donde el DM-RS es el canal de transmision y consume 24 bloques 
+    #de recursos. 
     n_dmrs=13
     #Numero de bloque de recursos asignados como cabecera de la trama y que son fijos n=18
     #ecuacion para saber la cantidad maxima de TBS segun orden se saca de TS 38.214 tabla  5.1.3.1-1
