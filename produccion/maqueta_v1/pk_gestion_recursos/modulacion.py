@@ -160,8 +160,9 @@ def calcular_tbs_ber(n_rb,modulacion,tasa,arreglo_mimo,sym_ofdm,scs_ofdm):
             #paso3->tbs_tablas
         else:
             #paso4
-            #quantizar ninfo_p
             #calcular n
+            #quantizar ninfo_p
+            
             if r<=1/4:
                 #calcular tbs1
             else:
