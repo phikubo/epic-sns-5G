@@ -286,7 +286,8 @@ def throughput(v_mimo,m_mod,r_max,n_rb,numerologia):
     v_oh=1-oh[1]
     print(v_mimo,m_mod[2],scaling_factor[0],r_max,n_rb,sub_ofdm,trama,v_oh)
     throughput_user=10**(-6)*(v_mimo*m_mod[2]*scaling_factor[0]*(r_max/1024)*(n_rb*sub_ofdm/trama)*v_oh)
-    #print((sub_ofdm*n_rb/trama)*(10**(-3)*v_oh))
+    #print((10**(-3)*v_oh))
+    print("POSIBLE N_info EN LA ECUACION DEL THROUGHPUT: ",sub_ofdm*n_rb*v_mimo*(r_max/1024)*m_mod[2]*14)
     return throughput_user
 
 def TBS_BLER(n_rb,sym_ofdm,scs_ofdm,m_modulacion,r_max,v_mimo):
@@ -338,10 +339,12 @@ def TBS_BLER(n_rb,sym_ofdm,scs_ofdm,m_modulacion,r_max,v_mimo):
     n_info=n_re*(r/1024)*m_qam[2]*v_mimo
     if n_info <= 3824:
         n=max(3,math.floor(math.log2(n_info)-6))
-        n_infop=max(24,(2**n*math.floor(n_info/(2**n))))
+        n_infop=max(24,(2**n*(math.floor(n_info/(2**n)))))
+        print("---------------------n_info",n_infop)
     elif n_info > 3824:
         n=math.floor(math.log2(n_info-24))-5
         n_infop=max(3840,(2**n*round((n_info-24)/2**n)))
+        print("---------------------n_info",n_infop)
     else :
         pass
     print(n_infop,n_info)
@@ -349,11 +352,12 @@ def TBS_BLER(n_rb,sym_ofdm,scs_ofdm,m_modulacion,r_max,v_mimo):
     if r_ref <= 0.25:
         c= math.ceil((n_infop+24)/3816)
         tbs=8*c*math.ceil((n_infop+24)/(8*c))-24
-    elif n_info > 8424:
-        c=math.ceil((n_infop+24)/3816)
-        tbs=8*c*math.ceil((n_infop+24)/(8*c))-24
-    else:
-        tbs=8*math.ceil((n_infop+24/8))-24
+    else: 
+        if n_info > 8424:
+            c=math.ceil((n_infop+24)/3816)
+            tbs=8*c*math.ceil((n_infop+24)/(8*c))-24
+        else:
+            tbs=8*math.ceil(((n_infop+24)/8))-24
     return tbs
 
 def TBS_BLER_2(n_rb,sym_ofdm,scs_ofdm,m_modulacion,r_max,v_mimo):
@@ -461,11 +465,12 @@ if __name__=="__main__":
     m_mod=asignar_lim_modulacion(snr_in)
     r_max=asignar_r_max(m_mod[2])
     r_max=567
+    m_mod=[True,True,4]
     print("ordende la modulacion y tasa de codificacion : ",m_mod, r_max)
     v_mimo=1
     scs_ofdm=12
     sym_ofdm=12
-    n_rb= 100
+    n_rb= 40
     TBS=TBS_BLER(n_rb,sym_ofdm,scs_ofdm,m_mod,r_max,v_mimo)
     print("Tamaño de la informacion : ",TBS)
     numerologia=1
