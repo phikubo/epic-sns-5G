@@ -141,8 +141,6 @@ class Modelo_Canal:
 					self.distancias=self.custom_dist
 				else:
 					self.distancias=self.arreglos[0][0]/1000
-
-
 			else:
 				pass #opcion kilometro, no cambia.
 
