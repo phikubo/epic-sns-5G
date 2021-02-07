@@ -180,13 +180,75 @@ class Modelo_Canal:
 
 			self.perdidas_okumura_hata_mhz()
 
-		elif self.cfg_prop["modelo_perdidas"] =="abg":
+		elif self.cfg_prop["modelo_perdidas"] =="umi_ci":
+			#km, mhz
+			if self.arreglos[0][1]=="m":
+				#self.hiper_arreglos[0]=(self.hiperc_distancias, "m") #siempre en metros.
+				#self.hiper_arreglos[1]=(self.hiperc_ganancia_relativa, "none")
+				#convierto a kilometros
+
+				#ADICIONAR01
+				if self.custom_dist_flag==True:
+					self.distancias=self.custom_dist
+				else:
+					self.distancias=self.arreglos[0][0]/1000
+
+			else:
+				pass #opcion kilometro, no cambia.
+			if self.cfg_gen["portadora"][1]=="ghz":
+				#convierto a megaherz, por la ecuacion, si ya esta en megaherz, pass
+				self.portadora=self.cfg_gen["portadora"][0]*1000
+			else:
+				pass #opcion megaherz, no cambia.
+			#print(self.distancias.shape)
+			self.perdidas_umi_ci()
+
+		elif self.cfg_prop["modelo_perdidas"] =="umi_abg":
+			#km, mhz
+			if self.arreglos[0][1]=="m":
+				#self.hiper_arreglos[0]=(self.hiperc_distancias, "m") #siempre en metros.
+				#self.hiper_arreglos[1]=(self.hiperc_ganancia_relativa, "none")
+				#convierto a kilometros
+
+				#ADICIONAR01
+				if self.custom_dist_flag==True:
+					self.distancias=self.custom_dist
+				else:
+					self.distancias=self.arreglos[0][0]/1000
+
+			else:
+				pass #opcion kilometro, no cambia.
+			if self.cfg_gen["portadora"][1]=="ghz":
+				#convierto a megaherz, por la ecuacion, si ya esta en megaherz, pass
+				self.portadora=self.cfg_gen["portadora"][0]*1000
+			else:
+				pass #opcion megaherz, no cambia.
+			#print(self.distancias.shape)
+			self.perdidas_umi_abg()
 			
-			pass
-		elif self.cfg_prop["modelo_perdidas"] =="ci":
-			pass
-		elif self.cfg_prop["modelo_perdidas"] =="3gpp":
-			pass
+		elif self.cfg_prop["modelo_perdidas"] =="uma_3gpp":
+			#km, mhz
+			if self.arreglos[0][1]=="m":
+				#self.hiper_arreglos[0]=(self.hiperc_distancias, "m") #siempre en metros.
+				#self.hiper_arreglos[1]=(self.hiperc_ganancia_relativa, "none")
+				#convierto a kilometros
+
+				#ADICIONAR01
+				if self.custom_dist_flag==True:
+					self.distancias=self.custom_dist
+				else:
+					self.distancias=self.arreglos[0][0]/1000
+
+			else:
+				pass #opcion kilometro, no cambia.
+			if self.cfg_gen["portadora"][1]=="ghz":
+				#convierto a megaherz, por la ecuacion, si ya esta en megaherz, pass
+				self.portadora=self.cfg_gen["portadora"][0]*1000
+			else:
+				pass #opcion megaherz, no cambia.
+			#print(self.distancias.shape)
+			self.perdidas_tr_38901()
+
 		else:
 			pass
 
@@ -266,9 +328,9 @@ class Modelo_Canal:
 		considerados por la documentacion valores en dB para sigma y veces para alpha_n
 		***articulo Simulation path loss Propagation Path Loss models for 5G urban micro and macro-cellular Scenarios
 		-rango de frecuencias debajo de 30GHz'''
-		alpha_n=self.cfg_prop["params_modelo"][3]#valor de alpha n para el parametro CI 
+		alpha_n=self.cfg_prop["params_modelo"][0]#valor de alpha n para el parametro CI 
 		#este parametro es de valor 3.1 fijo y tomado de https://ieeexplore.ieee.org/document/7504435
-		sigma_xn=self.cfg_prop["params_modelo"][4]#es la desviacion estandar que presenta la curva perdidas
+		sigma_xn=self.cfg_prop["params_modelo"][1]#es la desviacion estandar que presenta la curva perdidas
 		# y es un valor aleatorio, con una distribucion gausiana de media SIGMA_XN
 		correcion_freq_ghz=32.4+20*math.log10(self.portadora)
 		correccion_dist_m=10*alpha_n*np.log10(self.distancias)
@@ -282,10 +344,10 @@ class Modelo_Canal:
 		-sigma_Xn[dB]:8.0 desviacion estandar.
 		***articulo Propagation Path Loss Models for 5G Urban Micro- and Macro-Cellular Scenarios✮
 		-rango de frecuencias debajo de 30GHz'''
-		alpha_n=self.cfg_prop["params_modelo"][5]
-		beta=self.cfg_prop["params_modelo"][6]
-		gamma=self.cfg_prop["params_modelo"][7]
-		sigma_xn=self.cfg_prop["params_modelo"][8]
+		alpha_n=self.cfg_prop["params_modelo"][0]
+		beta=self.cfg_prop["params_modelo"][1]
+		gamma=self.cfg_prop["params_modelo"][2]
+		sigma_xn=self.cfg_prop["params_modelo"][3]
 		correccion_freq_ghz=(10*gamma*math.log10(self.portadora))
 		correcion_dist_m=(10*alpha_n*np.log10(self.distancias))
 		self.resultado_path_loss=correccion_freq_ghz+correcion_dist_m+beta+sigma_xn
