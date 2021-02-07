@@ -180,6 +180,7 @@ class Modelo_Canal:
 
 		elif self.cfg_prop["modelo_perdidas"] =="umi_ci":
 			#km, mhz
+			print("[debug]:mod_canal:umi_ci")
 			if self.arreglos[0][1]=="m":
 				#self.hiper_arreglos[0]=(self.hiperc_distancias, "m") #siempre en metros.
 				#self.hiper_arreglos[1]=(self.hiperc_ganancia_relativa, "none")
@@ -203,6 +204,7 @@ class Modelo_Canal:
 
 		elif self.cfg_prop["modelo_perdidas"] =="umi_abg":
 			#km, mhz
+			print("[debug]:mod_perd:umi_abg")
 			if self.arreglos[0][1]=="m":
 				#self.hiper_arreglos[0]=(self.hiperc_distancias, "m") #siempre en metros.
 				#self.hiper_arreglos[1]=(self.hiperc_ganancia_relativa, "none")
@@ -293,8 +295,10 @@ class Modelo_Canal:
 		-rango de frecuencias debajo de 30GHz'''
 		alpha_n=self.cfg_prop["params_modelo"][0]#valor de alpha n para el parametro CI 
 		#este parametro es de valor 3.1 fijo y tomado de https://ieeexplore.ieee.org/document/7504435
+		alpha_n=3.1
 		sigma_xn=self.cfg_prop["params_modelo"][1]#es la desviacion estandar que presenta la curva perdidas
 		# y es un valor aleatorio, con una distribucion gausiana de media SIGMA_XN
+		sigma_xn=8.1
 		correcion_freq_ghz=32.4+20*math.log10(self.portadora)
 		correccion_dist_m=10*alpha_n*np.log10(self.distancias)
 		self.resultado_path_loss=correcion_freq_ghz+correccion_dist_m+sigma_xn
@@ -311,6 +315,12 @@ class Modelo_Canal:
 		beta=self.cfg_prop["params_modelo"][1]
 		gamma=self.cfg_prop["params_modelo"][2]
 		sigma_xn=self.cfg_prop["params_modelo"][3]
+
+		alpha_n=3.5
+		beta=24.4
+		gamma=1.9
+		sigma_xn=8.0
+
 		correccion_freq_ghz=(10*gamma*math.log10(self.portadora))
 		correcion_dist_m=(10*alpha_n*np.log10(self.distancias))
 		self.resultado_path_loss=correccion_freq_ghz+correcion_dist_m+beta+sigma_xn
