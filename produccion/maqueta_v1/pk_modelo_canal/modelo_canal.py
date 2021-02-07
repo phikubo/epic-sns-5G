@@ -245,7 +245,7 @@ class Modelo_Canal:
 			else:
 				pass #opcion megaherz, no cambia.
 			#print(self.distancias.shape)
-			self.perdidas_tr_38901()
+			self.perdidas_uma_3gpp()
 
 		else:
 			pass
@@ -284,41 +284,6 @@ class Modelo_Canal:
 		if self.cfg_prop["params_desv"]["display"]:
 			self.resultado_path_loss_antes=A+B*np.log10(self.distancias)-E
 		self.resultado_path_loss=A+(B*np.log10(self.distancias))-E #+ self.desvanecimiento
-
-
-	def balance_del_enlace_mcl(self):
-		'''Funcion que calcula un balance del enlace, teniendo en cuenta el mcl.
-		RX_PWR = TX_PWR – Max (pathloss – G_TX – G_RX, MCL)
-		where:
-		RX_PWR is the received signal power
-		TX_PWR is the transmitted signal power
-		G_TX is the transmitter antenna gain
-		G_RX is the receiver antenna gain
-		---
-		Una ecuación de balance de enlace que incluye todos estos efectos, expresado de forma logarítmica,
-		podría tener este aspecto:
-
-		  P_ {RX} = P_ {TX} + G_ {TX} - L_ {TX} - L_ {FS} - L_M + G_ {RX} - L_ {RX} \,
-
-		dónde:
-
-		P_ {RX} = Potencia recibida (dBm)
-		P_ {TX} = Potencia de salida del transmisor (dBm)
-		G_ {TX}= Transmisor de ganancia de la antena (dBi)
-		L_ {TX} = pérdidas transmisor (coaxiales, conectores, ...) (dB)
-		L_ {FS}= Pérdida de trayecto , por lo general la pérdida de espacio libre (dB)
-		L_M = Pérdidas diversas ( desvanecimiento margen, la pérdida del cuerpo, desadaptación de polarización, otras pérdidas ...) (dB)
-		G_ {RX}= Receptor de ganancia de la antena (dBi)
-		L_ {RX} = pérdidas receptor (coaxial, conectores, ...) (dB) '''
-		#mcl=70 #dB para entorno urbano.
-		#segmento_tx=self.tx_grel-self.tx_loss
-		#segmento_rx=self.rx_g-self.rx_loss
-		#self.resultado_balance=segmento_tx+segmento_rx-self.resultado_path_loss
-		self.configurar_desvanecimiento()
-		#print("\n[modelo_canal.func.mcl] MCL")
-		#print(np.maximum(self.balance_simplificado, mcl))
-		self.resultado_balance=self.cfg_bal["ptx"]-np.maximum(self.balance_simplificado, self.cfg_bal["mcl"])
-		self.resultado_margen=self.resultado_balance-self.cfg_bal["sensibilidad"]
 
 
 	def perdidas_umi_ci(self):
@@ -362,11 +327,12 @@ class Modelo_Canal:
 		return path_l
 
 
-	def perdidas_tr_38901(self):
+	def perdidas_uma_3gpp(self):
 		'''Este modulo recrea las perdidas con distancia[m] y frecuencia[GHz] con los parametros
 		-distancia breakpoint: 4(Hbs-He)*(Hut-He)*fc/C
 		-rango de frecuencias para escenario UMa son por debajo de 6Ghz
-		Fuente: https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/15.00.00_60/tr_138901v150000p.pdf'''
+		Fuente: https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/15.00.00_60/tr_138901v150000p.pdf
+		Antes tr_38901()'''
 		frecuencia_hz= self.portadora*math.pow(10,9)
 		distancia_3d=np.sqrt(Hbs**2+self.distancias**2)
 		dist_breakpoint=(4*(Hbs-He)*(Hut-He)*frecuencia_hz)/(3*math.pow(10, 8))
@@ -375,6 +341,41 @@ class Modelo_Canal:
 		#CORREGIR
 		pl=[self.parametro_uma_pl(distancias,dist_ref,dist_3d) for distancias,dist_ref,dist_3d in zip(self.distancias,dist_bp,distancia_3d)]
 		self.path_loss=np.array(pl,dtype='float32')
+		
+
+	def balance_del_enlace_mcl(self):
+		'''Funcion que calcula un balance del enlace, teniendo en cuenta el mcl.
+		RX_PWR = TX_PWR – Max (pathloss – G_TX – G_RX, MCL)
+		where:
+		RX_PWR is the received signal power
+		TX_PWR is the transmitted signal power
+		G_TX is the transmitter antenna gain
+		G_RX is the receiver antenna gain
+		---
+		Una ecuación de balance de enlace que incluye todos estos efectos, expresado de forma logarítmica,
+		podría tener este aspecto:
+
+		  P_ {RX} = P_ {TX} + G_ {TX} - L_ {TX} - L_ {FS} - L_M + G_ {RX} - L_ {RX} \,
+
+		dónde:
+
+		P_ {RX} = Potencia recibida (dBm)
+		P_ {TX} = Potencia de salida del transmisor (dBm)
+		G_ {TX}= Transmisor de ganancia de la antena (dBi)
+		L_ {TX} = pérdidas transmisor (coaxiales, conectores, ...) (dB)
+		L_ {FS}= Pérdida de trayecto , por lo general la pérdida de espacio libre (dB)
+		L_M = Pérdidas diversas ( desvanecimiento margen, la pérdida del cuerpo, desadaptación de polarización, otras pérdidas ...) (dB)
+		G_ {RX}= Receptor de ganancia de la antena (dBi)
+		L_ {RX} = pérdidas receptor (coaxial, conectores, ...) (dB) '''
+		#mcl=70 #dB para entorno urbano.
+		#segmento_tx=self.tx_grel-self.tx_loss
+		#segmento_rx=self.rx_g-self.rx_loss
+		#self.resultado_balance=segmento_tx+segmento_rx-self.resultado_path_loss
+		self.configurar_desvanecimiento()
+		#print("\n[modelo_canal.func.mcl] MCL")
+		#print(np.maximum(self.balance_simplificado, mcl))
+		self.resultado_balance=self.cfg_bal["ptx"]-np.maximum(self.balance_simplificado, self.cfg_bal["mcl"])
+		self.resultado_margen=self.resultado_balance-self.cfg_bal["sensibilidad"]
 
 
 	def balance_del_enlace_simple(self):
