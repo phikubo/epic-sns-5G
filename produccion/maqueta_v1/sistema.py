@@ -20,11 +20,13 @@ try:
 	from pk_red_dispositivos import modulo_ppp as ppp
 	from pk_red_dispositivos import antenas as ant
 	from pk_red_dispositivos import modulo_circulos as mcir
-	#
+	#from pk_
 	#import pk_modelo_canalmodelo_canal as moca
 	#import pk_gestion_recursosplanificador as plan
 	from pk_modelo_canal import modelo_canal as moca
 	from pk_gestion_recursos import planificador as plan
+	#adicion05
+	from pk_gestion_recursos import modulacion as mod
 
 except:
 	print("ATENCION: Uno o mas modulos no pudo ser importado... ")
@@ -167,6 +169,8 @@ class Sistema_Celular:
 		#self.inicializar_modulacion()
 		#calcula recursos con sinr y modulaciones.
 		#self.calcular_recursos_tp()
+		#adicion05
+		self.calcular_throughput()
 
 
 
@@ -678,7 +682,15 @@ class Sistema_Celular:
 		#https://www.rfwireless-world.com/calculators/5G-NR-TBS-Calculation.html
 
 		#EL RADIO DE LA CELDA CREA ESPACIOS NO LINEALES.
-		#COREGIR POR ISD.
+		#COREGIR POR ISD. Corregido.
+	
+	#adicion05
+	def calcular_throughput(self):
+		'''Dado un sinr calcula el throughput de un arreglo, usando un modulo externo y no una clase.'''
+		print("[debug]:calcular_throughput()", self.sinr_db.shape)
+		print(self.sinr_db)
+		#sinr_down, sinr_up, tasa, modulacion = asignar_tasa_modulacion(sinr_in)
+		
 
 
 	'''-----------------------------------------------------------------------------------------
