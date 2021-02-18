@@ -26,11 +26,11 @@ try:
 	from pk_modelo_canal import modelo_canal as moca
 	from pk_gestion_recursos import planificador as plan
 	#adicion05
-	from pk_gestion_recursos import modulacion as mod
+	from pk_gestion_recursos import modulacion as modd
 
 except:
-	print("ATENCION: Uno o mas modulos no pudo ser importado... ")
-	print("...desde un archivo externo. Ignorar si la ejecucion es interna. ")
+	print("\nATENCION: Uno o mas modulos no pudo ser importado... ")
+	print("...desde un archivo externo. Ignorar si la ejecucion es interna.\n")
 #
 #bloque de carga de modulos - final
 #
@@ -100,6 +100,9 @@ class Sistema_Celular:
 		self.hiperc_malla_angulos=[]
 		self.hiperc_malla_antena=0
 		self.hiperc_malla_ganancia_relativa=[]
+		#
+		#adicion05
+		self.modelo_modulacion=0 #guarda el modelo de asignacion de tasa y modulacion.
 
 		#auxiliar
 		self.hiper_arreglos=[0, 0, 0, 0, 0, 0]
@@ -145,6 +148,10 @@ class Sistema_Celular:
 		#calcula la sinr dado.
 		##self.calcular_sinr()
 		##
+		#adicion05
+		self.inicializar_modulacion()
+		#
+		#
 		#estadistica para obtener cuantos usuarios superan el umbral de sensibilidad
 		self.calcular_medida_margen()
 		#implemeneta criterio de potencia maxima de los usuarios a todas las celdas.
@@ -511,6 +518,12 @@ class Sistema_Celular:
 		#print("interferencia antes\n", self.potencia_recibida_v_2D)
 		#print("interferencia ahora\n",self.matriz_interferente)
 
+
+	def inicializar_modulacion(self):
+		'''Crea un modelo de modulacion indicando el escenario y parametros de configuracion.'''
+		self.modelo_modulacion=modd.Modulacion(0,"5G", 0)
+
+
 	'''-----------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------------
 	------------------------------------FUNCIONES DE DESEMPEÑO------------------------------
@@ -688,8 +701,9 @@ class Sistema_Celular:
 	def calcular_throughput(self):
 		'''Dado un sinr calcula el throughput de un arreglo, usando un modulo externo y no una clase.'''
 		print("[debug]:calcular_throughput()", self.sinr_db.shape)
-		print(self.sinr_db)
+		#print(self.sinr_db)
 		#sinr_down, sinr_up, tasa, modulacion = asignar_tasa_modulacion(sinr_in)
+		self.modelo_modulacion.arreglos_tasa_modulacion(self.sinr_db)
 		
 
 
