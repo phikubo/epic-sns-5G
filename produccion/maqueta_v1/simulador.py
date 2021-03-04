@@ -100,6 +100,7 @@ class Simulador:
 		#guardar nombres de imagenes diponibles en presimulacion
 		#print(self.graficas_disponibles)
 		pre_sim.ver_todo()
+		pre_sim.info_sinr(True)
 		self.graficas_disponibles.append("base-sim.png")
 
 		#guardar los nombres de graficas disponibles para desplegar despues.

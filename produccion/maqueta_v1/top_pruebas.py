@@ -268,6 +268,8 @@ def pruebas_sistema_049():
 	#mon=sim.Simulador(tipo="montecarlo")
 	#simulacion=syst.
 
+	
+
 
 if __name__=="__main__":
 	#REGLAS:

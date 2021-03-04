@@ -701,9 +701,42 @@ class Sistema_Celular:
 	def calcular_throughput(self):
 		'''Dado un sinr calcula el throughput de un arreglo, usando un modulo externo y no una clase.'''
 		print("[debug]:calcular_throughput()", self.sinr_db.shape)
-		#print(self.sinr_db)
-		#sinr_down, sinr_up, tasa, modulacion = asignar_tasa_modulacion(sinr_in)
+		#calcular tasa y modulacion.
 		self.modelo_modulacion.arreglos_tasa_modulacion(self.sinr_db)
+		tasa=np.array(self.modelo_modulacion.arr_tasa)
+		modulacion=np.array(self.modelo_modulacion.arr_modulacion)
+		#
+		constant_dmrs=13
+		constant_oh=[0.14,0.18]
+		#OPCION MODIFICABLE SOLO EN MODO DESARROLLADOR.
+		arreglo_mimo=1
+		factor_escala=[1,0.8,0.75,0.4]
+
+		#
+		constant_simbolos_ofdm=14
+		unidades_megabits=10**(-3)
+		trama_segundos=unidades_megabits/(constant_simbolos_ofdm*2**self.cfg_plan["numerologia"])
+		completo_oh=(1-constant_oh[1])
+
+
+		print("nrb_")
+		print(self.planificador.nrb_usuario)
+
+		print("nrb_t")
+		print(self.planificador.nrb_total)
+		#n_ofdm=12
+		#n_rb=100 #map
+		#sinr_in=10 #
+		#sym_ofdm=12 #map
+		#scs_ofdm=12 #map
+		
+		check_list=[arreglo_mimo,modulacion,factor_escala[0], tasa, self.planificador.nrb_usuario, self.cfg_plan["sub_ofdm"], trama_segundos,completo_oh]
+		for test in check_list:
+			print(type(test), test)
+
+		throughput_user=10**(-6)*arreglo_mimo*modulacion*factor_escala[0]*(tasa/1024)*(self.planificador.nrb_usuario*self.cfg_plan["sub_ofdm"]/trama_segundos)*completo_oh
+			
+		print(throughput_user)
 		
 
 

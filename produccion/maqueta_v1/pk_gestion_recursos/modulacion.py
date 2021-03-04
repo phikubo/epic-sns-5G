@@ -54,16 +54,20 @@ class Modulacion:
 
             res = sinr_-sinr_in
             if res > 0:
+                '''
                 print("comparar", sinr_)
                 print("con ", sinr_in)
                 print("resta", sinr_-sinr_in)
                 print("---")
+                '''
                 inferior = ind-1
                 superior = ind
                 sinr_inferior = sinr_tar[inferior]
                 sinr_superior = sinr_tar[superior]
+                '''
                 print("indice down {}, up {}".format(inferior, superior))
                 print("valores: ", sinr_inferior, sinr_superior)
+                '''
                 break
         # verificamos que se encuentra en el limite superior de la tabla, por tanto obtiene el mayor valor de tasa.
         if verificar_superior:
