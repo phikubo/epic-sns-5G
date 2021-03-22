@@ -105,7 +105,7 @@ class Celda:
 
 def prueba_interna_v3_1():
 	pass
-
+	
 
 if __name__=="__main__":
 	#Prototipo:

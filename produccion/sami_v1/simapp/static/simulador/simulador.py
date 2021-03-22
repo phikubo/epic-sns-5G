@@ -7,6 +7,9 @@ import os
 #librerias internas
 from . import sistema as ss
 from .utilidades import config as cfg
+#libreria estadisticas
+from scipy.special import factorial
+import scipy.stats as stats
 
 class Simulador:
 	def __init__(self, tipo):

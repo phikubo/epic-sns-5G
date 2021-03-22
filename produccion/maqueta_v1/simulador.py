@@ -1,14 +1,16 @@
 #import
 import os
+import matplotlib.pyplot as plt
+from matplotlib.patches import RegularPolygon
 import sistema as ss
 from utilidades import config as cfg
 import matplotlib.pyplot as plt
-from matplotlib.patches import RegularPolygon
+
 import numpy as np
 #add change01
 from scipy.special import factorial
 import scipy.stats as stats
-import os
+
 
 class Simulador:
 	def __init__(self, tipo):
