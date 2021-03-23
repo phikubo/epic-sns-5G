@@ -1,0 +1,331 @@
+{% load static %}
+<!-- https://demo.themefisher.com/focus/ -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SAMI</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'simapp/images/logo-s.png' %}">
+    <link rel="stylesheet" href="{% static 'simapp/vendor/owl-carousel/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'simapp/vendor/owl-carousel/css/owl.theme.default.min.css' %}">
+    <link href="{% static 'simapp/vendor/jqvmap/css/jqvmap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'simapp/css/style.css' %}" rel="stylesheet">
+
+
+
+</head>
+
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div class="nav-header">
+            <a href="{% url 'simapp:presentacion_v1' %}" class="brand-logo">
+                <img class="logo-abbr" src="{% static 'simapp/images/logo-signal.png' %}" alt="">
+                <img class="logo-compact" src="{% static 'simapp/images/logo-text-2.png' %}" alt="">
+                <img class="brand-title" src="{% static 'simapp/images/logo-text-2.png' %}" alt="">
+            </a>
+
+            <div class="nav-control">
+                <div class="hamburger">
+                    <span class="line"></span><span class="line"></span><span class="line"></span>
+                </div>
+                
+            </div>
+            
+        </div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div class="header">
+             
+            <div class="header-content">
+               
+                <nav class="navbar navbar-expand">
+                    <div class="welcome-text">
+                        {% block titulo_block %}
+                        {% endblock %}
+                    </div>
+                    
+                </nav>
+                
+                 
+            </div>
+        </div>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+        <div class="quixnav">
+            <div class="quixnav-scroll">
+                <ul class="metismenu" id="menu">
+                    <li class="nav-label first">Presentación</li>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                                class="icon-badge menu-icon"></i><span class="nav-text">Características</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="{% url 'simapp:presentacion_v1' %}">Sami v1</a></li>
+                            <li><a href="{% url 'simapp:futuro' %}">Sami v [futuro]</a></li>
+                        </ul>
+                    </li>
+
+
+                    <!--
+                    <li class="nav-label">Apps</li>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                                class="icon icon-app-store"></i><span class="nav-text">Apps</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="./app-profile.html">Profile</a></li>
+                            <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Email</a>
+                                <ul aria-expanded="false">
+                                    <li><a href="./email-compose.html">Compose</a></li>
+                                    <li><a href="./email-inbox.html">Inbox</a></li>
+                                    <li><a href="./email-read.html">Read</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="./app-calender.html">Calendar</a></li>
+                        </ul>
+                    </li>
+
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                                class="icon icon-chart-bar-33"></i><span class="nav-text">Charts</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="./chart-flot.html">Flot</a></li>
+                            <li><a href="./chart-morris.html">Morris</a></li>
+                            <li><a href="./chart-chartjs.html">Chartjs</a></li>
+                            <li><a href="./chart-chartist.html">Chartist</a></li>
+                            <li><a href="./chart-sparkline.html">Sparkline</a></li>
+                            <li><a href="./chart-peity.html">Peity</a></li>
+                        </ul>
+                    </li>
+
+                    
+                    <li class="nav-label">Components</li>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                                class="icon icon-world-2"></i><span class="nav-text">Bootstrap</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="./ui-accordion.html">Accordion</a></li>
+                            <li><a href="./ui-alert.html">Alert</a></li>
+                            <li><a href="./ui-badge.html">Badge</a></li>
+                            <li><a href="./ui-button.html">Button</a></li>
+                            <li><a href="./ui-modal.html">Modal</a></li>
+                            <li><a href="./ui-button-group.html">Button Group</a></li>
+                            <li><a href="./ui-list-group.html">List Group</a></li>
+                            <li><a href="./ui-media-object.html">Media Object</a></li>
+                            <li><a href="./ui-card.html">Cards</a></li>
+                            <li><a href="./ui-carousel.html">Carousel</a></li>
+                            <li><a href="./ui-dropdown.html">Dropdown</a></li>
+                            <li><a href="./ui-popover.html">Popover</a></li>
+                            <li><a href="./ui-progressbar.html">Progressbar</a></li>
+                            <li><a href="./ui-tab.html">Tab</a></li>
+                            <li><a href="./ui-typography.html">Typography</a></li>
+                            <li><a href="./ui-pagination.html">Pagination</a></li>
+                            <li><a href="./ui-grid.html">Grid</a></li>
+
+                        </ul>
+                    </li>
+
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                                class="icon icon-plug"></i><span class="nav-text">Plugins</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="./uc-select2.html">Select 2</a></li>
+                            <li><a href="./uc-nestable.html">Nestedable</a></li>
+                            <li><a href="./uc-noui-slider.html">Noui Slider</a></li>
+                            <li><a href="./uc-sweetalert.html">Sweet Alert</a></li>
+                            <li><a href="./uc-toastr.html">Toastr</a></li>
+                            <li><a href="./map-jqvmap.html">Jqv Map</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li><a href="widget-basic.html" aria-expanded="false"><i class="icon icon-globe-2"></i><span
+                                class="nav-text">Widget</span></a></li>
+
+                    -->
+                    <li class="nav-label">Configuración de Datos</li>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                                class="icon-speedometer menu-icon"></i><span class="nav-text">Simuladores</span></a>
+                        <ul aria-expanded="false">
+                            <!---->
+                            <!---->
+                            <!---->
+                            
+                            <!--
+                            <li><a href="./form-element.html">Form Elements</a></li>
+                            -->
+                            <li><a href="{% url 'simapp:sim_form_a1' %}">SAMI v1 [Fases]</a></li>
+                            <li><a href="{% url 'simapp:sim_form_compacto' %}">SAMI v1 [Compacto]</a></li>
+                            <li><a href="{% url 'simapp:parametros' %}">Simulación Rápida</a></li>
+                            <!--
+                            <li><a href="{% url 'simapp:futuro' %}">Dev [futuro]</a></li>
+                            -->
+                            <li><a href="{% url 'simapp:demo_form_sami_v1' %}">Demo</a></li>
+                            <!--
+                            <li><a href="./form-editor-summernote.html">Summernote</a></li>
+                            <li><a href="form-pickers.html">Pickers</a></li>
+                            <li><a href="form-validation-jquery.html">Jquery Validate</a></li>
+                            -->
+                        </ul>
+                    </li>
+
+                     <!--NUEVO BLOQUE, CONSIDERAR BANDERAS-->
+                    <li class="nav-label">Resultados</li>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon-graph menu-icon"></i><span
+                                class="nav-text">Gráficas</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="{% url 'simapp:graficas_1' %}">Presimulación</a></li>
+                            <li><a href="{% url 'simapp:futuro' %}">Simulación y Sistema</a></li>
+                            <!--
+                            <li><a href="{% url 'simapp:futuro' %}">Dispositivos Ideales (antena)</a></li>
+                            <li><a href="{% url 'simapp:futuro' %}">Modelo Ideal de Pérdidas de Propagación</a></li>
+                            -->
+                            <li><a href="{% url 'simapp:futuro' %}">[Futuro]</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-chart-bar-33"></i><span
+                                class="nav-text">Estadisticas</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="{% url 'simapp:futuro' %}">Información General</a></li>
+                            <li><a href="{% url 'simapp:futuro' %}">Información de Recursos</a></li>
+                        </ul>
+                    </li>
+
+                    <!--
+                    <li class="nav-label">Extra</li>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                                class="icon icon-single-copy-06"></i><span class="nav-text">Pages</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="./page-register.html">Register</a></li>
+                            <li><a href="./page-login.html">Login</a></li>
+                            <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Error</a>
+                                <ul aria-expanded="false">
+                                    <li><a href="./page-error-400.html">Error 400</a></li>
+                                    <li><a href="./page-error-403.html">Error 403</a></li>
+                                    <li><a href="./page-error-404.html">Error 404</a></li>
+                                    <li><a href="./page-error-500.html">Error 500</a></li>
+                                    <li><a href="./page-error-503.html">Error 503</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="./page-lock-screen.html">Lock Screen</a></li>
+                        </ul>
+                    </li>
+                    -->
+                </ul> 
+            </div>
+
+
+        </div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+            <!-- row -->
+            <div class="container-fluid">
+        {% block content %}
+        {% endblock %}
+            </div>
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+
+
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                <p>Template original: <a href="https://demo.themefisher.com/focus/" target="_blank">themefisher</a> 2019</p>
+            </div>
+        </div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+
+        <!--**********************************
+           Support ticket button start
+        ***********************************-->
+
+        <!--**********************************
+           Support ticket button end
+        ***********************************-->
+
+
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="{% static 'simapp/vendor/global/global.min.js' %}"></script>
+    <script src="{% static 'simapp/js/quixnav-init.js' %}"></script>
+    <script src="{% static 'simapp/js/custom.min.js' %}"></script>
+
+
+    <!-- Vectormap -->
+    <script src="{% static 'simapp/vendor/raphael/raphael.min.js' %}"></script>
+    <script src="{% static 'simapp/vendor/morris/morris.min.js' %}"></script>
+
+
+    <script src="{% static 'simapp/vendor/circle-progress/circle-progress.min.js' %}"></script>
+    <script src="{% static 'simapp/vendor/chart.js/Chart.bundle.min.js' %}"></script>
+
+    <script src="{% static 'simapp/vendor/gaugeJS/dist/gauge.min.js' %}"></script>
+
+    <!--  flot-chart js -->
+    <script src="{% static 'simapp/vendor/flot/jquery.flot.js' %}"></script>
+    <script src="{% static 'simapp/vendor/flot/jquery.flot.resize.js' %}"></script>
+
+    <!-- Owl Carousel -->
+    <script src="{% static 'simapp/vendor/owl-carousel/js/owl.carousel.min.js' %}"></script>
+
+    <!-- Counter Up -->
+    <script src="{% static 'simapp/vendor/jqvmap/js/jquery.vmap.min.js' %}"></script>
+    <script src="{% static 'simapp/vendor/jqvmap/js/jquery.vmap.usa.js' %}"></script>
+    <script src="{% static 'simapp/vendor/jquery.counterup/jquery.counterup.min.js' %}"></script>
+
+
+    <script src="{% static 'simapp/js/dashboard/dashboard-1.js' %}"></script>
+
+</body>
+
+</html>

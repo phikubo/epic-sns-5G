@@ -1,0 +1,236 @@
+{% extends 'base_sami.html' %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+{% block titulo_block %}
+SIMULADOR A NIVEL DE SISTEMA
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row page-titles mx-0">
+    <p class="mb-0">Use la combinacion de teclas <strong>Alt+flecha izquierda</strong> y <strong>Alt+flecha derecha</strong> para modificar los formularios. El botón <strong>siguiente</strong> guarda la configuración.</p>
+</div>
+
+
+<div class="row">
+    <div class="col-xl-12 col-xxl-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Parámetros de Balance y Antenas</h4>
+                
+            </div>
+            <div class="card-body">
+
+                <div class="progress">
+                    <div class="progress-bar progress-bar-primary w-75" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+
+                <hr>
+                <div>
+
+                    <form action="" method="post">
+                        {% csrf_token %}
+
+
+
+                        <section>
+                            <div class="row">
+
+
+
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Potencia de Transmisión [dBm]</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="28" type="number" name="input3"
+                                                id="input3" placeholder="">
+                                                -->
+                                                {{ form_data.ptx|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Ganancia de Transmisión [dB]</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="15" type="number" name="input3"
+                                                id="input3" placeholder="">
+                                                -->
+                                                {{ form_data.gtx|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Pérdidas de Transmisión [dB]</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="1" type="number" name="input3"
+                                                id="input3" placeholder="">
+                                            -->
+                                            {{ form_data.ltx|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Pérdidas de Recepción [dB]</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="1" type="number" name="input3"
+                                                id="input3" placeholder="">
+                                            -->
+                                            {{ form_data.lrx|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Sensibilidad en Recepción</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="-110" type="number" name="input3"
+                                                id="input3" placeholder="">
+                                            -->
+                                            {{ form_data.grx|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">MCL</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="70" type="number" name="input3"
+                                                id="input3" placeholder="">
+                                            -->
+                                            {{ form_data.sensibilidad|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">MCL</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="70" type="number" name="input3"
+                                                id="input3" placeholder="">
+                                            -->
+                                            {{ form_data.apuntamiento|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                    <label class="text-label">Ancho de Haz</label>
+                                -->
+                                    <div class="form-group">
+                                        <!--
+                                        <input class="form-control" value="65" type="number" name="input3" id="input3"
+                                            placeholder="Parámetro 2">
+                                        -->
+                                        {{ form_data.tipo_antena|as_crispy_field }}
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                    <label class="text-label">Atenuación Mínima</label>
+                                -->
+                                    <div class="form-group">
+                                        <!--
+                                        <input class="form-control" value="20" type="number" name="input1" id="input1"
+                                            placeholder="Parámetro 3">
+                                        -->
+                                        {{ form_data.hpbw|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                    <label class="text-label">Futuro</label>
+                                -->
+                                    <div class="form-group">
+                                        <!--
+                                        <input class="form-control" value="0.00" type="number" name="input3" id="input3"
+                                            placeholder="Parámetro 4">
+                                        -->
+                                        {{ form_data.atmin|as_crispy_field }}
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                    <label class="text-label">Modelo de Antena</label>
+                                -->
+                                    <div class="input-group">
+                                        <!--
+                                        <select class="form-control" id="modelo-antenas" name="modelo-antenas">
+                                            <option >TS 38942 Trisectorizada</option>
+                                            <option >Futuro</option>
+                                        </select>
+
+                                    -->
+                                    {{ form_data.mcl|as_crispy_field }}
+                                    </div>
+                                </div>
+
+
+
+
+
+
+                            </div>
+                        </section>
+
+
+
+
+
+                        <input type="submit" class="btn btn-primary" value="siguiente" />
+                        <a class="btn btn-warning" href="{% url 'simapp:sim_form_a1' %}">reiniciar</a>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

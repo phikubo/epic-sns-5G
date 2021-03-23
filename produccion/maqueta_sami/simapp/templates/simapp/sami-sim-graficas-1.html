@@ -1,0 +1,50 @@
+{% extends 'base_sami.html' %}
+{% load static %}
+
+{% block titulo_block %}
+MUESTRA DE PRESIMULACIÓN
+{% endblock %}
+
+
+{% block content %}
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4>¡Gráficas de Pre-Simulación!</h4>
+            <p class="mb-0">Los siguientes resultados de pre-simulación, se realizan sobre una muestra de 20 Km de distancia. Lo demás parámetros son configurados de acuerdo a la entrada del usuario..</p>
+        </div>
+    </div>
+</div>
+
+
+<!--
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4>¡Gráficas de Capacidad!</h4>
+            <p class="mb-0">A continuación las gráficas. Si el simulador no ha concluido su ejecución, por favor recargar la página.</p>
+        </div>
+    </div>
+</div>
+-->
+<div class="row">
+    {% for key, value in img_disp.items %}
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">{{ key }}</h4>
+            </div>
+            <div class="card-body">
+                 
+                <img width="450" height="350" src="{% static value %}" />
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    
+</div>
+
+{% endblock %}
+
+

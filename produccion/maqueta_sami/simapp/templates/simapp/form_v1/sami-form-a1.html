@@ -1,0 +1,234 @@
+{% extends 'base_sami.html' %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+{% block titulo_block %}
+SIMULADOR A NIVEL DE SISTEMA
+{% endblock %}
+
+{% block content %}
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4>¡Bienvenid@ a la interfaz de simulación por fases!</h4>
+            <p class="mb-0">Por favor configure los parámetros.</p>
+            
+        </div>
+        
+    </div>
+    <p class="mb-0">Use la combinacion de teclas <strong>Alt+flecha izquierda</strong> y <strong>Alt+flecha derecha</strong> para modificar los formularios. El botón <strong>siguiente</strong> guarda la configuración.</p>
+</div>
+
+
+<div class="row">
+    <div class="col-xl-12 col-xxl-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Parámetros Generales</h4>
+            </div>
+            <div class="card-body">
+
+                <div class="progress">
+                    <div class="progress-bar progress-bar-primary w-25" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+
+                
+                <hr>
+                <div>
+
+                    <form action="" method="post">
+                        {% csrf_token %}
+
+
+
+                        
+                            <div class="row">
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--<label class="text-label">Iteraciones</label>-->
+                                    <div class="form-group">
+                                        {{ form_data.iteraciones|as_crispy_field }}
+                                    </div>
+                                </div>
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+
+                                    <div class="form-group">
+                                        {{ form_data.n_celdas|as_crispy_field }}
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                    <label class="text-label">Portadora [Mhz, Ghz]</label> 
+                                    -->
+                                    <div class="form-group">
+                                        <!--
+                                        <input class="form-control" value="900" type="number" name="portadora" id="portadora"> 
+                                        -->
+                                        {{ form_data.portadora|as_crispy_field }}
+
+                                    </div>
+                                </div>
+
+
+                                <div class="col-4 col-sm-3 mb-4"> 
+                                    <!--
+                                    <label class="text-label">ISD [m]</label>
+                                    -->
+                                    <div class="form-group">
+                                        <!--
+                                        <input class="form-control" value="1000" type="number" name="isd">
+                                        -->
+                                        {{ form_data.isd|as_crispy_field }}
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Geometría Radial de Usuarios</label>
+                                        -->
+                                        <div class="input-group">
+                                           <!--
+
+                                           <select class="form-control" id="geometria" name="geometria">
+                                                <option >Manual</option>
+                                                <option >Automático</option>
+                                            </select>
+                                            --> 
+                                            {{ form_data.geometria_usuarios|as_crispy_field }}    
+                                        </div> 
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Distancia Radial [m]</label>
+                                        -->
+                                        <div class="input-group">
+                                            {{ form_data.radio_cel|as_crispy_field }}
+                                            <!--
+                                            <input type="text" name="distancia radial" class="form-control"
+                                                placeholder="Desactiva si automático" required value=1000>
+                                            -->
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Tipo de espliegue de Usuarios</label>
+                                        -->
+                                        <div class="input-group">
+                                            {{ form_data.tipo_distribucion|as_crispy_field }}
+                                            <!--
+                                            <select class="form-control" id="distribucion" name="distribucion">
+                                                <option >Proceso Puntual Poisson</option>
+                                                <option >Futuro</option>
+                                            </select>
+                                            -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Población</label>
+                                        -->
+                                        <div class="input-group">
+                                            {{ form_data.densidad|as_crispy_field }}
+                                            <!--
+                                            <select class="form-control" id="poblacion" name="poblacion">
+                                                <option >Baja</option>
+                                                <option >Media</option>
+                                                <option >Alta</option>
+                                                <option >Ultra</option>
+                                            </select>
+                                            -->
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Generar Imagen (1 simulación)</label>
+                                        -->
+                                        <div class="input-group">
+                                            {{ form_data.imagen|as_crispy_field }}
+                                            <!--
+                                            <select class="form-control" id="imagen" name="imagen">
+                                                <option value="Simulación Desactivado">Desactivado</option>
+                                                <option value="Simulación Activado">Activado</option>
+                                            </select>
+                                            -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Resolución [pixel]</label>
+                                        -->
+                                        <div class="input-group">
+                                            {{ form_data.pixeles|as_crispy_field }}
+                                            <!--
+                                            <input type="text" name="resolucion" class="form-control" value=100
+                                                placeholder="" required>
+                                            -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
+                                <!--
+                                <div class="col-lg-6 mb-4">
+                                    
+                                        <div class="form-group">
+                                            <label class="form-check-label">Debug &nbsp; &nbsp; &nbsp; &nbsp;</label> 
+                                            
+                                            <input type="checkbox"  name="realdebug"  class="form-check-input">
+                                            
+                                        </div>
+
+                                </div>
+                                -->
+
+
+                            </div>
+
+                       
+
+
+
+                        
+                        <input type="submit" class="btn btn-primary" value="siguiente" href="{% url 'simapp:sim_form_a2' %}"/>
+                        
+                        <!--
+                            <a class="btn btn-primary" href="{% url 'simapp:sim_form_a2' %}">siguiente</a>
+                        -->
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
