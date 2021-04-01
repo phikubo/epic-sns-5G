@@ -94,7 +94,7 @@ class Simulador:
 		 
 		#display de perdidas por trayectoria
 		pre_sim.hiperc_modelo_canal.ver_perdidas_local(nombre="perdidas")
-		titulo="Muestra de Pérdidas de Propagación Ideal"
+		titulo="Pérdidas de Propagación"
 		ruta_img="simulador/base_datos/imagenes/presim/perdidas.png"
 		#self.graficas_disponibles.append(ruta_img)
 		self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
@@ -103,31 +103,31 @@ class Simulador:
 		desva=self.configuracion["cfg_simulador"]["params_propagacion"]["params_desv"]["display"]
 		if desva:
 			pre_sim.hiperc_modelo_canal.ver_desvanecimiento_local(nombre="desvanecimiento")
-			titulo="Muestra de Desvanecimiento"
+			titulo="Desvanecimiento"
 			ruta_img="simulador/base_datos/imagenes/presim/desvanecimiento.png"
 			#self.graficas_disponibles.append(ruta_img)
 			self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
 			#
 			pre_sim.hiperc_modelo_canal.ver_relaciones_local(nombre="relaciones")
-			titulo="Muestra de Relación de Gráficas"
+			titulo="Relación de Gráficas"
 			ruta_img="simulador/base_datos/imagenes/presim/relaciones.png"
 			#self.graficas_disponibles.append(ruta_img)
 			self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
 			#
 			pre_sim.hiperc_modelo_canal.ver_balance_local(nombre="balance")
-			titulo="Muestra de Balance del Enlace"
+			titulo="Balance del Enlace"
 			ruta_img="simulador/base_datos/imagenes/presim/balance.png"
 			#self.graficas_disponibles.append(ruta_img)
 			self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
 		else:
 			print("[simulador]: desvanecimiento desactivado, la grafica no se genera")
 			pre_sim.hiperc_modelo_canal.ver_balance_sin_local(nombre="balance_sin")
-			titulo="Muestra de Balance del Enlace (Sin desvanecimiento)"
+			titulo="Balance del Enlace (Sin desvanecimiento)"
 			ruta_img="simulador/base_datos/imagenes/presim/balance_sin.png"
 			#self.graficas_disponibles.append(ruta_img)
 			self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
 		
-		#pre_sim.ver_todo()
+		pre_sim.ver_todo()
 		titulo="Escenario de Simulación"
 		ruta_img="simulador/base_datos/imagenes/presim/base-sim.png"
 		#self.graficas_disponibles.append(ruta_img)

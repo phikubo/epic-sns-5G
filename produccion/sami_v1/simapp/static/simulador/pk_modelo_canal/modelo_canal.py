@@ -472,7 +472,7 @@ class Modelo_Canal:
 		plt.plot(self.custom_dist, self.resultado_path_loss, label="Pérdidas")
 		plt.legend(loc="upper left")
 		plt.title("Pérdidas de Propagación: {}".format(self.cfg_prop["modelo_perdidas"]))
-		plt.xlabel("Distancia [km]")
+		plt.xlabel("Distancia [Km]")
 		plt.ylabel("Pérdidas [dB]")
 		plt.grid(True)
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
@@ -501,8 +501,8 @@ class Modelo_Canal:
 		#si rayl-mixto, no sumar
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
-		plt.xlabel("Distancia [km]")
-		plt.ylabel("[dB]")
+		plt.xlabel("Distancia [Km]")
+		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
 
@@ -531,8 +531,8 @@ class Modelo_Canal:
 		#si rayl-mixto, no sumar
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
-		plt.xlabel("Distancia [km]")
-		plt.ylabel("[dB]")
+		plt.xlabel("Distancia [Km]")
+		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
 	
@@ -552,8 +552,8 @@ class Modelo_Canal:
 		plt.plot(self.custom_dist, self.resultado_balance, label="balance final")
 		plt.legend(loc="lower right")
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
-		plt.xlabel("Distancia [km]")
-		plt.ylabel("[dB]")
+		plt.xlabel("Distancia [Km]")
+		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
 
@@ -587,7 +587,7 @@ class Modelo_Canal:
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
 		plt.xlabel("Distancia [km]")
-		plt.ylabel("[dB]")
+		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
 

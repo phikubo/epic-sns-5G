@@ -6,6 +6,13 @@ import pandas as pd
 import math
 import os
 import time #for debug.
+
+#tareas
+#cambiar nombre de los ejes: sin muestra.
+#cambiar km por Km
+#en balance cambiar [dm] por potencia [dBm]
+#corregir modelo 3gpp.
+#cambiar de numerologia, que sea automatica como se habia dicho antes.
 #
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
@@ -746,7 +753,7 @@ class Sistema_Celular:
 		fig,ax=plt.subplots()
 
 		c=ax.pcolormesh(self.malla_x,self.malla_y,pr_max, cmap='plasma', vmin=z_min, vmax=-42)
-		fig.colorbar(c,ax=ax, label="Potencia Recibida [dB]")
+		fig.colorbar(c,ax=ax, label="Potencia Recibida [dBm]")
 		titulo="{}, Ptx:{}, Desvanecimiento:{}.".format(str(self.cfg_prop["modelo_perdidas"]), self.cfg_bal["ptx"], self.cfg_prop["params_desv"]["tipo"])
 		plt.title(titulo)
 		plt.xlabel("Distancia [m]")
@@ -905,6 +912,7 @@ class Sistema_Celular:
 		#plt.show()
 		#plt.grid(True)
 		nombre="base-sim"
+		print("[base-sim generado]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
 
