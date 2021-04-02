@@ -8,11 +8,12 @@ import os
 import time #for debug.
 
 #tareas
-#cambiar nombre de los ejes: sin muestra.
-#cambiar km por Km
-#en balance cambiar [dm] por potencia [dBm]
-#corregir modelo 3gpp.
-#cambiar de numerologia, que sea automatica como se habia dicho antes.
+#cambiar nombre de los ejes: sin muestra. [ok]
+#cambiar km por Km [ok]
+#en balance cambiar [dm] por potencia [dBm] [ok]
+#corregir modelo 3gpp. [pendiente]
+#cambiar de numerologia, que sea automatica como se habia dicho antes [pendiente]
+
 #
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon

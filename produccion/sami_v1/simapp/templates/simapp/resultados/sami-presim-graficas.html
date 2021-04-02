@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block titulo_block %}
-MUESTRA DE PRESIMULACIÓN
+RESULTADOS DE PRESIMULACIÓN
 {% endblock %}
 
 
@@ -12,6 +12,9 @@ MUESTRA DE PRESIMULACIÓN
         <div class="welcome-text">
             <h4>¡Gráficas de Pre-Simulación!</h4>
             <p class="mb-0">Los siguientes resultados de pre-simulación, se realizan sobre una muestra de 20 Km de distancia. Lo demás parámetros son configurados de acuerdo a la entrada del usuario..</p>
+            <hr>
+            <a class="btn btn-info" href="{% url 'simapp:sim' %}">Siguiente</a>
+             
         </div>
     </div>
 </div>
@@ -44,6 +47,9 @@ MUESTRA DE PRESIMULACIÓN
 
     
 </div>
+
+<hr>
+
 
 {% endblock %}
 

@@ -17,7 +17,8 @@ urlpatterns = [
     #simulador
     path('sim/iniciar/', views.iniciar_simulacion, name='iniciar_sim'),
     #
-    path('sim/graficas_1', views.ver_graficas_1, name='graficas_1'),
+    path('sim/simulacion-general', views.ver_presim, name='pre_sim'),
+    path('sim/simulacion', views.ver_sim, name='sim'),
     #path('simulador/tablas', views.ver_tablas, name='simulador_tablas'),
     #path('simulador/logs', views.ver_tablas, name='simulador_tablas'),
 

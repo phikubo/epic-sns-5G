@@ -74,8 +74,8 @@ def futuro(request):
 
 
 def iniciar_simulacion(request):
-    '''Inicia la simulacion'''
-    #configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
+    '''Inicia la simulacion''' 
+    configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
     if request.method == 'GET':
         try:
             arr = os.listdir()
@@ -89,6 +89,12 @@ def iniciar_simulacion(request):
         presim=samiv1.Simulador(tipo="presimulacion")
         #presim_graphs=presim.graficas_disponibles
         #EN SIMULACION, DESACTIVAR LA GENERACION DE IMAGENES.
+    
+        #si iteracion>1 and iteracion<5, ejecutar tipo="simulacion"
+            #mensaje: no hay suficientes tomas para crear estadisticas.
+                #fordward to tablas (datos por simulacion)
+        #si iteracion>=5, ejecutar tipo="montecarlo"
+
         
     return render(request,'simapp/sami-iniciar-sim.html')
 
@@ -108,11 +114,19 @@ def ver_parametros(request):
     "cfg2":config2, "cfg3":config3, "cfg4":config4, "cfg5":config5 })
 
 
-def ver_graficas_1(request):
+def ver_presim(request):
     configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
     imagenes_disp=configuracion["cfg_gui"]["presim_graphs"]
     #print(imagenes_disp)
-    return render(request,'simapp/sami-sim-graficas-1.html', {"img_disp":imagenes_disp})
+    return render(request,'simapp/resultados/sami-presim-graficas.html', {"img_disp":imagenes_disp})
+
+
+def ver_sim(request):
+    configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
+    imagenes_disp=configuracion["cfg_gui"]["presim_graphs"]
+    #cambia a las graficas de simulacion
+    #print(imagenes_disp)
+    return render(request,'simapp/resultados/sami-sim-graficas.html', {"img_disp":imagenes_disp})
 
 
 #FORMULARIOS V1

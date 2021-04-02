@@ -18,9 +18,11 @@ class Simulador:
 		self.graficas_disponibles_dic={}
 		self.configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
 		if self.tipo=="presimulacion":
+			#una sola simulacion.
 			print("[simulador]: Ejecutando presimulación...")
 			self.configurar_presimulacion()
 		elif self.tipo=="simulacion":
+			#si iteracion ==1.
 			print("[simulador]: Ejecutando simulación...")
 			self.configuracion=cfg.cargar_variables(target_path="base_datos/")
 			self.configurar_simulacion()

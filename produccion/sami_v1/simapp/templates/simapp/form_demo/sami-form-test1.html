@@ -1,0 +1,114 @@
+{% extends 'base_sami.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<!-- Form step -->
+<!-- 
+<link href="{% static 'simapp/vendor/jquery-steps/css/jquery.steps.css' %}" rel="stylesheet">
+-->
+<!-- Custom Stylesheet -->
+<!-- <link href="{% static 'simapp/css/style.css' %}" rel="stylesheet">-->
+
+
+<div class="row page-titles mx-0">
+  <div class="col-sm-6 p-md-0">
+    <div class="welcome-text">
+      <h4>¡Bienvenido a la interfaz de simulación!</h4>
+      <p class="mb-0">Por favor configura los siguientes parámetros:</p>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-xl-12 col-xxl-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Formulario de Parámetros</h4>
+      </div>
+      
+      <div class="card-body">
+        <p class="mb-0">Paso {{ wizard.steps.step1 }} de {{ wizard.steps.count }}</p>
+        <hr>
+        <div>
+
+          <form action="" method="post">
+            {% csrf_token %}
+            <table>           
+              
+              {{ wizard.management_form }}
+              
+              {% if wizard.form.forms %}
+                {{ wizard.form.management_form }}
+                {% for form in wizard.form.forms %}
+                
+                {{ form_data|crispy }}
+
+                {% endfor %}
+              {% else %}
+              
+              <div class="row">
+                <div class="col-xl-12 col-xxl-12">
+                  <div class="card">
+                    <div class="card-body">
+                    {{ wizard.form|crispy }}
+                      </div>
+                  </div>
+                </div>
+              </div>
+                
+
+              {% endif %}
+            </table>
+            
+            {% if wizard.steps.prev %}
+            <button name="wizard_goto_step" type="submit" class="btn btn-primary"
+              value="{{ wizard.steps.first }}">inicio</button>
+            <button name="wizard_goto_step" type="submit" class="btn btn-primary"
+              value="{{ wizard.steps.prev }}">anterior</button>
+            {% endif %}
+            <!--<input type="submit" value="siguiente" />-->
+            
+            <button type="submit" class="btn btn-primary">Siguiente</button>
+            
+
+        
+
+          
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!--  
+<script src="{% static 'simapp/vendor/global/global.min.js' %}"></script>
+<script src="{% static 'simapp/js/quixnav-init.js' %}"></script>
+<script src="{% static 'simapp/js/custom.min.js' %}"></script>
+-->
+
+<!--
+<script src="{% static 'simapp/vendor/jquery-steps/build/jquery.steps.min.js' %}"></script>
+<script src="{% static 'simapp/vendor/jquery-validation/jquery.validate.min.js' %}"></script>
+-->
+<!-- Form validate init -->
+<!--
+<script src="{% static 'simapp/js/plugins-init/jquery.validate-init.js' %}"></script>
+-->
+
+
+<!-- Form step init -->
+<!--
+<script src="{% static 'simapp/js/plugins-init/jquery-steps-init.js' %}"></script>
+-->
+{% endblock %}
