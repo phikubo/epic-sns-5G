@@ -65,7 +65,7 @@ def home(request):
 
 def form_demo_sami_v1(request):
     '''Demostracion de formulario.'''
-    return render(request,'simapp/sami-demo-v1.html')
+    return render(request,'simapp/form_demo/sami-demo-v1.html')
 
 
 def futuro(request):
@@ -85,7 +85,45 @@ def iniciar_simulacion(request):
         #exists = os.path.isfile('qw2ass<z/path/to/file')
         #print(exists)
         print("GET Metodo")
-        #top_pruebas.prueba_sistema_v048()
+        
+        '''***OPTIMIZACION***
+        Anotacion de suma importancia:
+        Que ocurre cuando el sistema es grande? es decir, con muchos usuarios y muchas celdas?
+        La presimulacion se ejecuta como una simulacion y pierde el sentido de efectuarla. Esto
+        ocurre debido a que la presimulacion y la simulacion ocurren al mismo tiempo. En la clase no existe
+        ninguna diferencia entre ambas. La presimulacion si es diferente en simulador pues usa funciones internas
+        configuradas con ese proposito, mas sin embargo la simulacion y todos los detalles tambien se ejecutan.
+        
+        Existen dos opciones para optimizar la presimulacion e indpendientemente ejecutar la simulacion que es el comportamiento esperado.
+        La primera opcion directa y mas facil consiste en que al ejecutar la presimulacion, los datos para ese escenario (1 iteracion) se usen 
+        para obtener estadisticas de muestras de valores (valores de potencia, sinr, estadisticas). Esta presimulacion seria la simulacion 0, cuya 
+        utilidad puede o no (dependiendo del disenno) usarse en el compendio de simulacion montecarlo para su estudio. E
+        Sin embargo, es de suma importancia comprobar logicamente el flujo de esta operacion, debido que en presimulacion, hasta el modelo del
+        canal, los valores originales de distancia y otros se mantienen intactos, luego estos cambian para generar las graficas correspondientes.
+
+        Para comprobar basta con imprimir la informacion de esa presimulacion.
+
+        La segunda opcion es mas compleja e implica tambien cambios profundos de disenno,
+        cuya solucion planteada puede agregarse un parametro adicional que indique que la simuacion
+        no es una completa sino una con datos custom de pruebas. En este caso, los calculos de potencia, sinr, trhougput no se generan, 
+        y la simulacion de montecarlo este parametro se desactiva (o no dependiendo de la logica implementada)
+        para que la primera simulacion corresponda.
+
+        Escenario 1:
+            simulacion 0
+            Hay perdida de datos.
+            Se generan estadisticas simples de simulacion (datos: 56%, 40%, 100%, 100/399, etc)
+
+            MONTECARLO: estadisticas complejas (graficas)
+
+        Escenario 1.2:
+            imulacion 0 como simulacion 1 de montecarlo.
+            No hay perdida de datos.
+            Es necesario crear una copia de presim antes de que sea modificada.
+        Esecenario 2:
+            Separar los calculos, hasta el modelo del canal y no calcular lo sucesivo.
+                implica perder los primeros datos (generacion de usuarios)
+        '''
         presim=samiv1.Simulador(tipo="presimulacion")
         #presim_graphs=presim.graficas_disponibles
         #EN SIMULACION, DESACTIVAR LA GENERACION DE IMAGENES.
@@ -94,6 +132,7 @@ def iniciar_simulacion(request):
             #mensaje: no hay suficientes tomas para crear estadisticas.
                 #fordward to tablas (datos por simulacion)
         #si iteracion>=5, ejecutar tipo="montecarlo"
+
 
         
     return render(request,'simapp/sami-iniciar-sim.html')
@@ -117,6 +156,9 @@ def ver_parametros(request):
 def ver_presim(request):
     configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
     imagenes_disp=configuracion["cfg_gui"]["presim_graphs"]
+    #se separa el archivo de path debido a que genera problemas en modo debug
+    configuracion=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_gui")
+    imagenes_disp=configuracion["presim_graphs"]
     #print(imagenes_disp)
     return render(request,'simapp/resultados/sami-presim-graficas.html', {"img_disp":imagenes_disp})
 

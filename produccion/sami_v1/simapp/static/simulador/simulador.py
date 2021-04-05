@@ -17,6 +17,7 @@ class Simulador:
 		
 		self.graficas_disponibles_dic={}
 		self.configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
+		self.configuracion_gui=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_gui")
 		if self.tipo=="presimulacion":
 			#una sola simulacion.
 			print("[simulador]: Ejecutando presimulación...")
@@ -41,6 +42,7 @@ class Simulador:
 		n_cel=self.configuracion["cfg_simulador"]["params_general"]["n_celdas"]
 		resolucion=self.configuracion["cfg_simulador"]["params_general"]["imagen"]["resolucion"]
 		radio_cel=self.configuracion["cfg_simulador"]["params_general"]["isd"]
+		#radio de la celda fijo.
 		radio_cel=(2/3)*radio_cel*math.sqrt(3)/2
 		#reactivo la generacion de imagenes, asi se haya desactivado antes.
 		self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0]=True
@@ -56,7 +58,7 @@ class Simulador:
 				#tamaño del canvas
 				mul=3
 			#adicion01-rm
-			#print("--Generando data--")
+			#print("--Generando data:CANVAS--")
 			x_prueba=np.arange(-mul*radio_cel,mul*radio_cel,resolucion) #depende del radio_cel y numero de celdas.
 			y_prueba=np.arange(-mul*radio_cel,mul*radio_cel,resolucion)
 			xx,yy=np.meshgrid(x_prueba,y_prueba)
@@ -73,7 +75,9 @@ class Simulador:
 		#simulacion
 		#APAGAR LA IMAGEN SIN ESTA ENCEIDA.
 		pre_sim=ss.Sistema_Celular(self.configuracion)
-
+		'''
+		***OPTIMIZACION***
+		En este punto ya se ha completado esta simulacion hasta el final'''
 
 		#display de imagen potencia
 		if display_pic:
@@ -94,6 +98,12 @@ class Simulador:
 		#self.graficas_disponibles.append(ruta_img)
 		self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
 		 
+
+		'''
+		***OPTIMIZACION***
+			se vuelve a calcular los valores del modelo del canal llamando
+			las funciones custom destinadas a ese proposito'''
+
 		#display de perdidas por trayectoria
 		pre_sim.hiperc_modelo_canal.ver_perdidas_local(nombre="perdidas")
 		titulo="Pérdidas de Propagación"
@@ -137,14 +147,18 @@ class Simulador:
 		print(self.graficas_disponibles_dic)
 		#guardar los nombres de graficas disponibles para desplegar despues.
 		#self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles
+		
+		#depleted to delete
 		self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles_dic
 		#desactivar la imagen de potencia para prepara el archivo para monte-carlo.
 		self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0]=False
 		#guardar el archivo.
 		cfg.guardar_cfg(self.configuracion, target_path="simapp/static/simulador/base_datos/")
 		#print("django-diccionario: \n",self.graficas_disponibles_dic)
-
 		
+		#cambio de ruta en el path
+		self.configuracion_gui["presim_graphs"]=self.graficas_disponibles_dic
+		cfg.guardar_json(self.configuracion_gui, target_path="simapp/static/simulador/base_datos/config_gui")
 		#eliminar todo despues de pre-simular para desocupar la memoria.
 		pre_sim=0
 		x_prueba=0
@@ -179,12 +193,15 @@ class Simulador:
 		col_cob_conexion_sinr=[]
 		#debe calcularse como 1-cob_conexion
 		col_cob_desconexion=[]
+		#contador de iteracion
 		it=0
 		print("[simulador]: Generando simulaciones...")
 		for n in range(iteracion):
 			#print("[simulador]:*******************************SIMULACION {}****************************".format(it))
 			sim=ss.Sistema_Celular(self.configuracion)
+			#se recolecta la informacion de cada simulacion en una lista de objetos tipo simulacion.
 			coleccion_simulacion.append(sim)
+			#se imprime la informacion de cada simulacion.
 			sim.info_general("general")
 			#libero memoria
 			sim=0

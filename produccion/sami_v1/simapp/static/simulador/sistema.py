@@ -143,11 +143,10 @@ class Sistema_Celular:
 		self.inicializar_modelo_canal()
 		#inicializa el efecto del ancho de banda, segun parametros fijos o procesamiento de alguna variable, eg. potencia recibida.
 		##self.inicializar_asignacion()
-		#opera sobre el margen del balance
-		##self.calcular_medida_margen()
-		#calcula la sinr dado.
-		##self.calcular_sinr()
-		#
+		
+		'''***OPTIMIZACION***
+		Los calculos siguientes no son necesarios en presimulacion.'''
+
 		#asigna modulacion 
 		self.inicializar_modulacion()
 		#estadistica para obtener cuantos usuarios superan el umbral de sensibilidad
