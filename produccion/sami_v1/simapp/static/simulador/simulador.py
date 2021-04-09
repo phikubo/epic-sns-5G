@@ -28,11 +28,12 @@ class Simulador:
 		elif self.tipo=="simulacion":
 			#si iteracion ==1.
 			print("[simulador]: Ejecutando simulación...")
-			self.configuracion=cfg.cargar_variables(target_path="base_datos/")
+			self.configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
 			self.configurar_simulacion()
 		elif self.tipo=="montecarlo":
 			print("[simulador]: Ejecutando montecarlo...")
-			self.configuracion=cfg.cargar_variables(target_path="base_datos/")
+			self.configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
+			print(self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0])
 			self.configurar_montecarlo()
 		else:
 			print("Parametro Simulador no válido.")
@@ -264,7 +265,7 @@ class Simulador:
 		titulo="Histograma Distribución de Usuarios"
 		#ruta_img="simulador/base_datos/imagenes/montecarlo/mc-n_ue_total.png"
 		ruta=ruta_img_montecarlo+nombre+".png"
-		plt.savefig(ruta)
+		plt.savefig("simapp/static/"+ruta)
 		self.graficas_disponibles_dic.update({titulo.upper():ruta})
 
 		#grafica porcentaje de conexion
@@ -276,7 +277,7 @@ class Simulador:
 		titulo="Histograma Usuarios Conectados"
 		#ruta_img="simulador/base_datos/imagenes/montecarlo/mc-n_ue_on.png"
 		ruta=ruta_img_montecarlo+nombre+".png"
-		plt.savefig(ruta)
+		plt.savefig("simapp/static/"+ruta)
 		self.graficas_disponibles_dic.update({titulo.upper():ruta})
 
 		
@@ -288,7 +289,7 @@ class Simulador:
 		nombre="sys_sinr"
 		titulo="Histograma SINR"
 		ruta=ruta_img_montecarlo+nombre+".png"
-		plt.savefig(ruta)
+		plt.savefig("simapp/static/"+ruta)
 		#ruta_img="simulador/base_datos/imagenes/montecarlo/mc-ue_sinr.png"
 		self.graficas_disponibles_dic.update({titulo.upper():ruta})
 

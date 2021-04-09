@@ -127,7 +127,7 @@ def iniciar_simulacion(request):
         presim=samiv1.Simulador(tipo="presimulacion")
         #limpiar rutas.
         presim.graficas_disponibles_dic={}
-        
+
         #presim_graphs=presim.graficas_disponibles
         #EN SIMULACION, DESACTIVAR LA GENERACION DE IMAGENES.
     
@@ -135,7 +135,7 @@ def iniciar_simulacion(request):
             #mensaje: no hay suficientes tomas para crear estadisticas.
                 #fordward to tablas (datos por simulacion)
         #si iteracion>=5, ejecutar tipo="montecarlo"
-        iteracion=config["cfg_simulador"]["params_general"]["iteracion"]
+        iteracion=configuracion["cfg_simulador"]["params_general"]["iteracion"]
         if iteracion>=1 and iteracion<10:
             print("[view.gui]:Montecarlo no disponible para iteracion<10")
             #go to 
@@ -174,8 +174,9 @@ def ver_parametros(request):
 
 
 def ver_presim(request):
-    configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
-    imagenes_disp=configuracion["cfg_gui"]["presim_graphs"]
+    #configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
+    #imagenes_disp=configuracion["cfg_gui"]["presim_graphs"]
+    #
     #se separa el archivo de path debido a que genera problemas en modo debug
     configuracion=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_gui")
     imagenes_disp=configuracion["presim_graphs"]
@@ -184,8 +185,8 @@ def ver_presim(request):
 
 
 def ver_sim(request):
-    configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
-    imagenes_disp=configuracion["cfg_gui"]["presim_graphs"]
+    configuracion=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_gui")
+    imagenes_disp=configuracion["montecarlo_graphs"]
     #cambia a las graficas de simulacion
     #print(imagenes_disp)
     return render(request,'simapp/resultados/sami-sim-graficas.html', {"img_disp":imagenes_disp})
