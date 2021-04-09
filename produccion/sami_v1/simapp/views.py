@@ -125,6 +125,8 @@ def iniciar_simulacion(request):
                 implica perder los primeros datos (generacion de usuarios)
         '''
         presim=samiv1.Simulador(tipo="presimulacion")
+        #limpiar rutas.
+        presim.graficas_disponibles_dic={}
         
         #presim_graphs=presim.graficas_disponibles
         #EN SIMULACION, DESACTIVAR LA GENERACION DE IMAGENES.

@@ -42,6 +42,9 @@ class Simulador:
 
 	def configurar_presimulacion(self):
 		'''Modulo de pre-simulacion'''
+		#
+		ruta_img_presim="simulador/base_datos/imagenes/presim/"
+		#
 		n_cel=self.configuracion["cfg_simulador"]["params_general"]["n_celdas"]
 		resolucion=self.configuracion["cfg_simulador"]["params_general"]["imagen"]["resolucion"]
 		radio_cel=self.configuracion["cfg_simulador"]["params_general"]["isd"]
@@ -84,22 +87,26 @@ class Simulador:
 
 		#display de imagen potencia
 		if display_pic:
-			pre_sim.ver_imagen_potencia(nombre="imagen_potencia")
+			nombre="imagen_potencia"
+			pre_sim.ver_imagen_potencia(nombre=nombre)
 			titulo="Escenario: Potencia Recibida"
-			ruta_img="simulador/base_datos/imagenes/presim/imagen_potencia.png"
+			#ruta_img="simulador/base_datos/imagenes/presim/imagen_potencia.png"
 			#self.graficas_disponibles.append(ruta_img)
-			self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
+			ruta=ruta_img_presim+nombre+".png"
+			self.graficas_disponibles_dic.update({titulo.upper():ruta})
 			#comentar en sami
 			#plt.show()
 		else:
 			pass
 
 		#display de antena
+		nombre="patron_radiacion"
 		pre_sim.hiperc_antena.ver_patron_local(nombre="patron_radiacion")
 		titulo="Escenario: Patrón de Radiación Trisectorizado"
-		ruta_img="simulador/base_datos/imagenes/presim/patron_radiacion.png"
+		#ruta_img="simulador/base_datos/imagenes/presim/patron_radiacion.png"
 		#self.graficas_disponibles.append(ruta_img)
-		self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
+		ruta=ruta_img_presim+nombre+".png"
+		self.graficas_disponibles_dic.update({titulo.upper():ruta})
 		 
 
 		'''
@@ -119,45 +126,57 @@ class Simulador:
 
 		#display de perdidas por trayectoria
 			#ver_perdidas_local -> referencia a perdidas con muestra 20km.
+		nombre="perdidas"
 		pre_sim.hiperc_modelo_canal.ver_perdidas_local(nombre="perdidas")
 		titulo="Pérdidas de Propagación"
-		ruta_img="simulador/base_datos/imagenes/presim/perdidas.png"
+		#ruta_img="simulador/base_datos/imagenes/presim/perdidas.png"
 		#self.graficas_disponibles.append(ruta_img)
-		self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
+		ruta=ruta_img_presim+nombre+".png"
+		self.graficas_disponibles_dic.update({titulo.upper():ruta})
 		 
 		#display de desvanecimiento custom (si desvanecimiento)
 		desva=self.configuracion["cfg_simulador"]["params_propagacion"]["params_desv"]["display"]
 		if desva:
+			nombre="desvanecimiento"
 			pre_sim.hiperc_modelo_canal.ver_desvanecimiento_local(nombre="desvanecimiento")
 			titulo="Desvanecimiento"
-			ruta_img="simulador/base_datos/imagenes/presim/desvanecimiento.png"
+			#ruta_img="simulador/base_datos/imagenes/presim/desvanecimiento.png"
 			#self.graficas_disponibles.append(ruta_img)
-			self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
+			ruta=ruta_img_presim+nombre+".png"
+			self.graficas_disponibles_dic.update({titulo.upper():ruta})
 			#
+			nombre="relaciones"
 			pre_sim.hiperc_modelo_canal.ver_relaciones_local(nombre="relaciones")
 			titulo="Relación de Gráficas"
-			ruta_img="simulador/base_datos/imagenes/presim/relaciones.png"
+			#ruta_img="simulador/base_datos/imagenes/presim/relaciones.png"
 			#self.graficas_disponibles.append(ruta_img)
-			self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
+			ruta=ruta_img_presim+nombre+".png"
+			self.graficas_disponibles_dic.update({titulo.upper():ruta})
 			#
+			nombre="balance"
 			pre_sim.hiperc_modelo_canal.ver_balance_local(nombre="balance")
 			titulo="Balance del Enlace"
-			ruta_img="simulador/base_datos/imagenes/presim/balance.png"
+			#ruta_img="simulador/base_datos/imagenes/presim/balance.png"
 			#self.graficas_disponibles.append(ruta_img)
-			self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
+			ruta=ruta_img_presim+nombre+".png"
+			self.graficas_disponibles_dic.update({titulo.upper():ruta})
 		else:
 			print("[simulador]: desvanecimiento desactivado, la grafica no se genera")
+			nombre="balance_sin"
 			pre_sim.hiperc_modelo_canal.ver_balance_sin_local(nombre="balance_sin")
 			titulo="Balance del Enlace (Sin desvanecimiento)"
-			ruta_img="simulador/base_datos/imagenes/presim/balance_sin.png"
+			#ruta_img="simulador/base_datos/imagenes/presim/balance_sin.png"
 			#self.graficas_disponibles.append(ruta_img)
-			self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
+			ruta=ruta_img_presim+nombre+".png"
+			self.graficas_disponibles_dic.update({titulo.upper():ruta})
 		
 		pre_sim.ver_todo()
+		nombre="base-sim"
 		titulo="Escenario de Simulación"
-		ruta_img="simulador/base_datos/imagenes/presim/base-sim.png"
+		#ruta_img="simulador/base_datos/imagenes/presim/base-sim.png"
 		#self.graficas_disponibles.append(ruta_img)
-		self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
+		ruta=ruta_img_presim+nombre+".png"
+		self.graficas_disponibles_dic.update({titulo.upper():ruta})
 		print(self.graficas_disponibles_dic)
 		#guardar los nombres de graficas disponibles para desplegar despues.
 		#self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles
@@ -180,7 +199,7 @@ class Simulador:
 		y_prueba=0
 		xx,yy=0,0
 		#para reutilzar en simulacion y montecarlo, se limpia diccionario
-		self.graficas_disponibles_dic={}
+		#self.graficas_disponibles_dic={}
 		print("[simulador]: presimulacion terminado")
 	
 
@@ -198,6 +217,9 @@ class Simulador:
 	def configurar_montecarlo(self):
 		'''Modulo de N iteraciones.'''
 		print("[simulador]: Ejecutando montecarlo...")
+		#
+		ruta_img_montecarlo="simulador/base_datos/imagenes/montecarlo/"
+		#
 		iteracion=self.configuracion["cfg_simulador"]["params_general"]["iteracion"]
 		coleccion_simulacion=[]
 		#poisson
@@ -237,19 +259,25 @@ class Simulador:
 		plt.figure()
 		plt.title("distribucion")
 		plt.hist(col_cobertura_usuarios)
-		#save
+		#plt.savefig("/Users/atru/abc.png")
+		nombre="n_ue_distribucion"
 		titulo="Histograma Distribución de Usuarios"
-		ruta_img="simulador/base_datos/imagenes/montecarlo/mc-n_ue_total.png"
-		self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
+		#ruta_img="simulador/base_datos/imagenes/montecarlo/mc-n_ue_total.png"
+		ruta=ruta_img_montecarlo+nombre+".png"
+		plt.savefig(ruta)
+		self.graficas_disponibles_dic.update({titulo.upper():ruta})
 
 		#grafica porcentaje de conexion
 		plt.figure()
 		plt.title("usuarios conectados")
 		plt.hist(col_cob_conexion, density=True, cumulative=True)
 		#save
+		nombre="usuarios-on"
 		titulo="Histograma Usuarios Conectados"
-		ruta_img="simulador/base_datos/imagenes/montecarlo/mc-n_ue_on.png"
-		self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
+		#ruta_img="simulador/base_datos/imagenes/montecarlo/mc-n_ue_on.png"
+		ruta=ruta_img_montecarlo+nombre+".png"
+		plt.savefig(ruta)
+		self.graficas_disponibles_dic.update({titulo.upper():ruta})
 
 		
 		#grafica conexion sinr
@@ -257,11 +285,14 @@ class Simulador:
 		plt.title("umbral sinr")
 		plt.hist(col_cob_conexion_sinr,density=True, cumulative=True)
 		#save
+		nombre="sys_sinr"
 		titulo="Histograma SINR"
-		ruta_img="simulador/base_datos/imagenes/montecarlo/mc-ue_sinr.png"
-		self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
+		ruta=ruta_img_montecarlo+nombre+".png"
+		plt.savefig(ruta)
+		#ruta_img="simulador/base_datos/imagenes/montecarlo/mc-ue_sinr.png"
+		self.graficas_disponibles_dic.update({titulo.upper():ruta})
 
-		#grafica porcentaje de desconexion
+		#GUARDAR DATOS
 		self.configuracion_gui["montecarlo_graphs"]=self.graficas_disponibles_dic
 		cfg.guardar_json(self.configuracion_gui, target_path="simapp/static/simulador/base_datos/config_gui")
 
