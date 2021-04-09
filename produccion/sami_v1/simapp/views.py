@@ -125,6 +125,7 @@ def iniciar_simulacion(request):
                 implica perder los primeros datos (generacion de usuarios)
         '''
         presim=samiv1.Simulador(tipo="presimulacion")
+        
         #presim_graphs=presim.graficas_disponibles
         #EN SIMULACION, DESACTIVAR LA GENERACION DE IMAGENES.
     
@@ -132,6 +133,23 @@ def iniciar_simulacion(request):
             #mensaje: no hay suficientes tomas para crear estadisticas.
                 #fordward to tablas (datos por simulacion)
         #si iteracion>=5, ejecutar tipo="montecarlo"
+        iteracion=config["cfg_simulador"]["params_general"]["iteracion"]
+        if iteracion>=1 and iteracion<10:
+            print("[view.gui]:Montecarlo no disponible para iteracion<10")
+            #go to 
+            #sim=samiv1.Simulador(tipo="simulacion")
+            
+            #step1: en presim, antes del cambio de muestra, 
+                #copiar info de simulacion.
+            #clean memory
+            presim=0
+            #presim.info_sinr()
+            '''Falta modulo que guarda estos datos, debe almacenarse en una ruta de path'''
+
+
+        elif iteracion>=10:
+            print("[view.gui]:Montecarlo activado, porfavor espere...")
+            montecarlo=samiv1.Simulador(tipo="montecarlo")
 
 
         

@@ -4,6 +4,7 @@ from matplotlib.patches import RegularPolygon
 import numpy as np
 import math
 import os
+import pyfiglet
 #librerias internas
 from . import sistema as ss
 from .utilidades import config as cfg
@@ -13,8 +14,10 @@ import scipy.stats as stats
 
 class Simulador:
 	def __init__(self, tipo):
+		ascii_banner = pyfiglet.figlet_format("SAMI-5G")
+		print(ascii_banner)
+		#
 		self.tipo=tipo
-		
 		self.graficas_disponibles_dic={}
 		self.configuracion=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
 		self.configuracion_gui=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_gui")
@@ -102,9 +105,20 @@ class Simulador:
 		'''
 		***OPTIMIZACION***
 			se vuelve a calcular los valores del modelo del canal llamando
-			las funciones custom destinadas a ese proposito'''
+			las funciones custom destinadas a ese proposito.
+			
+			
+			Aqui se puede guardar las estadisticas de 1 sola simulacion,
+			antes del cambio de variables en presim.
+			
+			
+			
+			
+			'''
+		#sim=pre_sim
 
 		#display de perdidas por trayectoria
+			#ver_perdidas_local -> referencia a perdidas con muestra 20km.
 		pre_sim.hiperc_modelo_canal.ver_perdidas_local(nombre="perdidas")
 		titulo="Pérdidas de Propagación"
 		ruta_img="simulador/base_datos/imagenes/presim/perdidas.png"
@@ -149,7 +163,8 @@ class Simulador:
 		#self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles
 		
 		#depleted to delete
-		self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles_dic
+		#self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles_dic
+
 		#desactivar la imagen de potencia para prepara el archivo para monte-carlo.
 		self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0]=False
 		#guardar el archivo.
@@ -164,6 +179,8 @@ class Simulador:
 		x_prueba=0
 		y_prueba=0
 		xx,yy=0,0
+		#para reutilzar en simulacion y montecarlo, se limpia diccionario
+		self.graficas_disponibles_dic={}
 		print("[simulador]: presimulacion terminado")
 	
 
@@ -220,21 +237,36 @@ class Simulador:
 		plt.figure()
 		plt.title("distribucion")
 		plt.hist(col_cobertura_usuarios)
+		#save
+		titulo="Histograma Distribución de Usuarios"
+		ruta_img="simulador/base_datos/imagenes/montecarlo/mc-n_ue_total.png"
+		self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
 
 		#grafica porcentaje de conexion
 		plt.figure()
 		plt.title("usuarios conectados")
 		plt.hist(col_cob_conexion, density=True, cumulative=True)
+		#save
+		titulo="Histograma Usuarios Conectados"
+		ruta_img="simulador/base_datos/imagenes/montecarlo/mc-n_ue_on.png"
+		self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
 
+		
 		#grafica conexion sinr
 		plt.figure()
 		plt.title("umbral sinr")
 		plt.hist(col_cob_conexion_sinr,density=True, cumulative=True)
+		#save
+		titulo="Histograma SINR"
+		ruta_img="simulador/base_datos/imagenes/montecarlo/mc-ue_sinr.png"
+		self.graficas_disponibles_dic.update({titulo.upper():ruta_img})
 
 		#grafica porcentaje de desconexion
+		self.configuracion_gui["montecarlo_graphs"]=self.graficas_disponibles_dic
+		cfg.guardar_json(self.configuracion_gui, target_path="simapp/static/simulador/base_datos/config_gui")
 
-		plt.show()
-		print("[OK] montecarlo")
+		#plt.show()
+		print("[OK]:montecarlo terminado, continuando con la operaion...")
 
 
 if __name__=="__main__":
