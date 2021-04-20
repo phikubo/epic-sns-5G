@@ -311,6 +311,7 @@ def definir_flujo():
     n_rb=100
     sinr_in=10
     sym_ofdm=12
+    #espaciamiento entre subportadoras
     scs_ofdm=12
 
     case_use=["URRLC", "mmtc", "ebmm"]

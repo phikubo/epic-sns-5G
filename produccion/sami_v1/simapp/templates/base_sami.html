@@ -56,9 +56,9 @@
                 <div class="hamburger">
                     <span class="line"></span><span class="line"></span><span class="line"></span>
                 </div>
-                
+
             </div>
-            
+
         </div>
         <!--**********************************
             Nav header end
@@ -68,18 +68,18 @@
             Header start
         ***********************************-->
         <div class="header">
-             
+
             <div class="header-content">
-               
+
                 <nav class="navbar navbar-expand">
                     <div class="welcome-text">
                         {% block titulo_block %}
                         {% endblock %}
                     </div>
-                    
+
                 </nav>
-                
-                 
+
+
             </div>
         </div>
         <!--**********************************
@@ -180,7 +180,7 @@
                             <!---->
                             <!---->
                             <!---->
-                            
+
                             <!--
                             <li><a href="./form-element.html">Form Elements</a></li>
                             -->
@@ -199,10 +199,10 @@
                         </ul>
                     </li>
 
-                     <!--NUEVO BLOQUE, CONSIDERAR BANDERAS-->
+                    <!--NUEVO BLOQUE, CONSIDERAR BANDERAS-->
                     <li class="nav-label">Resultados</li>
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon-graph menu-icon"></i><span
-                                class="nav-text">Gráficas</span></a>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                                class="icon-graph menu-icon"></i><span class="nav-text">Gráficas</span></a>
                         <ul aria-expanded="false">
                             <li><a href="{% url 'simapp:pre_sim' %}">Presimulación</a></li>
                             <li><a href="{% url 'simapp:sim' %}">Simulación y Sistema</a></li>
@@ -213,9 +213,9 @@
                             <li><a href="{% url 'simapp:futuro' %}">[Futuro]</a></li>
                         </ul>
                     </li>
-                    
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-chart-bar-33"></i><span
-                                class="nav-text">Estadisticas</span></a>
+
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                                class="icon icon-chart-bar-33"></i><span class="nav-text">Estadisticas</span></a>
                         <ul aria-expanded="false">
                             <li><a href="{% url 'simapp:futuro' %}">Información General</a></li>
                             <li><a href="{% url 'simapp:futuro' %}">Información de Recursos</a></li>
@@ -241,8 +241,12 @@
                             <li><a href="./page-lock-screen.html">Lock Screen</a></li>
                         </ul>
                     </li>
+
+
+
+
                     -->
-                </ul> 
+                </ul>
             </div>
 
 
@@ -257,8 +261,8 @@
         <div class="content-body">
             <!-- row -->
             <div class="container-fluid">
-        {% block content %}
-        {% endblock %}
+                {% block content %}
+                {% endblock %}
             </div>
         </div>
         <!--**********************************
@@ -271,7 +275,8 @@
         ***********************************-->
         <div class="footer">
             <div class="copyright">
-                <p>Template original: <a href="https://demo.themefisher.com/focus/" target="_blank">themefisher</a> 2019</p>
+                <p>Template original: <a href="https://demo.themefisher.com/focus/" target="_blank">themefisher</a> 2019
+                </p>
             </div>
         </div>
         <!--**********************************
@@ -329,3 +334,8 @@
 </body>
 
 </html>
+
+
+
+
+

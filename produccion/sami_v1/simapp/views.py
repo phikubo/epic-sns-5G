@@ -363,6 +363,7 @@ def form_compacto(request):
         if form.is_valid():
             print("[OK]-Formulario 1 Aceptado")
             contenido=form.cleaned_data
+            print("clase django", contenido)
 
             config=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
             config["cfg_simulador"]["params_general"]["iteracion"]=contenido["iteraciones"]
