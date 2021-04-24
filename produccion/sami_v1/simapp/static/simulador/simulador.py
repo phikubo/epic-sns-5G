@@ -258,7 +258,9 @@ class Simulador:
 		print("[simulador]: Generando Gráficas")
 		#grafica de distribucion de usuarios
 		plt.figure()
-		plt.title("distribucion")
+		plt.title("Distribución de Usuarios")
+		#data,bins=np.histogram(col_cobertura_usuarios)
+		#plt.stem(bins[:-1],data, use_line_collection=True)
 		plt.hist(col_cobertura_usuarios)
 		#plt.savefig("/Users/atru/abc.png")
 		nombre="n_ue_distribucion"
@@ -270,8 +272,16 @@ class Simulador:
 
 		#grafica porcentaje de conexion
 		plt.figure()
+		'''
 		plt.title("usuarios conectados")
-		plt.hist(col_cob_conexion, density=True, cumulative=True)
+		#plt.hist(col_cob_conexion, density=False, cumulative=False)
+		data,bins=np.histogram(col_cob_conexion)
+		print(bins,data)
+		plt.stem(bins[:-1],data, use_line_collection=True)
+		'''
+		data,bins=np.histogram(col_cob_conexion)
+		plt.title("usuarios conectados")
+		plt.stem(bins[:-1],data, use_line_collection=True)
 		#save
 		nombre="usuarios-on"
 		titulo="Histograma Usuarios Conectados"
