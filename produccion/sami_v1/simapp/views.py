@@ -186,10 +186,15 @@ def ver_presim(request):
 
 def ver_sim(request):
     configuracion=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_gui")
+    configuracion_base=cfg.cargar_variables(target_path="simapp/static/simulador/base_datos/")
+    iteracion=configuracion_base["cfg_simulador"]["params_general"]["iteracion"]
     imagenes_disp=configuracion["montecarlo_graphs"]
     #cambia a las graficas de simulacion
     #print(imagenes_disp)
-    return render(request,'simapp/resultados/sami-sim-graficas.html', {"img_disp":imagenes_disp})
+    if iteracion >= 1 and iteracion < 10:
+        return render(request,'simapp/resultados/sami-sim-graficas-empty.html')
+    else:
+        return render(request,'simapp/resultados/sami-sim-graficas.html', {"img_disp":imagenes_disp})
 
 
 #FORMULARIOS V1

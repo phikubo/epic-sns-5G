@@ -11,6 +11,8 @@ from .utilidades import config as cfg
 #libreria estadisticas
 from scipy.special import factorial
 import scipy.stats as stats
+#logger
+import logging
 
 class Simulador:
 	def __init__(self, tipo):
@@ -257,6 +259,11 @@ class Simulador:
 
 		print("[simulador]: Generando Gráficas")
 		#grafica de distribucion de usuarios
+		fig, ax = plt.subplots()
+		ax.plot(np.linspace(1,len(col_cobertura_usuarios),len(col_cobertura_usuarios)), col_cobertura_usuarios, 'b-o')
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Usuarios, Proceso Puntual Poisson', 'Usuarios por Simulación', 
+			'Iteraciones', 'Número de Usuarios', 'distribucion simple', ruta_img_montecarlo, self.graficas_disponibles_dic)
+
 		plt.figure()
 		plt.title("Distribución de Usuarios")
 		#data,bins=np.histogram(col_cobertura_usuarios)
@@ -265,6 +272,9 @@ class Simulador:
 		#plt.savefig("/Users/atru/abc.png")
 		nombre="n_ue_distribucion"
 		titulo="Histograma Distribución de Usuarios"
+		plt.ylabel("Frecuencia de Iteraciones")
+		plt.xlabel("Rango de Usuarios")
+		plt.grid(True)
 		#ruta_img="simulador/base_datos/imagenes/montecarlo/mc-n_ue_total.png"
 		ruta=ruta_img_montecarlo+nombre+".png"
 		plt.savefig("simapp/static/"+ruta)
@@ -280,11 +290,14 @@ class Simulador:
 		plt.stem(bins[:-1],data, use_line_collection=True)
 		'''
 		data,bins=np.histogram(col_cob_conexion)
-		plt.title("usuarios conectados")
+		plt.title("Histograma de Usuarios Conectados")
 		plt.stem(bins[:-1],data, use_line_collection=True)
 		#save
 		nombre="usuarios-on"
 		titulo="Histograma Usuarios Conectados"
+		plt.ylabel("Frecuencia de Iteraciones")
+		plt.xlabel("Porcentaje de Conexión (normalizado)")
+		plt.grid(True)
 		#ruta_img="simulador/base_datos/imagenes/montecarlo/mc-n_ue_on.png"
 		ruta=ruta_img_montecarlo+nombre+".png"
 		plt.savefig("simapp/static/"+ruta)
@@ -293,11 +306,17 @@ class Simulador:
 		
 		#grafica conexion sinr
 		plt.figure()
-		plt.title("umbral sinr")
+		ber_sinr=self.configuracion["cfg_simulador"]["params_general"]["ber_sinr"]
+		plt.title("SINR por encima de {} dBs".format(ber_sinr))
 		plt.hist(col_cob_conexion_sinr,density=True, cumulative=True)
 		#save
+		print(col_cob_conexion_sinr, type(col_cob_conexion_sinr), len(col_cob_conexion_sinr))
+		#save
 		nombre="sys_sinr"
-		titulo="Histograma SINR"
+		titulo="PMF SINR > X, normalizado"
+		plt.ylabel("Porcentaje CDF")
+		plt.xlabel("Porcentaje de conexión SINR")
+		plt.grid(True)
 		ruta=ruta_img_montecarlo+nombre+".png"
 		plt.savefig("simapp/static/"+ruta)
 		#ruta_img="simulador/base_datos/imagenes/montecarlo/mc-ue_sinr.png"
@@ -309,6 +328,17 @@ class Simulador:
 
 		#plt.show()
 		print("[OK]:montecarlo terminado, continuando con la operaion...")
+
+
+def formatear_grafica_simple(ax, titulo_web, titulo_graf, xlab,ylab, nombre_archivo, ruta_img_montecarlo, diccionario):
+	ax.set_title(titulo_graf)
+	ax.set_xlabel(xlab)
+	ax.set_ylabel(ylab)
+	plt.grid(True)
+	ruta=ruta_img_montecarlo+nombre_archivo+".png"
+	plt.savefig("simapp/static/"+ruta)
+	diccionario.update({titulo_web.upper():ruta})
+	return diccionario
 
 
 if __name__=="__main__":
