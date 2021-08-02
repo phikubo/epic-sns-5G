@@ -130,6 +130,9 @@ class Sistema_Celular:
 
 		self.matriz_interferente=0
 
+		self.throughput_sistema=0
+		self.throughput_users=0
+
 		#inicializa objetos tipo celda y las almacena en self.cluster
 		self.inicializar_cluster_celdas()
 		#crea las coordenadas de los usuarios segun una distribucion
@@ -498,6 +501,7 @@ class Sistema_Celular:
 		mapa_margen_descon=self.mapa_conexion_desconexion_margen.copy() #check pls
 		mapa_usuarios_descon=self.mapa_conexion_usuario_no_con.copy()
 		mapa_estaciones_descon=self.mapa_conexion_estacion_no_con.copy()
+		
 
 		params_asignacion=[mapa_estaciones,dim_pr_v2D, mapa_usuarios, mapa_margen_descon,
 			mapa_usuarios_descon, mapa_estaciones_descon]
@@ -697,6 +701,7 @@ class Sistema_Celular:
 		tasa=np.array(self.modelo_modulacion.arr_tasa)
 		modulacion=np.array(self.modelo_modulacion.arr_modulacion)
 		#
+		print(tasa[:10], modulacion[:10])
 		constant_dmrs=13
 		constant_oh=[0.14,0.18]
 		#OPCION MODIFICABLE SOLO EN MODO DESARROLLADOR.
@@ -710,11 +715,11 @@ class Sistema_Celular:
 		completo_oh=(1-constant_oh[1])
 
 
-		print("nrb_")
-		print(self.planificador.nrb_usuario)
+		#print("nrb_")
+		#print(self.planificador.nrb_usuario)
 
-		print("nrb_t")
-		print(self.planificador.nrb_total)
+		#print("nrb_t")
+		#print(self.planificador.nrb_total)
 		#n_ofdm=12
 		#n_rb=100 #map
 		#sinr_in=10 #
@@ -722,12 +727,46 @@ class Sistema_Celular:
 		#scs_ofdm=12 #map
 		
 		check_list=[arreglo_mimo,modulacion,factor_escala[0], tasa, self.planificador.nrb_usuario, self.cfg_plan["sub_ofdm"], trama_segundos,completo_oh]
-		for test in check_list:
-			print(type(test), test)
+		#for test in check_list:
+		#	print(type(test), test)
+		
+		#limpiar modulacion para quitar negativos. El resultado final solo tiene en cuenta los valores contribuyentes
+		modulacion_0=np.where(modulacion<0,0, modulacion)
+		#de lo contrario, cuando tasa<0, modulacion<0; throughput>0 para cuando el valor no debe contribuir.
+		#para evitar este error, se fija la modulacion siempre positiva independientemente de la contribuci[on] puesto que tasa ya contiene la informacion que representa los valores no contribuyentes
+		throughput_users=10**(-6)*arreglo_mimo*modulacion_0*factor_escala[0]*(tasa/1024)*(self.planificador.nrb_usuario*self.cfg_plan["sub_ofdm"]/trama_segundos)*completo_oh
+		self.throughput_users=np.absolute(throughput_users)	
+		#print("check")
+		#print(self.throughput_users[:10])
+		#print("tp user\n",throughput_users)
+		#promedio por sistema []
+		self.throughput_sistema=np.mean(self.throughput_users)
+		
+		#promedio por celdas [a,b,c, ..., N]
+		#build a dictionary like this
+		'''
+		{
+			"1":[usr1, usr 4, usrs6]
+			"2":[usr2, usr3, usr5]
+		}
+		so, for each cel number, we have mean data.
+		'''
 
-		throughput_user=10**(-6)*arreglo_mimo*modulacion*factor_escala[0]*(tasa/1024)*(self.planificador.nrb_usuario*self.cfg_plan["sub_ofdm"]/trama_segundos)*completo_oh
+		#imprimer los primers 10 valores de tp y mapa de usuarios desconectados.
+		#for a,b in zip(self.throughput_users[:10], self.mapa_conexion_usuario_no_con[:10]):
+		#	print("{}	{} {} {} {}".format(b, a, a*-1, abs(a), int(a)))
+		
 			
-		print("tp user\n",throughput_user)
+		
+		#info_data tiene la respuesta de la siguiente manera.
+		#listo los valores de througput de cada usuario
+		#1 obtener mapa binario de no conexion
+		#2 multiplicar mapa binario no con con throput users.
+		#3 sumar resultado para obtener mean
+		#4 sumar resultados por celda.
+		#5 con el mapa de no con, obtener porcentaje
+
+		
 
 
 	'''-----------------------------------------------------------------------------------------
@@ -921,25 +960,32 @@ class Sistema_Celular:
 		'''Funcion para ver toda la información de una celda específica'''
 		pass
 
-	def info_sinr(self, *args):
-		'''Permite observar numericamente los valores de sinr por usuario y celda'''
+	def info_data(self, *args):
+		'''Permite observar numericamente los valores de sinr por usuario y celda.
+		Usage: info_data(True/False, 10)->args[0]:True/False, args[1]:10 is the limit of displaying tabl'''
 		print("-----------")
-		print("[info_sinr] {}".format(args))
-		print("-----------")
+		print("[info_data] {}".format(args))
 		if self.cfg_gen['debug']:
 			print("\n-----[debug.calcular_sinr]:")
-		print("\n------------------------------------------[info_sinr]:")
+		print("\n------------------------------------------[info_data]:")
 		#is args==True
+
 		if args:
 			if args:
 				ind=0
-				print("usuario:	celda	conexion	pr_max			margen			sinr")
+				titulos_display=["celda","conexion","pr_max","margen","sinr","througput"]
+				arreglos_display=np.column_stack((self.mapa_conexion_usuario,self.mapa_conexion_usuario_no_con,
+						self.pr_maximo_dB,self.margen_maximo_dB,self.sinr_db, self.throughput_users))
+				df_display = pd.DataFrame(arreglos_display, columns=titulos_display)
+				print(df_display.head(), "\n...\n",df_display.tail())
 
-				for a,b,c,d,e in zip(self.mapa_conexion_usuario,self.mapa_conexion_usuario_no_con,
-						self.pr_maximo_dB,self.margen_maximo_dB,self.sinr_db):
-					print("{}		{}	{}		{}	{}	{}".format(ind, a, b,c,d,e))
+				'''for a,b,c,d,e,f in zip(self.mapa_conexion_usuario,self.mapa_conexion_usuario_no_con,
+						self.pr_maximo_dB,self.margen_maximo_dB,self.sinr_db, self.throughput_users):
+					print("{}		{}	{}		{:.4f}	{:.4f}		{:.4f}		{:.4f}".format(ind, a, b,c,d,e[0],f))
 					ind+=1
-				'''
+					if args[1]==ind:
+						break
+				
 				for a,b,c,d in zip(self.mapa_conexion_usuario,self.mapa_conexion_usuario_no_con,
 						self.pr_maximo_dB,self.sinr_db):
 					print("{}	{}	{}	{}	{}".format(ind, a, b,c,d))
@@ -947,11 +993,8 @@ class Sistema_Celular:
 				'''
 			else:
 				pass
-		print("Mapa de conexion por estacion inicial: ", self.mapa_conexion_estacion)
-		print("Mapa de conexion por estacion final: ", self.mapa_conexion_estacion_no_con)
-		print("Medida de conexion SINR: {}%".format(self.medida_conexion_sinr*100))
-		print("De {} usuarios, {} cumplen BER objetivo.".format(self.no_usuarios_total, self.conexion_total_sinr))
-		print("\n------------------------------------------[info_sinr].\n")
+		
+		print("\n------------------------------------------[info_data].\n")
 
 
 	def info_distancia(self,*args):
@@ -1003,8 +1046,6 @@ class Sistema_Celular:
 		'''Permite observar parametros generales de cada simulacion.'''
 		print("------------")
 		print("info_general: {}".format(target))
-		print("------------")
-
 		target=target[0]
 		if target =="potencia":
 			print("[info_potencia]")
@@ -1021,13 +1062,29 @@ class Sistema_Celular:
 		elif target=="general":
 			print("\n------------------------------------------[info_general]:")
 			print("Celdas:",self.cfg_gen["n_celdas"])
-			print("Usuarios por Conexion Sinr, supera {} dB un {}%celda",self.no_usuarios_celda)
-			print("Usuarios total",self.no_usuarios_total)
+			#print("Usuarios por Conexion Sinr, supera {} dB un {}% celda".format(self.cfg_gen['ber_sinr'],self.no_usuarios_celda))
+			print("Semilla inicial de usuarios por celda: {}". format(self.no_usuarios_celda))
+			print("Usuarios totales por sistema",self.no_usuarios_total)
 			#print("Ancho de banda por usuario:",self.bw_usuario, "[Hz]")
-			print("Margen de conexion: {}%".format(self.medida_conexion_margen*100))
-			print("SINR que supera {} dB, {} %".format(self.cfg_gen["ber_sinr"] ,self.medida_conexion_sinr*100))
-			print("Distribucion Celular,Original: ", self.planificador.mapa_conexion)
+			print("Margen de conexion (Usuarios: Pr-Sensibilidad>0): {}%".format(np.round(self.medida_conexion_margen*100,4)))
+			print("Porcentaje de usuaios cuya SINR supera {} dB, {} %".format(self.cfg_gen["ber_sinr"] ,np.round(self.medida_conexion_sinr*100,4)))
+			print("De {} usuarios, {} cumplen BER objetivo.".format(self.no_usuarios_total, self.conexion_total_sinr))
+			print("Distribucion Celular, original: ", self.planificador.mapa_conexion)
 			print("Distribucion Celular, con desconexion: ", self.planificador.mapa_estacion_descon)
+			print("Probabilidad de desconexión: {}%".format(np.round(self.no_usuarios_total/np.sum(self.planificador.mapa_estacion_descon),4)))
+			'''
+			Las siguientes variables se repiten, averiguar por que!
+
+			'''
+			#print("Mapa de conexion por estacion inicial: ", self.mapa_conexion_estacion)
+			#print("Mapa de conexion por estacion final: ", self.mapa_conexion_estacion_no_con)
+
+			
+			print("El sistema en promedio ha alcanzado {} Mbps".format(np.round(self.throughput_sistema,4)))
+			if self.planificador.mapa_conexion==self.planificador.mapa_estacion_descon:
+				print("-->No hubo desconexión")
+			else:
+				print("-->[!!!] Desconexion de usuarios")
 			#print(self.sinr_db)
 			print("------------------------------------------[info_general]\n")
 		else:

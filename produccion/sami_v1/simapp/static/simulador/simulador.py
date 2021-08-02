@@ -245,6 +245,7 @@ class Simulador:
 			coleccion_simulacion.append(sim)
 			#se imprime la informacion de cada simulacion.
 			sim.info_general("general")
+			sim.info_data(True)
 			#libero memoria
 			sim=0
 			it+=1
