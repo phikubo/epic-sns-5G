@@ -15,6 +15,8 @@ distribucion_choices=(
         ('fijo', 'Fijo'),
     )
 
+#indica porcentaje de area
+'''
 densidad_choices=(
         (0.000002, 'Baja'),
         (0.000005, 'Media'),
@@ -22,6 +24,15 @@ densidad_choices=(
         (0.00009, 'Alta [!]'),
         (0.00001, 'Masivo [!!]'),
         (0.0009, 'Ultra [!!!]'),
+    )'''
+
+densidad_choices=(
+        (1, 'Baja'),
+        (10, 'Media'),
+        (100, 'Moderada'),
+        (1000, 'Alta [!]'),
+        (2000, 'Masivo [!!]'),
+        (3000, 'Ultra [!!!]'),
     )
 
 imagen_choices=(

@@ -14,5 +14,9 @@ a.1 si es unidireccional que cambios debo hacer?
     b. data limpiada
     c. info_sinr ahora es info_data
 
-3. mantener el tama;o de usuarios de acuerdo a la seleccion.
+3. mantener el tama;o de usuarios de acuerdo a la seleccion. Para areas pequeñas si seleccionado poblacion grande, la poblacion debe ser grande.
+
+
+4. el numero de usuarios totales graficado en el histograma de poisson, no sigue la distribucion.
+    a. cambiar numero maximo de usuarios por sistema al numero de usuarios original de cada celda.
 '''

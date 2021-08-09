@@ -235,6 +235,10 @@ class Simulador:
 		col_cob_conexion_sinr=[]
 		#debe calcularse como 1-cob_conexion
 		col_cob_desconexion=[]
+
+		#
+		#colecion de throughput
+		col_tp_mean=[]
 		#contador de iteracion
 		it=0
 		print("[simulador]: Generando simulaciones...")
@@ -244,32 +248,38 @@ class Simulador:
 			#se recolecta la informacion de cada simulacion en una lista de objetos tipo simulacion.
 			coleccion_simulacion.append(sim)
 			#se imprime la informacion de cada simulacion.
-			sim.info_general("general")
-			sim.info_data(True)
+			##################################################################sim.info_general("general")
+			#primeros datos (10)
+			##################################################################sim.info_data(True)
 			#libero memoria
 			sim=0
 			it+=1
 
 		for borrar, simulacion in enumerate(coleccion_simulacion):
 			print("[simulador]: Ejecutando Coleccion")
-			col_cobertura_usuarios.append(simulacion.no_usuarios_total)
+			#no es un numero valido de poisson.
+			#col_cobertura_usuarios.append(simulacion.no_usuarios_total)
+			col_cobertura_usuarios.append(simulacion.no_usuarios_celda)
 			col_cob_conexion.append(simulacion.medida_conexion_margen)
 			col_cob_conexion_sinr.append(simulacion.medida_conexion_sinr)
+			col_tp_mean.append(simulacion.throughput_sistema)
 			#libero memoria de los objetos recolectados.
 			coleccion_simulacion[borrar]=0
 
-		print("[simulador]: Generando Gráficas")
+		##################################################################print("[simulador]: Generando Gráficas")
+		##################################################################logging.info("[simulador]: Generando Gráficas")
 		#grafica de distribucion de usuarios
 		fig, ax = plt.subplots()
 		ax.plot(np.linspace(1,len(col_cobertura_usuarios),len(col_cobertura_usuarios)), col_cobertura_usuarios, 'b-o')
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Usuarios, Proceso Puntual Poisson', 'Usuarios por Simulación', 
-			'Iteraciones', 'Número de Usuarios', 'distribucion simple', ruta_img_montecarlo, self.graficas_disponibles_dic)
+			'Iteraciones', 'Número de Usuarios', 'pic_distribucion_simple', ruta_img_montecarlo, self.graficas_disponibles_dic)
+
 
 		plt.figure()
 		plt.title("Distribución de Usuarios")
 		#data,bins=np.histogram(col_cobertura_usuarios)
 		#plt.stem(bins[:-1],data, use_line_collection=True)
-		plt.hist(col_cobertura_usuarios)
+		plt.hist(col_cobertura_usuarios, 20)
 		#plt.savefig("/Users/atru/abc.png")
 		nombre="n_ue_distribucion"
 		titulo="Histograma Distribución de Usuarios"
@@ -322,6 +332,24 @@ class Simulador:
 		plt.savefig("simapp/static/"+ruta)
 		#ruta_img="simulador/base_datos/imagenes/montecarlo/mc-ue_sinr.png"
 		self.graficas_disponibles_dic.update({titulo.upper():ruta})
+
+		#grafica de tp
+		fig, ax = plt.subplots()
+		ax.hist(col_tp_mean)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Promedio de Througput', 'Simulación Througput', 
+			'Throughput', 'Iteraciones', 'pic_tp_sistema', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		#grafica de tp comulativa
+		fig, ax = plt.subplots()
+		ax.hist(col_tp_mean, 20, density=True, cumulative=True)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'PMF Througput', 'Simulación Througput', 
+			'Throughput', 'Iteraciones', 'pic_pmf_tp_sistema', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		
+		#grafica de tp montecarlo
+		fig, ax = plt.subplots()
+		ax.plot(np.arange(1,len(col_tp_mean)+1),np.cumsum(col_tp_mean)/np.arange(1,len(col_tp_mean)+1))
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Montecarlo Througput', 'Simulación Througput', 
+			'Iteraciones', 'Tendencia Throughput', 'pic_mc_tp_sistema', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		
 
 		#GUARDAR DATOS
 		self.configuracion_gui["montecarlo_graphs"]=self.graficas_disponibles_dic
