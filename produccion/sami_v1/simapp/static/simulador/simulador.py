@@ -271,84 +271,49 @@ class Simulador:
 		#grafica de distribucion de usuarios
 		fig, ax = plt.subplots()
 		ax.plot(np.linspace(1,len(col_cobertura_usuarios),len(col_cobertura_usuarios)), col_cobertura_usuarios, 'b-o')
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Usuarios, Proceso Puntual Poisson', 'Usuarios por Simulación', 
-			'Iteraciones', 'Número de Usuarios', 'pic_distribucion_simple', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Usuarios, Proceso Puntual Poisson', 'Usuarios por Celda', 
+			'Realizaciones', 'Número de Usuarios', 'pic_dist_users_all', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
+		#grafica de distribucion de usuarios
+		fig, ax = plt.subplots()
+		ax.hist(col_cobertura_usuarios, 20)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios', 'Usuarios por Celda', 
+			'Usuarios', 'Ocurrencia', 'pic_dist_users_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		
 
-		plt.figure()
-		plt.title("Distribución de Usuarios")
-		#data,bins=np.histogram(col_cobertura_usuarios)
-		#plt.stem(bins[:-1],data, use_line_collection=True)
-		plt.hist(col_cobertura_usuarios, 20)
-		#plt.savefig("/Users/atru/abc.png")
-		nombre="n_ue_distribucion"
-		titulo="Histograma Distribución de Usuarios"
-		plt.ylabel("Frecuencia de Iteraciones")
-		plt.xlabel("Rango de Usuarios")
-		plt.grid(True)
-		#ruta_img="simulador/base_datos/imagenes/montecarlo/mc-n_ue_total.png"
-		ruta=ruta_img_montecarlo+nombre+".png"
-		plt.savefig("simapp/static/"+ruta)
-		self.graficas_disponibles_dic.update({titulo.upper():ruta})
-
-		#grafica porcentaje de conexion
-		plt.figure()
-		'''
-		plt.title("usuarios conectados")
-		#plt.hist(col_cob_conexion, density=False, cumulative=False)
+		#grafica de distribucion de usuarios
+		fig, ax = plt.subplots()
 		data,bins=np.histogram(col_cob_conexion)
-		print(bins,data)
-		plt.stem(bins[:-1],data, use_line_collection=True)
-		'''
-		data,bins=np.histogram(col_cob_conexion)
-		plt.title("Histograma de Usuarios Conectados")
-		plt.stem(bins[:-1],data, use_line_collection=True)
-		#save
-		nombre="usuarios-on"
-		titulo="Histograma Usuarios Conectados"
-		plt.ylabel("Frecuencia de Iteraciones")
-		plt.xlabel("Porcentaje de Conexión (normalizado)")
-		plt.grid(True)
-		#ruta_img="simulador/base_datos/imagenes/montecarlo/mc-n_ue_on.png"
-		ruta=ruta_img_montecarlo+nombre+".png"
-		plt.savefig("simapp/static/"+ruta)
-		self.graficas_disponibles_dic.update({titulo.upper():ruta})
-
+		ax.stem(bins[:-1],data, use_line_collection=True)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios Conectados', 'Usuarios: Pr-Sens>0', 
+			'Porcentaje de Conexión (Normalizado)', 'Ocurrencia', 'pic_on_users_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		
+		
 		
 		#grafica conexion sinr
-		plt.figure()
+		#sinr > target
 		ber_sinr=self.configuracion["cfg_simulador"]["params_general"]["ber_sinr"]
-		plt.title("SINR por encima de {} dBs".format(ber_sinr))
-		plt.hist(col_cob_conexion_sinr,density=True, cumulative=True)
-		#save
-		print(col_cob_conexion_sinr, type(col_cob_conexion_sinr), len(col_cob_conexion_sinr))
-		#save
-		nombre="sys_sinr"
-		titulo="PMF SINR > X, normalizado"
-		plt.ylabel("Porcentaje CDF")
-		plt.xlabel("Porcentaje de conexión SINR")
-		plt.grid(True)
-		ruta=ruta_img_montecarlo+nombre+".png"
-		plt.savefig("simapp/static/"+ruta)
-		#ruta_img="simulador/base_datos/imagenes/montecarlo/mc-ue_sinr.png"
-		self.graficas_disponibles_dic.update({titulo.upper():ruta})
+		fig, ax = plt.subplots()
+		ax.hist(col_cob_conexion_sinr, cumulative=True)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma SINR > x dBs', "SINR mayor a {} dBs".format(ber_sinr), 
+			'Porcentaje Acomulativo', 'Ocurrencia', 'pic_sys_sinr_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 		#grafica de tp
 		fig, ax = plt.subplots()
 		ax.hist(col_tp_mean)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Promedio de Througput', 'Simulación Througput', 
-			'Throughput', 'Iteraciones', 'pic_tp_sistema', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Promedio de Throughput', 'Histograma Throughput', 
+			'Throughput', 'Ocurrencia', 'pic_sys_tp_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		#grafica de tp comulativa
 		fig, ax = plt.subplots()
-		ax.hist(col_tp_mean, 20, density=True, cumulative=True)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'PMF Througput', 'Simulación Througput', 
-			'Throughput', 'Iteraciones', 'pic_pmf_tp_sistema', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		ax.hist(col_tp_mean, 20, cumulative=True)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Promedio de Throughput Acumulado', 'Throughput Acumulado', 
+			'Throughput', 'Ocurrencia', 'pic_sys_tp_cumsum', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
 		#grafica de tp montecarlo
 		fig, ax = plt.subplots()
 		ax.plot(np.arange(1,len(col_tp_mean)+1),np.cumsum(col_tp_mean)/np.arange(1,len(col_tp_mean)+1))
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Montecarlo Througput', 'Simulación Througput', 
-			'Iteraciones', 'Tendencia Throughput', 'pic_mc_tp_sistema', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Throughput Montecarlo', 'Simulación Throughput', 
+			'Realizaciones', 'Tendencia Throughput', 'pic_mc_tp_sistema', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
 
 		#GUARDAR DATOS

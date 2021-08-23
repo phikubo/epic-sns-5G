@@ -65,7 +65,7 @@ desvancimiento_choices=(
 #----------------------------------------------
 antena_choices=(
         ('4g', '38942 Trisectorizada'),
-        ('5g', 'Futuro*'),
+        ('5g', 'Mimo Masivo'),
         ('futuro', 'Futuro**'), 
     )
 
@@ -89,9 +89,9 @@ bw_choices=(
 #end
 class FormGeneral(forms.Form):
     '''Formulario inicial. Configura parametros globales'''
-    iteraciones=forms.IntegerField(label='Iteraciones',initial=1, min_value=1)
+    iteraciones=forms.IntegerField(label='Realizaciones',initial=1, min_value=1)
     n_celdas=forms.IntegerField(label='Cantidad de Celdas',initial=1, max_value=19, min_value=1)
-    portadora=forms.IntegerField(label='Frecuencia Portadora [MHz, GHz]',initial=900, min_value=200, max_value=75000,)
+    portadora=forms.IntegerField(label='Frecuencia Portadora [MHz]',initial=900, min_value=200, max_value=75000,)
     isd=forms.IntegerField(label='Distancia entre Celdas (ISD)[m]',initial=1000, min_value=10)
     geometria_usuarios=forms.ChoiceField(label='Distribución de Usuarios',choices=geometria_choices)
     radio_cel=forms.IntegerField(label='Radio de la Celda [m]', initial=1000, min_value=5)
@@ -159,9 +159,9 @@ class FormAsignacion(forms.Form):
     
 class FormCompacto(forms.Form):
     '''Formulario inicial. Configura parametros globales'''
-    iteraciones=forms.IntegerField(label='Iteraciones',initial=1, min_value=1)
+    iteraciones=forms.IntegerField(label='Realizaciones',initial=1, min_value=1)
     n_celdas=forms.IntegerField(label='Cantidad de Celdas',initial=1, max_value=19, min_value=1)
-    portadora=forms.IntegerField(label='Frecuencia Portadora [MHz, GHz]',initial=900, min_value=200, max_value=75000,)
+    portadora=forms.IntegerField(label='Frecuencia Portadora [MHz]',initial=900, min_value=200, max_value=75000,)
     isd=forms.IntegerField(label='Distancia entre Celdas [m]',initial=1000, min_value=10)
     geometria_usuarios=forms.ChoiceField(label='Distribución de Usuarios',choices=geometria_choices)
     radio_cel=forms.IntegerField(label='Radio de la Celda [m]', initial=1000, min_value=5)

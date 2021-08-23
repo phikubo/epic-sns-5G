@@ -69,15 +69,15 @@ class Antena:
 		#inicializar
 		if self.cfg["tipo"]=="4g":
 			self.inicializar_ts_38942()
-		elif self.cfg["tipo"]=="5G":
-			pass
+			#conforma los sectores, de acuerdo a la referencia previa donde se generan los lobulos.
+			self.conformar_sectores()
+			#interpola los resultados anteriores, con los angulos de entrada y se obtiene la ganancia relativa de todos los usuarios.
+			self.interpolar_resultados()
+		elif self.cfg["tipo"]=="5g":
+			self.inicializar_ts_5g()
 		else:
 			pass
-		#
-		#conforma los sectores, de acuerdo a la referencia previa donde se generan los lobulos.
-		self.conformar_sectores()
-		#interpola los resultados anteriores, con los angulos de entrada y se obtiene la ganancia relativa de todos los usuarios.
-		self.interpolar_resultados()
+		
 	#---------------------------------------------------------------------------
 	#---------------------------------------------------------------------------
 	#							OPERACIONES
@@ -95,6 +95,12 @@ class Antena:
 		sector_2=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), self.cfg["params_ant"][0][1])
 		sector_3=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), self.cfg["params_ant"][0][2])
 		self.patron_radiacion_3s=[sector_1,sector_2,sector_3]
+	
+	def inicializar_ts_5g(self):
+		'''Modela tipo de antena omnidireccional, emulando altisima directividad'''
+		self.hiper_ganancias=self.ganancia_tx+self.hiper_angulos*0
+		self.patron_radiacion=self.ganancia_tx+self.angulos*0
+		print(5555555555555555555, len(self.patron_radiacion))
 
 
 	def conformar_sectores(self):
