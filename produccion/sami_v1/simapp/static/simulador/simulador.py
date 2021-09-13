@@ -1,18 +1,20 @@
-#import
-import matplotlib.pyplot as plt
+#librerias internas
+from . import sistema as ss
+from .utilidades import config as cfg
+#librerias  computacion
 from matplotlib.patches import RegularPolygon
+import matplotlib.pyplot as plt
 import numpy as np
 import math
 import os
 import pyfiglet
-#librerias internas
-from . import sistema as ss
-from .utilidades import config as cfg
-#libreria estadisticas
-from scipy.special import factorial
-import scipy.stats as stats
 #logger
 import logging
+#libreria estadisticas
+#from scipy.special import factorial
+#import scipy.stats as stats
+
+
 
 class Simulador:
 	def __init__(self, tipo):
@@ -269,6 +271,7 @@ class Simulador:
 		##################################################################print("[simulador]: Generando Gráficas")
 		##################################################################logging.info("[simulador]: Generando Gráficas")
 		#grafica de distribucion de usuarios
+		print("xxxxxxxxxxxxxxx\n",col_tp_mean)
 		fig, ax = plt.subplots()
 		ax.plot(np.linspace(1,len(col_cobertura_usuarios),len(col_cobertura_usuarios)), col_cobertura_usuarios, 'b-o')
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Usuarios, Proceso Puntual Poisson', 'Usuarios por Celda', 
@@ -287,7 +290,6 @@ class Simulador:
 		ax.stem(bins[:-1],data, use_line_collection=True)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios Conectados', 'Usuarios: Pr-Sens>0', 
 			'Porcentaje de Conexión (Normalizado)', 'Ocurrencia', 'pic_on_users_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
-		
 		
 		
 		#grafica conexion sinr
