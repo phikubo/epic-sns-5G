@@ -11,7 +11,8 @@ from .forms import FormCompacto
 import os
 import json
 #
-from .static.simulador import top_pruebas
+#from .static.simulador import top_pruebas
+print("From django.views:")
 from .static.simulador import simulador as samiv1
 from .static.simulador.utilidades import config as cfg
 

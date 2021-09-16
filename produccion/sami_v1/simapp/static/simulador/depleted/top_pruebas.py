@@ -1,4 +1,5 @@
 # import
+print("importado")
 import matplotlib.pyplot as plt
 from matplotlib.patches import RegularPolygon
 import numpy as np

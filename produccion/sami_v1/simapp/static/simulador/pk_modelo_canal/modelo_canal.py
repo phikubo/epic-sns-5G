@@ -173,7 +173,7 @@ class Modelo_Canal:
 
 		elif self.cfg_prop["modelo_perdidas"] =="umi_ci":
 			#km, mhz
-			print("[debug]:mod_canal:umi_ci")
+			#print("[debug]:mod_canal:umi_ci")
 			if self.arreglos[0][1]=="m":
 				#self.hiper_arreglos[0]=(self.hiperc_distancias, "m") #siempre en metros.
 				#self.hiper_arreglos[1]=(self.hiperc_ganancia_relativa, "none")

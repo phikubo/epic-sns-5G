@@ -1,6 +1,13 @@
 #librerias internas
-from . import sistema as ss
-from .utilidades import config as cfg
+try:
+	print("From simulador.py")
+	from . import sistema as ss
+	from .utilidades import config as cfg
+	from .pk_estadistica_desempeno import modulo_estadisticas as estats
+except Exception as EX:
+	print("ATENCION: Uno o mas modulos no pudo ser importado...\n", EX)
+
+
 #librerias  computacion
 from matplotlib.patches import RegularPolygon
 import matplotlib.pyplot as plt
@@ -256,9 +263,10 @@ class Simulador:
 			#libero memoria
 			sim=0
 			it+=1
-
+		print("[simulador]:Terminado simulaciones...")
+		print("[simulador]: Ejecutando Coleccion...")
 		for borrar, simulacion in enumerate(coleccion_simulacion):
-			print("[simulador]: Ejecutando Coleccion")
+			
 			#no es un numero valido de poisson.
 			#col_cobertura_usuarios.append(simulacion.no_usuarios_total)
 			col_cobertura_usuarios.append(simulacion.no_usuarios_celda)
@@ -267,11 +275,11 @@ class Simulador:
 			col_tp_mean.append(simulacion.throughput_sistema)
 			#libero memoria de los objetos recolectados.
 			coleccion_simulacion[borrar]=0
+		print("[simulador]: Terminado Coleccion...")
 
 		##################################################################print("[simulador]: Generando Gráficas")
 		##################################################################logging.info("[simulador]: Generando Gráficas")
 		#grafica de distribucion de usuarios
-		print("xxxxxxxxxxxxxxx\n",col_tp_mean)
 		fig, ax = plt.subplots()
 		ax.plot(np.linspace(1,len(col_cobertura_usuarios),len(col_cobertura_usuarios)), col_cobertura_usuarios, 'b-o')
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Usuarios, Proceso Puntual Poisson', 'Usuarios por Celda', 
@@ -300,11 +308,15 @@ class Simulador:
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma SINR > x dBs', "SINR mayor a {} dBs".format(ber_sinr), 
 			'Porcentaje Acomulativo', 'Ocurrencia', 'pic_sys_sinr_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
+
+
+
 		#grafica de tp
 		fig, ax = plt.subplots()
 		ax.hist(col_tp_mean)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Promedio de Throughput', 'Histograma Throughput', 
 			'Throughput', 'Ocurrencia', 'pic_sys_tp_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		
 		#grafica de tp comulativa
 		fig, ax = plt.subplots()
 		ax.hist(col_tp_mean, 20, cumulative=True)
@@ -317,6 +329,22 @@ class Simulador:
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Throughput Montecarlo', 'Simulación Throughput', 
 			'Realizaciones', 'Tendencia Throughput', 'pic_mc_tp_sistema', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
+		#grafica de tp probabilidad
+		fig, ax = plt.subplots()
+		y_prob,x_prob,ancho=estats.calcular_probabilidad(np.array(col_tp_mean))
+		ax.bar(x_prob, width=ancho, height=y_prob,ec='black')
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Probabilidad Throughtput', 'PDF', 
+			'Throughput', 'Probabilidad', 'pic_pdf_tp_sistema', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		
+		#grafica de tp probabilidad
+		fig, ax = plt.subplots()
+		#por corregir
+		#y_prob,x_prob,ancho=estats.calcular_probabilidad(np.array(col_tp_mean))
+		#ax.bar(height=np.sort(np.cumsum(y_prob)))
+		#self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Probabilidad Acomulativa Throughtput', 'CDF', 
+		#	'Throughput', 'Probabilidad', 'pic_cdf_tp_sistema', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		
+
 
 		#GUARDAR DATOS
 		self.configuracion_gui["montecarlo_graphs"]=self.graficas_disponibles_dic

@@ -22,6 +22,7 @@ from shapely.geometry.polygon import Polygon
 #bloque de carga de modulos - inicio
 #
 try:
+	print("From sistema.py")
 	#from <paquete>          import <modulo>           as <nombre_preferencial_del modulo>
 	from .pk_red_dispositivos import celda
 	from .pk_red_dispositivos import modulo_coordenadas as mc
@@ -35,8 +36,8 @@ try:
 	from .pk_gestion_recursos import planificador as plan
 	from .pk_gestion_recursos import modulacion as modd
 
-except:
-	print("ATENCION: Uno o mas modulos no pudo ser importado... ")
+except Exception as EX:
+	print("ATENCION: Uno o mas modulos no pudo ser importado... ", EX)
 	print("...desde un archivo externo. Ignorar si la ejecucion es interna. ")
 #
 #bloque de carga de modulos - final
@@ -695,13 +696,13 @@ class Sistema_Celular:
 	
 	def calcular_throughput(self):
 		'''Dado un sinr calcula el throughput de un arreglo, usando un modulo externo y no una clase.'''
-		print("[debug]:calcular_throughput()", self.sinr_db.shape)
+		#print("[debug]:sistema.py:calcular_throughput()", self.sinr_db.shape)
 		#calcular tasa y modulacion.
 		self.modelo_modulacion.arreglos_tasa_modulacion(self.sinr_db)
 		tasa=np.array(self.modelo_modulacion.arr_tasa)
 		modulacion=np.array(self.modelo_modulacion.arr_modulacion)
 		#
-		print(tasa[:10], modulacion[:10])
+		#print(tasa[:10], modulacion[:10])
 		constant_dmrs=13
 		constant_oh=[0.14,0.18]
 		#OPCION MODIFICABLE SOLO EN MODO DESARROLLADOR.

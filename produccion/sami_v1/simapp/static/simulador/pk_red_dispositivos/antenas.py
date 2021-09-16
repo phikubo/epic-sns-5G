@@ -90,7 +90,7 @@ class Antena:
 		self.relacion_angulos=12.0*((self.angulos/self.cfg["hpbw"])**2) #antes at_int
 		#sector, con corrimiento en angulos para desplazarlos en x, el numero de grados necesarios.
 		#se eleva la funcion al piso 0 para sumarlas despues.
-		print(self.cfg["params_ant"][0])
+		#print(self.cfg["params_ant"][0])
 		sector_1=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), self.cfg["params_ant"][0][0])
 		sector_2=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), self.cfg["params_ant"][0][1])
 		sector_3=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), self.cfg["params_ant"][0][2])
@@ -100,7 +100,7 @@ class Antena:
 		'''Modela tipo de antena omnidireccional, emulando altisima directividad'''
 		self.hiper_ganancias=self.ganancia_tx+self.hiper_angulos*0
 		self.patron_radiacion=self.ganancia_tx+self.angulos*0
-		print(5555555555555555555, len(self.patron_radiacion))
+		#print(5555555555555555555, len(self.patron_radiacion))
 
 
 	def conformar_sectores(self):
@@ -128,7 +128,7 @@ class Antena:
 	def calcular_interseccion_not(self):
 		#DEPLETED
 		'''Dado una lista de angulos y el hpdw, calcula los nuevos angulos de interseccion'''
-		print(self.apunt_trisec)
+		#print(self.apunt_trisec)
 		for angulo in self.apunt_trisec:
 			print(angulo+self.cfg["hpbw"]*0.5, angulo-self.cfg["hpbw"]*0.5, )
 

@@ -42,9 +42,9 @@ class Modulacion:
         # flag para verificar si sinr_in es menor al limite inferior y desconecta
         verificar_inferior = False
 
+        #print("[modulacion.py]:{debug}:subir")
         for ind, sinr_ in enumerate(sinr_tar):
             if sinr_in >= 22.26950728:
-                print("{debug}:subir")
                 verificar_superior = True
                 sinr_in = 22.26950727
             elif sinr_in < -9.533495583:
@@ -336,7 +336,7 @@ def definir_flujo():
     # [!!!!!!!]: por que en este calculo no se usa tbs, ber?, cual es el punto de calcularlo?
     throughput=calcular_throughput(n_rb,modulacion,tasa,arreglo_mimo,numerologia)
 
-    print("thouhgput: {}".format(throughput))
+    #print("thouhgput: {}".format(throughput))
 
 
 if __name__ == "__main__":
