@@ -4,9 +4,9 @@ import pytest
 import numpy as np
 import matplotlib.pyplot as plt
 
-def calcular_probabilidad(arreglo):
+def calcular_probabilidad(arreglo, numero):
 	'''Calcula la probabilidad de un arreglo de datos, mediante el conteo de ocurrencia de un histograma.'''
-	ocurrencia,limites=np.histogram(arreglo,20)
+	ocurrencia,limites=np.histogram(arreglo,numero)
 	limite=limites[2]-limites[1]
 	prob=ocurrencia/sum(ocurrencia)
 	centros=calcular_centros(limites)
@@ -31,7 +31,7 @@ def calcular_centros(bins):
 def test_calculo_prob6():
 	'''calculo de probabilidad a partir de un histograma de tp'''
 	arr_tp=np.array([59.334335156250006, 52.124325, 58.445371875000006, 53.224098749999996, 72.76188, 95.9808975, 75.067515, 67.989710625, 262.036125, 39.611227500000005, 90.79911249999999])
-	data,bins=np.histogram(arr_tp,20)
+	data,bins=np.histogram(arr_tp,numero)
 	#print(bins)
 	edgess=bins[2]-bins[1]
 	prob=data/sum(data)
@@ -55,7 +55,7 @@ if __name__=="__main__":
 	#test_calculo_prob5()
 	#test_calculo_prob6()
 	arr_tp=np.array([59.334335156250006, 52.124325, 58.445371875000006, 53.224098749999996, 72.76188, 95.9808975, 75.067515, 67.989710625, 262.036125, 39.611227500000005, 90.79911249999999])
-	probabilidad, centros, ancho=calcular_probabilidad(arr_tp)
+	probabilidad, centros, ancho=calcular_probabilidad(arr_tp,20)
 	fig, ax = plt.subplots()
 	#ax.bar(centros, width=ancho, height=probabilidad,ec='black')
 	ax.bar(centros, width=ancho, height=probabilidad,ec='black')
