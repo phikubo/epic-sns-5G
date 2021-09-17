@@ -337,11 +337,50 @@ class Modelo_Canal:
 		frecuencia_hz= self.portadora*math.pow(10,9)
 		distancia_3d=np.sqrt(Hbs**2+self.distancias**2)
 		dist_breakpoint=(4*(Hbs-He)*(Hut-He)*frecuencia_hz)/(3*math.pow(10, 8))
-		dist_bp=np.array(np.ones_like(self.distancias)*dist_breakpoint,dtype='int32')
-		#print(distbreakpoint)
-		#CORREGIR
+		dist_bp=np.array(np.ones_like(self.distancias)*dist_breakpoint)
 		pl=[self.parametro_uma_pl(distancias,dist_ref,dist_3d) for distancias,dist_ref,dist_3d in zip(self.distancias,dist_bp,distancia_3d)]
-		self.path_loss=np.array(pl,dtype='float32')
+		self.path_loss=np.array(pl)
+	
+
+	def perdidas_uma_refactor(self):
+		'''Este modulo recrea las perdidas UMA LOS de la TR 138901, con distancia [m] y frecuencia FC en [Hz].
+		De acuerdo con la fuente: https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/15.00.00_60/tr_138901v150000p.pdf 
+		
+		La documentacion indica que HE es la altura relativa de la antena. Este parametro se define como HE=1m si hUT<13.
+		El con prop[o]sito de ahorrar calculos, se define que la altura del terminal Hut<13 de tal modo que HE=1m.
+		
+		#variables necesarias
+
+		#hbs (alturna de antena)  -> 25m
+		#hut (altura de terminal) -> 1.5m <= hut <= 22.5
+		#hbs_p (alturna de antena efectiva) 
+		#hut_p (altura de terminal efectiva)
+		#he (altura del ambiente) -> 1.0m
+		#fc (frecuency carrier)   -> self.frecuency
+		#dist_2d ------------------> self.distancias
+		#VEL_C (velocidad de la luz 3.8*10**8)
+		'''
+
+		#0. calcular la distancia 3d
+		dist_3d=np.sqrt(self.distancia**2 +(hbs-hut)**2)
+		#1. calcular la distancia 2d
+		'''la distancia 2d es la misma variable self.distancia'''
+		#2. calcular la distancia bp (breakpoint)
+		#dist_breakpoint=4*hbs_p*hut_p*fc/VEL_C
+		#2.1 calular la distncias primas
+		he=1
+		hbs_p=hbs-he
+		hut_p=hut-he
+		dist_breakpoint=4*hbs_p*hut_p*(fc/3.8*10**8)
+		#3. evaular PLuma_los (tr138901)
+		'''evaluar para cada distancia de la siguiente manera
+		PL1 si 10m < self.distancias < dist_breakpoint.
+		PL2 si distancia_breakpoin < self.distnacias <= 5000m.
+		
+		Que sucede si es menor a 10?'''
+		map_pl=np.where(10 < self.distancias and self.distancias < dist_breakpoint, 1, self.distancias)
+		map_pl=np.where(10 < self.distancias and self.distancias < dist_breakpoint, 2, 0)
+
 
 
 	def balance_del_enlace_mcl(self):
