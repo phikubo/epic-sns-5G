@@ -380,7 +380,8 @@ class Modelo_Canal:
 		CUAL ES LA DISTANCIA MAXIMA ISD QUE SE PUEDE LOGRAR SIN SUPERAR ESTE LIMITE? 
 		CUAL ES LA DISTNACIA MAXIMA ENTRE EL USUARIO BORDE Y LA BS DE LA CELDA MAS ALEJADA, EXTREMO A EXTREMO?
 		'''
-
+		hbs=self.cfg_prop["params_modelo"][0]
+		hut=self.cfg_prop["params_modelo"][2]
 		#0. calcular la distancia 3d
 		dist_3d=np.sqrt(self.distancia**2 +(hbs-hut)**2)
 		#1. calcular la distancia 2d
@@ -414,6 +415,7 @@ class Modelo_Canal:
 		referencia=-9999999*np.ones(np.shape(self.distancias))
 		referencia=np.where(map_pl2==1, self.evaluar_pl1(self.distancias), referencia)
 		referencia=np.where(map_pl2==2, self.evaluar_pl2(self.distancias), referencia)
+		self.resultado_path_loss=referencia
 
 
 
