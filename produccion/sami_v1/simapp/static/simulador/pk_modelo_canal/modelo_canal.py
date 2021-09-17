@@ -275,7 +275,7 @@ class Modelo_Canal:
 		#E=8.29*(np.log10(1.54*hm))**2 -1.1 #[dB] para ciudades grandes y fc<300 MHz
 		#print("okumura_hata, says->A,B:",A,B)
 		#se guarda en un valor aparte, no es necesario, pero sirve de debug.
-
+		print("---------------------------------->>>>>>>>>>>>>>>>>>>>\n", self.distancias)
 		if self.cfg_prop["params_desv"]["display"]:
 			self.resultado_path_loss_antes=A+B*np.log10(self.distancias)-E
 		self.resultado_path_loss=A+(B*np.log10(self.distancias))-E #+ self.desvanecimiento
@@ -342,6 +342,21 @@ class Modelo_Canal:
 		self.path_loss=np.array(pl)
 	
 
+	def evaluar_pl1(distancias, bp):
+		'''evalua que funcion debe seleccionar dependiendo el parametro de entrada.'''
+		path_l=28.0+22*math.log10(dist_3d)+20*math.log10(self.portadora)
+		return path_l
+
+	def evaluar_pl2(distancias, bp):
+		'''evalua que funcion debe seleccionar dependiendo el parametro de entrada.'''
+		path_l=13.54+39.08*math.log10(dist_3d)+20*math.log10(self.portadora)-0.6*(Hut-1.5)
+		return path_l
+	
+	def evaular_pl0(distancias, bp):
+		'''para el caso en que la distncia sea menor a 10 o mayor a 5000k'''
+		path_l=32.4+20*log10(self.portadora)+20*log10(10)
+		return path_l
+
 	def perdidas_uma_refactor(self):
 		'''Este modulo recrea las perdidas UMA LOS de la TR 138901, con distancia [m] y frecuencia FC en [Hz].
 		De acuerdo con la fuente: https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/15.00.00_60/tr_138901v150000p.pdf 
@@ -359,6 +374,11 @@ class Modelo_Canal:
 		#fc (frecuency carrier)   -> self.frecuency
 		#dist_2d ------------------> self.distancias
 		#VEL_C (velocidad de la luz 3.8*10**8)
+
+
+		EL ESCENARIO NO PUEDE SER MAYOR A 5KM PARA LA DISTANCIA DEL USUARIO A LA ESTACION BASE.
+		CUAL ES LA DISTANCIA MAXIMA ISD QUE SE PUEDE LOGRAR SIN SUPERAR ESTE LIMITE? 
+		CUAL ES LA DISTNACIA MAXIMA ENTRE EL USUARIO BORDE Y LA BS DE LA CELDA MAS ALEJADA, EXTREMO A EXTREMO?
 		'''
 
 		#0. calcular la distancia 3d
@@ -377,9 +397,23 @@ class Modelo_Canal:
 		PL1 si 10m < self.distancias < dist_breakpoint.
 		PL2 si distancia_breakpoin < self.distnacias <= 5000m.
 		
-		Que sucede si es menor a 10?'''
-		map_pl=np.where(10 < self.distancias and self.distancias < dist_breakpoint, 1, self.distancias)
-		map_pl=np.where(10 < self.distancias and self.distancias < dist_breakpoint, 2, 0)
+		Que sucede si es menor a 10?
+		Se limpian los datos.
+		Todos los valores menores a 10m, se dejan fijo en 10.
+		Todos los valores mayores a 5000m se dejan fijo en 5000m
+		Donde sebe hacerse este cambio con anterioridad para que no afecte los demas calculos?'''
+		self.distancias=np.where(self.distancias<(10/1000), (10/1000),self.distancias)
+		self.distancias=np.where(self.distancias>(5000/1000), (5000/1000),self.distancias)
+
+
+		map_pl1=np.where((10 <= self.distancias) & (self.distancias <= dist_breakpoint), 1, self.distancias)
+		'''si alimento nuevamente el array con el anterior, el ciclo se repite, es decir, se pueden reemplazar elementos nuevamente distorsionando el array'''
+		#map_pl2=np.where((dist_breakpoint <= self.distancias) & (self.distancias <= 5000), 2, 0)
+		map_pl2=np.where((dist_breakpoint <= mpl1) & (mpl1 <= 5000), 2, mpl1)
+
+		referencia=-9999999*np.ones(np.shape(self.distancias))
+		referencia=np.where(map_pl2==1, self.evaluar_pl1(self.distancias), referencia)
+		referencia=np.where(map_pl2==2, self.evaluar_pl2(self.distancias), referencia)
 
 
 
