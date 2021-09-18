@@ -175,11 +175,8 @@ def ver_parametros(request):
 
 
 def ver_presim(request):
-    #configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
-    #imagenes_disp=configuracion["cfg_gui"]["presim_graphs"]
-    #
     #se separa el archivo de path debido a que genera problemas en modo debug
-    configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+    configuracion=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_gui")
     print(configuracion)
     imagenes_disp=configuracion["presim_graphs"]
     #print(imagenes_disp)
@@ -187,7 +184,7 @@ def ver_presim(request):
 
 
 def ver_sim(request):
-    configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+    configuracion=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_gui")
     configuracion_base=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
     iteracion=configuracion_base["cfg_simulador"]["params_general"]["iteracion"]
     imagenes_disp=configuracion["montecarlo_graphs"]

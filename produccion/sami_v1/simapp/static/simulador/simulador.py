@@ -230,7 +230,7 @@ class Simulador:
 		'''Modulo de N iteraciones.'''
 		print("[simulador]: Ejecutando montecarlo...")
 		#
-		numero_barras=self.configuracion["cfg_gui"]["config"]["numero_barras"]
+		numero_barras=self.configuracion["cfg_gui"]["histograma_cfg"]["numero_barras"]
 		#
 		#la logitud de las rutas depende de donde se almacena los datos. Las imagenes se producen una capa mas alta por lo que la ruta es menor.
 		#en cambio los datos se guardan desde aqui por que la ruta debe ser completa. Similar con mapa_calor_x,y. Hint: buscar mapa_calor_x.
