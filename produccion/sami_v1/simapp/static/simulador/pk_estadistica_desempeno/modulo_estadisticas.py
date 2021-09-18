@@ -48,12 +48,6 @@ def test_calculo_prob6():
 
 if __name__=="__main__":
 	#Prototipo:
-	#test_calculo_prob1()
-	#test_calculo_prob2()
-	#test_calculo_prob3()
-	#test_calculo_prob4()
-	#test_calculo_prob5()
-	#test_calculo_prob6()
 	arr_tp=np.array([59.334335156250006, 52.124325, 58.445371875000006, 53.224098749999996, 72.76188, 95.9808975, 75.067515, 67.989710625, 262.036125, 39.611227500000005, 90.79911249999999])
 	probabilidad, centros, ancho=calcular_probabilidad(arr_tp,20)
 	fig, ax = plt.subplots()

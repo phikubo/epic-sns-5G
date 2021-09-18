@@ -1,5 +1,6 @@
 __pycache__/
 *.json
+col_*.txt
 *.png
 *.jpg
 *.pdf

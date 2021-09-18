@@ -275,7 +275,7 @@ class Modelo_Canal:
 		#E=8.29*(np.log10(1.54*hm))**2 -1.1 #[dB] para ciudades grandes y fc<300 MHz
 		#print("okumura_hata, says->A,B:",A,B)
 		#se guarda en un valor aparte, no es necesario, pero sirve de debug.
-		print("---------------------------------->>>>>>>>>>>>>>>>>>>>\n", self.distancias)
+		#print("---------------------------------->>>>>>>>>>>>>>>>>>>>\n", self.distancias)
 		if self.cfg_prop["params_desv"]["display"]:
 			self.resultado_path_loss_antes=A+B*np.log10(self.distancias)-E
 		self.resultado_path_loss=A+(B*np.log10(self.distancias))-E #+ self.desvanecimiento

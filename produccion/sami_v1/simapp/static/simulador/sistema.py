@@ -318,16 +318,14 @@ class Sistema_Celular:
 				##print("[sis.init.dist] 2. Tipo de dato\n",type(self.usuario_x)) #muestra la estructura de los datos.
 				##print("[sis.init.dist] 3. Logitud dato celda[0]:\n",len(self.usuario_x[0]))
 				##print("[sis.init.dist] 4. Estructura de celdas\n",self.usuario_x)
+				
 				if self.cfg_gen["imagen"]["display"][0]: #si true, genera el mapa de calor.
+					#[!!!!] mapa_calor_x, mapa_calor_y se produce y se guarda en simulador.
+					with open('simapp/static/simulador/base_datos/datos/mapa_calor_x.npy', 'rb') as archivo_npy:
+						self.malla_x=np.load(archivo_npy)
 
-					with open('simapp/static/simulador/base_datos/datos/test_x.npy', 'rb') as f:
-
-						self.malla_x=np.load(f)
-					with open('simapp/static/simulador/base_datos/datos/test_y.npy', 'rb') as f:
-
-						self.malla_y=np.load(f)
-					#print("++Test 1")
-					#self.malla_x,self.malla_y=self.mapa_calor[1]
+					with open('simapp/static/simulador/base_datos/datos/mapa_calor_y.npy', 'rb') as archivo_npy:
+						self.malla_y=np.load(archivo_npy)
 				else:
 					pass
 
