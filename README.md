@@ -8,7 +8,7 @@ Usar pip3 install --upgrade -r requirements_{fecha mas actual}.txt
 El desarrollo de cada script debe seguir las siguientes fases: prototipo, pruebas y producción. 
 Todos las variables deben ser llamados siguiendo el estilo PEP8 (Ver https://www.python.org/dev/peps/pep-0008/). Además el nombre de los scripts también deben seguir PEP8 y cada nombre debe corresponder con la carpeta donde se encuentra e.g., prot_nombre, prueb_nombre, prod_nombre.
 
-# Overview:
+#### Overview:
 1. ANTES DE PROGRAMAR, REALIZAR PULL EN EL REPOSITORIO PARA ACTUALIZARO. Luego realizar commits periódicamente. Realizar PUSH solamente al terminar la jornada de programación.
 2. Seguir el estilo PEP8 en variables, y nombres de script (teniendo en cuenta el protocolo anterior)
 3. Todas las funciones, ¡TODAS! deben contener una breve explicación de que hace, y qué significa las variables internas.
