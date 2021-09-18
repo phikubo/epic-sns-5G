@@ -1,8 +1,9 @@
 # epic-sns-5G: SAMI
 Simulador a Nivel de Sistema 5G.
 
-Para instalar, aceder mediante bash a la carpet: entorno_virtual_dependencias
-Usar pip3 install --upgrade -r requirements_{fecha mas actual}.txt
+Para instalar, aceder mediante bash a la carpet: entorno_virtual_dependencias:
+
+Ejecutar pip3 install --upgrade -r requirements_{fecha mas actual}.txt
 
 ### Instrucciones
 El desarrollo de cada script debe seguir las siguientes fases: prototipo, pruebas y producción. 
