@@ -282,6 +282,7 @@ class Simulador:
 			#libero memoria de los objetos recolectados.
 			coleccion_simulacion[borrar]=0
 		print("[simulador]: Terminado Coleccion...\n")
+		
 		print("[simulador]: Ejecuntando Almacenamiento...\n")
 		raw_datos.guardar_data(ruta_datos,"col_cobertura_usuarios",col_cobertura_usuarios, "Coleccion de usuarios por celda original")
 		raw_datos.guardar_data(ruta_datos,"col_cob_conexion",col_cob_conexion, "Coleccion de usuarios cuya potencia es mayor a la sensibilidad.")

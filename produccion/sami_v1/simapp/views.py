@@ -177,7 +177,6 @@ def ver_parametros(request):
 def ver_presim(request):
     #se separa el archivo de path debido a que genera problemas en modo debug
     configuracion=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_gui")
-    print(configuracion)
     imagenes_disp=configuracion["presim_graphs"]
     #print(imagenes_disp)
     return render(request,'simapp/resultados/sami-presim-graficas.html', {"img_disp":imagenes_disp})
