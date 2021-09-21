@@ -232,7 +232,7 @@ class Modelo_Canal:
 			else:
 				pass #opcion megaherz, no cambia.
 			#print(self.distancias.shape)
-			self.perdidas_uma_3gpp()
+			self.perdidas_uma_refactor()
 		else:
 			pass
 
@@ -334,15 +334,17 @@ class Modelo_Canal:
 		self.path_loss=np.array(pl)
 	
 
-	def evaluar_pl1(distancias, dist_3d):
+	def evaluar_pl1(self, dist_3d ):
 		'''evalua que funcion debe seleccionar dependiendo el parametro de entrada.'''
-		path_l=28.0+22*np.log10(dist_3d)+20*np.log10(self.portadora)
+		#fc debe estar en Ghz, por eso FC/1000
+		path_l=28.0+22*np.log10(dist_3d)+20*np.log10(self.portadora/1000)
 		return path_l
 
-	def evaluar_pl2(distancias, bp_p, dist_3d, hbs, hut):
+	def evaluar_pl2(self,dist_3d, bp_p, hbs, hut):
+		#fc debe estar en Ghz, por eso FC/1000
 		'''evalua que funcion debe seleccionar dependiendo el parametro de entrada.
 		bp_p breakpoint prima.'''
-		path_l=28+40*np.log10(dist_3d)+20*np.log10(self.portadora)-9*np.log10( (bp_p**2)+(hbs-hut)**2)
+		path_l=28+40*np.log10(dist_3d)+20*np.log10(self.portadora/1000)-9*np.log10( (bp_p**2)+(hbs-hut)**2)
 		return path_l
 	
 	def evaular_pl0(distancias, bp):
@@ -376,7 +378,7 @@ class Modelo_Canal:
 		hbs=self.cfg_prop["params_modelo"][0]
 		hut=self.cfg_prop["params_modelo"][2]
 		#0. calcular la distancia 3d
-		dist_3d=np.sqrt(self.distancia**2 +(hbs-hut)**2)
+		dist_3d=np.sqrt(self.distancias**2 +(hbs-hut)**2)
 		#1. calcular la distancia 2d
 		'''la distancia 2d es la misma variable self.distancia'''
 		#2. calcular la distancia bp (breakpoint)
@@ -386,7 +388,9 @@ class Modelo_Canal:
 		he=1
 		hbs_p=hbs-he
 		hut_p=hut-he
-		dist_breakpoint_prima=4*hbs_p*hut_p*(fc/3.8*10**8)
+		#portadora esta en MHz, la necesitamos en HZ de acuerdo a la documentacion.
+		print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", self.portadora)
+		dist_breakpoint_prima=4*hbs_p*hut_p*((self.portadora*10**6)/(3.8*10**8))
 		#3. evaular PLuma_los (tr138901)
 		'''evaluar para cada distancia de la siguiente manera
 		PL1 si 10m < self.distancias < dist_breakpoint.
@@ -406,9 +410,9 @@ class Modelo_Canal:
 		#map_pl2 toma la referncia de map_pl1 y modifica sus valores.
 		map_pl2=np.where((dist_breakpoint_prima <= map_pl1) & (map_pl1 <= 5000), 2, map_pl1)
 
-		#referencia=-9999999*np.ones(np.shape(self.distancias))
-		referencia=np.where(map_pl2==1, self.evaluar_pl1(self.distancias, dist_3d), map_pl2)
-		referencia=np.where(map_pl2==2, self.evaluar_pl2(self.distancias, dist_breakpoint_prima, dist_3d, hbs, hut), referencia)
+		referencia=np.where(map_pl2==1, self.evaluar_pl1(dist_3d), map_pl2)
+		referencia=np.where(map_pl2==2, self.evaluar_pl2(dist_3d, dist_breakpoint_prima, hbs, hut), referencia)
+
 		self.resultado_path_loss=referencia
 
 

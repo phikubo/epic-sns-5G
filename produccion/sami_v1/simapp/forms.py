@@ -173,7 +173,7 @@ class FormCompacto(forms.Form):
     '''Formulario para configurar variables relacionadas al modelo de perdidas de propagación'''
     modelo_perdidas=forms.ChoiceField(label='Modelo de Pérdidas de Propagación',choices=modelo_perdidas_choices)
     #floats
-    mp1=forms.DecimalField(label='Altura Antena',initial=30, min_value=0, max_digits=5, decimal_places=2)
+    mp1=forms.DecimalField(label='Altura Antena',initial=25, min_value=0, max_digits=5, decimal_places=2)
     mp2=forms.DecimalField(label='Parámero 2',initial=0, min_value=0, max_digits=5, decimal_places=2)
     mp3=forms.DecimalField(label='Altura Terminal',initial=1.5, min_value=0, max_digits=5, decimal_places=2)
     mp4=forms.DecimalField(label='Parámero 4',initial=0, min_value=0, max_digits=5, decimal_places=2)
