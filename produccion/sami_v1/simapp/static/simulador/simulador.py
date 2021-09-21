@@ -282,7 +282,7 @@ class Simulador:
 			#libero memoria de los objetos recolectados.
 			coleccion_simulacion[borrar]=0
 		print("[simulador]: Terminado Coleccion...\n")
-		
+
 		print("[simulador]: Ejecuntando Almacenamiento...\n")
 		raw_datos.guardar_data(ruta_datos,"col_cobertura_usuarios",col_cobertura_usuarios, "Coleccion de usuarios por celda original")
 		raw_datos.guardar_data(ruta_datos,"col_cob_conexion",col_cob_conexion, "Coleccion de usuarios cuya potencia es mayor a la sensibilidad.")
@@ -303,13 +303,6 @@ class Simulador:
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios', 'Usuarios por Celda', 
 			'Usuarios', 'Frecuencia de Ocurrencia', 'pic_users_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
-
-		#grafica de distribucion de usuarios
-		fig, ax = plt.subplots()
-		data,bins=np.histogram(col_cob_conexion,bins=numero_barras)
-		ax.stem(bins[:-1],data, use_line_collection=True)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios Conectados', 'Usuarios: Pr-Sens>0', 
-			'Porcentaje de Conexión', 'Frecuencia de Ocurrencia', 'pic_users_hist_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
 		#grafica de distribucion de usuarios
 		fig, ax = plt.subplots()
@@ -320,7 +313,14 @@ class Simulador:
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios Conectados', 'Usuarios: Pr-Sens>0', 
 			'Porcentaje de Conexión', 'Frecuencia de Ocurrencia', 'pic_users_hist_on_2', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
+		#grafica de distribucion de usuarios
+		fig, ax = plt.subplots()
+		data,bins=np.histogram(col_cob_conexion,bins=numero_barras)
+		ax.stem(bins[:-1],data, use_line_collection=True)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios Conectados', 'Usuarios: Pr-Sens>0', 
+			'Porcentaje de Conexión', 'Frecuencia de Ocurrencia', 'pic_users_hist_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
+			
 		#grafica conexion sinr
 		#sinr > target
 		ber_sinr=self.configuracion["cfg_simulador"]["params_general"]["ber_sinr"]

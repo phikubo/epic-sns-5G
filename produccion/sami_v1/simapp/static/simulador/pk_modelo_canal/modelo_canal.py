@@ -154,8 +154,6 @@ class Modelo_Canal:
 		elif self.cfg_prop["modelo_perdidas"] =="okumura_hata":
 			#km, mhz
 			if self.arreglos[0][1]=="m":
-				#self.hiper_arreglos[0]=(self.hiperc_distancias, "m") #siempre en metros.
-				#self.hiper_arreglos[1]=(self.hiperc_ganancia_relativa, "none")
 				#convierto a kilometros
 				if self.custom_dist_flag==True:
 					self.distancias=self.custom_dist
@@ -175,8 +173,6 @@ class Modelo_Canal:
 			#km, mhz
 			#print("[debug]:mod_canal:umi_ci")
 			if self.arreglos[0][1]=="m":
-				#self.hiper_arreglos[0]=(self.hiperc_distancias, "m") #siempre en metros.
-				#self.hiper_arreglos[1]=(self.hiperc_ganancia_relativa, "none")
 				#convierto a kilometros
 
 				#ADICIONAR01
@@ -199,8 +195,6 @@ class Modelo_Canal:
 			#km, mhz
 			print("[debug]:mod_perd:umi_abg")
 			if self.arreglos[0][1]=="m":
-				#self.hiper_arreglos[0]=(self.hiperc_distancias, "m") #siempre en metros.
-				#self.hiper_arreglos[1]=(self.hiperc_ganancia_relativa, "none")
 				#convierto a kilometros
 
 				#ADICIONAR01
@@ -222,8 +216,6 @@ class Modelo_Canal:
 		elif self.cfg_prop["modelo_perdidas"] =="uma_3gpp":
 			#km, mhz
 			if self.arreglos[0][1]=="m":
-				#self.hiper_arreglos[0]=(self.hiperc_distancias, "m") #siempre en metros.
-				#self.hiper_arreglos[1]=(self.hiperc_ganancia_relativa, "none")
 				#convierto a kilometros
 
 				#ADICIONAR01
@@ -342,19 +334,20 @@ class Modelo_Canal:
 		self.path_loss=np.array(pl)
 	
 
-	def evaluar_pl1(distancias, bp):
+	def evaluar_pl1(distancias, dist_3d):
 		'''evalua que funcion debe seleccionar dependiendo el parametro de entrada.'''
-		path_l=28.0+22*math.log10(dist_3d)+20*math.log10(self.portadora)
+		path_l=28.0+22*np.log10(dist_3d)+20*np.log10(self.portadora)
 		return path_l
 
-	def evaluar_pl2(distancias, bp):
-		'''evalua que funcion debe seleccionar dependiendo el parametro de entrada.'''
-		path_l=13.54+39.08*math.log10(dist_3d)+20*math.log10(self.portadora)-0.6*(Hut-1.5)
+	def evaluar_pl2(distancias, bp_p, dist_3d, hbs, hut):
+		'''evalua que funcion debe seleccionar dependiendo el parametro de entrada.
+		bp_p breakpoint prima.'''
+		path_l=28+40*np.log10(dist_3d)+20*np.log10(self.portadora)-9*np.log10( (bp_p**2)+(hbs-hut)**2)
 		return path_l
 	
 	def evaular_pl0(distancias, bp):
-		'''para el caso en que la distncia sea menor a 10 o mayor a 5000k'''
-		path_l=32.4+20*log10(self.portadora)+20*log10(10)
+		'''para el caso en que la distncia sea menor a 10 o mayor a 5000k. Este caso normalmente no se da por la restricccion en distancia que se ha fijado al principio de la funcion orignal.'''
+		path_l=32.4+20*np.log10(self.portadora)+30*np.log10(dist_3d)
 		return path_l
 
 	def perdidas_uma_refactor(self):
@@ -389,10 +382,11 @@ class Modelo_Canal:
 		#2. calcular la distancia bp (breakpoint)
 		#dist_breakpoint=4*hbs_p*hut_p*fc/VEL_C
 		#2.1 calular la distncias primas
+		#he=1 por defecto.
 		he=1
 		hbs_p=hbs-he
 		hut_p=hut-he
-		dist_breakpoint=4*hbs_p*hut_p*(fc/3.8*10**8)
+		dist_breakpoint_prima=4*hbs_p*hut_p*(fc/3.8*10**8)
 		#3. evaular PLuma_los (tr138901)
 		'''evaluar para cada distancia de la siguiente manera
 		PL1 si 10m < self.distancias < dist_breakpoint.
@@ -406,15 +400,15 @@ class Modelo_Canal:
 		self.distancias=np.where(self.distancias<(10/1000), (10/1000),self.distancias)
 		self.distancias=np.where(self.distancias>(5000/1000), (5000/1000),self.distancias)
 
-
-		map_pl1=np.where((10 <= self.distancias) & (self.distancias <= dist_breakpoint), 1, self.distancias)
-		'''si alimento nuevamente el array con el anterior, el ciclo se repite, es decir, se pueden reemplazar elementos nuevamente distorsionando el array'''
+		'''encontramos los indices donde 1 pl1 y 2 pl2'''
+		map_pl1=np.where((10 <= self.distancias) & (self.distancias <= dist_breakpoint_prima), 1, self.distancias)
 		#map_pl2=np.where((dist_breakpoint <= self.distancias) & (self.distancias <= 5000), 2, 0)
-		map_pl2=np.where((dist_breakpoint <= mpl1) & (mpl1 <= 5000), 2, mpl1)
+		#map_pl2 toma la referncia de map_pl1 y modifica sus valores.
+		map_pl2=np.where((dist_breakpoint_prima <= map_pl1) & (map_pl1 <= 5000), 2, map_pl1)
 
-		referencia=-9999999*np.ones(np.shape(self.distancias))
-		referencia=np.where(map_pl2==1, self.evaluar_pl1(self.distancias), referencia)
-		referencia=np.where(map_pl2==2, self.evaluar_pl2(self.distancias), referencia)
+		#referencia=-9999999*np.ones(np.shape(self.distancias))
+		referencia=np.where(map_pl2==1, self.evaluar_pl1(self.distancias, dist_3d), map_pl2)
+		referencia=np.where(map_pl2==2, self.evaluar_pl2(self.distancias, dist_breakpoint_prima, dist_3d, hbs, hut), referencia)
 		self.resultado_path_loss=referencia
 
 
