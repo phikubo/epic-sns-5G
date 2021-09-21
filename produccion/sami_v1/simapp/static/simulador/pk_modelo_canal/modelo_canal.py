@@ -192,7 +192,7 @@ class Modelo_Canal:
 
 		elif self.cfg_prop["modelo_perdidas"] =="umi_abg":
 			#km, mhz
-			#print("[debug]:mod_perd:umi_abg")
+			#print("-----------------------------------------------------[debug]:mod_perd:umi_abg\n", np.shape(self.distancias))
 			if self.arreglos[0][1]=="m":
 
 				if self.custom_dist_flag==True:
@@ -214,6 +214,7 @@ class Modelo_Canal:
 		elif self.cfg_prop["modelo_perdidas"] =="uma_3gpp":
 			#km, mhz
 			#print("[debug]:mod_perd:uma_3gpp")
+			
 			if self.arreglos[0][1]=="m":
 
 				if self.custom_dist_flag==True:

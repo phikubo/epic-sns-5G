@@ -84,6 +84,7 @@ class Sistema_Celular:
 		self.usuario_x=0
 		self.usuario_y=0
 
+		#HIPERCLUSTER
 		self.hiperc_modelo_canal=0 #modelo de canal de todos.
 		self.hiperc_antena=0
 		self.hiperc_distancias=[]
@@ -92,6 +93,8 @@ class Sistema_Celular:
 		#falta las distancias totales?
 		self.no_usuarios_total=0
 		self.no_usuarios_celda=0
+		
+		#GRAFICA DE POTENCIA RECIBIDA EN PRESIM
 		#variables para graficar la intensidad.
 		self.params_malla_antena=[]
 		self.params_malla_perdidas=0
@@ -388,7 +391,6 @@ class Sistema_Celular:
 		self.hiperc_malla_angulos=np.array(self.hiperc_malla_angulos)
 		#reconfigurar.
 		#print("[sistema.hiper.usuarios]\n",type(self.hiperc_distancias), type(self.hiperc_angulos))
-
 		self.hiperc_distancias=self.configurar_organizar_arreglos(self.hiperc_distancias)
 		self.hiperc_angulos=self.configurar_organizar_arreglos(self.hiperc_angulos)
 
@@ -968,12 +970,13 @@ class Sistema_Celular:
 			print("\n-----[debug.calcular_sinr]:")
 		print("\n------------------------------------------[info_data]:")
 		#is args==True
-
+		self.distancias_2D=np.vstack(self.hiperc_distancias)
+		self.distancias_2D=np.array([ar[ids] for ar, ids in zip(self.distancias_2D,self.mapa_conexion_usuario_no_con)])
 		if args:
 			if args:
 				ind=0
-				titulos_display=["celda","conexion","pr_max","margen","sinr","througput"]
-				arreglos_display=np.column_stack((self.mapa_conexion_usuario,self.mapa_conexion_usuario_no_con,
+				titulos_display=["celda","conexion", "distancias", "pr_max","margen","sinr","througput"]
+				arreglos_display=np.column_stack((self.mapa_conexion_usuario, self.mapa_conexion_usuario_no_con,self.distancias_2D,
 						self.pr_maximo_dB,self.margen_maximo_dB,self.sinr_db, self.throughput_users))
 				df_display = pd.DataFrame(arreglos_display, columns=titulos_display)
 				print(df_display.head(), "\n...\n",df_display.tail())
