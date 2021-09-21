@@ -1,8 +1,0 @@
-Esta carpeta contien los scripts que han sido ya probados en otros espacios. Producción es el estado optimo de uso. 
-
-
-Reglas:
-	-El script cuyo estado es producción debe estar documentado, pero sin comentarios de debug, ni llamados a variables (print(var)), ni uso de congelado de aplicación (time.sleep()).
-	-El método try-catch es permitido cuando sea necesario. No satura el script con este método. 
-	-El script cuyo estado es producción no debe alterarse.
-	-El script que debe alterarse debe ser retirado de produción a "pruebas", y editado únicamente en esta carpeta (todos los comentarios de prueba deben estár disponibles. Cuando el script esté nuevamente listo, una copia debe generarse de la prueba. Se limpia el script y pasa nuevamente a producción.
