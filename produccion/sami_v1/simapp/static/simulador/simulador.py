@@ -266,6 +266,7 @@ class Simulador:
 			##################################################################sim.info_general("general")
 			#primeros datos (10)
 			##################################################################sim.info_data(True)
+			sim.info_data(True)
 			#libero memoria
 			sim=0
 			it+=1

@@ -173,13 +173,12 @@ class Modelo_Canal:
 			#km, mhz
 			#print("[debug]:mod_canal:umi_ci")
 			if self.arreglos[0][1]=="m":
-				#convierto a kilometros
 
-				#ADICIONAR01
+				#las distancias debe estar en [m]
 				if self.custom_dist_flag==True:
 					self.distancias=self.custom_dist
 				else:
-					self.distancias=self.arreglos[0][0]/1000
+					self.distancias=self.arreglos[0][0]
 
 			else:
 				pass #opcion kilometro, no cambia.
@@ -193,15 +192,14 @@ class Modelo_Canal:
 
 		elif self.cfg_prop["modelo_perdidas"] =="umi_abg":
 			#km, mhz
-			print("[debug]:mod_perd:umi_abg")
+			#print("[debug]:mod_perd:umi_abg")
 			if self.arreglos[0][1]=="m":
-				#convierto a kilometros
 
-				#ADICIONAR01
 				if self.custom_dist_flag==True:
 					self.distancias=self.custom_dist
 				else:
-					self.distancias=self.arreglos[0][0]/1000
+					#las distancias debe estar en [m]
+					self.distancias=self.arreglos[0][0]
 
 			else:
 				pass #opcion kilometro, no cambia.
@@ -215,14 +213,14 @@ class Modelo_Canal:
 			
 		elif self.cfg_prop["modelo_perdidas"] =="uma_3gpp":
 			#km, mhz
+			print("[debug]:mod_perd:uma_3gpp")
 			if self.arreglos[0][1]=="m":
-				#convierto a kilometros
 
-				#ADICIONAR01
 				if self.custom_dist_flag==True:
 					self.distancias=self.custom_dist
 				else:
-					self.distancias=self.arreglos[0][0]/1000
+					#las distancias debe estar en [m]
+					self.distancias=self.arreglos[0][0]
 
 			else:
 				pass #opcion kilometro, no cambia.
@@ -232,6 +230,7 @@ class Modelo_Canal:
 			else:
 				pass #opcion megaherz, no cambia.
 			#print(self.distancias.shape)
+
 			self.perdidas_uma_refactor()
 		else:
 			pass
@@ -308,30 +307,6 @@ class Modelo_Canal:
 		correccion_freq_ghz=(10*gamma*math.log10(self.portadora))
 		correcion_dist_m=(10*alpha_n*np.log10(self.distancias))
 		self.resultado_path_loss=correccion_freq_ghz+correcion_dist_m+beta+sigma_xn
-
-
-	def parametro_uma_pl(self, dist ,dist_ref,dist_3d):
-		'''Falta documentar, falta corregir variables locales y globales (self.dist?)'''
-		if (dist <= dist_ref) and (dist>= 10):
-			path_l=28.0+22*math.log10(dist_3d)+20*math.log10(self.portadora)
-		elif self.dist>disbp and dist<=5000:
-			path_l=13.54+39.08*math.log10(dist_3d)+20*math.log10(self.portadora)-0.6*(Hut-1.5)
-		else:
-			path_l=32.4+20*log10(self.portadora)+20*log10(10)
-		return path_l
-
-
-	def perdidas_uma_3gpp(self):
-		'''Este modulo recrea las perdidas con distancia[m] y frecuencia[GHz] con los parametros
-		-distancia breakpoint: 4(Hbs-He)*(Hut-He)*fc/C
-		-rango de frecuencias para escenario UMa son por debajo de 6Ghz
-		Fuente: https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/15.00.00_60/tr_138901v150000p.pdf'''
-		frecuencia_hz= self.portadora*math.pow(10,9)
-		distancia_3d=np.sqrt(Hbs**2+self.distancias**2)
-		dist_breakpoint=(4*(Hbs-He)*(Hut-He)*frecuencia_hz)/(3*math.pow(10, 8))
-		dist_bp=np.array(np.ones_like(self.distancias)*dist_breakpoint)
-		pl=[self.parametro_uma_pl(distancias,dist_ref,dist_3d) for distancias,dist_ref,dist_3d in zip(self.distancias,dist_bp,distancia_3d)]
-		self.path_loss=np.array(pl)
 	
 
 	def evaluar_pl1(self, dist_3d ):
@@ -344,7 +319,7 @@ class Modelo_Canal:
 		#fc debe estar en Ghz, por eso FC/1000
 		'''evalua que funcion debe seleccionar dependiendo el parametro de entrada.
 		bp_p breakpoint prima.'''
-		path_l=28+40*np.log10(dist_3d)+20*np.log10(self.portadora/1000)-9*np.log10( (bp_p**2)+(hbs-hut)**2)
+		path_l=28+40*np.log10(dist_3d)+20*np.log10(self.portadora/1000)-9*np.log10((bp_p**2)+(hbs-hut)**2)
 		return path_l
 	
 	def evaular_pl0(distancias, bp):
@@ -377,6 +352,7 @@ class Modelo_Canal:
 		'''
 		hbs=self.cfg_prop["params_modelo"][0]
 		hut=self.cfg_prop["params_modelo"][2]
+
 		#0. calcular la distancia 3d
 		dist_3d=np.sqrt(self.distancias**2 +(hbs-hut)**2)
 		#1. calcular la distancia 2d
@@ -400,8 +376,13 @@ class Modelo_Canal:
 		Todos los valores menores a 10m, se dejan fijo en 10.
 		Todos los valores mayores a 5000m se dejan fijo en 5000m
 		Donde sebe hacerse este cambio con anterioridad para que no afecte los demas calculos?'''
-		self.distancias=np.where(self.distancias<(10/1000), (10/1000),self.distancias)
-		self.distancias=np.where(self.distancias>(5000/1000), (5000/1000),self.distancias)
+
+		self.distancias=np.where(self.distancias<10, 10,self.distancias)
+		self.distancias=np.where(self.distancias>5000, 5000,self.distancias)
+		
+		print('\n\ndist_3d',dist_3d)
+		print('\n\nbreakpoint', dist_breakpoint_prima)
+		print('\n\nself.distancias', self.distancias)
 
 		'''encontramos los indices donde 1 pl1 y 2 pl2'''
 		map_pl1=np.where((10 <= self.distancias) & (self.distancias <= dist_breakpoint_prima), 1, self.distancias)
@@ -412,6 +393,8 @@ class Modelo_Canal:
 		referencia=np.where(map_pl2==1, self.evaluar_pl1(dist_3d), map_pl2)
 		referencia=np.where(map_pl2==2, self.evaluar_pl2(dist_3d, dist_breakpoint_prima, hbs, hut), referencia)
 
+
+		print('\n referencia', referencia)
 		self.resultado_path_loss=referencia
 
 
