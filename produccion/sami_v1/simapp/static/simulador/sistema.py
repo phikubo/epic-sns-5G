@@ -970,6 +970,8 @@ class Sistema_Celular:
 			print("\n-----[debug.calcular_sinr]:")
 		print("\n------------------------------------------[info_data]:")
 		#is args==True
+
+		#calculo de distancia, donde el usuario se ha conectado finalmente. Revisar si es consistente.
 		self.distancias_2D=np.vstack(self.hiperc_distancias)
 		self.distancias_2D=np.array([ar[ids] for ar, ids in zip(self.distancias_2D,self.mapa_conexion_usuario_no_con)])
 		if args:
