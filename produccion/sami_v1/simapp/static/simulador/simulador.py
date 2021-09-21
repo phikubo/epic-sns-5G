@@ -310,14 +310,14 @@ class Simulador:
 		centros=estats.calcular_centros(bins)
 		ancho=bins[1]-bins[0]
 		ax.bar(centros, width=ancho, height=np.cumsum(data),ec='black')
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios Conectados', 'Usuarios: Pr-Sens>0', 
-			'Porcentaje de Conexión', 'Frecuencia de Ocurrencia', 'pic_users_hist_on_2', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Acomulativo de Usuarios Conectados', 'Usuarios: Pr-Sens>0', 
+			'Porcentaje de Conexión', 'Frecuencia de Ocurrencia', 'pic_users_cumsum_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
 		#grafica de distribucion de usuarios
 		fig, ax = plt.subplots()
 		data,bins=np.histogram(col_cob_conexion,bins=numero_barras)
 		ax.stem(bins[:-1],data, use_line_collection=True)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios Conectados', 'Usuarios: Pr-Sens>0', 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios Conectados ', 'Usuarios: Pr-Sens>0', 
 			'Porcentaje de Conexión', 'Frecuencia de Ocurrencia', 'pic_users_hist_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 			

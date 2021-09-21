@@ -389,7 +389,6 @@ class Modelo_Canal:
 		hbs_p=hbs-he
 		hut_p=hut-he
 		#portadora esta en MHz, la necesitamos en HZ de acuerdo a la documentacion.
-		print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", self.portadora)
 		dist_breakpoint_prima=4*hbs_p*hut_p*((self.portadora*10**6)/(3.8*10**8))
 		#3. evaular PLuma_los (tr138901)
 		'''evaluar para cada distancia de la siguiente manera
