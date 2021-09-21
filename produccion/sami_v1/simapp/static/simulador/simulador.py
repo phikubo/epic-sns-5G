@@ -263,10 +263,11 @@ class Simulador:
 			#se recolecta la informacion de cada simulacion en una lista de objetos tipo simulacion.
 			coleccion_simulacion.append(sim)
 			#se imprime la informacion de cada simulacion.
-			##################################################################sim.info_general("general")
+			##################################################################
+			sim.info_general("general")
 			#primeros datos (10)
 			##################################################################sim.info_data(True)
-			#sim.info_data(True)
+			sim.info_data(True)
 			#libero memoria
 			sim=0
 			it+=1

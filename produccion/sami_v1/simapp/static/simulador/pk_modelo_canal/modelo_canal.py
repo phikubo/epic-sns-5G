@@ -213,7 +213,7 @@ class Modelo_Canal:
 			
 		elif self.cfg_prop["modelo_perdidas"] =="uma_3gpp":
 			#km, mhz
-			print("[debug]:mod_perd:uma_3gpp")
+			#print("[debug]:mod_perd:uma_3gpp")
 			if self.arreglos[0][1]=="m":
 
 				if self.custom_dist_flag==True:
@@ -231,7 +231,7 @@ class Modelo_Canal:
 				pass #opcion megaherz, no cambia.
 			#print(self.distancias.shape)
 
-			self.perdidas_uma_refactor()
+			self.perdidas_uma_3gpp()
 		else:
 			pass
 
@@ -327,7 +327,7 @@ class Modelo_Canal:
 		path_l=32.4+20*np.log10(self.portadora)+30*np.log10(dist_3d)
 		return path_l
 
-	def perdidas_uma_refactor(self):
+	def perdidas_uma_3gpp(self):
 		'''Este modulo recrea las perdidas UMA LOS de la TR 138901, con distancia [m] y frecuencia FC en [Hz].
 		De acuerdo con la fuente: https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/15.00.00_60/tr_138901v150000p.pdf 
 		
