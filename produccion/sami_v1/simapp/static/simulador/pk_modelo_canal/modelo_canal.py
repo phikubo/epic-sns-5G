@@ -380,9 +380,9 @@ class Modelo_Canal:
 		self.distancias=np.where(self.distancias<10, 10,self.distancias)
 		self.distancias=np.where(self.distancias>5000, 5000,self.distancias)
 		
-		print('\n\ndist_3d',dist_3d)
-		print('\n\nbreakpoint', dist_breakpoint_prima)
-		print('\n\nself.distancias', self.distancias)
+		#print('\n\ndist_3d',dist_3d)
+		#print('\n\nbreakpoint', dist_breakpoint_prima)
+		#print('\n\nself.distancias', self.distancias)
 
 		'''encontramos los indices donde 1 pl1 y 2 pl2'''
 		map_pl1=np.where((10 <= self.distancias) & (self.distancias <= dist_breakpoint_prima), 1, self.distancias)
@@ -394,7 +394,7 @@ class Modelo_Canal:
 		referencia=np.where(map_pl2==2, self.evaluar_pl2(dist_3d, dist_breakpoint_prima, hbs, hut), referencia)
 
 
-		print('\n referencia', referencia)
+		#rint('\n referencia', referencia)
 		self.resultado_path_loss=referencia
 
 
