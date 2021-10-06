@@ -2,8 +2,13 @@
 Simulador a Nivel de Sistema 5G.
 
 Para instalar, aceder mediante bash a la carpeta: entorno_virtual_dependencias:
+Ejecutar
+>>pip3 install --upgrade -r requirements_{fecha mas actual}.txt
 
-Ejecutar pip3 install --upgrade -r requirements_{fecha mas actual}.txt
+Para ejecutar en modo desarrollador ir a la carpeta **produccion\sami_v1**:
+Ejectuar
+>>python manage.py runserver
+
 
 ### Instrucciones
 El desarrollo de cada script debe seguir las siguientes fases: prototipo, pruebas y producción. 
