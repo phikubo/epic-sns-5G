@@ -7,6 +7,9 @@ import math
 import os
 import time #for debug.
 
+#logger
+import logging
+
 #tareas
 #cambiar nombre de los ejes: sin muestra. [ok]
 #cambiar km por Km [ok]
@@ -139,47 +142,53 @@ class Sistema_Celular:
 
 		#inicializa objetos tipo celda y las almacena en self.cluster
 		self.inicializar_cluster_celdas()
+		
 		#crea las coordenadas de los usuarios segun una distribucion
-		self.inicializar_distribucion() #falta implementar otras distribuciones: thomas cluster
+		self.inicializar_distribucion() #falta implementar otras distribuciones: thomas cluster. La dimension de los arreglos depende del numero de celdas, por tanto
+		#el arreglo de usuarios es de:  [ [us11 us12 us13, ...] [us21 us22 us23, ...] [us31 us32 us33, ...], [...usij] ].
+
 		#self.usuario_x, self.usuario_y contiene los usuarios del cluster
 		#Gestiona los usuarios en un hiper clustes, en coordendas, distancias y angulos.
 		self.inicializar_hiperc_usuarios() #Depens_on(CONFIGURAR DIMENSION)
+
 		#Crea la clase antena, outputs ganancia relativa.
 		self.inicializar_antenas()
-		#crea el modelo del mod_canal, frecuencia_central, distancias, ganancia relativa
-		self.inicializar_modelo_canal()
-		#inicializa el efecto del ancho de banda, segun parametros fijos o procesamiento de alguna variable, eg. potencia recibida.
-		##self.inicializar_asignacion()
-		
-		'''***OPTIMIZACION***
-		Los calculos siguientes no son necesarios en presimulacion.'''
 
-		#asigna modulacion 
+		#crea el modelo del mod_canal, frecuencia_central, distancias, ganancia relativa
+		self.inicializar_modelo_canal() #retorna pathloss
+		#inicializa el efecto del ancho de banda, segun parametros fijos o procesamiento de alguna variable, eg. potencia recibida.
+
+		#instancia de modulacion, no asigna modulacion.
 		self.inicializar_modulacion()
 		#estadistica para obtener cuantos usuarios superan el umbral de sensibilidad
-		self.calcular_medida_margen()
+
+		self.calcular_medida_margen() #para desconectar los usuarios.
 		#implemeneta criterio de potencia maxima de los usuarios a todas las celdas.
 			#y de todos los usuarios. Los usuarios cuyo margen es negativo,
 				#se le reparte un nrb0 que indica desconexion.
+
 		self.calcular_celda_mayor_potencia()
 		#relaciona los mapas de conexion/desconexion, con la matriz de potencia,
 			#para reconfigurar la asignacion de recursos.
 				#los usuarios que no superan el margen, son desconectados y no reciben recursos radio.
 				#sin embargo, la estadistica orignal, se mantiene.
-		####self.calcular_mapas_desconexion()
+
 		##inicializa el efecto del ancho de banda, segun parametros fijos o
 		###procesamiento de alguna variable, eg. potencia recibida.
 		#obtiene matriz de potencia interferente.
+
+		#loop {
 		self.inicializar_asignacion_bw_nrbs()
 		#calcula la interferencia y la sinr dado los parametros.
 		
 		self.calcular_interferencia_sinr()
 		
+		#} x2. Recalculo
+		
 		#inicializa la clase de modulacion y asigna estados
 		#self.inicializar_modulacion()
 		#calcula recursos con sinr y modulaciones.
 		#self.calcular_recursos_tp()
-		
 		self.calcular_throughput()
 
 
