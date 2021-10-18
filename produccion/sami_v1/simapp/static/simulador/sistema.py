@@ -160,8 +160,8 @@ class Sistema_Celular:
 
 		#instancia de modulacion, no asigna modulacion.
 		self.inicializar_modulacion()
+		
 		#estadistica para obtener cuantos usuarios superan el umbral de sensibilidad
-
 		self.calcular_medida_margen() #para desconectar los usuarios.
 		#implemeneta criterio de potencia maxima de los usuarios a todas las celdas.
 			#y de todos los usuarios. Los usuarios cuyo margen es negativo,
