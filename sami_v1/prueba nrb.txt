@@ -1,0 +1,11 @@
+ar2=np.array([[0], [0], [0], [0], [0], [1], [2], [1], [1], [1], [2], [2], [2], [2], [2]])
+n_cel=3
+mapa_conexion=[]
+for i in range(n_cel):
+	mapa_conexion.append(np.count_nonzero(ar2==i))
+
+nrb_cel*3/np.array(mapa_conexion)
+
+o 
+
+nrb_cel/np.array(mapa_conexion)

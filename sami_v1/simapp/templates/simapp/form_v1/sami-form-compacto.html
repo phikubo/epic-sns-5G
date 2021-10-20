@@ -1,0 +1,778 @@
+{% extends 'base_sami.html' %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+{% block titulo_block %}
+SIMULADOR A NIVEL DE SISTEMA
+{% endblock %}
+
+{% block content %}
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4>¡Bienvenid@ a la interfaz de simulación compacta!</h4>
+            <p class="mb-0">Por favor configure los parámetros.</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="row">
+    <div class="col-xl-12 col-xxl-12">
+        <div class="card">
+
+            <div class="card-body">
+
+                <div>
+
+                    <form action="" method="post">
+                        {% csrf_token %}
+
+
+                        <h4 class="card">Parámetros Generales</h4>
+                        <hr>
+                        <section>
+                            <div class="row">
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--<label class="text-label">Iteraciones</label>-->
+                                    <div class="form-group">
+                                        {{ form_data.iteraciones|as_crispy_field }}
+                                    </div>
+                                </div>
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+
+                                    <div class="form-group">
+                                        {{ form_data.n_celdas|as_crispy_field }}
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                                            <label class="text-label">Portadora [Mhz, Ghz]</label> 
+                                                            -->
+                                    <div class="form-group">
+                                        <!--
+                                                                <input class="form-control" value="900" type="number" name="portadora" id="portadora"> 
+                                                                -->
+                                        {{ form_data.portadora|as_crispy_field }}
+
+                                    </div>
+                                </div>
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                                            <label class="text-label">ISD [m]</label>
+                                                            -->
+                                    <div class="form-group">
+                                        <!--
+                                                                <input class="form-control" value="1000" type="number" name="isd">
+                                                                -->
+                                        {{ form_data.isd|as_crispy_field }}
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                                                <label class="text-label">Geometría Radial de Usuarios</label>
+                                                                -->
+                                        <div class="input-group">
+                                            <!--
+
+                                                                <select class="form-control" id="geometria" name="geometria">
+                                                                        <option >Manual</option>
+                                                                        <option >Automático</option>
+                                                                    </select>
+                                                                    -->
+                                            {{ form_data.geometria_usuarios|as_crispy_field }}
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                                                <label class="text-label">Distancia Radial [m]</label>
+                                                                -->
+                                        <div class="input-group">
+                                            {{ form_data.radio_cel|as_crispy_field }}
+                                            <!--
+                                                                    <input type="text" name="distancia radial" class="form-control"
+                                                                        placeholder="Desactiva si automático" required value=1000>
+                                                                    -->
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                                                <label class="text-label">Tipo de espliegue de Usuarios</label>
+                                                                -->
+                                        <div class="input-group">
+                                            {{ form_data.tipo_distribucion|as_crispy_field }}
+                                            <!--
+                                                                    <select class="form-control" id="distribucion" name="distribucion">
+                                                                        <option >Proceso Puntual Poisson</option>
+                                                                        <option >Futuro</option>
+                                                                    </select>
+                                                                    -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                                                <label class="text-label">Población</label>
+                                                                -->
+                                        <div class="input-group">
+                                            {{ form_data.densidad|as_crispy_field }}
+                                            <!--
+                                                                    <select class="form-control" id="poblacion" name="poblacion">
+                                                                        <option >Baja</option>
+                                                                        <option >Media</option>
+                                                                        <option >Alta</option>
+                                                                        <option >Ultra</option>
+                                                                    </select>
+                                                                    -->
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                                                <label class="text-label">Generar Imagen (1 simulación)</label>
+                                                                -->
+                                        <div class="input-group">
+                                            {{ form_data.imagen|as_crispy_field }}
+                                            <!--
+                                                                    <select class="form-control" id="imagen" name="imagen">
+                                                                        <option value="Simulación Desactivado">Desactivado</option>
+                                                                        <option value="Simulación Activado">Activado</option>
+                                                                    </select>
+                                                                    -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                                                <label class="text-label">Resolución [pixel]</label>
+                                                                -->
+                                        <div class="input-group">
+                                            {{ form_data.pixeles|as_crispy_field }}
+                                            <!--
+                                                                    <input type="text" name="resolucion" class="form-control" value=100
+                                                                        placeholder="" required>
+                                                                    -->
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!--
+                                                        <div class="col-lg-6 mb-4">
+                                                            
+                                                                <div class="form-group">
+                                                                    <label class="form-check-label">Debug &nbsp; &nbsp; &nbsp; &nbsp;</label> 
+                                                                    
+                                                                    <input type="checkbox"  name="realdebug"  class="form-check-input">
+                                                                    
+                                                                </div>
+
+                                                        </div>
+                                                        -->
+
+
+                            </div>
+                        </section>
+
+
+
+                        <hr>
+                        <h4 >Parámetros de Pérdidas de Propagación</h4>
+                        <hr>
+                        <section>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <!--
+                                                                <label class="text-label">Modelo de Pérdidas de Propagación</label> 
+                                                                -->
+                                        <div class="input-group">
+                                            <!--
+                                                                    <select class="form-control" id="param2" name="param2">
+                                                                        <option value="Okumura Hata">Modelo Okumura Hata</option>
+                                                                        <option value="Debug Activado">Modelo CI</option>
+                                                                        <option value="Debug Activado">Modelo ABG</option>
+                                                                    </select>
+                                                                    -->
+                                            {{ form_data.modelo_perdidas|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                                            <label class="text-label">Param 1</label>
+                                                            -->
+                                    <div class="form-group">
+                                        <!--
+                                                                <input class="form-control" value="30.00" type="number" name="inputa21"
+                                                                    id="inputa2" placeholder="Parámetro 1">
+                                                                -->
+                                        {{ form_data.mp1|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                                            <label class="text-label">Param 2</label>
+                                                            -->
+                                    <div class="form-group">
+                                        <!--
+                                                                <input class="form-control" value="0.00" type="number" name="inputa22" id="inputa22"
+                                                                    placeholder="Parámetro 2">
+                                                                -->
+                                        {{ form_data.mp2|as_crispy_field }}
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                                            <label class="text-label">Param 3</label>
+                                                            -->
+                                    <div class="form-group">
+                                        <!--
+                                                                <input class="form-control" value="1.50" type="number" name="input23" id="inputa23"
+                                                                    placeholder="Parámetro 3">
+                                                                -->
+                                        {{ form_data.mp3|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                                            <label class="text-label">Param 4</label>
+                                                            -->
+                                    <div class="form-group">
+                                        <!--
+                                                                <input class="form-control" value="0.00" type="number" name="input24" id="input24"
+                                                                    placeholder="Parámetro 4">
+                                                                -->
+                                        {{ form_data.mp4|as_crispy_field }}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <!--
+                                                                <label class="text-label">Desvanecimiento</label>
+                                                                -->
+                                        <div class="input-group">
+                                            <!--
+                                                                    <select class="form-control" id="input25" name="input25">
+                                                                        <option value="Okumura Hata">Desactivado</option>
+                                                                        <option value="Debug Activado">Normal</option>
+                                                                        <option value="Debug Activado">Rayleight</option>
+                                                                        <option value="Debug Activado">Mixto</option>
+                                                                    </select>
+                                                                    -->
+                                            {{ form_data.params_desv|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                                            <label class="text-label">Param 1</label>
+                                                            -->
+                                    <div class="form-group">
+                                        <!--
+                                                                <input class="form-control" value="3.10" type="number" name="inputa26" id="inputa26"
+                                                                    placeholder="Parámetro 1">
+                                                                -->
+                                        {{ form_data.dp1|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                                            <label class="text-label">Param 2</label>
+                                                            -->
+                                    <div class="form-group">
+                                        <!--
+                                                                <input class="form-control" value="8.10" type="number" name="input27" id="input27"
+                                                                    placeholder="Parámetro 2">
+                                                                -->
+                                        {{ form_data.dp2|as_crispy_field }}
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                                            <label class="text-label">Param 3</label>
+                                                            -->
+                                    <div class="form-group">
+                                        <!--
+                                                                <input class="form-control" value="0.00" type="number" name="inputa29" id="inputa29"
+                                                                    placeholder="Parámetro 3">
+                                                                -->
+                                        {{ form_data.dp3|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                                            <label class="text-label">Param 1</label>
+                                                            -->
+                                    <div class="form-group">
+                                        <!--
+                                                                <input class="form-control" value="0.00" type="number" name="input291" id="input291"
+                                                                    placeholder="Parámetro 4">
+                                                                -->
+                                        {{ form_data.dp4|as_crispy_field }}
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                                                <label class="text-label">BER Objetivo</label>
+                                                                -->
+                                        <div class="form-group">
+                                            <!--
+                                                                    <input class="form-control" value="0.00" type="number" name="input292"
+                                                                        id="input2" placeholder="">
+                                                                        -->
+                                            {{ form_data.ber_sinr|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                                                <label class="text-label">Figura de Ruido [dB]</label>
+                                                                -->
+                                        <div class="form-group">
+                                            <!--
+                                                                    <input class="form-control" value="6" type="number" name="input293"
+                                                                        id="input2" placeholder="">
+                                                                    -->
+                                            {{ form_data.nf|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                            </div>
+                        </section>
+
+                        <hr>
+                        <h4 class="card">Parámetros del Balance del Enlace Radio y Antenas</h4>
+                        <hr>
+                        <section>
+                            <div class="row">
+
+
+
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Potencia de Transmisión [dBm]</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="28" type="number" name="input3"
+                                                id="input3" placeholder="">
+                                                -->
+                                            {{ form_data.ptx|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Ganancia de Transmisión [dB]</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="15" type="number" name="input3"
+                                                id="input3" placeholder="">
+                                                -->
+                                            {{ form_data.gtx|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Pérdidas de Transmisión [dB]</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="1" type="number" name="input3"
+                                                id="input3" placeholder="">
+                                            -->
+                                            {{ form_data.ltx|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Pérdidas de Recepción [dB]</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="1" type="number" name="input3"
+                                                id="input3" placeholder="">
+                                            -->
+                                            {{ form_data.lrx|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Sensibilidad en Recepción</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="-110" type="number" name="input3"
+                                                id="input3" placeholder="">
+                                            -->
+                                            {{ form_data.grx|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">MCL</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="70" type="number" name="input3"
+                                                id="input3" placeholder="">
+                                            -->
+                                            {{ form_data.sensibilidad|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                               
+
+
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                    <label class="text-label">Ancho de Haz</label>
+                                -->
+                                    <div class="form-group">
+                                        <!--
+                                        <input class="form-control" value="65" type="number" name="input3" id="input3"
+                                            placeholder="Parámetro 2">
+                                        -->
+                                        {{ form_data.tipo_antena|as_crispy_field }}
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                    <label class="text-label">Atenuación Mínima</label>
+                                -->
+                                    <div class="form-group">
+                                        <!--
+                                        <input class="form-control" value="20" type="number" name="input1" id="input1"
+                                            placeholder="Parámetro 3">
+                                        -->
+                                        {{ form_data.hpbw|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                    <label class="text-label">Futuro</label>
+                                -->
+                                    <div class="form-group">
+                                        <!--
+                                        <input class="form-control" value="0.00" type="number" name="input3" id="input3"
+                                            placeholder="Parámetro 4">
+                                        -->
+                                        {{ form_data.atmin|as_crispy_field }}
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--
+                                    <label class="text-label">Modelo de Antena</label>
+                                -->
+                                    <div class="input-group">
+                                        <!--
+                                        <select class="form-control" id="modelo-antenas" name="modelo-antenas">
+                                            <option >TS 38942 Trisectorizada</option>
+                                            <option >Futuro</option>
+                                        </select>
+
+                                    -->
+                                        {{ form_data.mcl|as_crispy_field }}
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">MCL</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="70" type="number" name="input3"
+                                                id="input3" placeholder="">
+                                            -->
+                                            {{ form_data.apuntamiento|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+                            </div>
+                        </section>
+
+                        <hr>
+                        <h4 class="card">Parámetros de Asignación</h4>
+                        <hr>
+                        <section>
+                            <div class="row">
+
+
+
+
+
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            {{ form_data.tipo_asignacion|as_crispy_field }}
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Ancho de Banda Usuario [Mhz]</label>
+                                        -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="100" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.bw|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Numerología [u]</label>
+                                        -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="1" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.numerologia|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Banda de Guarda [Khz]</label>
+                                        -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="845" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.banda_guarda|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Suportadora [u]</label>
+                                        -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="12" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                                -->
+                                            {{ form_data.subportadora|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Trama Total [u]</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="12" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.trama|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Símbolos OFDM [u]</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="10" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.simbolos|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Frame</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="10" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.frame|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Futuro</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="0" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.futuro1|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <!--
+                                        <label class="text-label">Futuro</label>
+                                    -->
+                                        <div class="form-group">
+                                            <!--
+                                            <input class="form-control" value="0" type="number" name="input2"
+                                                id="input2" placeholder="">
+                                            -->
+                                            {{ form_data.futuro2|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+                            </div>
+                        </section>
+
+
+
+
+
+
+
+
+                        <input type="submit" class="btn btn-primary" value="terminar" />
+                        
+                        <a class="btn btn-warning" href="{% url 'simapp:sim_form_compacto' %}">reiniciar</a>
+
+                        <!--
+                            <a class="btn btn-primary" href="{% url 'simapp:sim_form_a2' %}">siguiente</a>
+                        -->
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

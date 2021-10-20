@@ -1,0 +1,51 @@
+{% extends 'base_sami.html' %}
+{% load static %}
+
+{% block titulo_block %}
+Punto de Control.
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-12 p-md-0">
+        <div class="row justify-content-center h-100 align-items-center">
+            <div class="col-md-5">
+                <div class="form-input-content text-center">
+                    
+                    <hr>
+                    <h2>¡Simulación Iniciada!</h2>
+                    
+                    
+                    
+                    <img class="logo-abbr" src="{% static 'simapp/images/samisin2.png' %}" width="128" height="128" alt="">
+                    <hr>
+                    <p>Cuando la simulación haya concluido, observe los resultados mediante el botón <strong>Resultados</strong>.</p>
+                    
+                    <div class="mb-5">
+                        <a class="btn btn-secondary btn-xs" href="{% url 'simapp:sim_form_compacto' %}">Sim. Compacta</a>
+                        <a class="btn btn-secondary btn-xs" href="{% url 'simapp:sim_form_a1' %}">Sim. por Fases</a>
+                        <br>
+                        <br>
+                        <a class="btn btn-info" href="{% url 'simapp:pre_sim' %}">Resultados</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+    
+            
+   
+
+{% endblock %}
+
+
+
+
+
+

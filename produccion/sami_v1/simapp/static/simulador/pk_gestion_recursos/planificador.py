@@ -141,6 +141,7 @@ class Planificador:
 			#print(indd,self.mapa_usuarios[indd],self.contador, self.estado, "nrb_{}".format(sum(self.contador*self.estado)))
 			mostrar="{}	{}	{}		{}	{}	{}	nrb_{}".format(indd,self.mapa_margen_descon[indd], self.mapa_usr_descon[indd],
 				self.mapa_usuarios[indd],self.contador, self.estado, sum(self.contador*self.estado))
+			print('planificador.py',mostrar)
 			self.info_variables.append(mostrar)
 
 			self.mapa_estado.append(self.estado.copy())
