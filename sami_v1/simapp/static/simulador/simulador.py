@@ -16,7 +16,7 @@ import math
 import os
 import pyfiglet
 #logger
-import logging
+#import logging
 #libreria estadisticas
 #from scipy.special import factorial
 #import scipy.stats as stats
