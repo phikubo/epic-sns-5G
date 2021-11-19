@@ -40,8 +40,11 @@ class Planificador:
 		self.mapa_interferencia=[]
 		self.estado=0
 		self.info_variables=[]
+		#
 		self.nrbs=0
+		self.nrb_sobrantes=0
 		self.numerologia=0
+		self.resource_grid=0
 		#self.calcular_tipo_asignacion()
 		self.calcular_nrbs_celda()
 		'''
@@ -88,10 +91,15 @@ class Planificador:
 		#https://5g-tools.com/5g-nr-throughput-calculator/
 		#https://apkpure.com/nr-5g-prb-and-data-rate-calculator/com.instinctcoder.nr5gthecal
 		#https://www.rfwireless-world.com/calculators/5G-NR-TBS-Calculation.html
-		#print("POR QUE ES: 2*mu*15khz y no 2**mu*15khz")
-
+		#print("POR QUE ES: 2*mu*15khz y no 2**mu*15khz") En realidad es: (2**mu)*15khz
+		#calcula nrbs y numerologia.
+		
 		self.set_numerologia(self.cfg_plan["bw"][0])
-		print("nrbs", self.nrbs, self.numerologia)
+		print("planifcador,py nrbs", self.nrbs, self.numerologia)
+		#delta_bw_khz=2**self.numerologia*15
+		self.resource_grid=self.nrbs*self.cfg_plan["simbolo_ofdm_dl"]
+		self.nrb_total_por_celda=self.resource_grid
+		print("panificador.py resource grid", self.resource_grid)
 
 		'''
 		delta_bw=(2**self.cfg_plan["numerologia"]*self.to_khz(15))
@@ -118,7 +126,7 @@ class Planificador:
 		frecuencia portadora y otros parametros adicionales.
 		
 		'''
-		total_recursos_celda=
+		total_recursos_celda=0
 		#self.max_usuario_descon
 		if self.cfg_plan["tipo"]=="rr":
 			#para usuarios sin deconexion.
@@ -163,7 +171,16 @@ class Planificador:
 		
 		if self.cfg_plan["tipo"]=="rr":
 			#verificar si la distribucion es exacta
-			print("\nplanificador.py\n",len(self.mapa_asignacion))
+			print("\nplanificador.py\n usuarios:",len(self.mapa_asignacion))
+			#ress=self.nrb_total_por_celda%np.array(self.mapa_conexion_celda)
+			print("planificador.py: ress", self.nrb_total_por_celda, self.mapa_conexion_celda)
+			self.nrb_sobrantes=self.nrb_total_por_celda%np.array(self.mapa_conexion_celda)
+			self.nrb_usuario=np.floor(self.nrb_total_por_celda/np.array(self.mapa_conexion_celda))
+			#self.nrb_usuario=self.nrb_usuario-ress
+			print("planificador.py: bin",self.mapa_conexion_usuario_binario)
+			self.asignacion=self.mapa_conexion_usuario_binario*0
+
+			'''
 			ress=int(self.nrb_total_por_celda%len(self.mapa_asignacion))
 			print("\nplanificador.py\n distribucion exacta?", ress)
 			print('\nplanificador.py\n, mapa_conexion_celda',self.mapa_conexion_celda)
@@ -174,10 +191,10 @@ class Planificador:
 				pass
 			#para usuarios sin deconexion.
 			#self.nrb_usuario=self.nrb_total_por_celda/self.max_usuario
-			'''obtener el conteno de usuarios por celda'''
+			#obtener el conteno de usuarios por celda
 			self.nrb_usuario=self.nrb_total_por_celda/len(self.mapa_asignacion)
 			#print("self.max_usuario",self.nrb_usuario)
-			self.asignacion=self.nrb_usuario*self.one_resource_block*self.mapa_conexion_usuario_binario
+			#self.asignacion=self.nrb_usuario*self.one_resource_block*self.mapa_conexion_usuario_binario
 			
 			#asignar nrb sobrates a la mayor potencia, si varios usuarios tienen el mismo valor, se asigna a uno solo de manera ordenada:
 			ind_higher_pot = list(np.argpartition(self.pr_maximo_dB_, -ress)[-ress:])
@@ -186,6 +203,7 @@ class Planificador:
 			#self.asignacion[self.loc_max_pot]=self.asignacion[self.loc_max_pot]+self.one_resource_block*ress
 			print('planificador.py\nasignacion',self.asignacion)
 			self.asignacion=np.where(self.asignacion==0,0.0001,self.asignacion)
+			'''
 
 		elif self.cfg_plan["tipo"]=="estatico":
 			self.nrb_usuario=self.cfg_plan["bw"][0]

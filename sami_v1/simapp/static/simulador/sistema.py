@@ -542,8 +542,11 @@ class Sistema_Celular:
 		pues sobran recursos. Estos deben asignarse al usuario cuya potencia sea la mayor.'''
 		mapa_asignacion_celda=self.mapa_celda_mayor_potencia.copy()
 		dim_pr_v2D=self.potencia_recibida_v_2D.shape
+		#estoas valores se usan para saber donde esta el usuario con mayor potencia.
 		indices_mayor_potencia = np.where(self.pr_maximo_dB == np.amax(self.pr_maximo_dB))
 		indice_mayor_pot=int(np.array([np.random.choice(indices_mayor_potencia[0])]))
+
+		print("sistema.py: indices mayor potencia", indices_mayor_potencia,indice_mayor_pot)
 
 		params_asignacion=[mapa_asignacion_celda, dim_pr_v2D, indice_mayor_pot, self.pr_maximo_dB]
 		self.planificador=plan.Planificador(self.cfg_plan, self.cfg_gen, params_asignacion, upgrade=True)#por sector, etc.
@@ -718,7 +721,7 @@ class Sistema_Celular:
 			indx+=1 #
 		#conversion tipo de indices a numpy stack.
 		self.mapa_celda_mayor_potencia=np.stack(indices_map)
-		print('\n7 mapa_celda_mayor_potencia', self.mapa_celda_mayor_potencia)
+		print('\n 7 sistema.py: mapa_celda_mayor_potencia', self.mapa_celda_mayor_potencia)
 
 		#todos los usuarios son asigandos a una celda.
 		#sin embargo, aun no es posible determinar si los usuarios asignados, no tienen servicio.

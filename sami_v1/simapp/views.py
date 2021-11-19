@@ -406,6 +406,7 @@ def form_compacto(request):
             config["cfg_simulador"]["params_general"]["ber_sinr"]=float(contenido["ber_sinr"])
             #
             #
+            print("views.py: potencias")
             config["cfg_simulador"]["params_balance"]["ptx"]=float(contenido["ptx"])
             config["cfg_simulador"]["params_balance"]["gtx"]=float(contenido["gtx"])
             config["cfg_simulador"]["params_balance"]["ltx"]=float(contenido["ltx"])
@@ -421,10 +422,11 @@ def form_compacto(request):
 
             #
             #
+            print("views.py: asignacion")
             config["cfg_simulador"]["params_asignacion"]["tipo"]=contenido["tipo_asignacion"]
             config["cfg_simulador"]["params_asignacion"]["bw"][0]=int(contenido["bw"])
-            config["cfg_simulador"]["params_asignacion"]["numerologia"]=float(contenido["numerologia"])
-            config["cfg_simulador"]["params_asignacion"]["bw_guarda"][0]=int(contenido["banda_guarda"])
+            #config["cfg_simulador"]["params_asignacion"]["numerologia"]=float(contenido["numerologia"])
+            #config["cfg_simulador"]["params_asignacion"]["bw_guarda"][0]=int(contenido["banda_guarda"])
             config["cfg_simulador"]["params_asignacion"]["sub_ofdm"]=float(contenido["subportadora"])
             config["cfg_simulador"]["params_asignacion"]["trama_total"]=float(contenido["trama"])
             config["cfg_simulador"]["params_asignacion"]["simbolo_ofdm_dl"]=float(contenido["simbolos"])
