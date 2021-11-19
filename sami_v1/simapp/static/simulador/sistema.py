@@ -672,7 +672,7 @@ class Sistema_Celular:
 	def calcular_celda_mayor_potencia_upgrade(self):
 		'''Calculo de usuario conectado a una celda especifica dependiendo de su pathloos'''
 		#self.distancias_2D=np.vstack(self.hiperc_distancias)
-		print("\n1",self.hiperc_distancias, self.hiperc_distancias.shape)
+		print("\n1 hiperc_distancias, hiperc_distnacias.shape",self.hiperc_distancias, self.hiperc_distancias.shape)
 		potencia_recibida_dB=self.hiperc_modelo_canal.resultado_balance
 		#print("\n2",potencia_recibida_dB, potencia_recibida_dB.shape)
 		#obtenengo las dimensiones del arreglo cluster, pues esta segmentado en 3D>
@@ -718,7 +718,7 @@ class Sistema_Celular:
 			indx+=1 #
 		#conversion tipo de indices a numpy stack.
 		self.mapa_celda_mayor_potencia=np.stack(indices_map)
-		print('\n7', self.mapa_celda_mayor_potencia)
+		print('\n7 mapa_celda_mayor_potencia', self.mapa_celda_mayor_potencia)
 
 		#todos los usuarios son asigandos a una celda.
 		#sin embargo, aun no es posible determinar si los usuarios asignados, no tienen servicio.

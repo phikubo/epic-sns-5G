@@ -127,7 +127,8 @@ class Modelo_Canal:
 
 
 	def inicializar_tipo(self):
-		'''Segun el modelo de propagacion escogido, inicizalizar selecciona la funcion que calcula las perdidas'''
+		'''Segun el modelo de propagacion escogido, inicizalizar selecciona la funcion que calcula las perdidas.
+		Por defecto, los parametros de la webUI se obtienen en metros y megahertz.'''
 
 		if self.cfg_prop["modelo_perdidas"]=="espacio_libre":
 			#km, GH
@@ -161,6 +162,7 @@ class Modelo_Canal:
 					self.distancias=self.arreglos[0][0]/1000
 			else:
 				pass #opcion kilometro, no cambia.
+			
 			if self.cfg_gen["portadora"][1]=="ghz":
 				#convierto a megaherz, por la ecuacion, si ya esta en megaherz, pass
 				self.portadora=self.cfg_gen["portadora"][0]*1000
@@ -170,11 +172,11 @@ class Modelo_Canal:
 			self.perdidas_okumura_hata_mhz()
 
 		elif self.cfg_prop["modelo_perdidas"] =="umi_ci":
-			#km, mhz
+			#m, Ghz
 			#print("[debug]:mod_canal:umi_ci")
 			if self.arreglos[0][1]=="m":
 
-				#las distancias debe estar en [m]
+				#las distancias debe estar en [m], por eso no cambia
 				if self.custom_dist_flag==True:
 					self.distancias=self.custom_dist
 				else:
@@ -184,35 +186,38 @@ class Modelo_Canal:
 				pass #opcion kilometro, no cambia.
 			if self.cfg_gen["portadora"][1]=="ghz":
 				#convierto a megaherz, por la ecuacion, si ya esta en megaherz, pass
-				self.portadora=self.cfg_gen["portadora"][0]*1000
+				#self.portadora=self.cfg_gen["portadora"][0]*1000
+				self.portadora=self.cfg_gen["portadora"][0]
 			else:
-				pass #opcion megaherz, no cambia.
+				#pass #opcion megaherz, cambia a Ghz
+				self.portadora=self.cfg_gen["portadora"][0]*1000
 			#print(self.distancias.shape)
 			self.perdidas_umi_ci()
 
 		elif self.cfg_prop["modelo_perdidas"] =="umi_abg":
-			#km, mhz
+			#m, Ghz
 			#print("-----------------------------------------------------[debug]:mod_perd:umi_abg\n", np.shape(self.distancias))
 			if self.arreglos[0][1]=="m":
 
 				if self.custom_dist_flag==True:
 					self.distancias=self.custom_dist
 				else:
-					#las distancias debe estar en [m]
+					#las distancias debe estar en [m], no cambia.
 					self.distancias=self.arreglos[0][0]
 
 			else:
 				pass #opcion kilometro, no cambia.
 			if self.cfg_gen["portadora"][1]=="ghz":
-				#convierto a megaherz, por la ecuacion, si ya esta en megaherz, pass
-				self.portadora=self.cfg_gen["portadora"][0]*1000
+				self.portadora=self.cfg_gen["portadora"][0]
 			else:
-				pass #opcion megaherz, no cambia.
+				#pass #opcion megaherz, cambia a Ghz
+				self.portadora=self.cfg_gen["portadora"][0]*1000
 			#print(self.distancias.shape)
 			self.perdidas_umi_abg()
 			
 		elif self.cfg_prop["modelo_perdidas"] =="uma_3gpp":
 			#km, mhz
+			#m, Ghz
 			#print("[debug]:mod_perd:uma_3gpp")
 			
 			if self.arreglos[0][1]=="m":
@@ -227,9 +232,10 @@ class Modelo_Canal:
 				pass #opcion kilometro, no cambia.
 			if self.cfg_gen["portadora"][1]=="ghz":
 				#convierto a megaherz, por la ecuacion, si ya esta en megaherz, pass
-				self.portadora=self.cfg_gen["portadora"][0]*1000
+				self.portadora=self.cfg_gen["portadora"][0]
 			else:
-				pass #opcion megaherz, no cambia.
+				#pass #opcion megaherz, no cambia.
+				self.portadora=self.cfg_gen["portadora"][0]*1000
 			#print(self.distancias.shape)
 
 			self.perdidas_uma_3gpp()

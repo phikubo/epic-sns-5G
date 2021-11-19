@@ -72,17 +72,17 @@ antena_choices=(
 
 asignacion_choices=(
         ('rr', 'Round Robin'),
-        ('f1', 'Futuro*'),
-        ('f2', 'Futuro**'), 
+        ('genetico', 'Genético'),
+        ('quantico-g', 'Quántico Genético [no disponible sin un computador cuántico]'),
+        ('futuro', 'Futuro*') 
     )
 
 bw_choices=(
-        (10, '10'),
-        (20, '20'),
-        (40, '40'),
-        (100, '100'), 
-        (200, '200'), 
-        (400, '400'),  
+        (50, '50 FR1: 270 Rbs'),
+        (100, '100 FR1: 273 Rbs'),
+        (200, '200 FR2: 264 Rbs'),
+        (400, '400 FR2: 264 Rbs'), 
+  
     )
 
 #----------------------------------------------
@@ -91,7 +91,7 @@ class FormGeneral(forms.Form):
     '''Formulario inicial. Configura parametros globales'''
     iteraciones=forms.IntegerField(label='Realizaciones',initial=1, min_value=1)
     n_celdas=forms.IntegerField(label='Cantidad de Celdas',initial=1, max_value=19, min_value=1)
-    portadora=forms.IntegerField(label='Frecuencia Portadora [MHz]',initial=900, min_value=200, max_value=75000,)
+    portadora=forms.IntegerField(label='Frecuencia Portadora [MHz]',initial=900, min_value=200, max_value=75000)
     isd=forms.IntegerField(label='Distancia entre Celdas (ISD)[m]',initial=1000, min_value=10)
     geometria_usuarios=forms.ChoiceField(label='Distribución de Usuarios',choices=geometria_choices)
     radio_cel=forms.IntegerField(label='Radio de la Celda [m]', initial=1000, min_value=5)
@@ -146,13 +146,13 @@ class FormAsignacion(forms.Form):
     '''Formulario para configurar variables relacionadas a la asignación de recursos radio.'''
     tipo_asignacion=forms.ChoiceField(label='Tipo de Asignación',choices=asignacion_choices)
     #bw=forms.IntegerField(label='Ancho de Banda Usuario [MHz]',initial=20, min_value=10)
-    bw=forms.ChoiceField(label='Ancho de Banda del Sistema [MHz]',choices=bw_choices)
-    numerologia=forms.IntegerField(label='Numerología',initial=1, min_value=1)
-    banda_guarda=forms.IntegerField(label='Banda de Guarda [KHz]',initial=845, min_value=1)
+    bw=forms.ChoiceField(label='Ancho de Banda del Sistema [MHz]',choices=bw_choices, help_text="Frecuencia < 6GHz: FR1. Frecuencia > 6GHz: FR2.")
+    numerologia=forms.IntegerField(label='Numerología Default',initial=0, min_value=1)
+    banda_guarda=forms.IntegerField(label='Banda de Guarda [KHz]',initial=845, min_value=1, widget=forms.HiddenInput())
     subportadora=forms.IntegerField(label='Número de Subportadoras',initial=12, min_value=1)
-    trama=forms.IntegerField(label='Número Total de Intervalos',initial=12,min_value=1)
-    simbolos=forms.IntegerField(label='Número de Símbolos OFDM',initial=10, min_value=1)
-    frame=forms.IntegerField(label='Número de Símbolos por Trama ',initial=10, min_value=1)
+    trama=forms.IntegerField(label='Número Total de Símbolos OFDM',initial=14,min_value=1)
+    simbolos=forms.IntegerField(label='Número de Símbolos OFDM',initial=12, min_value=1)
+    frame=forms.IntegerField(label='Número de Símbolos por Trama',initial=10, min_value=1)
     #
     futuro1=forms.IntegerField(label='Futuro*',initial=0, min_value=0)
     futuro2=forms.IntegerField(label='Futuro**',initial=0, min_value=0)
@@ -205,13 +205,13 @@ class FormCompacto(forms.Form):
     '''Formulario para configurar variables relacionadas a la asignación de recursos radio.'''
     tipo_asignacion=forms.ChoiceField(label='Tipo de Asignación',choices=asignacion_choices)
     #bw=forms.IntegerField(label='Ancho de Banda Usuario [MHz]',initial=20, min_value=10)
-    bw=forms.ChoiceField(label='Ancho de Banda del Sistema [MHz]',choices=bw_choices)
-    numerologia=forms.IntegerField(label='Numerología',initial=1, min_value=1, disabled=True)
-    banda_guarda=forms.IntegerField(label='Banda de Guarda [KHz]',initial=845, min_value=1)
+    bw=forms.ChoiceField(label='Ancho de Banda del Sistema [MHz]',choices=bw_choices, help_text="Frecuencia < 6GHz: FR1. Frecuencia > 6GHz: FR2.")
+    numerologia=forms.IntegerField(label='Numerología Default',initial=0, min_value=1, disabled=True)
+    banda_guarda=forms.IntegerField(label='Banda de Guarda [KHz]',initial=845, min_value=1, disabled=True, widget=forms.HiddenInput())
     subportadora=forms.IntegerField(label='Número de Subportadoras',initial=12, min_value=1, disabled=True)
-    trama=forms.IntegerField(label='Número Total de Intervalos',initial=12,min_value=1, disabled=True)
-    simbolos=forms.IntegerField(label='Número de Símbolos OFDM',initial=10, min_value=1, disabled=True)
-    frame=forms.IntegerField(label='Número de Símbolos por Trama ',initial=10, min_value=1, disabled=True)
+    trama=forms.IntegerField(label='Número Total de Símbolos OFDM',initial=14,min_value=1, disabled=True)
+    simbolos=forms.IntegerField(label='Número de Símbolos OFDM',initial=12, min_value=1)
+    frame=forms.IntegerField(label='Número de Símbolos por Trama',initial=10, min_value=1, disabled=True)
     #
     futuro1=forms.IntegerField(label='Futuro*',initial=0, min_value=0)
     futuro2=forms.IntegerField(label='Futuro**',initial=0, min_value=0)

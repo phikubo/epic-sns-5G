@@ -40,6 +40,8 @@ class Planificador:
 		self.mapa_interferencia=[]
 		self.estado=0
 		self.info_variables=[]
+		self.nrbs=0
+		self.numerologia=0
 		#self.calcular_tipo_asignacion()
 		self.calcular_nrbs_celda()
 		'''
@@ -59,6 +61,26 @@ class Planificador:
 		'''return variable in Mhz'''
 		return target*10**6
 
+
+	def set_numerologia(self, bw):
+		'''Calcula la numerologia dado un ancho de banda que depende de la frecuencia a utilizar'''
+		if bw==50:
+			self.nrbs=270
+			self.numerologia=0
+		elif bw==100:
+			self.nrbs=273 
+			self.numerologia=1
+		elif bw==200:
+			self.nrbs=264
+			self.numerologia=2
+		elif bw==400:
+			self.nrbs=264
+			self.numerologia=3
+		else:
+			print("Ancho de banda no es valido")
+
+
+
 	def calcular_nrbs_celda(self):
 		'''Calcula el numero de prbs por cada celda, de acuerdo a numerologia y ancho de banda'''
 		#http://www.techplayon.com/nr-resource-block-definition-and-rbs-calculation/
@@ -67,6 +89,11 @@ class Planificador:
 		#https://apkpure.com/nr-5g-prb-and-data-rate-calculator/com.instinctcoder.nr5gthecal
 		#https://www.rfwireless-world.com/calculators/5G-NR-TBS-Calculation.html
 		#print("POR QUE ES: 2*mu*15khz y no 2**mu*15khz")
+
+		self.set_numerologia(self.cfg_plan["bw"][0])
+		print("nrbs", self.nrbs, self.numerologia)
+
+		'''
 		delta_bw=(2**self.cfg_plan["numerologia"]*self.to_khz(15))
 		#print("dleta",delta_bw)
 		#15khz es lo minimo.
@@ -81,6 +108,8 @@ class Planificador:
 		else:
 			self.nrb_total_por_celda=nrb*self.cfg_plan["trama_total"]
 		print('planificador.py\nnrb_total disponibles', self.nrb_total_por_celda)
+		'''
+
 
 
 
@@ -89,6 +118,7 @@ class Planificador:
 		frecuencia portadora y otros parametros adicionales.
 		
 		'''
+		total_recursos_celda=
 		#self.max_usuario_descon
 		if self.cfg_plan["tipo"]=="rr":
 			#para usuarios sin deconexion.
@@ -133,10 +163,10 @@ class Planificador:
 		
 		if self.cfg_plan["tipo"]=="rr":
 			#verificar si la distribucion es exacta
-			print("planificador.py\n",len(self.mapa_asignacion))
+			print("\nplanificador.py\n",len(self.mapa_asignacion))
 			ress=int(self.nrb_total_por_celda%len(self.mapa_asignacion))
-			print("planificador.py\n distribucion exacta?", ress)
-			print('planificador.py\n, mapa_conexion_celda',self.mapa_conexion_celda)
+			print("\nplanificador.py\n distribucion exacta?", ress)
+			print('\nplanificador.py\n, mapa_conexion_celda',self.mapa_conexion_celda)
 			if ress!=0:
 				#se eliminan los nrb sobrantes
 				self.nrb_total_por_celda=self.nrb_total_por_celda-ress
