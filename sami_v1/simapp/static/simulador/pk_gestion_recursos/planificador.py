@@ -45,6 +45,7 @@ class Planificador:
 		self.nrb_sobrantes=0
 		self.numerologia=0
 		self.resource_grid=0
+		self.delta_bw_khz=0
 		#self.calcular_tipo_asignacion()
 		self.calcular_nrbs_celda()
 		'''
@@ -53,7 +54,8 @@ class Planificador:
 		self.configurar_mapa_nrb()
 		'''
 		self.calcular_nrbs_usuarios_upgrade()
-		self.configurar_mapa_nrb()
+		#self.configurar_mapa_nrb()
+		self.configurar_mapa_nrb_upgrade()
 
 
 	def to_khz(self,target):
@@ -96,7 +98,8 @@ class Planificador:
 		
 		self.set_numerologia(self.cfg_plan["bw"][0])
 		print("planifcador,py nrbs", self.nrbs, self.numerologia)
-		#delta_bw_khz=2**self.numerologia*15
+		self.delta_bw_khz=(2**self.numerologia)*15
+		self.delta_bw_hz=(2**self.numerologia)*self.to_khz(15)
 		self.resource_grid=self.nrbs*self.cfg_plan["simbolo_ofdm_dl"]
 		self.nrb_total_por_celda=self.resource_grid
 		print("panificador.py resource grid", self.resource_grid)
@@ -176,9 +179,17 @@ class Planificador:
 			print("planificador.py: ress", self.nrb_total_por_celda, self.mapa_conexion_celda)
 			self.nrb_sobrantes=self.nrb_total_por_celda%np.array(self.mapa_conexion_celda)
 			self.nrb_usuario=np.floor(self.nrb_total_por_celda/np.array(self.mapa_conexion_celda))
+			print('planificador.py: nrb_usuario', self.nrb_usuario)
 			#self.nrb_usuario=self.nrb_usuario-ress
 			print("planificador.py: bin",self.mapa_conexion_usuario_binario)
-			self.asignacion=self.mapa_conexion_usuario_binario*0
+			#self.asignacion=self.mapa_conexion_usuario_binario*0
+			for indx, recursos in enumerate(self.nrb_usuario):
+				print(indx,recursos)
+				self.asignacion=np.where(self.mapa_asignacion==indx, recursos, self.asignacion) #no tengo el mapaaaa!
+			print('resultado',self.asignacion)
+
+			self.asignacion_bw=self.asignacion*(self.delta_bw_hz)
+			print('resultado hz',self.asignacion_bw)
 
 			'''
 			ress=int(self.nrb_total_por_celda%len(self.mapa_asignacion))
@@ -214,6 +225,12 @@ class Planificador:
 			pass
 		else:
 			pass
+
+
+
+	def configurar_mapa_nrb_upgrade(self):
+		'''Calcula matriz interferente'''
+		pass
 
 
 	def configurar_mapa_nrb(self):

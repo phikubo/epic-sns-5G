@@ -542,7 +542,7 @@ class Sistema_Celular:
 		pues sobran recursos. Estos deben asignarse al usuario cuya potencia sea la mayor.'''
 		mapa_asignacion_celda=self.mapa_celda_mayor_potencia.copy()
 		dim_pr_v2D=self.potencia_recibida_v_2D.shape
-		#estoas valores se usan para saber donde esta el usuario con mayor potencia.
+		#estoas valores se usan para saber donde esta el usuario con mayor potencia. DEPLETED
 		indices_mayor_potencia = np.where(self.pr_maximo_dB == np.amax(self.pr_maximo_dB))
 		indice_mayor_pot=int(np.array([np.random.choice(indices_mayor_potencia[0])]))
 
@@ -551,11 +551,12 @@ class Sistema_Celular:
 		params_asignacion=[mapa_asignacion_celda, dim_pr_v2D, indice_mayor_pot, self.pr_maximo_dB]
 		self.planificador=plan.Planificador(self.cfg_plan, self.cfg_gen, params_asignacion, upgrade=True)#por sector, etc.
 		#ancho de banda se convierte en variable y depende de cuantos prb obtiene.
-		self.bw_usuario=self.planificador.asignacion
+		self.bw_usuario=self.planificador.asignacion_bw
 		#print("bw_usuario",self.bw_usuario)
 		#convierte la matriz de potencia recibida en matriz de interferencia.
-		#print("marix",self.potencia_recibida_v_2D)
-		self.matriz_interferente=self.potencia_recibida_v_2D*self.planificador.mapa_interf_distribuida
+		#print("sistem.py: potencia_rec_2d",self.potencia_recibida_v_2D)
+		'''En este punto se considera que todos los usuarios generan interferencia unos con otros'''
+		self.matriz_interferente=self.potencia_recibida_v_2D#*self.planificador.mapa_interf_distribuida
 
 
 	def inicializar_modulacion(self):
