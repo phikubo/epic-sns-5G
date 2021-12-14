@@ -18,8 +18,8 @@ import logging
 #cambiar de numerologia, que sea automatica como se habia dicho antes [pendiente]
 
 #
-from shapely.geometry import Point
-from shapely.geometry.polygon import Polygon
+#from shapely.geometry import Point
+#from shapely.geometry.polygon import Polygon
 #import - final
 #
 #bloque de carga de modulos - inicio
@@ -40,7 +40,7 @@ try:
 	from .pk_gestion_recursos import modulacion as modd
 
 except Exception as EX:
-	print("ATENCION: Uno o mas modulos no pudo ser importado... ", EX)
+	print("ATENCION: Uno o mas modulos no pudo ser importado... {}\n".format(EX))
 	print("...desde un archivo externo. Ignorar si la ejecucion es interna. ")
 #
 #bloque de carga de modulos - final
@@ -135,6 +135,7 @@ class Sistema_Celular:
 		self.sinr_db=0
 		self.conexion_total_sinr=0
 		self.medida_conexion_sinr=0
+		self.medida_conexion_margen=0
 
 		self.matriz_interferente=0
 
@@ -194,7 +195,13 @@ class Sistema_Celular:
 		'''
 		#calculo de celda de mayor potencia.
 		self.calcular_celda_mayor_potencia_upgrade()
-		self.inicializar_asignacion_bw_nrbs_upgrade()
+		#el margen de senbilidad se calcula en la misma funcion de asignacion de recursos
+		#self.calcular_medida_margen_upgrade()
+		self.inicializar_asignacion_bw_nrbs_upgrade() #se obtiene ancho de frecuencia, y matriz de potencia en veces filtrada por uso de recursos.
+		
+		self.calcular_interferencia_sinr_upgrade()
+		
+		self.calcular_throughput_upgrade()
 
 
 
@@ -540,23 +547,36 @@ class Sistema_Celular:
 		
 		Si el numero de celdas es impar y el numero de usuarios tambien, la distribucion rr no es equitativa 
 		pues sobran recursos. Estos deben asignarse al usuario cuya potencia sea la mayor.'''
-		mapa_asignacion_celda=self.mapa_celda_mayor_potencia.copy()
+		mapa_asignacion_xcelda=self.mapa_celda_mayor_potencia.copy()
+		mapa_asignacion_xpotencia=self.pr_maximo_dB.copy()
+		#mapa_asignacion_mayor_potencia=
 		dim_pr_v2D=self.potencia_recibida_v_2D.shape
 		#estoas valores se usan para saber donde esta el usuario con mayor potencia. DEPLETED
 		indices_mayor_potencia = np.where(self.pr_maximo_dB == np.amax(self.pr_maximo_dB))
+		
+		print("max pot ",self.pr_maximo_dB)
 		indice_mayor_pot=int(np.array([np.random.choice(indices_mayor_potencia[0])]))
 
-		print("sistema.py: indices mayor potencia", indices_mayor_potencia,indice_mayor_pot)
+		print("sistema.py: indices mayor potencia ", indices_mayor_potencia,indice_mayor_pot)
+		print("sistema.py: matriz de potencia rec\n",self.hiperc_modelo_canal.resultado_balance)
 
-		params_asignacion=[mapa_asignacion_celda, dim_pr_v2D, indice_mayor_pot, self.pr_maximo_dB]
+
+		params_asignacion=[mapa_asignacion_xcelda, dim_pr_v2D, indice_mayor_pot, mapa_asignacion_xpotencia]
 		self.planificador=plan.Planificador(self.cfg_plan, self.cfg_gen, params_asignacion, upgrade=True)#por sector, etc.
 		#ancho de banda se convierte en variable y depende de cuantos prb obtiene.
 		self.bw_usuario=self.planificador.asignacion_bw
-		#print("bw_usuario",self.bw_usuario)
+		print("sistema.py bw_usuario\n",self.bw_usuario)
 		#convierte la matriz de potencia recibida en matriz de interferencia.
 		#print("sistem.py: potencia_rec_2d",self.potencia_recibida_v_2D)
 		'''En este punto se considera que todos los usuarios generan interferencia unos con otros'''
-		self.matriz_interferente=self.potencia_recibida_v_2D#*self.planificador.mapa_interf_distribuida
+		self.matriz_interferente=self.potencia_recibida_v_2D*self.planificador.mapa_interf_distribuida
+		print("interferencia distribuida\n", self.matriz_interferente)
+
+
+		
+		self.conexion_total_margen=np.count_nonzero(self.planificador.mapa_conexion_usuario_binario==1)
+		#calcula la probabilidad de conexion o probabilidad de exito de conexion.
+		self.medida_conexion_margen=self.conexion_total_margen/self.no_usuarios_total
 
 
 	def inicializar_modulacion(self):
@@ -586,7 +606,7 @@ class Sistema_Celular:
 		##print("test 2-maximo db\n", self.margen_maximo_dB)
 		self.mapa_conexion_desconexion_margen=np.where(self.margen_maximo_dB>0,1,0)
 		##print("test 3-mapa conexion desconexion\n",self.mapa_conexion_desconexion_margen)
-		#si multiplico lo anterior por el mapa de conexion, pero
+		#si multiplico lo anterior por el mapa de conexion, pero	
 		#	con -1 donde esta el 0, obtengo el mapa de desconexion final.
 			#para alterar el array:
 				#0 donde 1
@@ -676,7 +696,7 @@ class Sistema_Celular:
 	def calcular_celda_mayor_potencia_upgrade(self):
 		'''Calculo de usuario conectado a una celda especifica dependiendo de su pathloos'''
 		#self.distancias_2D=np.vstack(self.hiperc_distancias)
-		print("\n1 hiperc_distancias, hiperc_distnacias.shape",self.hiperc_distancias, self.hiperc_distancias.shape)
+		print("\n1 hiperc_distancias, hiperc_distnacias.shape\n",self.hiperc_distancias, self.hiperc_distancias.shape)
 		potencia_recibida_dB=self.hiperc_modelo_canal.resultado_balance
 		#print("\n2",potencia_recibida_dB, potencia_recibida_dB.shape)
 		#obtenengo las dimensiones del arreglo cluster, pues esta segmentado en 3D>
@@ -722,7 +742,7 @@ class Sistema_Celular:
 			indx+=1 #
 		#conversion tipo de indices a numpy stack.
 		self.mapa_celda_mayor_potencia=np.stack(indices_map)
-		print('\n 7 sistema.py: mapa_celda_mayor_potencia', self.mapa_celda_mayor_potencia)
+		print('\nsistema.py: mapa_celda_mayor_potencia&', self.mapa_celda_mayor_potencia)
 
 		#todos los usuarios son asigandos a una celda.
 		#sin embargo, aun no es posible determinar si los usuarios asignados, no tienen servicio.
@@ -736,7 +756,7 @@ class Sistema_Celular:
 		pass
 
 
-	def calcular_interferencia_sinr(self):
+	def calcular_interferencia_sinr_upgrade(self):
 		'''Calcula la interferencia producida por la distribucion de prbs e SINR.
 		Permite calcular el valor de sinr de un sistema celular.
 		Procedimiento: sinr=pr/pint+pn, pr: potencia recibida maxima,
@@ -759,7 +779,9 @@ class Sistema_Celular:
 		#falta inicializar asignacion
 		#de acuerdo a los resultados de asignacion, valores de potencia se cancelan
 		#sumar las potencias interferentes en cada columna.
-		suma_interf_v=np.sum(self.potencia_recibida_v_2D, axis=1, keepdims=True)
+		#print("sistema.py pot rec 2d",self.potencia_recibida_v_2D)
+		#print("sistema.py pot rec 2d",self.matriz_interferente)
+		suma_interf_v=np.sum(self.matriz_interferente, axis=1, keepdims=True)
 		#re definimos la dimension de la potencia, para propositos de compatibilidad de arrays.
 		prx_veces=self.pr_maximo_v.reshape(suma_interf_v.shape)
 		#convertimos la figura de ruido a veces:
@@ -775,8 +797,9 @@ class Sistema_Celular:
 		pn=pn_v*fr_v
 		#calculo sinr de acuerdo a la ecuacion
 		self.sinr_db=10*np.log10(prx_veces)-10*np.log10(suma_interf_v+pn)
+		print("sistema.py sirn_db",self.sinr_db)
 		#limpio los valores de sinr de los  usuarios sin conexion.
-		self.sinr_db=np.where(self.mapa_conexion_desconexion_margen==0,-100, self.sinr_db)
+		#self.sinr_db=np.where(self.mapa_conexion_desconexion_margen==0,-100, self.sinr_db)
 		#Reemplaza 1 donde sinr>,self.cfg_gen["ber_sinr"] 0 en caso contrario.
 		self.mapa_conexion_desconexion=np.where(self.sinr_db>self.cfg_gen["ber_sinr"],1,0) #escribe 1 si true, 0 si false.
 
@@ -794,6 +817,72 @@ class Sistema_Celular:
 		#EL RADIO DE LA CELDA CREA ESPACIOS NO LINEALES.
 		#COREGIR POR ISD. Corregido
 	
+
+
+	def calcular_throughput_upgrade(self):
+		'''Dado un sinr calcula el throughput de un arreglo, usando un modulo externo y no una clase.'''
+		#print("[debug]:sistema.py:calcular_throughput()", self.sinr_db.shape)
+		#calcular tasa y modulacion.
+		self.modelo_modulacion.arreglos_tasa_modulacion(self.sinr_db)
+		tasa=np.vstack(np.array(self.modelo_modulacion.arr_tasa))
+		modulacion=np.vstack(np.array(self.modelo_modulacion.arr_modulacion))
+		#
+		#print(tasa[:10], modulacion[:10])
+		constant_dmrs=13
+		constant_oh=[0.14,0.18]
+		#OPCION MODIFICABLE SOLO EN MODO DESARROLLADOR.
+		arreglo_mimo=1
+		factor_escala=[1,0.8,0.75,0.4]
+
+		#
+		constant_simbolos_ofdm=14
+		unidades_megabits=10**(-3)
+		#["params_asignacion"]
+		trama_segundos=unidades_megabits/(constant_simbolos_ofdm*2**self.planificador.numerologia)
+		completo_oh=(1-constant_oh[1])
+
+
+		#print("nrb_")
+		#print(self.planificador.nrb_usuario)
+
+		#print("nrb_t")
+		#print(self.planificador.nrb_total)
+		#n_ofdm=12
+		#n_rb=100 #map
+		#sinr_in=10 #
+		#sym_ofdm=12 #map
+		#scs_ofdm=12 #map
+		
+		check_list=[arreglo_mimo,modulacion,factor_escala[0], tasa, self.planificador.nrb_usuario, self.cfg_plan["sub_ofdm"], trama_segundos,completo_oh]
+		#for test in check_list:
+		#	print(type(test), test)
+		
+		#limpiar modulacion para quitar negativos. El resultado final solo tiene en cuenta los valores contribuyentes
+		modulacion_0=np.vstack(np.where(modulacion<0,0, modulacion))
+
+		#de lo contrario, cuando tasa<0, modulacion<0; throughput>0 para cuando el valor no debe contribuir.
+		#para evitar este error, se fija la modulacion siempre positiva independientemente de la contribuci[on] puesto que tasa ya contiene la informacion que representa los valores no contribuyentes
+		throughput_users=10**(-6)*arreglo_mimo*modulacion_0*factor_escala[0]*(tasa/1024)*(self.planificador.nrb_usuario.copy()*self.cfg_plan["sub_ofdm"]/trama_segundos)*completo_oh
+		print("sistema.py:variables tp")
+		print(tasa)
+		print(modulacion)
+		print(modulacion_0)
+		print(trama_segundos)
+		print(throughput_users)
+		print(self.planificador.numerologia)
+		print(self.planificador.nrb_usuario.copy())
+		print(completo_oh)
+
+		self.throughput_users=np.absolute(throughput_users)	
+		#print("check")
+		#print(self.throughput_users[:10])
+		#print("77777tp user\n",throughput_users)
+		#promedio por sistema []
+		self.throughput_sistema=np.mean(self.throughput_users)
+		
+
+
+
 	def calcular_throughput(self):
 		'''Dado un sinr calcula el throughput de un arreglo, usando un modulo externo y no una clase.'''
 		#print("[debug]:sistema.py:calcular_throughput()", self.sinr_db.shape)
@@ -1068,12 +1157,20 @@ class Sistema_Celular:
 		'''Permite observar numericamente los valores de sinr por usuario y celda.
 		Usage: info_data(True/False, 10)->args[0]:True/False, args[1]:10 is the limit of displaying tabl'''
 		#CORREGIR
-		self.mapa_conexion_usuario_no_con=self.mapa_celda_mayor_potencia.copy()
+		
+
 		self.mapa_conexion_usuario=self.mapa_celda_mayor_potencia.copy()
-		self.pr_maximo_dB=np.zeros(self.mapa_conexion_usuario.shape)
-		self.margen_maximo_dB=np.zeros(self.mapa_conexion_usuario.shape)
-		self.sinr_db=np.zeros(self.mapa_conexion_usuario.shape)
-		self.throughput_users=np.zeros(self.mapa_conexion_usuario.shape)
+		self.mapa_conexion_usuario_no_con=self.planificador.mapa_conexion_usuario_binario.copy()
+		self.margen_maximo_dB=self.planificador.margen_dB.copy()
+
+		print("sistema.py variables infodata")
+		print(self.mapa_conexion_usuario)
+		print(self.mapa_conexion_usuario_no_con)
+		print(self.margen_maximo_dB)
+		print(self.sinr_db)
+		print(self.throughput_users)
+		#self.sinr_db=np.zeros(self.mapa_conexion_usuario.shape)
+		#self.throughput_users=np.zeros(self.mapa_conexion_usuario.shape)
 		print("-----------")
 		print("[info_data] {}".format(args))
 		if self.cfg_gen['debug']:
@@ -1083,7 +1180,7 @@ class Sistema_Celular:
 
 		#calculo de distancia, donde el usuario se ha conectado finalmente. Revisar si es consistente.
 		self.distancias_2D=np.vstack(self.hiperc_distancias)
-		self.distancias_2D=np.array([ar[ids] for ar, ids in zip(self.distancias_2D,self.mapa_conexion_usuario_no_con)])
+		self.distancias_2D=np.array([ar[ids] for ar, ids in zip(self.distancias_2D,self.mapa_conexion_usuario)])
 		if args:
 			if args:
 				ind=0

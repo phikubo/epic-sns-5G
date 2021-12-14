@@ -15,6 +15,8 @@ class Planificador:
 			self.mapa_conexion_celda=[]
 			for i in range(self.cfg_gen["n_celdas"]):
 				self.mapa_conexion_celda.append(np.count_nonzero(self.mapa_asignacion==i))
+			self.mapa_interf_distribuida=np.ones(params[1])
+			
 		else:
 			self.mapa_asignacion=params[0]
 			self.dim_mapa=params[1]
@@ -32,6 +34,7 @@ class Planificador:
 		self.nrb_usuario=0 #por usuario
 		self.nrb_total_por_celda=0
 		#self.nrb_total_por_celda=24
+		self.estadistica_nrb_sobrante=0
 		self.nrb_con_PBCH=0
 		self.contador=0
 		self.mapa_nrb=[]
@@ -41,6 +44,10 @@ class Planificador:
 		self.estado=0
 		self.info_variables=[]
 		#
+		#self.mapa_conexion_desconexion=[]
+		self.sensiblidad_receptor=[]
+		self.margen_dB=[]
+		#
 		self.nrbs=0
 		self.nrb_sobrantes=0
 		self.numerologia=0
@@ -49,13 +56,13 @@ class Planificador:
 		#self.calcular_tipo_asignacion()
 		self.calcular_nrbs_celda()
 		'''
-		
 		self.calcular_nrbs_usuarios()
 		self.configurar_mapa_nrb()
 		'''
 		self.calcular_nrbs_usuarios_upgrade()
 		#self.configurar_mapa_nrb()
-		self.configurar_mapa_nrb_upgrade()
+		self.calcular_desconexion_upgrade()
+		self.configurar_mapa_interferencia_nrb_upgrade()
 
 
 	def to_khz(self,target):
@@ -104,7 +111,9 @@ class Planificador:
 		self.nrb_total_por_celda=self.resource_grid
 		print("panificador.py resource grid", self.resource_grid)
 
+
 		'''
+		SI SE REDUCE EL ANCHO DE BANDA TOTAL POR LA BANDA DE GUARDA, O EL CAMBIO SE APLICA PARA CADA ANCHO DE BANDA REPARTIDO
 		delta_bw=(2**self.cfg_plan["numerologia"]*self.to_khz(15))
 		#print("dleta",delta_bw)
 		#15khz es lo minimo.
@@ -186,9 +195,9 @@ class Planificador:
 			for indx, recursos in enumerate(self.nrb_usuario):
 				print(indx,recursos)
 				self.asignacion=np.where(self.mapa_asignacion==indx, recursos, self.asignacion) #no tengo el mapaaaa!
-			print('resultado',self.asignacion)
+			print('resultado asignacion\n',self.asignacion)
 
-			self.asignacion_bw=self.asignacion*(self.delta_bw_hz)
+			self.asignacion_bw=self.asignacion*self.delta_bw_hz
 			print('resultado hz',self.asignacion_bw)
 
 			'''
@@ -223,14 +232,120 @@ class Planificador:
 				pass
 		elif self.cfg_plan["tipo"]=="futuro":
 			pass
+		elif self.cfg_plan["tipo"]=="rr_hard":
+			#verificar si la distribucion es exacta
+			print("\nplanificador.py usuarios: \n",len(self.mapa_asignacion))
+			#ress=self.nrb_total_por_celda%np.array(self.mapa_conexion_celda)
+			print("planificador.py: nrbs por celda {} - mapa conexion {}".format(self.nrb_total_por_celda, self.mapa_conexion_celda))
+			max_usuarios=max(self.mapa_conexion_celda)
+			particion=np.floor(self.nrb_total_por_celda/max_usuarios)
+			en_uso=particion*max_usuarios
+			print("max {} particion {} en_uso {}".format(max_usuarios, particion, en_uso))
+			self.nrb_usuario=particion*np.ones(np.shape(self.mapa_asignacion))
+			self.nrb_sobrantes=self.nrb_total_por_celda-particion*np.array(self.mapa_conexion_celda)
+
+			self.estadistica_nrb_sobrante=np.round(100*self.nrb_sobrantes/self.nrb_total_por_celda,4)
+			print("nrb suario \n", self.nrb_usuario)
+			print("nrb sobrantes \n", self.nrb_sobrantes)
+			print("sobrante {}% \n".format(self.estadistica_nrb_sobrante))
+			#cambio dimension
+			for indx, recursos in enumerate(self.nrb_usuario):
+				self.asignacion=np.where(self.mapa_asignacion==indx, recursos, self.asignacion)
+			print('resultado \n',self.asignacion)
+			self.asignacion_bw=self.asignacion*self.delta_bw_hz
+			print('resultado hz \n',self.asignacion_bw)
+
+		elif self.cfg_plan["tipo"]=="rr_soft":
+			pass
 		else:
 			pass
 
 
+	def calcular_desconexion_upgrade(self):
+		'''calcula un mapa de desconexion y conexion a partir de una snr objetivo y un calculo inicial de frecuencia'''
+		nf=self.cfg_gen["nf"][0]
+		ktb=-174+10*np.log10(self.asignacion_bw)
+		sinr_objetivo=self.cfg_gen["ber_sinr"]
+		print("variables")
+		print(nf)
+		print(ktb)
+		print(sinr_objetivo)
+		self.sensiblidad_receptor=nf+ktb+sinr_objetivo
+		print("planificador.py: sensiblidad\n", self.sensiblidad_receptor)
+		print("planificador.py: potencia rec\n", np.vstack(self.pr_maximo_dB_))
+		self.margen_dB=np.vstack(self.pr_maximo_dB_)-self.sensiblidad_receptor
+		print("planificador.py: margen\n",self.margen_dB)
+		self.mapa_conexion_usuario_binario=np.where(self.margen_dB<0, 0, self.mapa_conexion_usuario_binario)
+		print("planificador.py: conexion binaria\n", self.mapa_conexion_usuario_binario)
 
-	def configurar_mapa_nrb_upgrade(self):
-		'''Calcula matriz interferente'''
-		pass
+	def configurar_mapa_interferencia_nrb_upgrade(self):
+		'''Calcula matriz interferente, para ello reparte recursos (bloques de ancho de banda) C_{i}, de acuerdo al mapa de conexion de celdas.
+		C_{i}, i={1,2,3,...,n_cel}, representa cada bloque de nrb entregado a cada
+		usuario, de esta forma si se entrega a cada usuario 364 nrbs, C1 representa
+		el bloque nrb 0-363 hz, C2 representa el bloque nrb 364-2*363 hz y asi sucesivamente '''
+		#el estado debe cambiar solo cuando el indice cambia.
+		self.contador=[0 for i in range(len(self.mapa_conexion_celda))]
+		#convierto a numpy para aprovechar multiplicacion elemento a elemnto.
+		self.contador=np.array(self.contador)
+		self.estado=[0 for i in range(len(self.mapa_conexion_celda))]
+		#convierto a numpy para aprovechar multiplicacion elemento a elemnto.
+		self.estado=np.array(self.estado)
+		for indd, celda in enumerate(self.mapa_asignacion):
+			#print("planificador.py upgrade", indd, celda)
+			if self.mapa_conexion_usuario_binario[indd]==0:
+				#print("descon map {}, self.estado {}".format(self.mapa_conexion_usuario_binari[indd], celda[0]))
+				self.estado[celda[0]]=0
+			else:
+				#si diferente de 0, sum
+				self.contador[celda[0]]=self.contador[celda[0]]+1
+				self.estado[celda[0]]=1
+			'''indice, celda de conexion, conexion, contador, estado, nrb asignado'''
+			mostrar="{}	{}	{}		{}	{}	nrb_{}".format(indd,celda,
+				self.mapa_conexion_usuario_binario[indd],self.contador, self.estado, sum(self.contador*self.estado))
+			print(mostrar)
+			self.mapa_estado.append(self.estado.copy())
+			nrb_actual=sum(self.contador*self.estado)
+			self.mapa_nrb.append(nrb_actual)
+			self.estado[celda[0]]=0
+		
+		'''Funciona por que originalmente la matriz de estados interferentes es cero y a medida
+		que se generan la distribucion se rellena, como la matriz de distribucion solo es
+		repartida a los usuarios cuyos indices se encuentran mapeados, los indices no mapeados
+		corresponden a los indices donde no ha habido conexion desde un principio'''
+		self.mapa_nrb=np.array(self.mapa_nrb)
+		self.mapa_estado=np.stack(self.mapa_estado).reshape(self.dim_mapa)
+		print("planificador.py mapa nrb",self.mapa_nrb)
+		print("planificador.py mapa estados",self.mapa_estado)
+		start=1 #si empieza en cero se cuenta un potencial nrb0
+
+		for indx, mapa in enumerate(range(start,int(np.max(self.mapa_nrb))+1)):
+			print(indx,mapa)
+			arreglo=np.where(self.mapa_nrb==mapa)
+			print("arreglo repetido",arreglo[0])
+			#esta nueva lista de distribucion cuenta donde ha habido nrb,
+			#y los reparte a la lista, por lo que el ciclo esta completo.
+			self.lista_distribucion.append(arreglo[0])
+			##print("nrb",mapa, " repetidos:",[0])
+			mapa_semilla=[0 for i in range(len(self.mapa_conexion_celda))]
+			#print("mapa_semilla1",mapa_semilla) #[0,0,0] xn celdas
+			for indxx in arreglo[0]:
+				#############################print(indxx, self.mapa_estado[indxx])
+				mapa_semilla=self.mapa_estado[indxx] + mapa_semilla
+				#print("mapa_semilla2",mapa_semilla)
+			#print("------>semilla",mapa_semilla)
+			self.mapa_interferencia.append(mapa_semilla)
+		self.mapa_interferencia=np.stack(self.mapa_interferencia)
+		#self.lista_distribucion=np.stack(self.lista_distribucion)
+		print("mapa interferencia\n",self.mapa_interferencia)
+		print("mapa estados\n",self.mapa_estado)
+		print("aux\n",self.mapa_interf_distribuida)
+		print("mapa_distribucion\n", self.lista_distribucion)
+		for lista, mapa_dist in zip(self.lista_distribucion, self.mapa_interferencia):
+			#print(lista, mapa_dist)
+			for indx_interf in lista:
+				self.mapa_interf_distribuida[indx_interf]=mapa_dist
+		print("mapa_interferencia_distribuida\n",self.mapa_interf_distribuida)
+
 
 
 	def configurar_mapa_nrb(self):

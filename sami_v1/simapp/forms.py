@@ -71,7 +71,8 @@ antena_choices=(
 
 
 asignacion_choices=(
-        ('rr', 'Round Robin'),
+        ('rr_hard', 'Round Robin Hard'),
+        ('rr_soft', 'Round Robin Soft'),
         ('genetico', 'Genético'),
         ('quantico-g', 'Quántico Genético [no disponible sin un computador cuántico]'),
         ('futuro', 'Futuro*') 

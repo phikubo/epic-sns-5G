@@ -168,30 +168,38 @@ class Planificador:
 		que se generan la distribucion se rellena, como la matriz de distribucion solo es
 		repartida a los usuarios cuyos indices se encuentran mapeados, los indices no mapeados
 		corresponden a los indices donde no ha habido conexion desde un principio'''
-		for indx, mapa in enumerate(range(0,self.max_usuario_descon+1)):
+		print("descon",self.max_usuario_descon)
+		for indx, mapa in enumerate(range(1,self.max_usuario_descon+1)):
+			print("############forindx,mapa", indx,mapa)
 			arreglo=np.where(self.mapa_nrb==mapa)
+			print("arr",arreglo)
 			#esta nueva lista de distribucion cuenta donde ha habido nrb0,
 			#y los reparte a la lista, por lo que el ciclo esta completo.
 			self.lista_distribucion.append(arreglo[0])
-			##print("nrb",mapa, " repetidos:",arreglo[0])
+			print("nrb",mapa, " repetidos:",arreglo[0])
 			mapa_semilla=[0 for i in range(len(self.mapa_conexion))]
+			print("conex",self.mapa_conexion)
 
 			for indxx in arreglo[0]:
 				#############################print(indxx, self.mapa_estado[indxx])
 				mapa_semilla=self.mapa_estado[indxx] + mapa_semilla
-			#print("------>semilla",mapa_semilla)
+			print("------>semilla",mapa_semilla)
 			self.mapa_interferencia.append(mapa_semilla)
-		self.mapa_interferencia=np.stack(self.mapa_interferencia)
+		print(self.mapa_interferencia)
+		print(self.lista_distribucion)
+		#self.mapa_interferencia=np.stack(self.mapa_interferencia)
 		#self.lista_distribucion=np.stack(self.lista_distribucion)
-		##print("mapa interferencia\n",self.mapa_interferencia)
-		##print("mapa estados\n",self.mapa_estado)
-		#print("aux\n",self.mapa_interf_distribuida)
-		#print("mapa_distribucion\n", self.lista_distribucion)
+		print("mapa interferencia\n",self.mapa_interferencia)
+		print("mapa estados\n",self.mapa_estado)
+		print("aux\n",self.mapa_interf_distribuida)
+		print("mapa_distribucion\n", self.lista_distribucion)
 		for lista, mapa_dist in zip(self.lista_distribucion, self.mapa_interferencia):
 			#print(lista, mapa_dist)
 			for indx_interf in lista:
 				self.mapa_interf_distribuida[indx_interf]=mapa_dist
-				#print(indx_interf
+				print(indx_interf)
+				print(self.mapa_interf_distribuida)
+		print(self.mapa_interf_distribuida)
 		'''
 		print("\nrevisar que no se este repartiendo el nrb0?-revisado [ok]\n")
 		print("mapa de usuarios iterfentes\n",self.lista_distribucion, len(self.lista_distribucion))

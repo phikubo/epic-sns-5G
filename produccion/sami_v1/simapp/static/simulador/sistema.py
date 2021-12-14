@@ -18,8 +18,8 @@ import logging
 #cambiar de numerologia, que sea automatica como se habia dicho antes [pendiente]
 
 #
-from shapely.geometry import Point
-from shapely.geometry.polygon import Polygon
+#from shapely.geometry import Point
+#from shapely.geometry.polygon import Polygon
 #import - final
 #
 #bloque de carga de modulos - inicio
@@ -40,7 +40,7 @@ try:
 	from .pk_gestion_recursos import modulacion as modd
 
 except Exception as EX:
-	print("ATENCION: Uno o mas modulos no pudo ser importado... ", EX)
+	print("ATENCION: Uno o mas modulos no pudo ser importado... {}\n".format(EX))
 	print("...desde un archivo externo. Ignorar si la ejecucion es interna. ")
 #
 #bloque de carga de modulos - final
@@ -523,8 +523,8 @@ class Sistema_Celular:
 		#print("marix",self.potencia_recibida_v_2D)
 		self.matriz_interferente=self.potencia_recibida_v_2D*self.planificador.mapa_interf_distribuida
 
-		#print("interferencia antes\n", self.potencia_recibida_v_2D)
-		#print("interferencia ahora\n",self.matriz_interferente)
+		print("interferencia antes\n", self.potencia_recibida_v_2D)
+		print("interferencia ahora\n",self.matriz_interferente)
 
 
 	def inicializar_modulacion(self):
