@@ -301,7 +301,7 @@ def form_a3(request):
             config["cfg_simulador"]["params_balance"]["ltx"]=float(contenido["ltx"])
             config["cfg_simulador"]["params_balance"]["lrx"]=float(contenido["lrx"])
             config["cfg_simulador"]["params_balance"]["grx"]=float(contenido["grx"])
-            config["cfg_simulador"]["params_balance"]["sensibilidad"]=float(contenido["sensibilidad"])
+            #config["cfg_simulador"]["params_balance"]["sensibilidad"]=float(contenido["sensibilidad"])
             config["cfg_simulador"]["params_balance"]["mcl"]=float(contenido["mcl"])
             #antenas
             config["cfg_simulador"]["params_antena"]["tipo"]=contenido["tipo_antena"]
@@ -412,7 +412,7 @@ def form_compacto(request):
             config["cfg_simulador"]["params_balance"]["ltx"]=float(contenido["ltx"])
             config["cfg_simulador"]["params_balance"]["lrx"]=float(contenido["lrx"])
             config["cfg_simulador"]["params_balance"]["grx"]=float(contenido["grx"])
-            config["cfg_simulador"]["params_balance"]["sensibilidad"]=float(contenido["sensibilidad"])
+            #config["cfg_simulador"]["params_balance"]["sensibilidad"]=float(contenido["sensibilidad"])
             config["cfg_simulador"]["params_balance"]["mcl"]=float(contenido["mcl"])
             #antenas
             config["cfg_simulador"]["params_antena"]["tipo"]=contenido["tipo_antena"]

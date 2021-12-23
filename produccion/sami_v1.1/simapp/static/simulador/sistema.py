@@ -8,7 +8,7 @@ import os
 import time #for debug.
 
 #logger
-import logging
+#import logging
 
 #tareas
 #cambiar nombre de los ejes: sin muestra. [ok]
@@ -416,6 +416,7 @@ class Sistema_Celular:
 		self.hiperc_distancias=self.configurar_organizar_arreglos(self.hiperc_distancias)
 		self.hiperc_angulos=self.configurar_organizar_arreglos(self.hiperc_angulos)
 
+
 		#print("[sistema.hiper.usuarios]:\n", test1,"\n", test2)
 		#print(type(test1))
 		#print(type(test1))
@@ -481,6 +482,7 @@ class Sistema_Celular:
 		#diseno:
 		#"tipo", pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad
 		#pasar parametros de perdidas:
+		print("[sistema.inicializar_modelo_canal]")
 		if self.cfg_gen['debug']:
 			print("[sistema.inicializar_modelo_canal]")
 
@@ -506,6 +508,7 @@ class Sistema_Celular:
 
 		self.hiperc_modelo_canal=moca.Modelo_Canal(self.cfg, self.hiper_arreglos)
 		#calculo las perdidas del modelo del canal segun el tipo de modelo de propagacion
+		print("sistema.py creacion de imagen.")
 		if self.cfg_gen["imagen"]["display"][0]:
 			self.hiper_malla_arreglos[0]=(self.hiperc_malla_distancias, "m")
 			self.hiper_malla_arreglos[1]=self.hiperc_malla_antena.hiper_ganancias
@@ -639,9 +642,10 @@ class Sistema_Celular:
 		#creo la variable local de trabajo
 		potencia_recibida_dB=self.hiperc_modelo_canal.resultado_balance
 		#obtenengo las dimensiones del arreglo cluster, pues esta segmentado en 3D
-		l,m,n=self.hiperc_modelo_canal.resultado_balance.shape
+		#l,m,n=self.hiperc_modelo_canal.resultado_balance.shape
 		#redimensiono la potencia recibida de un arreglo 3D a 2D.
-		potencia_recibida_dB_2D=np.reshape(potencia_recibida_dB, (l*m, n))
+		#potencia_recibida_dB_2D=np.reshape(potencia_recibida_dB, (l*m, n))
+		potencia_recibida_dB_2D=np.vstack(potencia_recibida_dB)
 		#convierto a veces
 		#potencia_recibida_v_2D=(10**(potencia_recibida_dB_2D/10))
 		self.potencia_recibida_v_2D=self.configurar_unidades_veces(potencia_recibida_dB_2D)
@@ -701,10 +705,11 @@ class Sistema_Celular:
 		#print("\n2",potencia_recibida_dB, potencia_recibida_dB.shape)
 		#obtenengo las dimensiones del arreglo cluster, pues esta segmentado en 3D>
 		'''potencia_recibida_dB -> A_m_u_c. (magnitud:usuario a celda, #usuarios, #celdas)'''
-		l,m,n=self.hiperc_modelo_canal.resultado_balance.shape
+		#l,m,n=self.hiperc_modelo_canal.resultado_balance.shape
 
 		#redimensiono la potencia recibida de un arreglo 3D a 2D.
-		potencia_recibida_dB_2D=np.reshape(potencia_recibida_dB, (l*m, n)) #misma operacion que np.vstack*()
+		#potencia_recibida_dB_2D=np.reshape(potencia_recibida_dB, (l*m, n)) #misma operacion que np.vstack*()
+		potencia_recibida_dB_2D=np.vstack(potencia_recibida_dB)
 		#print('\n3',potencia_recibida_dB_2D)
 		
 		#conviersion a veces
@@ -969,19 +974,39 @@ class Sistema_Celular:
 	def ver_imagen_potencia(self, nombre):
 		'''Permite ver la imagen creada a partir de una malla de puntos'''
 		#el primer valor
-		pr_max=self.hiperc_malla_modelo_canal.resultado_balance[0]
+		pr_max=self.hiperc_malla_modelo_canal.resultado_balance.copy()
+		print("sistema.py:ver_imagen_potencia, pr_max -1\n",pr_max)
+		#prmax no fue re configurado por que el procedimiento de calculo es diferente, los usuarios no pertenecen a una celda.
+		#en cambio se hace como si todos los usuarios pertenecieran a cada celda de manera independiente:
+		"""
+		arr=[
+			[usuario 1, u2, ...,un] #celda 1
+			 
+			[usuario 1, u2, ...,un] #celda 2
+
+			[usuario 1, u2, ...,un] #celda 3
+		]"""
+		pr_max=np.vstack(np.transpose(np.reshape(pr_max, self.hiperc_malla_distancias.shape)))
+		#pr_max=np.transpose(pr_max)
+		print("sistema.py:ver_imagen_potencia, pr_max 0\n",pr_max)
+		final_pr_max=[]
+		print("---")
+		for line in pr_max:
+			#print(np.max(line))
+			final_pr_max.append(np.max(line))
+		print()
+		final_pr_max=np.transpose(np.reshape(final_pr_max, self.malla_x.shape))
+		print("sistema.py:ver_imagen_potencia, pr_max 1\n",pr_max)
+		print("sistema.py: ver_imagen_pot, shpae ",pr_max.shape)
 		
-		for ind,pr_i in enumerate(self.hiperc_malla_modelo_canal.resultado_balance):
-			#itera sobre las demas, se rescribe el valor con el maximo en cada celda
-			pr_max=np.maximum(pr_max, pr_i)
-		#el resultado es un mapa de potencias maximas.
-		#reorganizo
-		pr_max=pr_max[:-1,:-1]
+		print("sistema.py: ver_imagein_pot\n",final_pr_max, len(final_pr_max))
+		print("sistema.py: malla_x\n",self.malla_x, self.malla_x.shape, np.vstack(self.malla_x).shape)
 		
+		final_pr_max=np.reshape(final_pr_max,self.malla_x.shape)
 		z_min,z_max=-np.abs(pr_max).max(), np.abs(pr_max).max()
 		fig,ax=plt.subplots()
 
-		c=ax.pcolormesh(self.malla_x,self.malla_y,pr_max, cmap='plasma', vmin=z_min, vmax=-42)
+		c=ax.pcolormesh(np.vstack(self.malla_x),np.vstack(self.malla_y),final_pr_max, cmap='plasma', vmin=z_min, vmax=-42)
 		fig.colorbar(c,ax=ax, label="Potencia Recibida [dBm]")
 		titulo="{}, Ptx:{}, Desvanecimiento:{}.".format(str(self.cfg_prop["modelo_perdidas"]), self.cfg_bal["ptx"], self.cfg_prop["params_desv"]["tipo"])
 		plt.title(titulo)

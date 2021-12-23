@@ -57,20 +57,25 @@ class Modelo_Canal:
 		self.resultado_balance_v=0
 
 		#aplica desvanecimiento si aplica.
+		print("modelo_canal.py inicializar tipo")
 		self.inicializar_tipo()
 		#se altera el orden para poder obtener los valores de perdidas, en el
 		#desvanecimiento rayleight, y luego, adicionar ese desvanecimiento al balance del enlace
 		#self.configurar_desvanecimiento()
+		print("modelo_canal.py balancel mcl")
 		self.balance_del_enlace_mcl() #f(configurar_desvanecimiento())
 		#self.inicializar_balance()
 
 	def configurar_desvanecimiento(self):
 		'''Crea un array de desvanecimiento, dependiendo del tipo y especificaciones extras'''
-
+		print("modelo_canal.py, configurar_desvanecimiento")
 		if self.custom_dist_flag:
 			self.balance_simplificado=self.resultado_path_loss-np.max(self.tx_grel)-self.cfg_bal["grx"]+self.cfg_bal["ltx"]+self.cfg_bal["lrx"]
 		else:
-			self.balance_simplificado=self.resultado_path_loss-self.tx_grel-self.cfg_bal["grx"]+self.cfg_bal["ltx"]+self.cfg_bal["lrx"]
+			print("moca", self.resultado_path_loss.copy())
+			print("moca2", self.tx_grel.copy())
+			self.balance_simplificado=np.vstack(self.resultado_path_loss)-np.vstack(self.tx_grel)-self.cfg_bal["grx"]+self.cfg_bal["ltx"]+self.cfg_bal["lrx"]
+			print("BALSIMPL",self.balance_simplificado)
 
 
 		if self.cfg_prop["params_desv"]["display"]:
@@ -179,8 +184,11 @@ class Modelo_Canal:
 				#las distancias debe estar en [m], por eso no cambia
 				if self.custom_dist_flag==True:
 					self.distancias=self.custom_dist
+					
 				else:
-					self.distancias=self.arreglos[0][0]
+					
+					self.distancias=self.arreglos[0][0].copy()
+					print("modelo ci inicializar tipo 1", self.distancias)
 
 			else:
 				pass #opcion kilometro, no cambia.
@@ -190,7 +198,7 @@ class Modelo_Canal:
 				self.portadora=self.cfg_gen["portadora"][0]
 			else:
 				#pass #opcion megaherz, cambia a Ghz
-				self.portadora=self.cfg_gen["portadora"][0]*1000
+				self.portadora=self.cfg_gen["portadora"][0]/1000
 			#print(self.distancias.shape)
 			self.perdidas_umi_ci()
 
@@ -201,6 +209,7 @@ class Modelo_Canal:
 
 				if self.custom_dist_flag==True:
 					self.distancias=self.custom_dist
+					
 				else:
 					#las distancias debe estar en [m], no cambia.
 					self.distancias=self.arreglos[0][0]
@@ -211,7 +220,7 @@ class Modelo_Canal:
 				self.portadora=self.cfg_gen["portadora"][0]
 			else:
 				#pass #opcion megaherz, cambia a Ghz
-				self.portadora=self.cfg_gen["portadora"][0]*1000
+				self.portadora=self.cfg_gen["portadora"][0]/1000
 			#print(self.distancias.shape)
 			self.perdidas_umi_abg()
 			
@@ -235,7 +244,7 @@ class Modelo_Canal:
 				self.portadora=self.cfg_gen["portadora"][0]
 			else:
 				#pass #opcion megaherz, no cambia.
-				self.portadora=self.cfg_gen["portadora"][0]*1000
+				self.portadora=self.cfg_gen["portadora"][0]/1000
 			#print(self.distancias.shape)
 
 			self.perdidas_uma_3gpp()
@@ -290,9 +299,15 @@ class Modelo_Canal:
 		# y es un valor aleatorio, con una distribucion gausiana de media SIGMA_XN
 		sigma_xn=8.1
 		alpha_n=3.1
+
+		print("moca.py:umi_ci, portadora",self.portadora)
+		print("moca.py:umi_ci, distancias",self.distancias)
 		correcion_freq_ghz=32.4+20*math.log10(self.portadora)
-		correccion_dist_m=10*alpha_n*np.log10(self.distancias)
+		correccion_dist_m=10*alpha_n*np.log10(np.vstack(self.distancias))
+
+		#print("distancias ci modelo canal\n",np.vstack(self.distancias))
 		self.resultado_path_loss=correcion_freq_ghz+correccion_dist_m+sigma_xn
+		#print("resultado path loss\n",self.resultado_path_loss)
 
 
 	def perdidas_umi_abg(self):
@@ -438,6 +453,7 @@ class Modelo_Canal:
 		#print("\n[modelo_canal.func.mcl] MCL")
 		#print(np.maximum(self.balance_simplificado, mcl))
 		self.resultado_balance=self.cfg_bal["ptx"]-np.maximum(self.balance_simplificado, self.cfg_bal["mcl"])
+		print("resulta bal mcl", self.resultado_balance)
 
 		self.resultado_margen=self.resultado_balance-self.cfg_bal["sensibilidad"]
 

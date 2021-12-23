@@ -8,7 +8,7 @@ import os
 import time #for debug.
 
 #logger
-import logging
+#import logging
 
 #tareas
 #cambiar nombre de los ejes: sin muestra. [ok]
@@ -790,13 +790,16 @@ class Sistema_Celular:
 		'''Permite ver la imagen creada a partir de una malla de puntos'''
 		#el primer valor
 		pr_max=self.hiperc_malla_modelo_canal.resultado_balance[0]
-		
+		print("sistema.py:ver_imagen_potencia, pr_max 1",pr_max)
 		for ind,pr_i in enumerate(self.hiperc_malla_modelo_canal.resultado_balance):
 			#itera sobre las demas, se rescribe el valor con el maximo en cada celda
 			pr_max=np.maximum(pr_max, pr_i)
 		#el resultado es un mapa de potencias maximas.
 		#reorganizo
+		print("sistema.py:ver_imagen_potencia, pr_max 2",pr_max)
 		pr_max=pr_max[:-1,:-1]
+		print("sistema.py:ver_imagen_potencia, pr_max 3",pr_max)
+		print("sistema.py:ver_imagen_potencia, shapes",self.malla_x.shape,self.malla_y.shape,pr_max.shape) 
 		
 		z_min,z_max=-np.abs(pr_max).max(), np.abs(pr_max).max()
 		fig,ax=plt.subplots()

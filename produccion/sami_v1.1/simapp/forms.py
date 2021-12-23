@@ -64,7 +64,7 @@ desvancimiento_choices=(
 
 #----------------------------------------------
 antena_choices=(
-        ('4g', '38942 Trisectorizada'),
+        ('4g', '38901 Trisectorizada'),
         ('5g', 'Mimo Masivo'),
         ('futuro', 'Futuro**'), 
     )
@@ -130,7 +130,7 @@ class FormBalanceAntenas(forms.Form):
     ltx=forms.DecimalField(label='Pérdidas en Transmisión [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     lrx=forms.DecimalField(label='Pérdidas en Recepción [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     grx=forms.DecimalField(label='Ganancia Máxima de Antena en Recepción [dBi]',initial=8, min_value=1, max_digits=5, decimal_places=2)
-    sensibilidad=forms.DecimalField(label='Sensibilidad en Recepción [dBm]',initial=-98, max_digits=5, decimal_places=2)
+    #sensibilidad=forms.DecimalField(label='Sensibilidad en Recepción [dBm]',initial=-98, max_digits=5, decimal_places=2)
     mcl=forms.DecimalField(label='MCL [dB]',initial=70, min_value=1, max_digits=5, decimal_places=2)
     #antenas
     tipo_antena=forms.ChoiceField(label='Tipo Antena',choices=antena_choices)
@@ -195,7 +195,7 @@ class FormCompacto(forms.Form):
     ltx=forms.DecimalField(label='Pérdidas en Transmisión [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     lrx=forms.DecimalField(label='Pérdidas en Recepción [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     grx=forms.DecimalField(label='Ganancia Máxima de Antena en Recepción [dBi]',initial=8, min_value=1, max_digits=5, decimal_places=2)
-    sensibilidad=forms.DecimalField(label='Sensibilidad en Recepción [dBm]',initial=-98, max_digits=5, decimal_places=2)
+    #sensibilidad=forms.DecimalField(label='Sensibilidad en Recepción [dBm]',initial=-98, max_digits=5, decimal_places=2)
     mcl=forms.DecimalField(label='MCL [dB]',initial=70, min_value=1, max_digits=5, decimal_places=2)
     #antenas
     tipo_antena=forms.ChoiceField(label='Tipo Antena',choices=antena_choices)

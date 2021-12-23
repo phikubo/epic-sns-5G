@@ -92,7 +92,9 @@ class Simulador:
 
 		#simulacion
 		#APAGAR LA IMAGEN SIN ESTA ENCEIDA.
-		pre_sim=ss.Sistema_Celular(self.configuracion)
+		print("!!!!!!!!!!!!pre simulacion instancia iniciada")
+		pre_sim=ss.Sistema_Celular(self.configuracion.copy())
+		print("!!!!!!!!!!!!pre simulacion instancia terminada")
 		'''
 		***OPTIMIZACION***
 		En este punto ya se ha completado esta simulacion hasta el final'''
