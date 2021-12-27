@@ -3,8 +3,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 #form tools
 from formtools.wizard.views import SessionWizardView
-
+#
+#
 #fomularios simulador
+from .forms import *
 from .forms import FormGeneral, FormPropagacion, FormBalanceAntenas,FormAsignacion
 from .forms import FormSeleccion
 from .forms import FormCompacto
@@ -373,9 +375,9 @@ def form_a4(request):
 def seleccionar_escenario(request):
     '''Selecciona un escenario para simular'''
     config_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
-    rutas_disponibles=config_sim["rutas_configuracion"]
-
+    rutas_disponibles=config_sim["rutas_configuracion"]    
     form=FormSeleccion()
+
     if request.method == 'POST':
         form=FormSeleccion(request.POST)
         print("\nHA OCURRIDO UN POST Seleccion", request.POST)
@@ -397,6 +399,7 @@ def seleccionar_escenario(request):
 
 def form_compacto(request):
     '''Implementacion de 4 fases en 1 para agilizar la simulacion.'''
+
     form=FormCompacto()
     if request.method == 'POST':
         form=FormCompacto(request.POST)
@@ -481,6 +484,11 @@ def form_compacto(request):
             cfg.guardar_json(config_sim, target_path="simapp/static/simulador/base_datos/config_sim")
             cfg.guardar_json_full(config, target_path=config_sim["ruta_activa"])
             
+            fname="sami/wsgi.py"
+            try:
+                os.utime(fname, None)  # Set access/modified times to now
+            except OSError:
+                pass  # File does not exist (or no permission)
         return redirect('parametros/')
     return render(request,'simapp/form_v1/sami-form-compacto.html', {"form_data":form})
     #return render(request,'simapp/form_v1/sami-form-a4.html', {"form_data":form} )

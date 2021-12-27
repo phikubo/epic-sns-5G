@@ -1,8 +1,10 @@
 from django import forms
+
 from .static.simulador.utilidades import config as cfg
 #https://simpleisbetterthancomplex.com/tutorial/2018/11/28/advanced-form-rendering-with-django-crispy-forms.html
 
 #------------------------------SIMAPP
+print("forms.py rloanding")
 #seleccion
 geometria_choices=(
         ('autoajustable', 'Radio proporcional a la ISD'),
