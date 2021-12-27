@@ -30,7 +30,10 @@ class Simulador:
 		#
 		self.tipo=tipo
 		self.graficas_disponibles_dic={}
-		self.configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+		self.conf_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
+		#self.configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+		self.configuracion=cfg.cargar_json_full(target_path=self.conf_sim["ruta_activa"])
+
 		self.configuracion_gui=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_gui")
 		if self.tipo=="presimulacion":
 			#una sola simulacion.
