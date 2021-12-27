@@ -1,5 +1,5 @@
 from django import forms
-
+from .static.simulador.utilidades import config as cfg
 #https://simpleisbetterthancomplex.com/tutorial/2018/11/28/advanced-form-rendering-with-django-crispy-forms.html
 
 #------------------------------SIMAPP
@@ -157,9 +157,20 @@ class FormAsignacion(forms.Form):
     #
     futuro1=forms.IntegerField(label='Futuro*',initial=0, min_value=0)
     futuro2=forms.IntegerField(label='Futuro**',initial=0, min_value=0)
-    
+
+
+class FormSeleccion(forms.Form):
+    '''De una lista de escenarios, configura la variable escenario activo que es el archivo de configuración que se simula'''
+    escenario_choices=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
+    #escenario_choices=(tuple(escenario_choices["rutas_configuracion"].items()))
+    #print("opciones\n",escenario_choices)
+    reversed_dict = dict(map(reversed, escenario_choices["rutas_configuracion"].items()))
+    escenario_choices=tuple(reversed_dict.items())
+    escenario_opciones=forms.ChoiceField(label='Escenarios Disponibles',choices=escenario_choices)
+
 class FormCompacto(forms.Form):
     '''Formulario inicial. Configura parametros globales'''
+    nombre_archivo=forms.CharField(max_length=100)
     iteraciones=forms.IntegerField(label='Realizaciones',initial=1, min_value=1)
     n_celdas=forms.IntegerField(label='Cantidad de Celdas',initial=1, max_value=19, min_value=1)
     portadora=forms.IntegerField(label='Frecuencia Portadora [MHz]',initial=900, min_value=200, max_value=75000,)

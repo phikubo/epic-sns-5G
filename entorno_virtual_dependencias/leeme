@@ -1,0 +1,6 @@
+Todos los scripts aquí, son los testeados y su funcionamiento esta comprobado.
+1. El archivo requirements sirve para instalar todas las dependencias necesarias con el siguiente commando:
+>> pip install requirements_*_.txt
+2. Para una instalación nueva, copiar todo el contenido de la carpeta configuracion_referencia en la carpeta de la siguiente ruta:
+produccion/sami_v1.1/simapp/static/simulador/base_datos/
+Si un mensaje de reemplazar archivos seleccionar aceptar. Posteriormente se podra inicializar simulaciones.

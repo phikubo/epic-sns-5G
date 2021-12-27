@@ -6,6 +6,7 @@ from formtools.wizard.views import SessionWizardView
 
 #fomularios simulador
 from .forms import FormGeneral, FormPropagacion, FormBalanceAntenas,FormAsignacion
+from .forms import FormSeleccion
 from .forms import FormCompacto
 #integracion simulador
 import os
@@ -159,10 +160,14 @@ def iniciar_simulacion(request):
     return render(request,'simapp/sami-iniciar-sim.html')
 
 
+
 def ver_parametros(request):
     '''Punto de control: se observan los parametros, se decide iniciar simulacion
     o corregirlos con las opciones disponibles.'''
-    configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+    #configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+    #simapp/static/simulador/base_datos/escenarios/test_ci_1.json
+    cfg_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
+    configuracion=cfg.cargar_json_full(target_path=cfg_sim["ruta_activa"])
 
     config1=configuracion["cfg_simulador"]["params_general"]
     config2=configuracion["cfg_simulador"]["params_propagacion"]
@@ -203,10 +208,15 @@ def form_a1(request):
         print("\nHA OCURRIDO UN POST")
         if form.is_valid():
             #CONFIGURACION DE VARIABLES
-            print("[OK]-Formulario 1 Aceptado")
+            print("[OK]-Formulario a1 Aceptado")
             contenido=form.cleaned_data
 
             config=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+            config_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
+            rutas_=config_sim["rutas_configuracion"]
+            rutas_[contenido["nombre_archivo"]]="simapp/static/simulador/base_datos/escenarios/{}.json".format(contenido["nombre_archivo"])
+            config_sim["ruta_activa"]="simapp/static/simulador/base_datos/escenarios/{}.json".format(contenido["nombre_archivo"])
+            print("ruta activa!!!!! \n",config_sim)
             config["cfg_simulador"]["params_general"]["iteracion"]=contenido["iteraciones"]
             config["cfg_simulador"]["params_general"]["n_celdas"]=contenido["n_celdas"]
             config["cfg_simulador"]["params_general"]["portadora"][0]=contenido["portadora"]
@@ -226,6 +236,8 @@ def form_a1(request):
                 #NORMALMENTE SE DESACTIVA LAS ITERACIONES. En lugar de eso,
                 #SE DESACTIVA LA IMAGEN, PERO EN EL SIMULADOR
             config["cfg_simulador"]["params_general"]["imagen"]["resolucion"]=contenido["pixeles"]
+            cfg.guardar_json(config_sim, target_path="simapp/static/simulador/base_datos/config_sim")
+            cfg.guardar_json(config, target_path=config_sim["ruta_activa"])
             cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos")
             config=0
         else:
@@ -357,6 +369,32 @@ def form_a4(request):
     return render(request,'simapp/form_v1/sami-form-a4.html', {"form_data":form} )
 
 
+
+def seleccionar_escenario(request):
+    '''Selecciona un escenario para simular'''
+    config_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
+    rutas_disponibles=config_sim["rutas_configuracion"]
+
+    form=FormSeleccion()
+    if request.method == 'POST':
+        form=FormSeleccion(request.POST)
+        print("\nHA OCURRIDO UN POST Seleccion", request.POST)
+        if form.is_valid():
+            print("[OK]-Formulario seleccion Aceptado")
+            contenido=form.cleaned_data
+            print("clase django", contenido)
+
+            config_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
+            config_sim["ruta_activa"]="{}".format(contenido["escenario_opciones"].replace(" ","_"))      
+            cfg.guardar_json(config_sim, target_path="simapp/static/simulador/base_datos/config_sim")
+        else:
+            print("Error")
+        return redirect('parametros/')
+    return render(request,'simapp/form_v1/sami-form-escenarios.html', {"form_data":form})
+
+
+
+
 def form_compacto(request):
     '''Implementacion de 4 fases en 1 para agilizar la simulacion.'''
     form=FormCompacto()
@@ -369,6 +407,13 @@ def form_compacto(request):
             print("clase django", contenido)
 
             config=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+
+            config_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
+            rutas_=config_sim["rutas_configuracion"]
+            rutas_[contenido["nombre_archivo"]]="simapp/static/simulador/base_datos/escenarios/{}.json".format(contenido["nombre_archivo"].replace(" ","_"))
+            config_sim["ruta_activa"]="simapp/static/simulador/base_datos/escenarios/{}.json".format(contenido["nombre_archivo"].replace(" ","_"))
+            print("ruta activa!!!!! \n",config_sim)
+
             config["cfg_simulador"]["params_general"]["iteracion"]=contenido["iteraciones"]
             config["cfg_simulador"]["params_general"]["n_celdas"]=contenido["n_celdas"]
             config["cfg_simulador"]["params_general"]["portadora"][0]=contenido["portadora"]
@@ -432,6 +477,9 @@ def form_compacto(request):
             config["cfg_simulador"]["params_asignacion"]["simbolo_ofdm_dl"]=float(contenido["simbolos"])
             config["cfg_simulador"]["params_asignacion"]["frame"]=float(contenido["frame"])
             cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos")
+
+            cfg.guardar_json(config_sim, target_path="simapp/static/simulador/base_datos/config_sim")
+            cfg.guardar_json_full(config, target_path=config_sim["ruta_activa"])
             
         return redirect('parametros/')
     return render(request,'simapp/form_v1/sami-form-compacto.html', {"form_data":form})

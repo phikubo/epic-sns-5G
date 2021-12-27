@@ -11,6 +11,8 @@ urlpatterns = [
     path('sim/form_a3', views.form_a3, name='sim_form_a3'),
     path('sim/form_a4', views.form_a4, name='sim_form_a4'),
     #
+    path('sim/seleccionar_escenario', views.seleccionar_escenario, name="sim_form_escenarios"),
+    #
     path('sim/form_compacto', views.form_compacto, name='sim_form_compacto'),
     #
     path('sim/parametros/', views.ver_parametros, name='parametros'),
