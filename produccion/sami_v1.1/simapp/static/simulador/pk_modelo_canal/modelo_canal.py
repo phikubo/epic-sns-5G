@@ -322,26 +322,26 @@ class Modelo_Canal:
 		gamma=self.cfg_prop["params_modelo"][2]
 		sigma_xn=self.cfg_prop["params_modelo"][3]
 
-		alpha_n=3.5
+		alpha_n=3.1
 		beta=24.4
 		gamma=1.9
 		sigma_xn=8.0
 		correccion_freq_ghz=(10*gamma*math.log10(self.portadora))
-		correcion_dist_m=(10*alpha_n*np.log10(self.distancias))
+		correcion_dist_m=(10*alpha_n*np.log10(np.vstack(self.distancias)))
 		self.resultado_path_loss=correccion_freq_ghz+correcion_dist_m+beta+sigma_xn
 	
 
 	def evaluar_pl1(self, dist_3d ):
 		'''evalua que funcion debe seleccionar dependiendo el parametro de entrada.'''
 		#fc debe estar en Ghz, por eso FC/1000
-		path_l=28.0+22*np.log10(dist_3d)+20*np.log10(self.portadora/1000)
+		path_l=28.0+22*np.log10(np.vstack(dist_3d))+20*np.log10(self.portadora/1000)
 		return path_l
 
 	def evaluar_pl2(self,dist_3d, bp_p, hbs, hut):
 		#fc debe estar en Ghz, por eso FC/1000
 		'''evalua que funcion debe seleccionar dependiendo el parametro de entrada.
 		bp_p breakpoint prima.'''
-		path_l=28+40*np.log10(dist_3d)+20*np.log10(self.portadora/1000)-9*np.log10((bp_p**2)+(hbs-hut)**2)
+		path_l=28+40*np.log10(np.vstack(dist_3d))+20*np.log10(self.portadora/1000)-9*np.log10((bp_p**2)+(hbs-hut)**2)
 		return path_l
 	
 	def evaular_pl0(distancias, bp):
@@ -376,7 +376,7 @@ class Modelo_Canal:
 		hut=self.cfg_prop["params_modelo"][2]
 
 		#0. calcular la distancia 3d
-		dist_3d=np.sqrt(self.distancias**2 +(hbs-hut)**2)
+		
 		#1. calcular la distancia 2d
 		'''la distancia 2d es la misma variable self.distancia'''
 		#2. calcular la distancia bp (breakpoint)
@@ -401,7 +401,8 @@ class Modelo_Canal:
 
 		self.distancias=np.where(self.distancias<10, 10,self.distancias)
 		self.distancias=np.where(self.distancias>5000, 5000,self.distancias)
-		
+		#
+		dist_3d=np.sqrt(self.distancias**2 +(hbs-hut)**2)
 		#print('\n\ndist_3d',dist_3d)
 		#print('\n\nbreakpoint', dist_breakpoint_prima)
 		#print('\n\nself.distancias', self.distancias)
