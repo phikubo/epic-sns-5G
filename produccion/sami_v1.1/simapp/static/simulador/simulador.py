@@ -42,11 +42,11 @@ class Simulador:
 		elif self.tipo=="simulacion":
 			#si iteracion ==1.
 			print("[simulador]: Ejecutando simulación...")
-			self.configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+			self.configuracion=cfg.cargar_cfg(target_path=self.conf_sim["ruta_activa"])
 			self.configurar_simulacion()
 		elif self.tipo=="montecarlo":
 			print("[simulador]: Ejecutando montecarlo...")
-			self.configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+			self.configuracion=cfg.cargar_cfg(target_path=self.conf_sim["ruta_activa"])
 			#print(self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0])
 			self.configurar_montecarlo()
 		else:
@@ -204,7 +204,7 @@ class Simulador:
 		#desactivar la imagen de potencia para prepara el archivo para monte-carlo.
 		self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0]=False
 		#guardar el archivo.
-		cfg.guardar_cfg(self.configuracion, target_path="simapp/static/simulador/base_datos")
+		cfg.guardar_json_full(self.configuracion, target_path=self.conf_sim["ruta_activa"])
 		#print("django-diccionario: \n",self.graficas_disponibles_dic)
 		
 		#cambio de ruta en el path
