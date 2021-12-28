@@ -42,11 +42,11 @@ class Simulador:
 		elif self.tipo=="simulacion":
 			#si iteracion ==1.
 			print("[simulador]: Ejecutando simulación...")
-			self.configuracion=cfg.cargar_cfg(target_path=self.conf_sim["ruta_activa"])
+			self.configuracion=cfg.cargar_json_full(target_path=self.conf_sim["ruta_activa"])
 			self.configurar_simulacion()
 		elif self.tipo=="montecarlo":
 			print("[simulador]: Ejecutando montecarlo...")
-			self.configuracion=cfg.cargar_cfg(target_path=self.conf_sim["ruta_activa"])
+			self.configuracion=cfg.cargar_json_full(target_path=self.conf_sim["ruta_activa"])
 			#print(self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0])
 			self.configurar_montecarlo()
 		else:
@@ -119,7 +119,7 @@ class Simulador:
 		#display de antena
 		nombre="patron_radiacion"
 		pre_sim.hiperc_antena.ver_patron_local(nombre="patron_radiacion")
-		titulo="Escenario: Patrón de Radiación Trisectorizado"
+		titulo="Escenario: Patrón de Radiación"
 		#ruta_img="simulador/base_datos/imagenes/presim/patron_radiacion.png"
 		#self.graficas_disponibles.append(ruta_img)
 		ruta=ruta_img_presim+nombre+".png"

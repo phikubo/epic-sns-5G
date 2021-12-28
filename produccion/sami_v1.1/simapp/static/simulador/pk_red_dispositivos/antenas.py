@@ -16,14 +16,15 @@ class Antena:
 	'''Clase que modela el patron de radiacion de una antena deseada'''
 	def __init__(self, cfg, angs):
 		#entrada
-		self.cfg=cfg
+		self.local_cfg_ant=cfg['params_antena']
+		self.local_cfg_bal=cfg['params_balance']
 		self.hiper_angulos=angs #angulos de usuarios
 		#para mayor claridad
-		self.ganancia_tx=self.cfg["params_ant"][1]
+		self.ganancia_tx=self.local_cfg_ant["params_ant"][1]
 		#self.referencia=cfg["tipo"]
-		#self.cfg["hpbw"]=cfg[1]
+		#self.local_cfg_ant["hpbw"]=cfg[1]
 		#self.ganancia_tx=cfg[2]
-		#self.cfg["atmin"]=cfg[3]
+		#self.local_cfg_ant["atmin"]=cfg[3]
 		#self.apuntamiento=cfg[4]
 		
 
@@ -67,13 +68,13 @@ class Antena:
 		self.hiper_ganancias=0 #ganancia resultante
 		#
 		#inicializar
-		if self.cfg["tipo"]=="4g":
+		if self.local_cfg_ant["tipo"]=="4g":
 			self.inicializar_ts_38942()
 			#conforma los sectores, de acuerdo a la referencia previa donde se generan los lobulos.
 			self.conformar_sectores()
 			#interpola los resultados anteriores, con los angulos de entrada y se obtiene la ganancia relativa de todos los usuarios.
 			self.interpolar_resultados()
-		elif self.cfg["tipo"]=="5g":
+		elif self.local_cfg_ant["tipo"]=="5g":
 			self.inicializar_ts_5g()
 		else:
 			pass
@@ -87,19 +88,20 @@ class Antena:
 		'''Modela el tipo de antena TS 36.942, en tres sectores
 		Ver: https://www.etsi.org/deliver/etsi_tr/136900_136999/136942/08.02.00_60/tr_136942v080200p.pdf'''
 		#ecuacion de la ts
-		self.relacion_angulos=12.0*((self.angulos/self.cfg["hpbw"])**2) #antes at_int
+		self.relacion_angulos=12.0*((self.angulos/self.local_cfg_ant["hpbw"])**2) #antes at_int
 		#sector, con corrimiento en angulos para desplazarlos en x, el numero de grados necesarios.
 		#se eleva la funcion al piso 0 para sumarlas despues.
-		#print(self.cfg["params_ant"][0])
-		sector_1=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), self.cfg["params_ant"][0][0])
-		sector_2=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), self.cfg["params_ant"][0][1])
-		sector_3=np.roll(self.cfg["atmin"]-1*np.minimum(self.relacion_angulos, self.cfg["atmin"]), self.cfg["params_ant"][0][2])
+		#print(self.local_cfg_ant["params_ant"][0])
+		sector_1=np.roll(self.local_cfg_ant["atmin"]-1*np.minimum(self.relacion_angulos, self.local_cfg_ant["atmin"]), self.local_cfg_ant["params_ant"][0][0])
+		sector_2=np.roll(self.local_cfg_ant["atmin"]-1*np.minimum(self.relacion_angulos, self.local_cfg_ant["atmin"]), self.local_cfg_ant["params_ant"][0][1])
+		sector_3=np.roll(self.local_cfg_ant["atmin"]-1*np.minimum(self.relacion_angulos, self.local_cfg_ant["atmin"]), self.local_cfg_ant["params_ant"][0][2])
 		self.patron_radiacion_3s=[sector_1,sector_2,sector_3]
 	
 	def inicializar_ts_5g(self):
 		'''Modela tipo de antena omnidireccional, emulando altisima directividad'''
 		self.hiper_ganancias=self.ganancia_tx+self.hiper_angulos*0
 		self.patron_radiacion=self.ganancia_tx+self.angulos*0
+		print("antenas.py: inicializar ts 5g\n",self.hiper_ganancias)
 		#print(5555555555555555555, len(self.patron_radiacion))
 
 
@@ -117,7 +119,7 @@ class Antena:
 		patron_completo=np.where(patron_completo<=0, limite, patron_completo)
 		#relaciono el patron de radiacion con la ganancia de trasmision, al disminuir la grafica
 		#del valor piso de atenuacion, la diferencia entre la ganancia y el piso.
-		self.patron_radiacion=patron_completo-(self.cfg["atmin"]-self.ganancia_tx)
+		self.patron_radiacion=patron_completo-(self.local_cfg_ant["atmin"]-self.ganancia_tx)
 
 
 	def interpolar_resultados(self):
@@ -130,7 +132,7 @@ class Antena:
 		'''Dado una lista de angulos y el hpdw, calcula los nuevos angulos de interseccion'''
 		#print(self.apunt_trisec)
 		for angulo in self.apunt_trisec:
-			print(angulo+self.cfg["hpbw"]*0.5, angulo-self.cfg["hpbw"]*0.5, )
+			print(angulo+self.local_cfg_ant["hpbw"]*0.5, angulo-self.local_cfg_ant["hpbw"]*0.5, )
 
 
 	def calcular_interseccion(self, patron1,patron2):
@@ -149,8 +151,17 @@ class Antena:
 	def ver_patron_local(self, nombre):
 		'''Unicamente para la presimulacion'''
 		plt.figure()
-		plt.polar(np.radians(self.angulos), self.patron_radiacion, '-r')
-		plt.title("[POL] Patron de Radiación Tipo: {}, Hbpw:{}.".format(self.cfg["tipo"], self.cfg["hpbw"]))
+		if self.local_cfg_ant["tipo"]=="4g":
+			plt.polar(np.radians(self.angulos), self.patron_radiacion, 'ro')
+			plt.title("[POL] Patron de Radiación Tipo: {}, Hbpw:{}.".format(self.local_cfg_ant["tipo"], self.local_cfg_ant["hpbw"]))
+		elif self.local_cfg_ant["tipo"]=="5g":
+			a = self.local_cfg_bal["gtx"]
+			n = 12
+			rads = np.arange(0, 2 * np.pi, 0.01)
+			for rad in rads:
+				r = a * np.cos(n*rad)
+				plt.polar(rad, r, 'r.')
+			plt.title("[POL] Patron de Radiación: {}, UEs equidistantes: 12. Gtx uniforme: {} dBi.".format(self.local_cfg_ant["tipo"],self.local_cfg_bal["gtx"]))
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
 
@@ -158,7 +169,7 @@ class Antena:
 		#DEPLETED
 		'''Grafica los patrones de radiacion. No terminado'''
 		plt.figure()
-		patron_original=-1*np.minimum(self.relacion_angulos, self.cfg["atmin"])
+		patron_original=-1*np.minimum(self.relacion_angulos, self.local_cfg_ant["atmin"])
 		plt.plot(self.angulos, patron_original)
 		plt.title("Patron original, piso a_min")
 
@@ -173,14 +184,14 @@ class Antena:
 		plt.title("[CART] Patron final sumado. f(gtx, a_min)")
 
 		plt.figure()
-		patron_original=-1*np.minimum(self.relacion_angulos, self.cfg["atmin"])
+		patron_original=-1*np.minimum(self.relacion_angulos, self.local_cfg_ant["atmin"])
 		plt.polar(np.radians(self.angulos)+math.radians(45), patron_original, '-r')
 		plt.polar(np.radians(self.angulos)+math.radians(165), patron_original, '-r')
 		plt.polar(np.radians(self.angulos)+math.radians(285), patron_original, '-r')
 		plt.title("[POL] Patron original superpuesto, desplazado, piso a_min")
 
 		plt.figure()
-		plt.polar(np.radians(self.angulos), self.patron_radiacion+(self.cfg["atmin"]-self.ganancia_tx), '-r')
+		plt.polar(np.radians(self.angulos), self.patron_radiacion+(self.local_cfg_ant["atmin"]-self.ganancia_tx), '-r')
 		plt.title("[POL] Patron final, piso 0 (invertido)")
 
 		plt.figure()

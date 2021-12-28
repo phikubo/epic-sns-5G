@@ -464,7 +464,7 @@ class Sistema_Celular:
 		self.cfg_ant["params_ant"][1]=self.cfg_bal["gtx"]
 		#print(self.cfg_ant)
 		#time.sleep(15)
-		self.hiperc_antena=ant.Antena(self.cfg_ant,self.hiperc_angulos)
+		self.hiperc_antena=ant.Antena(self.cfg,self.hiperc_angulos)
 		#self.hiperc_ganancia_relativa=self.hiperc_antena.hiper_ganancias #**considerar quitar
 
 		if self.cfg_gen["imagen"]["display"][0]:
@@ -472,7 +472,7 @@ class Sistema_Celular:
 			#print("[tracebak1]",self.hiperc_angulos.shape)
 			self.params_malla_antena.append(self.cfg_ant)
 			self.params_malla_antena.append(self.hiperc_malla_angulos)
-			self.hiperc_malla_antena=ant.Antena(self.cfg_ant,self.hiperc_malla_angulos)
+			self.hiperc_malla_antena=ant.Antena(self.cfg,self.hiperc_malla_angulos)
 			#self.hiperc_malla_ganancia_relativa=self.hiperc_malla_antena.hiper_ganancias
 
 

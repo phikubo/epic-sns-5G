@@ -7,7 +7,7 @@ from formtools.wizard.views import SessionWizardView
 #
 #fomularios simulador
 from .forms import *
-from .forms import FormGeneral, FormPropagacion, FormBalanceAntenas,FormAsignacion
+#from .forms import FormGeneral, FormPropagacion, FormBalanceAntenas,FormAsignacion
 from .forms import FormSeleccion
 from .forms import FormCompacto
 #integracion simulador
@@ -79,7 +79,9 @@ def futuro(request):
 
 def iniciar_simulacion(request):
     '''Inicia la simulacion''' 
-    configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+    cfg_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
+    configuracion=cfg.cargar_json_full(target_path=cfg_sim["ruta_activa"])
+    #configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
     if request.method == 'GET':
         try:
             arr = os.listdir()
@@ -191,7 +193,8 @@ def ver_presim(request):
 
 def ver_sim(request):
     configuracion=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_gui")
-    configuracion_base=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+    conf_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
+    configuracion_base=cfg.cargar_json_full(target_path=conf_sim["ruta_activa"])
     iteracion=configuracion_base["cfg_simulador"]["params_general"]["iteracion"]
     imagenes_disp=configuracion["montecarlo_graphs"]
     #cambia a las graficas de simulacion
@@ -203,174 +206,6 @@ def ver_sim(request):
 
 
 #FORMULARIOS V1
-def form_a1(request):
-    form=FormGeneral()
-    if request.method == 'POST':
-        form=FormGeneral(request.POST)
-        print("\nHA OCURRIDO UN POST")
-        if form.is_valid():
-            #CONFIGURACION DE VARIABLES
-            print("[OK]-Formulario a1 Aceptado")
-            contenido=form.cleaned_data
-
-            config=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
-            config_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
-            rutas_=config_sim["rutas_configuracion"]
-            rutas_[contenido["nombre_archivo"]]="simapp/static/simulador/base_datos/escenarios/{}.json".format(contenido["nombre_archivo"])
-            config_sim["ruta_activa"]="simapp/static/simulador/base_datos/escenarios/{}.json".format(contenido["nombre_archivo"])
-            print("ruta activa!!!!! \n",config_sim)
-            config["cfg_simulador"]["params_general"]["iteracion"]=contenido["iteraciones"]
-            config["cfg_simulador"]["params_general"]["n_celdas"]=contenido["n_celdas"]
-            config["cfg_simulador"]["params_general"]["portadora"][0]=contenido["portadora"]
-            config["cfg_simulador"]["params_general"]["isd"]=contenido["isd"]
-            
-            config["cfg_simulador"]["params_general"]["geometria"]=contenido["geometria_usuarios"]
-            config["cfg_simulador"]["params_general"]["radio_cel"]=contenido["radio_cel"] 
-
-            config["cfg_simulador"]["params_general"]["distribucion"][0]=contenido["tipo_distribucion"]
-            config["cfg_simulador"]["params_general"]["distribucion"][1]=float(contenido["densidad"])
-                        
-            flag_imagen=convertir_str_2_bool(contenido["imagen"])
-            config["cfg_simulador"]["params_general"]["imagen"]["display"][0]=flag_imagen
-            if flag_imagen:
-                print("imagen activado, desactivar iteraciones.")
-                #config["cfg_simulador"]["params_general"]["iteracion"]=1
-                #NORMALMENTE SE DESACTIVA LAS ITERACIONES. En lugar de eso,
-                #SE DESACTIVA LA IMAGEN, PERO EN EL SIMULADOR
-            config["cfg_simulador"]["params_general"]["imagen"]["resolucion"]=contenido["pixeles"]
-            cfg.guardar_json(config_sim, target_path="simapp/static/simulador/base_datos/config_sim")
-            cfg.guardar_json(config, target_path=config_sim["ruta_activa"])
-            cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos")
-            config=0
-        else:
-            print("Oops, algo ha fallado. Retornando.")
-            return redirect('/sim/')
-        #no necesario con validators
-        #if int(request.POST["isd"])>1200:
-        #    return redirect('/sim')
-        #-----------
-        #SIGUIENTE
-        return redirect('/sim/form_a2')
-    #-----------
-    #ACTUAL
-    return render(request,'simapp/form_v1/sami-form-a1.html', {"form_data":form} )
-
-
-def form_a2(request):
-    form=FormPropagacion()
-    if request.method == 'POST':
-        form=FormPropagacion(request.POST)
-        print("\nHA OCURRIDO UN POST a2 \n")
-        if form.is_valid():
-            #CONFIGURACION DE VARIABLES
-            print("[OK]-Formulario a2 Aceptado")
-            contenido=form.cleaned_data
-            
-            config=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
-            config["cfg_simulador"]["params_propagacion"]["modelo_perdidas"]=contenido["modelo_perdidas"]
-            config["cfg_simulador"]["params_propagacion"]["params_modelo"][0]=float(contenido["mp1"])
-            config["cfg_simulador"]["params_propagacion"]["params_modelo"][1]=float(contenido["mp2"])
-            config["cfg_simulador"]["params_propagacion"]["params_modelo"][2]=float(contenido["mp3"])
-            config["cfg_simulador"]["params_propagacion"]["params_modelo"][3]=float(contenido["mp4"])
-
-            flag_desv, tipo_desv=validar_desvanecimiento(contenido["params_desv"])
-            config["cfg_simulador"]["params_propagacion"]["params_desv"]["display"]=flag_desv
-            config["cfg_simulador"]["params_propagacion"]["params_desv"]["tipo"]=tipo_desv
-            config["cfg_simulador"]["params_propagacion"]["params_desv"]["params"][0]=float(contenido["dp1"])
-            config["cfg_simulador"]["params_propagacion"]["params_desv"]["params"][1]=float(contenido["dp2"])
-            config["cfg_simulador"]["params_propagacion"]["params_desv"]["params"][2]=float(contenido["dp3"])
-            config["cfg_simulador"]["params_propagacion"]["params_desv"]["params"][3]=float(contenido["dp4"])
-
-            config["cfg_simulador"]["params_general"]["nf"][0]=float(contenido["nf"])
-            config["cfg_simulador"]["params_general"]["ber_sinr"]=float(contenido["ber_sinr"])
-            cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos")
-            config=0
-        else:
-            print("Oops, algo ha fallado. Retornando.")
-            return redirect('/sim/form_a2')
-        #-----------
-        #SIGUIENTE
-        #return render(request,'simapp/form_v1/sami-form-a3.html')
-        return redirect('/sim/form_a3')
-    #-----------
-    #ACTUAL
-    return render(request,'simapp/form_v1/sami-form-a2.html', {"form_data":form} )
-
-
-def form_a3(request):
-    form=FormBalanceAntenas()
-    if request.method == 'POST':
-        form=FormBalanceAntenas(request.POST)
-        print("\nHA OCURRIDO UN POST a3 \n")
-        print(form)
-        if form.is_valid():
-            #CONFIGURACION DE VARIABLES
-            contenido=form.cleaned_data
-            print("[OK]-Formulario a3 Aceptado")
-            print(contenido)
-            
-            config=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
-            config["cfg_simulador"]["params_balance"]["ptx"]=float(contenido["ptx"])
-            config["cfg_simulador"]["params_balance"]["gtx"]=float(contenido["gtx"])
-            config["cfg_simulador"]["params_balance"]["ltx"]=float(contenido["ltx"])
-            config["cfg_simulador"]["params_balance"]["lrx"]=float(contenido["lrx"])
-            config["cfg_simulador"]["params_balance"]["grx"]=float(contenido["grx"])
-            #config["cfg_simulador"]["params_balance"]["sensibilidad"]=float(contenido["sensibilidad"])
-            config["cfg_simulador"]["params_balance"]["mcl"]=float(contenido["mcl"])
-            #antenas
-            config["cfg_simulador"]["params_antena"]["tipo"]=contenido["tipo_antena"]
-            config["cfg_simulador"]["params_antena"]["hpbw"]=contenido["hpbw"]
-            config["cfg_simulador"]["params_antena"]["atmin"]=float(contenido["atmin"])
-            config["cfg_simulador"]["params_antena"]["apuntamiento"][0]=int(contenido["apuntamiento"])
-            cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos")
-            config=0
-        else:
-            print("Oops, algo ha fallado. Retornando.")
-            return redirect('/sim/form_a3')
-        #-----------
-        #SIGUIENTE
-        #return render(request,'simapp/form_v1/sami-form-a4.html')
-        return redirect('/sim/form_a4')
-    #-----------
-    #ACTUAL
-    else:
-        print("HA OCURRIDO OTRA COSA a3")
-    return render(request,'simapp/form_v1/sami-form-a3.html', {"form_data":form} )
-
-
-def form_a4(request):
-    form=FormAsignacion()
-    if request.method == 'POST':
-        form=FormAsignacion(request.POST)
-        print("\nHA OCURRIDO UN POST a4", request.POST)
-        if form.is_valid():
-            contenido=form.cleaned_data
-            #CONFIGURACION DE VARIABLES
-            print("[OK]-Formulario a4 Aceptado")
-            print(contenido)
-            config=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
-            config["cfg_simulador"]["params_asignacion"]["tipo"]=contenido["tipo_asignacion"]
-            config["cfg_simulador"]["params_asignacion"]["bw"][0]=int(contenido["bw"])
-            config["cfg_simulador"]["params_asignacion"]["numerologia"]=float(contenido["numerologia"])
-            config["cfg_simulador"]["params_asignacion"]["bw_guarda"][0]=int(contenido["banda_guarda"])
-            config["cfg_simulador"]["params_asignacion"]["sub_ofdm"]=float(contenido["subportadora"])
-            config["cfg_simulador"]["params_asignacion"]["trama_total"]=float(contenido["trama"])
-            config["cfg_simulador"]["params_asignacion"]["simbolo_ofdm_dl"]=float(contenido["simbolos"])
-            config["cfg_simulador"]["params_asignacion"]["frame"]=float(contenido["frame"])
-            cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos")
-            config=0
-        else:
-            print("Oops, algo ha fallado. Retornando.")
-            return redirect('/sim/form_a4')
-            
-        #-----------
-        #SIGUIENTE
-        return redirect('parametros/')
-    #-----------
-    #ACTUAL
-    return render(request,'simapp/form_v1/sami-form-a4.html', {"form_data":form} )
-
-
 
 def seleccionar_escenario(request):
     '''Selecciona un escenario para simular'''
@@ -479,11 +314,11 @@ def form_compacto(request):
             config["cfg_simulador"]["params_asignacion"]["trama_total"]=float(contenido["trama"])
             config["cfg_simulador"]["params_asignacion"]["simbolo_ofdm_dl"]=float(contenido["simbolos"])
             config["cfg_simulador"]["params_asignacion"]["frame"]=float(contenido["frame"])
-            cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos")
+            #cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos")
 
             cfg.guardar_json(config_sim, target_path="simapp/static/simulador/base_datos/config_sim")
             cfg.guardar_json_full(config, target_path=config_sim["ruta_activa"])
-            
+            #reload enviroment para poder ver la nueva entrada en seleccionar escenario.
             fname="sami/wsgi.py"
             try:
                 os.utime(fname, None)  # Set access/modified times to now

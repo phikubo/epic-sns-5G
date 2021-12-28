@@ -621,7 +621,18 @@ class Modelo_Canal:
 		plt.figure()
 		self.custom_dist_flag=True
 		#EN KILOMETROS
-		self.custom_dist=np.arange(1,20,.5)
+		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
+			self.custom_dist=np.arange(1,20,.5)
+		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
+			self.custom_dist=np.arange(1,20,.5)
+		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
+			#metros
+			self.custom_dist=np.arange(1,500,1)
+		elif self.cfg_prop["modelo_perdidas"]=="umi_abg":
+			self.custom_dist=np.arange(1,500,1)
+		else:
+			print("modelo_canal.py:UN ERROR OCURRIRA.")
+		#self.custom_dist=np.arange(1,20,.5)
 		#realizo la simulacion con el array custom diferente.
 		self.inicializar_tipo()
 		self.balance_del_enlace_mcl()
