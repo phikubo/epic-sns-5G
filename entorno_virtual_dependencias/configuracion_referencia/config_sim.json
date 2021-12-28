@@ -1,0 +1,7 @@
+{
+    "ruta_activa": "simapp/static/simulador/base_datos/escenarios/test_ci_1.json",
+    "rutas_configuracion": {
+        "test okumura 1": "simapp/static/simulador/base_datos/escenarios/test_okumura_1.json",
+        "test ci 1": "simapp/static/simulador/base_datos/escenarios/test_ci_1.json"
+    }
+}

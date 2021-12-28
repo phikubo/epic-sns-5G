@@ -6,10 +6,13 @@ urlpatterns = [
     #http://127.0.0.1:8000/ / 
     path('', views.home, name='presentacion_v1'),
     #
-    path('sim/', views.form_a1, name='sim_form_a1'),
-    path('sim/form_a2', views.form_a2, name='sim_form_a2'),
-    path('sim/form_a3', views.form_a3, name='sim_form_a3'),
-    path('sim/form_a4', views.form_a4, name='sim_form_a4'),
+    #no se usan los formularios de fases, a pesar de que se pueda accesar a las rutas, no es posible guardar los parametros.
+    #path('sim/', views.form_a1, name='sim_form_a1'),
+    #path('sim/form_a2', views.form_a2, name='sim_form_a2'),
+    #path('sim/form_a3', views.form_a3, name='sim_form_a3'),
+    #path('sim/form_a4', views.form_a4, name='sim_form_a4'),
+    #
+    path('sim/seleccionar_escenario', views.seleccionar_escenario, name="sim_form_escenarios"),
     #
     path('sim/form_compacto', views.form_compacto, name='sim_form_compacto'),
     #

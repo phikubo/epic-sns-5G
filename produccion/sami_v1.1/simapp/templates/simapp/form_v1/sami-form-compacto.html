@@ -42,6 +42,13 @@ SIMULADOR A NIVEL DE SISTEMA
                                 <div class="col-4 col-sm-3 mb-4">
                                     <!--<label class="text-label">Iteraciones</label>-->
                                     <div class="form-group">
+                                        {{ form_data.nombre_archivo|as_crispy_field }}
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-3 mb-4">
+                                    <!--<label class="text-label">Iteraciones</label>-->
+                                    <div class="form-group">
                                         {{ form_data.iteraciones|as_crispy_field }}
                                     </div>
                                 </div>
@@ -717,9 +724,7 @@ SIMULADOR A NIVEL DE SISTEMA
                         
                         <a class="btn btn-warning" href="{% url 'simapp:sim_form_compacto' %}">reiniciar</a>
 
-                        <!--
-                            <a class="btn btn-primary" href="{% url 'simapp:sim_form_a2' %}">siguiente</a>
-                        -->
+                        
                     </form>
 
                 </div>

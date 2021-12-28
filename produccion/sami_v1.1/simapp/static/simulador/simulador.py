@@ -30,7 +30,10 @@ class Simulador:
 		#
 		self.tipo=tipo
 		self.graficas_disponibles_dic={}
-		self.configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+		self.conf_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
+		#self.configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+		self.configuracion=cfg.cargar_json_full(target_path=self.conf_sim["ruta_activa"])
+
 		self.configuracion_gui=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_gui")
 		if self.tipo=="presimulacion":
 			#una sola simulacion.
@@ -39,11 +42,11 @@ class Simulador:
 		elif self.tipo=="simulacion":
 			#si iteracion ==1.
 			print("[simulador]: Ejecutando simulación...")
-			self.configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+			self.configuracion=cfg.cargar_json_full(target_path=self.conf_sim["ruta_activa"])
 			self.configurar_simulacion()
 		elif self.tipo=="montecarlo":
 			print("[simulador]: Ejecutando montecarlo...")
-			self.configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
+			self.configuracion=cfg.cargar_json_full(target_path=self.conf_sim["ruta_activa"])
 			#print(self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0])
 			self.configurar_montecarlo()
 		else:
@@ -116,7 +119,7 @@ class Simulador:
 		#display de antena
 		nombre="patron_radiacion"
 		pre_sim.hiperc_antena.ver_patron_local(nombre="patron_radiacion")
-		titulo="Escenario: Patrón de Radiación Trisectorizado"
+		titulo="Escenario: Patrón de Radiación"
 		#ruta_img="simulador/base_datos/imagenes/presim/patron_radiacion.png"
 		#self.graficas_disponibles.append(ruta_img)
 		ruta=ruta_img_presim+nombre+".png"
@@ -201,7 +204,7 @@ class Simulador:
 		#desactivar la imagen de potencia para prepara el archivo para monte-carlo.
 		self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0]=False
 		#guardar el archivo.
-		cfg.guardar_cfg(self.configuracion, target_path="simapp/static/simulador/base_datos")
+		cfg.guardar_json_full(self.configuracion, target_path=self.conf_sim["ruta_activa"])
 		#print("django-diccionario: \n",self.graficas_disponibles_dic)
 		
 		#cambio de ruta en el path
