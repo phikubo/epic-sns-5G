@@ -266,7 +266,7 @@ class Planificador:
 		nf=self.cfg_gen["nf"][0]
 		ktb=-174+10*np.log10(self.asignacion_bw)
 		sinr_objetivo=self.cfg_gen["ber_sinr"]
-		print("variables")
+		print("variabl-es")
 		print(nf)
 		print(ktb)
 		print(sinr_objetivo)
