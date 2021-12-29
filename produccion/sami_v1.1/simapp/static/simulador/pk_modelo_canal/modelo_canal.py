@@ -87,10 +87,10 @@ class Modelo_Canal:
 		if self.cfg_prop["params_desv"]["display"]:
 			#print("[ok].debug: desvanecimiento activado.")
 			if self.cfg_prop["params_desv"]["tipo"]=="normal":
-				mu=self.cfg_prop["params_desv"]["params"][0]
+				mu=self.cfg_prop["params_desv"]["params"][2]
 				sigma_xn=self.cfg_prop["params_desv"]["params"][1]
 				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.distancias.shape)
-				self.balance_simplificado=self.balance_simplificado+self.desvanecimiento*-1
+				self.balance_simplificado=self.balance_simplificado+self.desvanecimiento
 				if self.cfg_gen['debug']:
 					print("[ok]-----configurar_desv,  normal")
 					#DESCOMENTAR SOLO EN DEBUG Y CUANDO SE EJECUTE ESTE MODULO LOCALMENTE.
@@ -100,32 +100,32 @@ class Modelo_Canal:
 				if self.cfg_gen['debug']:
 					print("[ok]-----configurar_desv, rayleight")
 					#plt.plot(self.distancias, -self.balance_simplificado, 'r', label="sin desva, sin ptx")
-				bal_simpl_desva=10**(-self.balance_simplificado/10)
+				bal_simpl_desva=10**((self.cfg_bal["ptx"]-self.balance_simplificado)/10)
 				bal_simpl_desva_r=np.sqrt(bal_simpl_desva)
 				b=bal_simpl_desva_r/np.sqrt(np.pi/2)
 				bray=np.random.rayleigh(b)
 				bray=np.power(bray,2)
 				self.desvanecimiento=10*np.log10(bray) #bray_dB
-				self.balance_simplificado=-self.desvanecimiento
+				self.balance_simplificado=self.desvanecimiento-self.cfg_bal["ptx"]
 
 			elif self.cfg_prop["params_desv"]["tipo"]=="mixto":
 				if self.cfg_gen['debug']:
 					print("[ok]-----configurar_desv, MIXTO")
 					#plt.plot(self.distancias, -self.balance_simplificado, 'r-',  label="sin ptx, simplificado")
-				mu=self.cfg_prop["params_desv"]["params"][0]
+				mu=self.cfg_prop["params_desv"]["params"][2]
 				sigma_xn=self.cfg_prop["params_desv"]["params"][1]
 				#if true, el desvanecimiento deja de ser 0 y se integra a las perdidas.
 				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.distancias.shape)
 				self.balance_simplificado=self.balance_simplificado+self.desvanecimiento
 				#rayleigh
 				#correccion de signos desvanecimiento
-				bal_simpl_desva=10**(-self.balance_simplificado/10)
+				bal_simpl_desva=10**((self.cfg_bal["ptx"]-self.balance_simplificado)/10)
 				bal_simpl_desva_r=np.sqrt(bal_simpl_desva)
 				b=bal_simpl_desva_r/np.sqrt(np.pi/2)
 				bray=np.random.rayleigh(b)
 				bray=np.power(bray,2)
 				self.desvanecimiento=10*np.log10(bray) #bray_dB
-				self.balance_simplificado=-self.desvanecimiento
+				self.balance_simplificado=self.desvanecimiento-self.cfg_bal["ptx"]
 		else:
 			#print("[ok].debug:balance simplificado no cambia.")
 			pass
@@ -270,15 +270,15 @@ class Modelo_Canal:
 		#hb=30 #m
 		#alfa=0
 		#hm=1.5
-		hb=self.cfg_prop["params_modelo"][0]
-		alfa=self.cfg_prop["params_modelo"][1] #0 si hm=1.5m
+		hb=self.cfg_prop["params_modelo"][0]#hbs=25
+		#alfa=self.cfg_prop["params_modelo"][1] #0 si hm=1.5m
 		hm=self.cfg_prop["params_modelo"][2]
 
 		#de la forma: Lp=A+Blog10(R)
 
-		A=69.55+(26.16*np.log10(self.portadora))-13.82*np.log10(hb)-alfa*(hm)
+		A=69.55+(26.16*np.log10(self.portadora))-13.82*np.log10(hb)
 		B=44.9-6.55*np.log10(hb)
-		E=3.2*(np.log10(11.75*hm))**2 -4.97 #[dB] para ciudades grandes y fc>300 MHz
+		E=3.2*(np.log10(11.75*hm))**2-4.97 #[dB] para ciudades grandes y fc>300 MHz
 		#E=8.29*(np.log10(1.54*hm))**2 -1.1 #[dB] para ciudades grandes y fc<300 MHz
 		#print("okumura_hata, says->A,B:",A,B)
 		#se guarda en un valor aparte, no es necesario, pero sirve de debug.
@@ -293,20 +293,23 @@ class Modelo_Canal:
 		considerados por la documentacion valores en dB para sigma y veces para alpha_n
 		***articulo Simulation path loss Propagation Path Loss models for 5G urban micro and macro-cellular Scenarios
 		-rango de frecuencias debajo de 30GHz'''
-		alpha_n=self.cfg_prop["params_modelo"][0]#valor de alpha n para el parametro CI 
+		alpha_n=self.cfg_prop["params_desv"]["params"][0]#valor de alpha n para el parametro CI 
 		#este parametro es de valor 3.1 fijo y tomado de https://ieeexplore.ieee.org/document/7504435
-		sigma_xn=self.cfg_prop["params_modelo"][1]#es la desviacion estandar que presenta la curva perdidas
+		sigma_xn=self.cfg_prop["params_desv"]["params"][1]#es la desviacion estandar que presenta la curva perdidas
 		# y es un valor aleatorio, con una distribucion gausiana de media SIGMA_XN
+		hbs=self.cfg_prop["params_modelo"][0]
+		hut=self.cfg_prop["params_modelo"][2]
 		sigma_xn=8.1
 		alpha_n=3.1
 
 		print("moca.py:umi_ci, portadora",self.portadora)
 		print("moca.py:umi_ci, distancias",self.distancias)
-		correcion_freq_ghz=32.4+20*math.log10(self.portadora)
-		correccion_dist_m=10*alpha_n*np.log10(np.vstack(self.distancias))
+		dist_3d=np.sqrt(self.distancias**2 +(hbs-hut)**2)
+		correcion_freq_ghz=32.44+20*math.log10(self.portadora)
+		correccion_dist_m=10*alpha_n*np.log10(dist_3d)
 
 		#print("distancias ci modelo canal\n",np.vstack(self.distancias))
-		self.resultado_path_loss=correcion_freq_ghz+correccion_dist_m+sigma_xn
+		self.resultado_path_loss=correcion_freq_ghz+correccion_dist_m
 		#print("resultado path loss\n",self.resultado_path_loss)
 
 
@@ -321,32 +324,37 @@ class Modelo_Canal:
 		beta=self.cfg_prop["params_modelo"][1]
 		gamma=self.cfg_prop["params_modelo"][2]
 		sigma_xn=self.cfg_prop["params_modelo"][3]
+		hbs=self.cfg_prop["params_modelo"][0]
+		hut=self.cfg_prop["params_modelo"][2]
 
-		alpha_n=3.5
+		alpha_n=3.1
 		beta=24.4
 		gamma=1.9
 		sigma_xn=8.0
+
+
+		dist_3d=np.sqrt(self.distancias**2 +(hbs-hut)**2)
 		correccion_freq_ghz=(10*gamma*math.log10(self.portadora))
-		correcion_dist_m=(10*alpha_n*np.log10(self.distancias))
-		self.resultado_path_loss=correccion_freq_ghz+correcion_dist_m+beta+sigma_xn
+		correcion_dist_m=(10*alpha_n*np.log10(dist_3d))
+		self.resultado_path_loss=correccion_freq_ghz+correcion_dist_m+beta
 	
 
 	def evaluar_pl1(self, dist_3d ):
 		'''evalua que funcion debe seleccionar dependiendo el parametro de entrada.'''
 		#fc debe estar en Ghz, por eso FC/1000
-		path_l=28.0+22*np.log10(dist_3d)+20*np.log10(self.portadora/1000)
+		path_l=28.0+22*np.log10(dist_3d)+20*np.log10(self.portadora)
 		return path_l
 
 	def evaluar_pl2(self,dist_3d, bp_p, hbs, hut):
 		#fc debe estar en Ghz, por eso FC/1000
 		'''evalua que funcion debe seleccionar dependiendo el parametro de entrada.
 		bp_p breakpoint prima.'''
-		path_l=28+40*np.log10(dist_3d)+20*np.log10(self.portadora/1000)-9*np.log10((bp_p**2)+(hbs-hut)**2)
+		path_l=28+40*np.log10(dist_3d)+20*np.log10(self.portadora)-9*np.log10((bp_p**2)+(hbs-hut)**2)
 		return path_l
 	
 	def evaular_pl0(distancias, bp):
 		'''para el caso en que la distncia sea menor a 10 o mayor a 5000k. Este caso normalmente no se da por la restricccion en distancia que se ha fijado al principio de la funcion orignal.'''
-		path_l=32.4+20*np.log10(self.portadora)+30*np.log10(dist_3d)
+		path_l=32.4+20*np.log10(self.portadora)+20*np.log10(dist_3d)
 		return path_l
 
 	def perdidas_uma_3gpp(self):
@@ -376,7 +384,7 @@ class Modelo_Canal:
 		hut=self.cfg_prop["params_modelo"][2]
 
 		#0. calcular la distancia 3d
-		dist_3d=np.sqrt(self.distancias**2 +(hbs-hut)**2)
+		
 		#1. calcular la distancia 2d
 		'''la distancia 2d es la misma variable self.distancia'''
 		#2. calcular la distancia bp (breakpoint)
@@ -387,7 +395,7 @@ class Modelo_Canal:
 		hbs_p=hbs-he
 		hut_p=hut-he
 		#portadora esta en MHz, la necesitamos en HZ de acuerdo a la documentacion.
-		dist_breakpoint_prima=4*hbs_p*hut_p*((self.portadora*10**6)/(3.8*10**8))
+		dist_breakpoint_prima=4*hbs_p*hut_p*((self.portadora*10)/3)#portadora en GHz
 		#3. evaular PLuma_los (tr138901)
 		'''evaluar para cada distancia de la siguiente manera
 		PL1 si 10m < self.distancias < dist_breakpoint.
@@ -401,7 +409,6 @@ class Modelo_Canal:
 
 		self.distancias=np.where(self.distancias<10, 10,self.distancias)
 		self.distancias=np.where(self.distancias>5000, 5000,self.distancias)
-		
 		#print('\n\ndist_3d',dist_3d)
 		#print('\n\nbreakpoint', dist_breakpoint_prima)
 		#print('\n\nself.distancias', self.distancias)
@@ -411,11 +418,10 @@ class Modelo_Canal:
 		#map_pl2=np.where((dist_breakpoint <= self.distancias) & (self.distancias <= 5000), 2, 0)
 		#map_pl2 toma la referncia de map_pl1 y modifica sus valores.
 		map_pl2=np.where((dist_breakpoint_prima <= map_pl1) & (map_pl1 <= 5000), 2, map_pl1)
-
+		#convertir de 2D a 3D antes de generar las perdidas
+		dist_3d=np.sqrt(self.distancias**2 +(hbs-hut)**2)
 		referencia=np.where(map_pl2==1, self.evaluar_pl1(dist_3d), map_pl2)
 		referencia=np.where(map_pl2==2, self.evaluar_pl2(dist_3d, dist_breakpoint_prima, hbs, hut), referencia)
-
-
 		#rint('\n referencia', referencia)
 		self.resultado_path_loss=referencia
 
@@ -697,30 +703,30 @@ def prueba_interna_resultado_path_loss():
 def prueba_interna_desvanecimiento_normal():
 	'''Funcion que prueba el concepto de tipos desvanecimiento con numpy'''
 	#params sim
-	freq=1.5 #gigas?
+	freq=44000 #gigas?
 	distancias=np.arange(1,200,1)
 
 	#params perdidas
 	params_modelo=[30, 0, 1.5] #hb, alfa, hm
-	modelo=['okumura_hata',params_modelo] #si no: se pone, se escribe o se escribe bien, el pathloss es 0
-	pot_tx=18 #18 #dBm
-	loss_tx=5
-	gan_tx=5
-	gan_rx=8
+	modelo=['modelo_ci',params_modelo] #si no: se pone, se escribe o se escribe bien, el pathloss es 0
+	pot_tx=44 #18 #dBm
+	loss_tx=1
+	gan_tx=15
+	gan_rx=1
 	loss_rx=0
 	sensibilidad=-92 #dBm
 	##
 	params_p=[modelo, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
 	#
-	params_sim=[(freq,"ghz"),(distancias, "km")]
+	params_sim=[(freq,"mhz"),(distancias, "m")]
 	#
 	#params desv
-	tipo_desv='rayl'
+	tipo_desv='none'
 	alpha_n=3.1
 	sigma_xn=4
 	mu=0
 	play_desv=False
-	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
+	params_desv=[play_desv, tipo_desv, [alpha_n, sigma_xn, mu]]
 
 	modelo_simple=Modelo_Canal(params_p, params_sim, params_desv)
 	#LA PREGUNTA ES AQUI, CON LOS anteriores DEBERIA ARROJAR HATA, PERO ESTA REALIZANDO libre_ghz.... Corregido
@@ -728,7 +734,9 @@ def prueba_interna_desvanecimiento_normal():
 	#path_loss=modelo_simple.resultado_path_loss
 	balance=modelo_simple.resultado_balance
 	#print(path_loss)
-
+	modelo_simple.debug_ver_balance()
+	plt.grid(True)
+	plt.show()
 	#desvanecimiento normal
 	#distancias_np=np.array([[10,50,100],[130, 170, 200]])
 	#print("shape", distancias_np.shape)
@@ -748,31 +756,30 @@ def prueba_interna_desvanecimiento_normal():
 def prueba_interna_desvanecimiento_prof():
 	'''Funcion que prueba el concepto de tipos desvanecimiento con numpy'''
 	#params sim
-	freq=1.5 #gigas?
+	freq=44000 #gigas?
 	distancias=np.arange(1,200,0.2)
 
 	#params perdidas
-	params_modelo=[30, 0, 1.5] #hb, alfa, hm
-	modelo=['okumura_hata',params_modelo] #si no: se pone, se escribe o se escribe bien, el pathloss es 0
-	pot_tx=18 #18 #dBm
-	loss_tx=5
-	gan_tx=5
-	gan_rx=8
+	params_modelo=[20, 0, 1.5] #hb, alfa, hm
+	modelo=['modelo_ci',params_modelo] #si no: se pone, se escribe o se escribe bien, el pathloss es 0
+	pot_tx=44 #18 #dBm
+	loss_tx=1
+	gan_tx=15
+	gan_rx=1
 	loss_rx=0
 	sensibilidad=-92 #dBm
 	##
 	params_p=[modelo, pot_tx,loss_tx, gan_tx, gan_rx, loss_rx,sensibilidad]
 	#
-	params_sim=[(freq,"ghz"),(distancias, "km")]
+	params_sim=[(freq,"mhz"),(distancias, "m")]
 	#
 	#params desv
-	tipo_desv='mixto' #normal, rayl, mixto=normal+rayl
+	tipo_desv='none' #normal, rayl, mixto=normal+rayl
 	alpha_n=3.1
-	sigma_xn=4
+	sigma_xn=8
 	mu=0
-	play_desv=True
-	params_desv=[tipo_desv, play_desv, [alpha_n, sigma_xn, mu]]
-
+	play_desv=False
+	params_desv=[play_desv, tipo_desv,[alpha_n, sigma_xn, mu]]
 	modelo_simple=Modelo_Canal(params_p, params_sim, params_desv)
 	#LA PREGUNTA ES AQUI, CON LOS anteriores DEBERIA ARROJAR HATA, PERO ESTA REALIZANDO libre_ghz.... Corregido
 	#modelo_simple.perdidas_espacio_libre_ghz()
@@ -790,8 +797,8 @@ if __name__=="__main__":
 
 	#prueba interna 1.
 	#prueba_interna_resultado_path_loss()
-	#prueba_interna_desvanecimiento_normal() #se observa unos puntos planos al principo del array, se debe al mcl.
-	prueba_interna_desvanecimiento_prof()
+	prueba_interna_desvanecimiento_normal() #se observa unos puntos planos al principo del array, se debe al mcl.
+	#prueba_interna_desvanecimiento_prof()
 	
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")

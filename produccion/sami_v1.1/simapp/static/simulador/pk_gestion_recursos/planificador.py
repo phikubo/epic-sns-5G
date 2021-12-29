@@ -107,7 +107,7 @@ class Planificador:
 		print("planifcador,py nrbs", self.nrbs, self.numerologia)
 		self.delta_bw_khz=(2**self.numerologia)*15
 		self.delta_bw_hz=(2**self.numerologia)*self.to_khz(15)
-		self.resource_grid=self.nrbs*self.cfg_plan["simbolo_ofdm_dl"]
+		self.resource_grid=self.nrbs*self.cfg_plan["simbolo_ofdm_dl"]*(2**self.numerologia)
 		self.nrb_total_por_celda=self.resource_grid
 		print("panificador.py resource grid", self.resource_grid)
 
