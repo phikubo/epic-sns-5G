@@ -395,7 +395,7 @@ class Modelo_Canal:
 		hbs_p=hbs-he
 		hut_p=hut-he
 		#portadora esta en MHz, la necesitamos en HZ de acuerdo a la documentacion.
-		dist_breakpoint_prima=4*hbs_p*hut_p*((self.portadora*10)/3)#portadora en GHz
+		dist_breakpoint_prima=4*hbs_p*hut_p*((self.portadora)/300)#portadora en GHz
 		#3. evaular PLuma_los (tr138901)
 		'''evaluar para cada distancia de la siguiente manera
 		PL1 si 10m < self.distancias < dist_breakpoint.
@@ -549,14 +549,14 @@ class Modelo_Canal:
 		plt.figure()
 		self.custom_dist_flag=True
 		#EN KILOMETROS
-		self.custom_dist=np.arange(1,20,.9)
+		self.custom_dist=np.arange(1,1000,1)
 		#realizo la simulacion con el array custom diferente.
 		self.inicializar_tipo()
 		#obtengo resutlados
 		plt.plot(self.custom_dist, self.resultado_path_loss, label="Pérdidas")
 		plt.legend(loc="upper left")
 		plt.title("Pérdidas de Propagación: {}".format(self.cfg_prop["modelo_perdidas"]))
-		plt.xlabel("Distancia [Km]")
+		plt.xlabel("Distancia [m]")
 		plt.ylabel("Pérdidas [dB]")
 		plt.grid(True)
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
@@ -585,7 +585,7 @@ class Modelo_Canal:
 		#si rayl-mixto, no sumar
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
-		plt.xlabel("Distancia [Km]")
+		plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
@@ -598,7 +598,7 @@ class Modelo_Canal:
 		plt.figure()
 		self.custom_dist_flag=True
 		#EN KILOMETROS
-		self.custom_dist=np.arange(1,20,.5)
+		self.custom_dist=np.arange(1,1000,1)
 		#realizo la simulacion con el array custom diferente.
 		self.inicializar_tipo()
 		self.balance_del_enlace_mcl()
@@ -615,7 +615,7 @@ class Modelo_Canal:
 		#si rayl-mixto, no sumar
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
-		plt.xlabel("Distancia [Km]")
+		plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
@@ -628,9 +628,9 @@ class Modelo_Canal:
 		self.custom_dist_flag=True
 		#EN KILOMETROS
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			self.custom_dist=np.arange(1,20,.5)
+			self.custom_dist=np.arange(1,1000,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
-			self.custom_dist=np.arange(1,20,.5)
+			self.custom_dist=np.arange(1,1000,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
 			self.custom_dist=np.arange(1,500,1)
@@ -647,7 +647,7 @@ class Modelo_Canal:
 		plt.plot(self.custom_dist, self.resultado_balance, label="balance final")
 		plt.legend(loc="lower right")
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
-		plt.xlabel("Distancia [Km]")
+		plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
@@ -659,7 +659,7 @@ class Modelo_Canal:
 		plt.figure()
 		self.custom_dist_flag=True
 		#EN KILOMETROS
-		self.custom_dist=np.arange(1,20,.5)
+		self.custom_dist=np.arange(1,1000,1)
 		#realizo la simulacion con el array custom diferente.
 		self.inicializar_tipo()
 		self.balance_del_enlace_mcl()
@@ -681,7 +681,7 @@ class Modelo_Canal:
 		#si rayl-mixto, no sumar
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
-		plt.xlabel("Distancia [km]")
+		plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
