@@ -90,7 +90,7 @@ class Modelo_Canal:
 			if self.cfg_prop["params_desv"]["tipo"]=="normal":
 				mu=self.cfg_prop["params_desv"]["params"][2]
 				sigma_xn=self.cfg_prop["params_desv"]["params"][1]
-				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.distancias.shape)
+				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.balance_simplificado.shape)
 				self.balance_simplificado=self.balance_simplificado+self.desvanecimiento
 				if self.cfg_gen['debug']:
 					print("[ok]-----configurar_desv,  normal")
@@ -98,13 +98,13 @@ class Modelo_Canal:
 			elif self.cfg_prop["params_desv"]["tipo"]=="rayl":
 				if self.cfg_gen['debug']:
 					print("[ok]-----configurar_desv, rayleight")
-				bal_simpl_desva=10**(-self.balance_simplificado/10)
+				bal_simpl_desva=10**((self.cfg_bal["ptx"]-self.balance_simplificado)/10)
 				bal_simpl_desva_r=np.sqrt(bal_simpl_desva)
 				b=bal_simpl_desva_r/np.sqrt(np.pi/2)
 				bray=np.random.rayleigh(b)
 				bray=np.power(bray,2)
-				self.desvanecimiento=10*np.log10(bray) #bray_dB
-				self.balance_simplificado=self.desvanecimiento-self.cfg_bal["ptx"]
+				self.desvanecimiento=10*np.log10(bray) #bray_dBm
+				self.balance_simplificado=-(self.desvanecimiento-self.cfg_bal["ptx"])#balance_simplificado dB
 
 			elif self.cfg_prop["params_desv"]["tipo"]=="mixto":
 				if self.cfg_gen['debug']:
@@ -117,13 +117,13 @@ class Modelo_Canal:
 				self.balance_simplificado=self.balance_simplificado+np.vstack(self.desvanecimiento)
 				#rayleigh
 				#correccion de signos desvanecimiento
-				bal_simpl_desva=10**((-self.balance_simplificado)/10)
+				bal_simpl_desva=10**((self.cfg_bal["ptx"]-self.balance_simplificado)/10)
 				bal_simpl_desva_r=np.sqrt(bal_simpl_desva)
 				b=bal_simpl_desva_r/np.sqrt(np.pi/2)
 				bray=np.random.rayleigh(b)
 				bray=np.power(bray,2)
 				self.desvanecimiento=10*np.log10(bray) #bray_dBs
-				self.balance_simplificado=-self.desvanecimiento
+				self.balance_simplificado=-(self.desvanecimiento-self.cfg_bal["ptx"])
 		else:
 			#print("[ok].debug:balance simplificado no cambia.")
 			pass
