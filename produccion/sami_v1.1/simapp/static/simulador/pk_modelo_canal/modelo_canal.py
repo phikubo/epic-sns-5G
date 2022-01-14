@@ -123,7 +123,7 @@ class Modelo_Canal:
 				bray=np.random.rayleigh(b)
 				bray=np.power(bray,2)
 				self.desvanecimiento=10*np.log10(bray) #bray_dBs
-				self.balance_simplificado=-self.desvanecimiento.copy()
+				self.balance_simplificado=-self.desvanecimiento
 		else:
 			#print("[ok].debug:balance simplificado no cambia.")
 			pass
