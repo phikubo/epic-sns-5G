@@ -58,26 +58,19 @@ class Modelo_Canal:
 		self.resultado_balance_v=0
 
 		#aplica desvanecimiento si aplica.
-		print("modelo_canal.py inicializar tipo")
 		self.inicializar_tipo()
 		#se altera el orden para poder obtener los valores de perdidas, en el
 		#desvanecimiento rayleight, y luego, adicionar ese desvanecimiento al balance del enlace
-		#self.configurar_desvanecimiento()
-		print("modelo_canal.py balancel mcl")
 		self.balance_del_enlace_mcl() #f(configurar_desvanecimiento())
 		#self.inicializar_balance()
 
 	def configurar_desvanecimiento(self):
 		'''Crea un array de desvanecimiento, dependiendo del tipo y especificaciones extras'''
-		print("modelo_canal.py, configurar_desvanecimiento")
 		if self.custom_dist_flag:
-			self.balance_simplificado=self.resultado_path_loss-np.max(self.tx_grel)-self.cfg_bal["grx"]+self.cfg_bal["ltx"]+self.cfg_bal["lrx"]
+			#perdidas positivo, ganancia de tx es maxima por que se transmite un solo lobulo.
+			self.balance_simplificado=np.vstack(self.resultado_path_loss)-np.max(self.tx_grel)-self.cfg_bal["grx"]+self.cfg_bal["ltx"]+self.cfg_bal["lrx"]
 		else:
-			print("moca", self.resultado_path_loss.copy())
-			print("moca2", self.tx_grel.copy())
 			self.balance_simplificado=np.vstack(self.resultado_path_loss)-np.vstack(self.tx_grel)-self.cfg_bal["grx"]+self.cfg_bal["ltx"]+self.cfg_bal["lrx"]
-			print("BALSIMPL",self.balance_simplificado)
-
 
 		if self.cfg_prop["params_desv"]["display"]:
 			if self.cfg_gen['debug']:
@@ -86,7 +79,6 @@ class Modelo_Canal:
 			self.balance_simplificado_antes=self.balance_simplificado.copy()
 
 		if self.cfg_prop["params_desv"]["display"]:
-			#print("[ok].debug: desvanecimiento activado.")
 			if self.cfg_prop["params_desv"]["tipo"]=="normal":
 				mu=self.cfg_prop["params_desv"]["params"][0]
 				sigma_xn=self.cfg_prop["params_desv"]["params"][1]
@@ -113,8 +105,11 @@ class Modelo_Canal:
 				mu=self.cfg_prop["params_desv"]["params"][0]
 				sigma_xn=self.cfg_prop["params_desv"]["params"][1]
 				#if true, el desvanecimiento deja de ser 0 y se integra a las perdidas.
-				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.balance_simplificado.shape)
-				self.balance_simplificado=self.balance_simplificado+np.vstack(self.desvanecimiento)
+				#print("bal sim\n",self.balance_simplificado)
+				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.balance_simplificado.copy().shape)
+				self.balance_simplificado=self.balance_simplificado.copy()+np.vstack(self.desvanecimiento)
+				#print("CUSTOM3\n", self.desvanecimiento)
+				#print("CUSTOM4\n",self.balance_simplificado)
 				#rayleigh
 				#correccion de signos desvanecimiento
 				bal_simpl_desva=10**(-self.balance_simplificado/10)
@@ -123,9 +118,9 @@ class Modelo_Canal:
 				bray=np.random.rayleigh(b)
 				bray=np.power(bray,2)
 				self.desvanecimiento=10*np.log10(bray) #bray_dBs
-				self.balance_simplificado=-self.desvanecimiento
+				print("CUSTOm5\n", self.desvanecimiento[:10])
+				self.balance_simplificado=-self.desvanecimiento.copy()
 		else:
-			#print("[ok].debug:balance simplificado no cambia.")
 			pass
 
 
@@ -176,7 +171,6 @@ class Modelo_Canal:
 
 		elif self.cfg_prop["modelo_perdidas"] =="umi_ci":
 			#m, Ghz
-			#print("[debug]:mod_canal:umi_ci")
 			if self.arreglos[0][1]=="m":
 
 				#las distancias debe estar en [m], por eso no cambia
@@ -186,7 +180,6 @@ class Modelo_Canal:
 				else:
 					
 					self.distancias=self.arreglos[0][0].copy()
-					print("modelo ci inicializar tipo 1", self.distancias)
 
 			else:
 				pass #opcion kilometro, no cambia.
@@ -197,12 +190,10 @@ class Modelo_Canal:
 			else:
 				#pass #opcion megaherz, cambia a Ghz
 				self.portadora=self.cfg_gen["portadora"][0]/1000
-			#print(self.distancias.shape)
 			self.perdidas_umi_ci()
 
 		elif self.cfg_prop["modelo_perdidas"] =="umi_abg":
 			#m, Ghz
-			#print("-----------------------------------------------------[debug]:mod_perd:umi_abg\n", np.shape(self.distancias))
 			if self.arreglos[0][1]=="m":
 
 				if self.custom_dist_flag==True:
@@ -219,13 +210,11 @@ class Modelo_Canal:
 			else:
 				#pass #opcion megaherz, cambia a Ghz
 				self.portadora=self.cfg_gen["portadora"][0]/1000
-			#print(self.distancias.shape)
 			self.perdidas_umi_abg()
 			
 		elif self.cfg_prop["modelo_perdidas"] =="uma_3gpp":
 			#km, mhz
 			#m, Ghz
-			#print("[debug]:mod_perd:uma_3gpp")
 			
 			if self.arreglos[0][1]=="m":
 
@@ -243,7 +232,6 @@ class Modelo_Canal:
 			else:
 				#pass #opcion megaherz, no cambia.
 				self.portadora=self.cfg_gen["portadora"][0]/1000
-			#print(self.distancias.shape)
 
 			self.perdidas_uma_3gpp()
 		else:
@@ -278,11 +266,12 @@ class Modelo_Canal:
 		B=44.9-6.55*np.log10(hb)
 		E=3.2*(np.log10(11.75*hm))**2 -4.97 #[dB] para ciudades grandes y fc>300 MHz
 		#E=8.29*(np.log10(1.54*hm))**2 -1.1 #[dB] para ciudades grandes y fc<300 MHz
-		#print("okumura_hata, says->A,B:",A,B)
 		#se guarda en un valor aparte, no es necesario, pero sirve de debug.
-		#print("---------------------------------->>>>>>>>>>>>>>>>>>>>\n", self.distancias)
+
 		if self.cfg_prop["params_desv"]["display"]:
+			print("\n\n!!!!!!!!!!!!!desvanecimiento.dist\n\n",self.distancias)
 			self.resultado_path_loss_antes=A+B*np.log10(self.distancias)-E
+		print("\n\n!!!!!!!!!!!!!desvanecimiento.dist2\n\n",self.distancias)
 		self.resultado_path_loss=A+(B*np.log10(self.distancias))-E #+ self.desvanecimiento
 
 
@@ -297,15 +286,11 @@ class Modelo_Canal:
 		# y es un valor aleatorio, con una distribucion gausiana de media SIGMA_XN
 		sigma_xn=8.1
 		alpha_n=3.1
-
-		print("moca.py:umi_ci, portadora",self.portadora)
-		print("moca.py:umi_ci, distancias",self.distancias)
 		correcion_freq_ghz=32.4+20*math.log10(self.portadora)
 		correccion_dist_m=10*alpha_n*np.log10(np.vstack(self.distancias))
 
-		#print("distancias ci modelo canal\n",np.vstack(self.distancias))
 		self.resultado_path_loss=correcion_freq_ghz+correccion_dist_m+sigma_xn
-		#print("resultado path loss\n",self.resultado_path_loss)
+
 
 
 	def perdidas_umi_abg(self):
@@ -399,10 +384,6 @@ class Modelo_Canal:
 
 		self.distancias=np.where(self.distancias<10, 10,self.distancias)
 		self.distancias=np.where(self.distancias>5000, 5000,self.distancias)
-		
-		#print('\n\ndist_3d',dist_3d)
-		#print('\n\nbreakpoint', dist_breakpoint_prima)
-		#print('\n\nself.distancias', self.distancias)
 
 		'''encontramos los indices donde 1 pl1 y 2 pl2'''
 		map_pl1=np.where((10 <= self.distancias) & (self.distancias <= dist_breakpoint_prima), 1, self.distancias)
@@ -413,8 +394,6 @@ class Modelo_Canal:
 		referencia=np.where(map_pl2==1, self.evaluar_pl1(dist_3d), map_pl2)
 		referencia=np.where(map_pl2==2, self.evaluar_pl2(dist_3d, dist_breakpoint_prima, hbs, hut), referencia)
 
-
-		#rint('\n referencia', referencia)
 		self.resultado_path_loss=referencia
 
 
@@ -448,11 +427,8 @@ class Modelo_Canal:
 		#segmento_rx=self.rx_g-self.rx_loss
 		#self.resultado_balance=segmento_tx+segmento_rx-self.resultado_path_loss
 		self.configurar_desvanecimiento()
-		#print("\n[modelo_canal.func.mcl] MCL")
-		#print(np.maximum(self.balance_simplificado, mcl))
-		self.resultado_balance=self.cfg_bal["ptx"]-np.maximum(self.balance_simplificado, self.cfg_bal["mcl"])
-		print("resulta bal mcl", self.resultado_balance)
-
+		print("CUSTOM7,\n",self.balance_simplificado.copy()[:10])
+		self.resultado_balance=self.cfg_bal["ptx"]-np.maximum(self.balance_simplificado.copy(), self.cfg_bal["mcl"])
 		self.resultado_margen=self.resultado_balance-self.cfg_bal["sensibilidad"]
 
 
@@ -520,7 +496,6 @@ class Modelo_Canal:
 
 	def debug_ver_balance(self):
 		'''Funcion para observar el balance del enlace. Solo funciona localmente.'''
-		#print(self.balance_simplificado)->tiene que ser positivo
 		#self.desvanecimiento es negativo
 
 		plt.xlabel('Distancia m')
@@ -544,12 +519,12 @@ class Modelo_Canal:
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
 			self.custom_dist=np.arange(1,20,.3)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
-			self.custom_dist=np.arange(1,500,.5)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
-			self.custom_dist=np.arange(1,500,.5)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_abg":
-			self.custom_dist=np.arange(1,500,.5)
+			self.custom_dist=np.arange(1,999,1)
 		else:
 			print("modelo_canal.py:UN ERROR OCURRIRA.")
 		#realizo la simulacion con el array custom diferente.
@@ -580,12 +555,12 @@ class Modelo_Canal:
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
 			self.custom_dist=np.arange(1,20,.3)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
-			self.custom_dist=np.arange(1,500,.5)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
-			self.custom_dist=np.arange(1,500,.5)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_abg":
-			self.custom_dist=np.arange(1,500,.5)
+			self.custom_dist=np.arange(1,999,1)
 		else:
 			print("modelo_canal.py:UN ERROR OCURRIRA.")
 		#realizo la simulacion con el array custom diferente.
@@ -619,12 +594,12 @@ class Modelo_Canal:
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
 			self.custom_dist=np.arange(1,20,.3)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
-			self.custom_dist=np.arange(1,500,.5)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
-			self.custom_dist=np.arange(1,500,.5)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_abg":
-			self.custom_dist=np.arange(1,500,.5)
+			self.custom_dist=np.arange(1,999,1)
 		else:
 			print("modelo_canal.py:UN ERROR OCURRIRA.")
 		#realizo la simulacion con el array custom diferente.
@@ -658,15 +633,14 @@ class Modelo_Canal:
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
 			self.custom_dist=np.arange(1,20,.3)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
-			self.custom_dist=np.arange(1,500,.5)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
-			self.custom_dist=np.arange(1,500,.5)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_abg":
-			self.custom_dist=np.arange(1,500,.5)
+			self.custom_dist=np.arange(1,999,1)
 		else:
 			print("modelo_canal.py:UN ERROR OCURRIRA.")
-		#self.custom_dist=np.arange(1,20,.3)
 		#realizo la simulacion con el array custom diferente.
 		self.inicializar_tipo()
 		self.balance_del_enlace_mcl()
@@ -690,12 +664,12 @@ class Modelo_Canal:
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
 			self.custom_dist=np.arange(1,20,.3)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
-			self.custom_dist=np.arange(1,500,.5)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
-			self.custom_dist=np.arange(1,500,.5)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_abg":
-			self.custom_dist=np.arange(1,500,.5)
+			self.custom_dist=np.arange(1,999,1)
 		else:
 			print("modelo_canal.py:UN ERROR OCURRIRA.")
 		#realizo la simulacion con el array custom diferente.
@@ -771,11 +745,9 @@ def prueba_interna_desvanecimiento_normal():
 	#modelo_simple.perdidas_espacio_libre_ghz()
 	#path_loss=modelo_simple.resultado_path_loss
 	balance=modelo_simple.resultado_balance
-	#print(path_loss)
 
 	#desvanecimiento normal
 	#distancias_np=np.array([[10,50,100],[130, 170, 200]])
-	#print("shape", distancias_np.shape)
 
 	#sized=len(distancias)
 	N=np.random.normal(mu,sigma_xn,distancias.shape)

@@ -25,8 +25,6 @@ import pyfiglet
 
 class Simulador:
 	def __init__(self, tipo):
-		ascii_banner = pyfiglet.figlet_format("SAMI-5G")
-		print(ascii_banner)
 		#
 		self.debug_=True
 		self.tipo=tipo
@@ -62,6 +60,8 @@ class Simulador:
 	def configurar_presimulacion(self):
 		'''Modulo de pre-simulacion'''
 		#
+		ascii_banner = pyfiglet.figlet_format("PRESIM")
+		print(ascii_banner)
 		ruta_img_presim="simulador/base_datos/imagenes/presim/"
 		#
 		n_cel=self.configuracion["cfg_simulador"]["params_general"]["n_celdas"]
@@ -131,6 +131,7 @@ class Simulador:
         (3000, 'Ultra [!!!]'))
 		densidad_dict=dict(densidad_choices)
 		titulo="Escenario: intensidad {}".format(densidad_dict[int(self.configuracion["cfg_simulador"]["params_general"]["distribucion"][1])])
+		
 		#ruta_img="simulador/base_datos/imagenes/presim/base-sim.png"
 		#self.graficas_disponibles.append(ruta_img)
 		ruta=ruta_img_presim+nombre+".png"
@@ -145,20 +146,6 @@ class Simulador:
 		ruta=ruta_img_presim+nombre+".png"
 		self.graficas_disponibles_dic.update({titulo.upper():ruta})
 		 
-
-		'''
-		***OPTIMIZACION***
-			se vuelve a calcular los valores del modelo del canal llamando
-			las funciones custom destinadas a ese proposito.
-			
-			
-			Aqui se puede guardar las estadisticas de 1 sola simulacion,
-			antes del cambio de variables en presim.
-			
-			
-			
-			
-			'''
 		#sim=pre_sim
 
 		#display de perdidas por trayectoria
@@ -218,18 +205,14 @@ class Simulador:
 		ruta=ruta_img_presim+nombre+".png"
 		self.graficas_disponibles_dic.update({titulo.upper():ruta})
 		'''
-		#print(self.graficas_disponibles_dic)
+
 		#guardar los nombres de graficas disponibles para desplegar despues.
 		#self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles
 		
-		#depleted to delete
-		#self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles_dic
-
 		#desactivar la imagen de potencia para prepara el archivo para monte-carlo.
 		self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0]=False
 		#guardar el archivo.
 		cfg.guardar_json_full(self.configuracion, target_path=self.conf_sim["ruta_activa"])
-		#print("django-diccionario: \n",self.graficas_disponibles_dic)
 		
 		#cambio de ruta en el path
 		self.configuracion_gui["presim_graphs"]=self.graficas_disponibles_dic
@@ -257,7 +240,8 @@ class Simulador:
 
 	def configurar_montecarlo(self):
 		'''Modulo de N iteraciones.'''
-		print("[simulador]: Ejecutando montecarlo...")
+		ascii_banner = pyfiglet.figlet_format("Montecarlo")
+		print(ascii_banner)
 		#
 		numero_barras=self.configuracion["cfg_gui"]["histograma_cfg"]["numero_barras"]
 		#
@@ -293,10 +277,10 @@ class Simulador:
 			coleccion_simulacion.append(sim)
 			#se imprime la informacion de cada simulacion.
 			##################################################################
+			'''
 			sim.info_general("general")
-			#primeros datos (10)
-			##################################################################sim.info_data(True)
 			sim.info_data(True)
+			'''
 			#libero memoria
 			sim=0
 			it+=1
@@ -320,8 +304,6 @@ class Simulador:
 		raw_datos.guardar_data(ruta_datos,"col_cob_conexion_sinr",col_cob_conexion_sinr,"""Coleccion de usuarios cuya SINR es mayor a un target espcificado en self.configuracion["cfg_simulador"]["params_general"]["ber_sinr"] """)
 		raw_datos.guardar_data(ruta_datos,"col_throughput_promedio",col_throughput_promedio,"Coleccion de TP por simulacion. El valor por simulacion es el promedio de TP entre todas las celdas disponibles.")
 
-		##################################################################print("[simulador]: Generando Gráficas")
-		##################################################################logging.info("[simulador]: Generando Gráficas")
 		#grafica de distribucion de usuarios
 		fig, ax = plt.subplots()
 		ax.plot(np.linspace(1,len(col_cobertura_usuarios),len(col_cobertura_usuarios)), col_cobertura_usuarios, 'b-o')
