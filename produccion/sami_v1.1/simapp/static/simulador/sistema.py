@@ -7,23 +7,6 @@ import math
 import os
 import time #for debug.
 
-#logger
-#import logging
-
-#tareas
-#cambiar nombre de los ejes: sin muestra. [ok]
-#cambiar km por Km [ok]
-#en balance cambiar [dm] por potencia [dBm] [ok]
-#corregir modelo 3gpp. [pendiente]
-#cambiar de numerologia, que sea automatica como se habia dicho antes [pendiente]
-
-#
-#from shapely.geometry import Point
-#from shapely.geometry.polygon import Polygon
-#import - final
-#
-#bloque de carga de modulos - inicio
-#
 try:
 	print("From sistema.py")
 	#from <paquete>          import <modulo>           as <nombre_preferencial_del modulo>
@@ -163,38 +146,9 @@ class Sistema_Celular:
 		#instancia de modulacion, no asigna modulacion.
 		self.inicializar_modulacion()
 
-		'''
-		#estadistica para obtener cuantos usuarios superan el umbral de sensibilidad
-		self.calcular_medida_margen() #para desconectar los usuarios.
-		#implemeneta criterio de potencia maxima de los usuarios a todas las celdas.
-			#y de todos los usuarios. Los usuarios cuyo margen es negativo,
-				#se le reparte un nrb0 que indica desconexion.
-
-		self.calcular_celda_mayor_potencia()
-		#relaciona los mapas de conexion/desconexion, con la matriz de potencia,
-			#para reconfigurar la asignacion de recursos.
-				#los usuarios que no superan el margen, son desconectados y no reciben recursos radio.
-				#sin embargo, la estadistica orignal, se mantiene.
-
-		##inicializa el efecto del ancho de banda, segun parametros fijos o
-		###procesamiento de alguna variable, eg. potencia recibida.
-		#obtiene matriz de potencia interferente.
-
-		#loop {
-		self.inicializar_asignacion_bw_nrbs()
-		#calcula la interferencia y la sinr dado los parametros.
-		
-		self.calcular_interferencia_sinr()
-		
-		#} x2. Recalculo
-		#inicializa la clase de modulacion y asigna estados
-		#self.inicializar_modulacion()
-		#calcula recursos con sinr y modulaciones.
-		#self.calcular_recursos_tp()
-		self.calcular_throughput()
-		'''
 		#calculo de celda de mayor potencia.
 		self.calcular_celda_mayor_potencia_upgrade()
+		
 		#el margen de senbilidad se calcula en la misma funcion de asignacion de recursos
 		#self.calcular_medida_margen_upgrade()
 		self.inicializar_asignacion_bw_nrbs_upgrade() #se obtiene ancho de frecuencia, y matriz de potencia en veces filtrada por uso de recursos.

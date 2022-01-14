@@ -28,6 +28,7 @@ class Simulador:
 		ascii_banner = pyfiglet.figlet_format("SAMI-5G")
 		print(ascii_banner)
 		#
+		self.debug_=True
 		self.tipo=tipo
 		self.graficas_disponibles_dic={}
 		self.conf_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
@@ -35,6 +36,10 @@ class Simulador:
 		self.configuracion=cfg.cargar_json_full(target_path=self.conf_sim["ruta_activa"])
 
 		self.configuracion_gui=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_gui")
+		'''NOTA PARA EL DESARROLADOR:
+		En presimulacion se carga la variable self.configuracion. En simulacion y montecarlo se recarga. Esto debido a que en presimulacion
+		se genera la imagen de potencia y para evitar que esta sobre cargue el sistema en montecarlo, el archivo de configuracion se modifica
+		desactivando la imagen, y se almacena nuevamente el archivo.'''
 		if self.tipo=="presimulacion":
 			#una sola simulacion.
 			print("[simulador]: Ejecutando presimulación...")
@@ -47,7 +52,6 @@ class Simulador:
 		elif self.tipo=="montecarlo":
 			print("[simulador]: Ejecutando montecarlo...")
 			self.configuracion=cfg.cargar_json_full(target_path=self.conf_sim["ruta_activa"])
-			#print(self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0])
 			self.configurar_montecarlo()
 		else:
 			print("Parametro Simulador no válido.")
@@ -116,6 +120,22 @@ class Simulador:
 		else:
 			pass
 
+		pre_sim.ver_todo()
+		nombre="base-sim"
+		densidad_choices=(
+        (1, 'Baja'),
+        (10, 'Media'),
+        (100, 'Moderada'),
+        (1000, 'Alta [!]'),
+        (2000, 'Masivo [!!]'),
+        (3000, 'Ultra [!!!]'))
+		densidad_dict=dict(densidad_choices)
+		titulo="Escenario: intensidad {}".format(densidad_dict[int(self.configuracion["cfg_simulador"]["params_general"]["distribucion"][1])])
+		#ruta_img="simulador/base_datos/imagenes/presim/base-sim.png"
+		#self.graficas_disponibles.append(ruta_img)
+		ruta=ruta_img_presim+nombre+".png"
+		self.graficas_disponibles_dic.update({titulo.upper():ruta})
+
 		#display de antena
 		nombre="patron_radiacion"
 		pre_sim.hiperc_antena.ver_patron_local(nombre="patron_radiacion")
@@ -163,16 +183,19 @@ class Simulador:
 			self.graficas_disponibles_dic.update({titulo.upper():ruta})
 			#
 			nombre="relaciones"
-			pre_sim.hiperc_modelo_canal.ver_relaciones_local(nombre="relaciones")
-			titulo="Relación de Gráficas"
+			pre_sim.hiperc_modelo_canal.ver_relaciones_local(nombre="relaciones_debug")
+			titulo="Relación de Gráficas (Debug)"
 			#ruta_img="simulador/base_datos/imagenes/presim/relaciones.png"
 			#self.graficas_disponibles.append(ruta_img)
-			ruta=ruta_img_presim+nombre+".png"
-			self.graficas_disponibles_dic.update({titulo.upper():ruta})
+			ruta=ruta_img_presim+nombre+"_debug.png"
+			if self.debug_:
+				self.graficas_disponibles_dic.update({titulo.upper():ruta})
+			else:
+				pass
 			#
 			nombre="balance"
 			pre_sim.hiperc_modelo_canal.ver_balance_local(nombre="balance")
-			titulo="Balance del Enlace"
+			titulo="Balance del Enlace con Desvanecimiento"
 			#ruta_img="simulador/base_datos/imagenes/presim/balance.png"
 			#self.graficas_disponibles.append(ruta_img)
 			ruta=ruta_img_presim+nombre+".png"
@@ -186,7 +209,7 @@ class Simulador:
 			#self.graficas_disponibles.append(ruta_img)
 			ruta=ruta_img_presim+nombre+".png"
 			self.graficas_disponibles_dic.update({titulo.upper():ruta})
-		
+		'''
 		pre_sim.ver_todo()
 		nombre="base-sim"
 		titulo="Escenario de Simulación"
@@ -194,7 +217,8 @@ class Simulador:
 		#self.graficas_disponibles.append(ruta_img)
 		ruta=ruta_img_presim+nombre+".png"
 		self.graficas_disponibles_dic.update({titulo.upper():ruta})
-		print(self.graficas_disponibles_dic)
+		'''
+		#print(self.graficas_disponibles_dic)
 		#guardar los nombres de graficas disponibles para desplegar despues.
 		#self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles
 		

@@ -40,6 +40,7 @@ class Modelo_Canal:
 
 		#presimulacion
 		self.custom_dist_flag=False
+		#por defecto custom_dist no cambia de magnitud. La magnitud (km, m) se controla en las funciones que generan las imagenes de presimulacion.
 		self.custom_dist=0
 
 		self.tx_grel=self.arreglos[1] #en cero estan los valore,s en 1 estan las unidades.
@@ -89,17 +90,14 @@ class Modelo_Canal:
 			if self.cfg_prop["params_desv"]["tipo"]=="normal":
 				mu=self.cfg_prop["params_desv"]["params"][0]
 				sigma_xn=self.cfg_prop["params_desv"]["params"][1]
-				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.distancias.shape)
-				self.balance_simplificado=self.balance_simplificado+self.desvanecimiento*-1
+				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.balance_simplificado.shape)
+				self.balance_simplificado=self.balance_simplificado+np.vstack(self.desvanecimiento)*-1
 				if self.cfg_gen['debug']:
 					print("[ok]-----configurar_desv,  normal")
-					#DESCOMENTAR SOLO EN DEBUG Y CUANDO SE EJECUTE ESTE MODULO LOCALMENTE.
-					#plt.plot(self.distancias, -self.balance_simplificado, 'r-',  label="sin ptx, simplificado")
 
 			elif self.cfg_prop["params_desv"]["tipo"]=="rayl":
 				if self.cfg_gen['debug']:
 					print("[ok]-----configurar_desv, rayleight")
-					#plt.plot(self.distancias, -self.balance_simplificado, 'r', label="sin desva, sin ptx")
 				bal_simpl_desva=10**(-self.balance_simplificado/10)
 				bal_simpl_desva_r=np.sqrt(bal_simpl_desva)
 				b=bal_simpl_desva_r/np.sqrt(np.pi/2)
@@ -115,8 +113,8 @@ class Modelo_Canal:
 				mu=self.cfg_prop["params_desv"]["params"][0]
 				sigma_xn=self.cfg_prop["params_desv"]["params"][1]
 				#if true, el desvanecimiento deja de ser 0 y se integra a las perdidas.
-				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.distancias.shape)
-				self.balance_simplificado=self.balance_simplificado+self.desvanecimiento
+				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.balance_simplificado.shape)
+				self.balance_simplificado=self.balance_simplificado+np.vstack(self.desvanecimiento)
 				#rayleigh
 				#correccion de signos desvanecimiento
 				bal_simpl_desva=10**(-self.balance_simplificado/10)
@@ -124,8 +122,8 @@ class Modelo_Canal:
 				b=bal_simpl_desva_r/np.sqrt(np.pi/2)
 				bray=np.random.rayleigh(b)
 				bray=np.power(bray,2)
-				self.desvanecimiento=10*np.log10(bray) #bray_dB
-				self.balance_simplificado=-self.desvanecimiento
+				self.desvanecimiento=10*np.log10(bray) #bray_dBs
+				self.balance_simplificado=-self.desvanecimiento.copy()
 		else:
 			#print("[ok].debug:balance simplificado no cambia.")
 			pass
@@ -140,7 +138,7 @@ class Modelo_Canal:
 			if self.arreglos[0][1]=="m":
 				#convierto a kilometros
 				if self.custom_dist_flag==True:
-					self.distancias=self.custom_dist
+					self.distancias=np.vstack(self.custom_dist)
 				else:
 					self.distancias=self.arreglos[0][0]/1000
 
@@ -162,7 +160,7 @@ class Modelo_Canal:
 			if self.arreglos[0][1]=="m":
 				#convierto a kilometros
 				if self.custom_dist_flag==True:
-					self.distancias=self.custom_dist
+					self.distancias=np.vstack(self.custom_dist)
 				else:
 					self.distancias=self.arreglos[0][0]/1000
 			else:
@@ -183,7 +181,7 @@ class Modelo_Canal:
 
 				#las distancias debe estar en [m], por eso no cambia
 				if self.custom_dist_flag==True:
-					self.distancias=self.custom_dist
+					self.distancias=np.vstack(self.custom_dist)
 					
 				else:
 					
@@ -208,7 +206,7 @@ class Modelo_Canal:
 			if self.arreglos[0][1]=="m":
 
 				if self.custom_dist_flag==True:
-					self.distancias=self.custom_dist
+					self.distancias=np.vstack(self.custom_dist)
 					
 				else:
 					#las distancias debe estar en [m], no cambia.
@@ -232,7 +230,7 @@ class Modelo_Canal:
 			if self.arreglos[0][1]=="m":
 
 				if self.custom_dist_flag==True:
-					self.distancias=self.custom_dist
+					self.distancias=np.vstack(self.custom_dist)
 				else:
 					#las distancias debe estar en [m]
 					self.distancias=self.arreglos[0][0]
@@ -543,7 +541,17 @@ class Modelo_Canal:
 		plt.figure()
 		self.custom_dist_flag=True
 		#EN KILOMETROS
-		self.custom_dist=np.arange(1,20,.9)
+		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
+			self.custom_dist=np.arange(1,20,.3)
+		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
+			self.custom_dist=np.arange(1,500,.5)
+		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
+			#metros
+			self.custom_dist=np.arange(1,500,.5)
+		elif self.cfg_prop["modelo_perdidas"]=="umi_abg":
+			self.custom_dist=np.arange(1,500,.5)
+		else:
+			print("modelo_canal.py:UN ERROR OCURRIRA.")
 		#realizo la simulacion con el array custom diferente.
 		self.inicializar_tipo()
 		#obtengo resutlados
@@ -551,6 +559,12 @@ class Modelo_Canal:
 		plt.legend(loc="upper left")
 		plt.title("Pérdidas de Propagación: {}".format(self.cfg_prop["modelo_perdidas"]))
 		plt.xlabel("Distancia [Km]")
+
+		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
+			plt.xlabel("Distancia [Km]")
+		else:
+			plt.xlabel("Distancia [m]")
+
 		plt.ylabel("Pérdidas [dB]")
 		plt.grid(True)
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
@@ -563,7 +577,17 @@ class Modelo_Canal:
 		plt.figure()
 		self.custom_dist_flag=True
 		#EN KILOMETROS
-		self.custom_dist=np.arange(1,20,.5)
+		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
+			self.custom_dist=np.arange(1,20,.3)
+		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
+			self.custom_dist=np.arange(1,500,.5)
+		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
+			#metros
+			self.custom_dist=np.arange(1,500,.5)
+		elif self.cfg_prop["modelo_perdidas"]=="umi_abg":
+			self.custom_dist=np.arange(1,500,.5)
+		else:
+			print("modelo_canal.py:UN ERROR OCURRIRA.")
 		#realizo la simulacion con el array custom diferente.
 		self.inicializar_tipo()
 		self.balance_del_enlace_mcl()
@@ -592,7 +616,17 @@ class Modelo_Canal:
 		plt.figure()
 		self.custom_dist_flag=True
 		#EN KILOMETROS
-		self.custom_dist=np.arange(1,20,.5)
+		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
+			self.custom_dist=np.arange(1,20,.3)
+		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
+			self.custom_dist=np.arange(1,500,.5)
+		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
+			#metros
+			self.custom_dist=np.arange(1,500,.5)
+		elif self.cfg_prop["modelo_perdidas"]=="umi_abg":
+			self.custom_dist=np.arange(1,500,.5)
+		else:
+			print("modelo_canal.py:UN ERROR OCURRIRA.")
 		#realizo la simulacion con el array custom diferente.
 		self.inicializar_tipo()
 		self.balance_del_enlace_mcl()
@@ -622,17 +656,17 @@ class Modelo_Canal:
 		self.custom_dist_flag=True
 		#EN KILOMETROS
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			self.custom_dist=np.arange(1,20,.5)
+			self.custom_dist=np.arange(1,20,.3)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
-			self.custom_dist=np.arange(1,20,.5)
+			self.custom_dist=np.arange(1,500,.5)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
-			self.custom_dist=np.arange(1,500,1)
+			self.custom_dist=np.arange(1,500,.5)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_abg":
-			self.custom_dist=np.arange(1,500,1)
+			self.custom_dist=np.arange(1,500,.5)
 		else:
 			print("modelo_canal.py:UN ERROR OCURRIRA.")
-		#self.custom_dist=np.arange(1,20,.5)
+		#self.custom_dist=np.arange(1,20,.3)
 		#realizo la simulacion con el array custom diferente.
 		self.inicializar_tipo()
 		self.balance_del_enlace_mcl()
@@ -653,7 +687,17 @@ class Modelo_Canal:
 		plt.figure()
 		self.custom_dist_flag=True
 		#EN KILOMETROS
-		self.custom_dist=np.arange(1,20,.5)
+		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
+			self.custom_dist=np.arange(1,20,.3)
+		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
+			self.custom_dist=np.arange(1,500,.5)
+		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
+			#metros
+			self.custom_dist=np.arange(1,500,.5)
+		elif self.cfg_prop["modelo_perdidas"]=="umi_abg":
+			self.custom_dist=np.arange(1,500,.5)
+		else:
+			print("modelo_canal.py:UN ERROR OCURRIRA.")
 		#realizo la simulacion con el array custom diferente.
 		self.inicializar_tipo()
 		self.balance_del_enlace_mcl()
