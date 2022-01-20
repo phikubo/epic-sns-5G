@@ -511,23 +511,23 @@ class Sistema_Celular:
 		#estoas valores se usan para saber donde esta el usuario con mayor potencia. DEPLETED
 		indices_mayor_potencia = np.where(self.pr_maximo_dB == np.amax(self.pr_maximo_dB))
 		
-		print("max pot ",self.pr_maximo_dB)
+		#print("max pot ",self.pr_maximo_dB)
 		indice_mayor_pot=int(np.array([np.random.choice(indices_mayor_potencia[0])]))
 
-		print("sistema.py: indices mayor potencia ", indices_mayor_potencia,indice_mayor_pot)
-		print("sistema.py: matriz de potencia rec\n",self.hiperc_modelo_canal.resultado_balance)
+		#print("sistema.py: indices mayor potencia ", indices_mayor_potencia,indice_mayor_pot)
+		#print("sistema.py: matriz de potencia rec\n",self.hiperc_modelo_canal.resultado_balance)
 
 
 		params_asignacion=[mapa_asignacion_xcelda, dim_pr_v2D, indice_mayor_pot, mapa_asignacion_xpotencia]
 		self.planificador=plan.Planificador(self.cfg_plan, self.cfg_gen, params_asignacion, upgrade=True)#por sector, etc.
 		#ancho de banda se convierte en variable y depende de cuantos prb obtiene.
 		self.bw_usuario=self.planificador.asignacion_bw
-		print("sistema.py bw_usuario\n",self.bw_usuario)
+		#print("sistema.py bw_usuario\n",self.bw_usuario)
 		#convierte la matriz de potencia recibida en matriz de interferencia.
 		#print("sistem.py: potencia_rec_2d",self.potencia_recibida_v_2D)
 		'''En este punto se considera que todos los usuarios generan interferencia unos con otros'''
 		self.matriz_interferente=self.potencia_recibida_v_2D*self.planificador.mapa_interf_distribuida
-		print("interferencia distribuida\n", self.matriz_interferente)
+		#print("interferencia distribuida\n", self.matriz_interferente)
 
 
 		
@@ -654,7 +654,7 @@ class Sistema_Celular:
 	def calcular_celda_mayor_potencia_upgrade(self):
 		'''Calculo de usuario conectado a una celda especifica dependiendo de su pathloos'''
 		#self.distancias_2D=np.vstack(self.hiperc_distancias)
-		print("\n1 hiperc_distancias, hiperc_distnacias.shape\n",self.hiperc_distancias, self.hiperc_distancias.shape)
+		#print("\n1 hiperc_distancias, hiperc_distnacias.shape\n",self.hiperc_distancias, self.hiperc_distancias.shape)
 		potencia_recibida_dB=self.hiperc_modelo_canal.resultado_balance
 		#print("\n2",potencia_recibida_dB, potencia_recibida_dB.shape)
 		#obtenengo las dimensiones del arreglo cluster, pues esta segmentado en 3D>
@@ -701,7 +701,7 @@ class Sistema_Celular:
 			indx+=1 #
 		#conversion tipo de indices a numpy stack.
 		self.mapa_celda_mayor_potencia=np.stack(indices_map)
-		print('\nsistema.py: mapa_celda_mayor_potencia&', self.mapa_celda_mayor_potencia)
+		#print('\nsistema.py: mapa_celda_mayor_potencia&', self.mapa_celda_mayor_potencia)
 
 		#todos los usuarios son asigandos a una celda.
 		#sin embargo, aun no es posible determinar si los usuarios asignados, no tienen servicio.
@@ -756,7 +756,7 @@ class Sistema_Celular:
 		pn=pn_v*fr_v
 		#calculo sinr de acuerdo a la ecuacion
 		self.sinr_db=10*np.log10(prx_veces)-10*np.log10(suma_interf_v+pn)
-		print("sistema.py sirn_db",self.sinr_db)
+		#print("sistema.py sirn_db",self.sinr_db)
 		#limpio los valores de sinr de los  usuarios sin conexion.
 		#self.sinr_db=np.where(self.mapa_conexion_desconexion_margen==0,-100, self.sinr_db)
 		#Reemplaza 1 donde sinr>,self.cfg_gen["ber_sinr"] 0 en caso contrario.
@@ -823,14 +823,14 @@ class Sistema_Celular:
 		#para evitar este error, se fija la modulacion siempre positiva independientemente de la contribuci[on] puesto que tasa ya contiene la informacion que representa los valores no contribuyentes
 		throughput_users=10**(-6)*arreglo_mimo*modulacion_0*factor_escala[0]*(tasa/1024)*(self.planificador.nrb_usuario.copy()*self.cfg_plan["sub_ofdm"]/trama_segundos)*completo_oh
 		print("sistema.py:variables tp")
-		print(tasa)
-		print(modulacion)
-		print(modulacion_0)
-		print(trama_segundos)
-		print(throughput_users)
-		print(self.planificador.numerologia)
-		print(self.planificador.nrb_usuario.copy())
-		print(completo_oh)
+		#print(tasa)
+		#print(modulacion)
+		#print(modulacion_0)
+		#print(trama_segundos)
+		#print(throughput_users)
+		#print(self.planificador.numerologia)
+		#print(self.planificador.nrb_usuario.copy())
+		#print(completo_oh)
 
 		self.throughput_users=np.absolute(throughput_users)	
 		#print("check")
@@ -929,7 +929,7 @@ class Sistema_Celular:
 		'''Permite ver la imagen creada a partir de una malla de puntos'''
 		#el primer valor
 		pr_max=self.hiperc_malla_modelo_canal.resultado_balance.copy()
-		print("sistema.py:ver_imagen_potencia, pr_max -1\n",pr_max)
+		#print("sistema.py:ver_imagen_potencia, pr_max -1\n",pr_max)
 		#prmax no fue re configurado por que el procedimiento de calculo es diferente, los usuarios no pertenecen a una celda.
 		#en cambio se hace como si todos los usuarios pertenecieran a cada celda de manera independiente:
 		"""
@@ -942,7 +942,7 @@ class Sistema_Celular:
 		]"""
 		pr_max=np.vstack(np.transpose(np.reshape(pr_max, self.hiperc_malla_distancias.shape)))
 		#pr_max=np.transpose(pr_max)
-		print("sistema.py:ver_imagen_potencia, pr_max 0\n",pr_max)
+		#print("sistema.py:ver_imagen_potencia, pr_max 0\n",pr_max)
 		final_pr_max=[]
 		print("---")
 		for line in pr_max:
@@ -950,11 +950,11 @@ class Sistema_Celular:
 			final_pr_max.append(np.max(line))
 		print()
 		final_pr_max=np.transpose(np.reshape(final_pr_max, self.malla_x.shape))
-		print("sistema.py:ver_imagen_potencia, pr_max 1\n",pr_max)
-		print("sistema.py: ver_imagen_pot, shpae ",pr_max.shape)
+		#print("sistema.py:ver_imagen_potencia, pr_max 1\n",pr_max)
+		#print("sistema.py: ver_imagen_pot, shpae ",pr_max.shape)
 		
-		print("sistema.py: ver_imagein_pot\n",final_pr_max, len(final_pr_max))
-		print("sistema.py: malla_x\n",self.malla_x, self.malla_x.shape, np.vstack(self.malla_x).shape)
+		#print("sistema.py: ver_imagein_pot\n",final_pr_max, len(final_pr_max))
+		#print("sistema.py: malla_x\n",self.malla_x, self.malla_x.shape, np.vstack(self.malla_x).shape)
 		
 		final_pr_max=np.reshape(final_pr_max,self.malla_x.shape)
 		z_min,z_max=-np.abs(pr_max).max(), np.abs(pr_max).max()
@@ -1036,8 +1036,8 @@ class Sistema_Celular:
 		self.mapa_conexion_estacion=self.planificador.mapa_conexion_celda
 		#[1,2,3]
 		self.mapa_conexion_usuario=self.mapa_celda_mayor_potencia
-		print(self.mapa_conexion_estacion)
-		print(self.mapa_conexion_usuario)
+		#print(self.mapa_conexion_estacion)
+		#print(self.mapa_conexion_usuario)
 		#print("+++++++++++++++++++colores")
 		#for usuario, (bandera, mapa_conexion_usuario) in enumerate(zip(self.mapa_conexion_desconexion, self.mapa_conexion_usuario)):
 		for usuario, (bandera, mapa_conexion_usuario) in enumerate(zip(self.mapa_conexion_estacion, self.mapa_conexion_usuario)):
@@ -1142,16 +1142,16 @@ class Sistema_Celular:
 		self.mapa_conexion_usuario_no_con=self.planificador.mapa_conexion_usuario_binario.copy()
 		self.margen_maximo_dB=self.planificador.margen_dB.copy()
 
-		print("sistema.py variables infodata")
-		print(self.mapa_conexion_usuario)
-		print(self.mapa_conexion_usuario_no_con)
-		print(self.margen_maximo_dB)
-		print(self.sinr_db)
-		print(self.throughput_users)
+		#print("sistema.py variables infodata")
+		#print(self.mapa_conexion_usuario)
+		#print(self.mapa_conexion_usuario_no_con)
+		#print(self.margen_maximo_dB)
+		#print(self.sinr_db)
+		#print(self.throughput_users)
 		#self.sinr_db=np.zeros(self.mapa_conexion_usuario.shape)
 		#self.throughput_users=np.zeros(self.mapa_conexion_usuario.shape)
 		print("-----------")
-		print("[info_data] {}".format(args))
+		#print("[info_data] {}".format(args))
 		if self.cfg_gen['debug']:
 			print("\n-----[debug.calcular_sinr]:")
 		print("\n------------------------------------------[info_data]:")
@@ -1167,7 +1167,7 @@ class Sistema_Celular:
 				arreglos_display=np.column_stack((self.mapa_conexion_usuario, self.mapa_conexion_usuario_no_con,self.distancias_2D,
 						self.pr_maximo_dB,self.margen_maximo_dB,self.sinr_db, self.throughput_users))
 				df_display = pd.DataFrame(arreglos_display, columns=titulos_display)
-				print(df_display.head(), "\n...\n",df_display.tail())
+				#print(df_display.head(), "\n...\n",df_display.tail())
 
 				'''for a,b,c,d,e,f in zip(self.mapa_conexion_usuario,self.mapa_conexion_usuario_no_con,
 						self.pr_maximo_dB,self.margen_maximo_dB,self.sinr_db, self.throughput_users):
@@ -1190,38 +1190,38 @@ class Sistema_Celular:
 	def info_distancia(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_distancia]")
-		print(self.hiperc_distancias)
+		#print(self.hiperc_distancias)
 		print("**************************************************\n")
 
 
 	def info_angulos(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_angulos]")
-		print(self.hiperc_angulos)
+		#print(self.hiperc_angulos)
 		print("**************************************************\n")
 
 	def info_ganancia(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_ganancia]")
-		print(self.hiperc_ganancia_relativa)
+		#print(self.hiperc_ganancia_relativa)
 		print("**************************************************\n")
 
 	def info_potencia(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_potencia_con_desv]")
-		print(self.hiperc_modelo_canal.balance_simplificado)
+		#print(self.hiperc_modelo_canal.balance_simplificado)
 		print("**************************************************\n")
 
 	def info_potencia_sin(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_potencia_sin_desv]")
-		print(self.hiperc_modelo_canal.balance_simplificado_antes)
+		#print(self.hiperc_modelo_canal.balance_simplificado_antes)
 		print("**************************************************\n")
 
 	def info_balance(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_balance]")
-		print(self.hiperc_modelo_canal.resultado_balance)
+		#print(self.hiperc_modelo_canal.resultado_balance)
 		print("**************************************************\n")
 
 	def info_planificador(self,*args):
@@ -1235,31 +1235,31 @@ class Sistema_Celular:
 	def info_general(self, *target):
 		'''Permite observar parametros generales de cada simulacion.'''
 		print("------------")
-		print("info_general: {}".format(target))
+		#print("info_general: {}".format(target))
 		target=target[0]
 		if target =="potencia":
 			print("[info_potencia]")
-			print(self.hiperc_modelo_canal.resultado_balance)
+			#print(self.hiperc_modelo_canal.resultado_balance)
 		elif target=="distancia":
 			print("[info_distancia]")
-			print(self.hiperc_distancias)
+			#print(self.hiperc_distancias)
 		elif target=="angulos":
 			print("[info_angulos]")
-			print(self.hiperc_angulos)
+			#print(self.hiperc_angulos)
 		elif target=="ganancia":
 			print("[info_ganancia]")
-			print(self.hiperc_ganancia_relativa)
+			#print(self.hiperc_ganancia_relativa)
 		elif target=="general":
-			print("\n------------------------------------------[info_general]:")
-			print("Celdas:",self.cfg_gen["n_celdas"])
+			#print("\n------------------------------------------[info_general]:")
+			#print("Celdas:",self.cfg_gen["n_celdas"])
 			#print("Usuarios por Conexion Sinr, supera {} dB un {}% celda".format(self.cfg_gen['ber_sinr'],self.no_usuarios_celda))
-			print("Semilla inicial de usuarios por celda: {}". format(self.no_usuarios_celda))
-			print("Usuarios totales por sistema",self.no_usuarios_total)
+			#print("Semilla inicial de usuarios por celda: {}". format(self.no_usuarios_celda))
+			#print("Usuarios totales por sistema",self.no_usuarios_total)
 			#print("Ancho de banda por usuario:",self.bw_usuario, "[Hz]")
 			#print("Margen de conexion (Usuarios: Pr-Sensibilidad>0): {}%".format(np.round(self.medida_conexion_margen*100,4)))
-			print("Porcentaje de usuaios cuya SINR supera {} dB, {} %".format(self.cfg_gen["ber_sinr"] ,np.round(self.medida_conexion_sinr*100,4)))
-			print("De {} usuarios, {} cumplen BER objetivo.".format(self.no_usuarios_total, self.conexion_total_sinr))
-			print("Distribucion Celular, original: ", self.planificador.mapa_conexion_celda)
+			#print("Porcentaje de usuaios cuya SINR supera {} dB, {} %".format(self.cfg_gen["ber_sinr"] ,np.round(self.medida_conexion_sinr*100,4)))
+			#print("De {} usuarios, {} cumplen BER objetivo.".format(self.no_usuarios_total, self.conexion_total_sinr))
+			#print("Distribucion Celular, original: ", self.planificador.mapa_conexion_celda)
 			#print("Distribucion Celular, con desconexion: ", self.planificador.mapa_estacion_descon)
 			#print("Probabilidad de desconexión: {}%".format(np.round(self.no_usuarios_total/np.sum(self.planificador.mapa_estacion_descon),4)))
 			'''
@@ -1270,7 +1270,7 @@ class Sistema_Celular:
 			#print("Mapa de conexion por estacion final: ", self.mapa_conexion_estacion_no_con)
 
 			
-			print("El sistema en promedio ha alcanzado {} Mbps".format(np.round(self.throughput_sistema,4)))
+			#print("El sistema en promedio ha alcanzado {} Mbps".format(np.round(self.throughput_sistema,4)))
 			'''
 			if self.planificador.mapa_conexion==self.planificador.mapa_estacion_descon:
 				print("-->No hubo desconexión")
@@ -1283,30 +1283,30 @@ class Sistema_Celular:
 			print("\n-----[info_arreglos]:")
 
 			print("\n[info_distancia]")
-			print(self.hiperc_distancias)
+			#print(self.hiperc_distancias)
 
 			print("\n[info_angulos]")
-			print(self.hiperc_angulos)
+			#print(self.hiperc_angulos)
 
 			print("\n[info_ganancia]")
-			print(self.hiperc_antena.hiper_ganancias)
+			#print(self.hiperc_antena.hiper_ganancias)
 
 			if self.cfg_prop["params_desv"]["display"]:
 				print("\n[info_balance_simplificado_antes]")
-				print(self.hiperc_modelo_canal.balance_simplificado_antes)
+				#print(self.hiperc_modelo_canal.balance_simplificado_antes)
 				print("\n[info_balance_simplificado]")
-				print(self.hiperc_modelo_canal.balance_simplificado)
+				#print(self.hiperc_modelo_canal.balance_simplificado)
 			else:
 				pass
 
 			print("\n[info_perdidas]")
-			print(self.hiperc_modelo_canal.resultado_path_loss)
+			#print(self.hiperc_modelo_canal.resultado_path_loss)
 
 			print("\n[info_potencia]")
-			print(self.hiperc_modelo_canal.resultado_balance)
+			#print(self.hiperc_modelo_canal.resultado_balance)
 
 			print("\n[info_margen]")
-			print(self.hiperc_modelo_canal.resultado_margen)
+			#print(self.hiperc_modelo_canal.resultado_margen)
 			print("-----[info_arreglos]:")
 
 			#todos

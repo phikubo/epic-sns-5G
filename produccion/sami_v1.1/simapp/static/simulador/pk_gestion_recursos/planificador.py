@@ -104,12 +104,12 @@ class Planificador:
 		#calcula nrbs y numerologia.
 		
 		self.set_numerologia(self.cfg_plan["bw"][0])
-		print("planifcador,py nrbs", self.nrbs, self.numerologia)
+		#print("planifcador,py nrbs", self.nrbs, self.numerologia)
 		self.delta_bw_khz=(2**self.numerologia)*15
 		self.delta_bw_hz=(2**self.numerologia)*self.to_khz(15)
 		self.resource_grid=self.nrbs*self.cfg_plan["simbolo_ofdm_dl"]*(2**self.numerologia)
 		self.nrb_total_por_celda=self.resource_grid
-		print("panificador.py resource grid", self.resource_grid)
+		#print("panificador.py resource grid", self.resource_grid)
 
 
 		'''
@@ -183,22 +183,22 @@ class Planificador:
 		
 		if self.cfg_plan["tipo"]=="rr":
 			#verificar si la distribucion es exacta
-			print("\nplanificador.py\n usuarios:",len(self.mapa_asignacion))
+			#print("\nplanificador.py\n usuarios:",len(self.mapa_asignacion))
 			#ress=self.nrb_total_por_celda%np.array(self.mapa_conexion_celda)
-			print("planificador.py: ress", self.nrb_total_por_celda, self.mapa_conexion_celda)
+			#print("planificador.py: ress", self.nrb_total_por_celda, self.mapa_conexion_celda)
 			self.nrb_sobrantes=self.nrb_total_por_celda%np.array(self.mapa_conexion_celda)
 			self.nrb_usuario=np.floor(self.nrb_total_por_celda/np.array(self.mapa_conexion_celda))
-			print('planificador.py: nrb_usuario', self.nrb_usuario)
+			#print('planificador.py: nrb_usuario', self.nrb_usuario)
 			#self.nrb_usuario=self.nrb_usuario-ress
-			print("planificador.py: bin",self.mapa_conexion_usuario_binario)
+			#print("planificador.py: bin",self.mapa_conexion_usuario_binario)
 			#self.asignacion=self.mapa_conexion_usuario_binario*0
 			for indx, recursos in enumerate(self.nrb_usuario):
-				print(indx,recursos)
+				#print(indx,recursos)
 				self.asignacion=np.where(self.mapa_asignacion==indx, recursos, self.asignacion) #no tengo el mapaaaa!
-			print('resultado asignacion\n',self.asignacion)
+			#print('resultado asignacion\n',self.asignacion)
 
 			self.asignacion_bw=self.asignacion*self.delta_bw_hz
-			print('resultado hz',self.asignacion_bw)
+			#print('resultado hz',self.asignacion_bw)
 
 			'''
 			ress=int(self.nrb_total_por_celda%len(self.mapa_asignacion))
@@ -234,26 +234,26 @@ class Planificador:
 			pass
 		elif self.cfg_plan["tipo"]=="rr_hard":
 			#verificar si la distribucion es exacta
-			print("\nplanificador.py usuarios: \n",len(self.mapa_asignacion))
+			#print("\nplanificador.py usuarios: \n",len(self.mapa_asignacion))
 			#ress=self.nrb_total_por_celda%np.array(self.mapa_conexion_celda)
-			print("planificador.py: nrbs por celda {} - mapa conexion {}".format(self.nrb_total_por_celda, self.mapa_conexion_celda))
+			#print("planificador.py: nrbs por celda {} - mapa conexion {}".format(self.nrb_total_por_celda, self.mapa_conexion_celda))
 			max_usuarios=max(self.mapa_conexion_celda)
 			particion=np.floor(self.nrb_total_por_celda/max_usuarios)
 			en_uso=particion*max_usuarios
-			print("max {} particion {} en_uso {}".format(max_usuarios, particion, en_uso))
+			#print("max {} particion {} en_uso {}".format(max_usuarios, particion, en_uso))
 			self.nrb_usuario=particion*np.ones(np.shape(self.mapa_asignacion))
 			self.nrb_sobrantes=self.nrb_total_por_celda-particion*np.array(self.mapa_conexion_celda)
 
 			self.estadistica_nrb_sobrante=np.round(100*self.nrb_sobrantes/self.nrb_total_por_celda,4)
-			print("nrb suario \n", self.nrb_usuario)
-			print("nrb sobrantes \n", self.nrb_sobrantes)
-			print("sobrante {}% \n".format(self.estadistica_nrb_sobrante))
+			#print("nrb suario \n", self.nrb_usuario)
+			#print("nrb sobrantes \n", self.nrb_sobrantes)
+			#print("sobrante {}% \n".format(self.estadistica_nrb_sobrante))
 			#cambio dimension
 			for indx, recursos in enumerate(self.nrb_usuario):
 				self.asignacion=np.where(self.mapa_asignacion==indx, recursos, self.asignacion)
-			print('resultado \n',self.asignacion)
+			#print('resultado \n',self.asignacion)
 			self.asignacion_bw=self.asignacion*self.delta_bw_hz
-			print('resultado hz \n',self.asignacion_bw)
+			#print('resultado hz \n',self.asignacion_bw)
 
 		elif self.cfg_plan["tipo"]=="rr_soft":
 			pass
@@ -267,16 +267,16 @@ class Planificador:
 		ktb=-174+10*np.log10(self.asignacion_bw)
 		sinr_objetivo=self.cfg_gen["ber_sinr"]
 		print("variabl-es")
-		print(nf)
-		print(ktb)
-		print(sinr_objetivo)
+		#print(nf)
+		#print(ktb)
+		#print(sinr_objetivo)
 		self.sensiblidad_receptor=nf+ktb+sinr_objetivo
-		print("planificador.py: sensiblidad\n", self.sensiblidad_receptor)
-		print("planificador.py: potencia rec\n", np.vstack(self.pr_maximo_dB_))
+		#print("planificador.py: sensiblidad\n", self.sensiblidad_receptor)
+		#print("planificador.py: potencia rec\n", np.vstack(self.pr_maximo_dB_))
 		self.margen_dB=np.vstack(self.pr_maximo_dB_)-self.sensiblidad_receptor
-		print("planificador.py: margen\n",self.margen_dB)
+		#print("planificador.py: margen\n",self.margen_dB)
 		self.mapa_conexion_usuario_binario=np.where(self.margen_dB<0, 0, self.mapa_conexion_usuario_binario)
-		print("planificador.py: conexion binaria\n", self.mapa_conexion_usuario_binario)
+		#print("planificador.py: conexion binaria\n", self.mapa_conexion_usuario_binario)
 
 	def configurar_mapa_interferencia_nrb_upgrade(self):
 		'''Calcula matriz interferente, para ello reparte recursos (bloques de ancho de banda) C_{i}, de acuerdo al mapa de conexion de celdas.
@@ -302,7 +302,7 @@ class Planificador:
 			'''indice, celda de conexion, conexion, contador, estado, nrb asignado'''
 			mostrar="{}	{}	{}		{}	{}	nrb_{}".format(indd,celda,
 				self.mapa_conexion_usuario_binario[indd],self.contador, self.estado, sum(self.contador*self.estado))
-			print(mostrar)
+			#print(mostrar)
 			self.mapa_estado.append(self.estado.copy())
 			nrb_actual=sum(self.contador*self.estado)
 			self.mapa_nrb.append(nrb_actual)
@@ -314,14 +314,14 @@ class Planificador:
 		corresponden a los indices donde no ha habido conexion desde un principio'''
 		self.mapa_nrb=np.array(self.mapa_nrb)
 		self.mapa_estado=np.stack(self.mapa_estado).reshape(self.dim_mapa)
-		print("planificador.py mapa nrb",self.mapa_nrb)
-		print("planificador.py mapa estados",self.mapa_estado)
+		#print("planificador.py mapa nrb",self.mapa_nrb)
+		#print("planificador.py mapa estados",self.mapa_estado)
 		start=1 #si empieza en cero se cuenta un potencial nrb0
 
 		for indx, mapa in enumerate(range(start,int(np.max(self.mapa_nrb))+1)):
-			print(indx,mapa)
+			#print(indx,mapa)
 			arreglo=np.where(self.mapa_nrb==mapa)
-			print("arreglo repetido",arreglo[0])
+			#print("arreglo repetido",arreglo[0])
 			#esta nueva lista de distribucion cuenta donde ha habido nrb,
 			#y los reparte a la lista, por lo que el ciclo esta completo.
 			self.lista_distribucion.append(arreglo[0])
@@ -336,15 +336,15 @@ class Planificador:
 			self.mapa_interferencia.append(mapa_semilla)
 		self.mapa_interferencia=np.stack(self.mapa_interferencia)
 		#self.lista_distribucion=np.stack(self.lista_distribucion)
-		print("mapa interferencia\n",self.mapa_interferencia)
-		print("mapa estados\n",self.mapa_estado)
-		print("aux\n",self.mapa_interf_distribuida)
-		print("mapa_distribucion\n", self.lista_distribucion)
+		#print("mapa interferencia\n",self.mapa_interferencia)
+		#print("mapa estados\n",self.mapa_estado)
+		#print("aux\n",self.mapa_interf_distribuida)
+		#print("mapa_distribucion\n", self.lista_distribucion)
 		for lista, mapa_dist in zip(self.lista_distribucion, self.mapa_interferencia):
 			#print(lista, mapa_dist)
 			for indx_interf in lista:
 				self.mapa_interf_distribuida[indx_interf]=mapa_dist
-		print("mapa_interferencia_distribuida\n",self.mapa_interf_distribuida)
+		#print("mapa_interferencia_distribuida\n",self.mapa_interf_distribuida)
 
 
 

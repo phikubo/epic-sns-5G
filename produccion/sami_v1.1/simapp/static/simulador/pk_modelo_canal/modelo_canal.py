@@ -76,7 +76,7 @@ class Modelo_Canal:
 			print("moca", self.resultado_path_loss.copy())
 			print("moca2", self.tx_grel.copy())
 			self.balance_simplificado=np.vstack(self.resultado_path_loss)-np.vstack(self.tx_grel)-self.cfg_bal["grx"]+self.cfg_bal["ltx"]+self.cfg_bal["lrx"]
-			print("BALSIMPL",self.balance_simplificado)
+			#print("BALSIMPL",self.balance_simplificado)
 
 
 		if self.cfg_prop["params_desv"]["display"]:
@@ -186,7 +186,7 @@ class Modelo_Canal:
 				else:
 					
 					self.distancias=self.arreglos[0][0].copy()
-					print("modelo ci inicializar tipo 1", self.distancias)
+					#print("modelo ci inicializar tipo 1", self.distancias)
 
 			else:
 				pass #opcion kilometro, no cambia.
@@ -300,8 +300,8 @@ class Modelo_Canal:
 		sigma_xn=8.1
 		alpha_n=3.1
 
-		print("moca.py:umi_ci, portadora",self.portadora)
-		print("moca.py:umi_ci, distancias",self.distancias)
+		#print("moca.py:umi_ci, portadora",self.portadora)
+		#print("moca.py:umi_ci, distancias",self.distancias)
 		dist_3d=np.sqrt(self.distancias**2 +(hbs-hut)**2)
 		correcion_freq_ghz=32.44+20*math.log10(self.portadora)
 		correccion_dist_m=10*alpha_n*np.log10(dist_3d)
@@ -457,7 +457,7 @@ class Modelo_Canal:
 		#print("\n[modelo_canal.func.mcl] MCL")
 		#print(np.maximum(self.balance_simplificado, mcl))
 		self.resultado_balance=self.cfg_bal["ptx"]-np.maximum(self.balance_simplificado, self.cfg_bal["mcl"])
-		print("resulta bal mcl", self.resultado_balance)
+		#print("resulta bal mcl", self.resultado_balance)
 
 		self.resultado_margen=self.resultado_balance-self.cfg_bal["sensibilidad"]
 
@@ -742,7 +742,7 @@ def prueba_interna_resultado_path_loss():
 	modelo_simple=Modelo_Canal(freq, distancias_km)
 	modelo_simple.perdidas_espacio_libre_ghz()
 	l_bs=modelo_simple.resultado_path_loss
-	print(l_bs)
+	#print(l_bs)
 
 def prueba_interna_desvanecimiento_normal():
 	'''Funcion que prueba el concepto de tipos desvanecimiento con numpy'''
