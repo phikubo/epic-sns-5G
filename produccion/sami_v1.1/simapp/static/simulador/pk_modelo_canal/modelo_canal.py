@@ -90,14 +90,13 @@ class Modelo_Canal:
 			elif self.cfg_prop["params_desv"]["tipo"]=="rayl":
 				if self.cfg_gen['debug']:
 					print("[ok]-----configurar_desv, rayleight")
-					#plt.plot(self.distancias, -self.balance_simplificado, 'r', label="sin desva, sin ptx")
 				bal_simpl_desva=10**((self.cfg_bal["ptx"]-self.balance_simplificado)/10)
 				bal_simpl_desva_r=np.sqrt(bal_simpl_desva)
 				b=bal_simpl_desva_r/np.sqrt(np.pi/2)
 				bray=np.random.rayleigh(b)
 				bray=np.power(bray,2)
-				self.desvanecimiento=10*np.log10(bray) #bray_dB
-				self.balance_simplificado=-(self.desvanecimiento-self.cfg_bal["ptx"])
+				self.desvanecimiento=10*np.log10(bray) #bray_dBm
+				self.balance_simplificado=-(self.desvanecimiento-self.cfg_bal["ptx"])#balance_simplificado dB
 
 			elif self.cfg_prop["params_desv"]["tipo"]=="mixto":
 				if self.cfg_gen['debug']:
@@ -380,7 +379,7 @@ class Modelo_Canal:
 		hbs_p=hbs-he
 		hut_p=hut-he
 		#portadora esta en MHz, la necesitamos en HZ de acuerdo a la documentacion.
-		dist_breakpoint_prima=4*hbs_p*hut_p*((self.portadora*10)/3)#portadora en GHz
+		dist_breakpoint_prima=4*hbs_p*hut_p*((self.portadora)/300)#portadora en GHz
 		#3. evaular PLuma_los (tr138901)
 		'''evaluar para cada distancia de la siguiente manera
 		PL1 si 10m < self.distancias < dist_breakpoint.
@@ -588,7 +587,7 @@ class Modelo_Canal:
 		#si rayl-mixto, no sumar
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
-		plt.xlabel("Distancia [Km]")
+		plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
@@ -628,7 +627,7 @@ class Modelo_Canal:
 		#si rayl-mixto, no sumar
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
-		plt.xlabel("Distancia [Km]")
+		plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
@@ -659,7 +658,7 @@ class Modelo_Canal:
 		plt.plot(self.custom_dist, self.resultado_balance, label="balance final")
 		plt.legend(loc="lower right")
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
-		plt.xlabel("Distancia [Km]")
+		plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
@@ -703,7 +702,7 @@ class Modelo_Canal:
 		#si rayl-mixto, no sumar
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
-		plt.xlabel("Distancia [km]")
+		plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
@@ -720,7 +719,7 @@ def prueba_interna_resultado_path_loss():
 	modelo_simple=Modelo_Canal(freq, distancias_km)
 	modelo_simple.perdidas_espacio_libre_ghz()
 	l_bs=modelo_simple.resultado_path_loss
-	print(l_bs)
+	#print(l_bs)
 
 def prueba_interna_desvanecimiento_normal():
 	'''Funcion que prueba el concepto de tipos desvanecimiento con numpy'''

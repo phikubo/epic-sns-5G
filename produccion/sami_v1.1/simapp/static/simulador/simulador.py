@@ -131,7 +131,6 @@ class Simulador:
         (3000, 'Ultra [!!!]'))
 		densidad_dict=dict(densidad_choices)
 		titulo="Escenario: intensidad {}".format(densidad_dict[int(self.configuracion["cfg_simulador"]["params_general"]["distribucion"][1])])
-		
 		#ruta_img="simulador/base_datos/imagenes/presim/base-sim.png"
 		#self.graficas_disponibles.append(ruta_img)
 		ruta=ruta_img_presim+nombre+".png"
@@ -205,7 +204,6 @@ class Simulador:
 		ruta=ruta_img_presim+nombre+".png"
 		self.graficas_disponibles_dic.update({titulo.upper():ruta})
 		'''
-
 		#guardar los nombres de graficas disponibles para desplegar despues.
 		#self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles
 		
@@ -323,7 +321,7 @@ class Simulador:
 		centros=estats.calcular_centros(bins)
 		ancho=bins[1]-bins[0]
 		ax.bar(centros, width=ancho, height=np.cumsum(data),ec='black')
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Acomulativo de Usuarios Conectados', 'Usuarios: Pr-Sens>0', 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Acumulativo de Usuarios Conectados', 'Usuarios: Pr-Sens>0', 
 			'Porcentaje de Conexión', 'Frecuencia de Ocurrencia', 'pic_users_cumsum_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
 		#grafica de distribucion de usuarios
@@ -345,7 +343,7 @@ class Simulador:
 		#cdf, no normalizado
 		fig, ax = plt.subplots()
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras, cumulative=True)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma acomulativo SINR > x dBs', "SINR mayor a {} dBs".format(ber_sinr), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma acumulativo SINR > x dBs', "SINR mayor a {} dBs".format(ber_sinr), 
 			'Porcentaje Acomulativo', 'Frecuencia de Ocurrencia', 'pic_sys_sinr_hist_acomulativo', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 
@@ -404,7 +402,7 @@ class Simulador:
 			ax.bar(x_prob,y_prob, width=ancho,ec='black')
 			ax.step(x_prob,y_prob,'r-o',where='mid')
 			#ax.plot(x_prob, y_prob, drawstyle='steps-pre')
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '6 Probabilidad Acomulativa Throughtput', 'CDF', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '6 Probabilidad Acumulativa Throughtput', 'CDF', 
 				'Throughtput normalizado', 'Densidad', 'pic_sys_tp_cdf', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 			#grafica de tp montecarlo
