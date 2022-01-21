@@ -82,8 +82,8 @@ class Modelo_Canal:
 			if self.cfg_prop["params_desv"]["tipo"]=="normal":
 				mu=self.cfg_prop["params_desv"]["params"][2]
 				sigma_xn=self.cfg_prop["params_desv"]["params"][1]
-				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.balance_simplificado.shape)
-				self.balance_simplificado=self.balance_simplificado+self.desvanecimiento
+				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.balance_simplificado.copy().shape)
+				self.balance_simplificado=self.balance_simplificado.copy()+self.desvanecimiento
 				if self.cfg_gen['debug']:
 					print("[ok]-----configurar_desv,  normal")
 
@@ -96,7 +96,9 @@ class Modelo_Canal:
 				bray=np.random.rayleigh(b)
 				bray=np.power(bray,2)
 				self.desvanecimiento=10*np.log10(bray) #bray_dBm
-				self.balance_simplificado=-(self.desvanecimiento-self.cfg_bal["ptx"])#balance_simplificado dB
+				self.balance_simplificado=-(self.desvanecimiento-self.cfg_bal["ptx"])#balance_simplificado [dB] es el balance del enlace (Ptx/Prx) 
+
+			
 
 			elif self.cfg_prop["params_desv"]["tipo"]=="mixto":
 				if self.cfg_gen['debug']:
@@ -106,16 +108,16 @@ class Modelo_Canal:
 				sigma_xn=self.cfg_prop["params_desv"]["params"][1]
 				#if true, el desvanecimiento deja de ser 0 y se integra a las perdidas.
 				#print("bal sim\n",self.balance_simplificado)
-				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.balance_simplificado.copy().shape)
-				self.balance_simplificado=self.balance_simplificado.copy()+np.vstack(self.desvanecimiento)
+				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.balance_simplificado.copy().shape)#Desvanecimiento lento [dB], tipo=normal 
+				self.balance_simplificado=self.balance_simplificado.copy()+np.vstack(self.desvanecimiento)#la potencia mas alta permitida, para condicion NLOS=6dB,LOS=NA
 				#print("CUSTOM3\n", self.desvanecimiento)
 				#print("CUSTOM4\n",self.balance_simplificado)
 				#rayleigh
 				#correccion de signos desvanecimiento
-				bal_simpl_desva=10**((self.cfg_bal["ptx"]-self.balance_simplificado)/10)
-				bal_simpl_desva_r=np.sqrt(bal_simpl_desva)
-				b=bal_simpl_desva_r/np.sqrt(np.pi/2)
-				bray=np.random.rayleigh(b)
+				bal_simpl_desva=10**((self.cfg_bal["ptx"]-self.balance_simplificado)/10)#Potencia de recepcion [mWatts] [V^2/R]	P[X]=E[X]^2			bal_simpl_desva_r=np.sqrt(bal_simpl_desva)
+				bal_simpl_desva_r=np.sqrt(bal_simpl_desva)# E[x] valor esperado -Voltaje [V] 
+				b=bal_simpl_desva_r/np.sqrt(np.pi/2)#E[x] para distribucion de Rayleigh
+				bray=np.random.rayleigh(b)#
 				bray=np.power(bray,2)
 				self.desvanecimiento=10*np.log10(bray) #bray_dB
 				self.balance_simplificado=-(self.desvanecimiento-self.cfg_bal["ptx"])
@@ -526,7 +528,7 @@ class Modelo_Canal:
 		self.custom_dist_flag=True
 		#EN KILOMETROS
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			self.custom_dist=np.arange(1,20,.3)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
@@ -545,7 +547,7 @@ class Modelo_Canal:
 		plt.xlabel("Distancia [Km]")
 
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			plt.xlabel("Distancia [Km]")
+			plt.xlabel("Distancia [m]")
 		else:
 			plt.xlabel("Distancia [m]")
 
@@ -562,7 +564,7 @@ class Modelo_Canal:
 		self.custom_dist_flag=True
 		#EN KILOMETROS
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			self.custom_dist=np.arange(1,20,.3)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
@@ -588,6 +590,10 @@ class Modelo_Canal:
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
 		plt.xlabel("Distancia [m]")
+		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
+			plt.xlabel("Distancia [m]")
+		else:
+			plt.xlabel("Distancia [m]") 
 		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
@@ -601,7 +607,7 @@ class Modelo_Canal:
 		self.custom_dist_flag=True
 		#EN KILOMETROS
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			self.custom_dist=np.arange(1,20,.3)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
@@ -628,6 +634,11 @@ class Modelo_Canal:
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
 		plt.xlabel("Distancia [m]")
+		
+		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
+			plt.xlabel("Distancia [m]")
+		else:
+			plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
@@ -640,7 +651,7 @@ class Modelo_Canal:
 		self.custom_dist_flag=True
 		#EN KILOMETROS
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			self.custom_dist=np.arange(1,20,.3)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
@@ -671,7 +682,7 @@ class Modelo_Canal:
 		self.custom_dist_flag=True
 		#EN KILOMETROS
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			self.custom_dist=np.arange(1,20,.3)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
@@ -703,6 +714,10 @@ class Modelo_Canal:
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
 		plt.xlabel("Distancia [m]")
+		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
+			plt.xlabel("Distancia [m]")
+		else:
+			plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)

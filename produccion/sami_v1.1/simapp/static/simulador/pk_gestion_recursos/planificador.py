@@ -104,8 +104,8 @@ class Planificador:
 		#calcula nrbs y numerologia.
 		
 		self.set_numerologia(self.cfg_plan["bw"][0])
-		self.delta_bw_khz=(2**self.numerologia)*15
-		self.delta_bw_hz=(2**self.numerologia)*self.to_khz(15)
+		self.delta_bw_khz=(2**self.numerologia)*15*self.cfg_plan["sub_ofdm"]
+		self.delta_bw_hz=(2**self.numerologia)*self.to_khz(15)*self.cfg_plan["sub_ofdm"]
 		self.resource_grid=self.nrbs*self.cfg_plan["simbolo_ofdm_dl"]*(2**self.numerologia)
 		self.nrb_total_por_celda=self.resource_grid
 
