@@ -53,7 +53,8 @@ class Modelo_Canal:
 		#SALIDA
 		self.resultado_path_loss=0
 		self.resultado_balance=0
-		self.resultado_margen=0
+
+		self.resultado_margen=0 #DEPLETED
 
 		self.resultado_balance_v=0
 
@@ -429,12 +430,13 @@ class Modelo_Canal:
 		self.configurar_desvanecimiento()
 		print("CUSTOM7,\n",self.balance_simplificado.copy()[:10])
 		self.resultado_balance=self.cfg_bal["ptx"]-np.maximum(self.balance_simplificado.copy(), self.cfg_bal["mcl"])
-		self.resultado_margen=self.resultado_balance-self.cfg_bal["sensibilidad"]
+		#self.resultado_margen=self.resultado_balance-self.cfg_bal["sensibilidad"]
 
 
 
 	def balance_del_enlace_simple(self):
-		'''Funcion que calcula un balance del enlace sencillo:
+		'''DEPLETED
+		Funcion que calcula un balance del enlace sencillo:
 		Potencia recibida ( dB ) = potencia transmitida (dB) + Ganancias (dB) - Pérdidas (dB)'''
 		#segemento=ptx-perdidas+ganancia
 		#ATENCION, DOCUMENTAR UNIDADES
