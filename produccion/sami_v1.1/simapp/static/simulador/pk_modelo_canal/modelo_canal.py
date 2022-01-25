@@ -270,9 +270,9 @@ class Modelo_Canal:
 		#se guarda en un valor aparte, no es necesario, pero sirve de debug.
 
 		if self.cfg_prop["params_desv"]["display"]:
-			print("\n\n!!!!!!!!!!!!!desvanecimiento.dist\n\n",self.distancias)
+			#print("\n\n!!!!!!!!!!!!!desvanecimiento.dist\n\n",self.distancias)
 			self.resultado_path_loss_antes=A+B*np.log10(self.distancias)-E
-		print("\n\n!!!!!!!!!!!!!desvanecimiento.dist2\n\n",self.distancias)
+		#print("\n\n!!!!!!!!!!!!!desvanecimiento.dist2\n\n",self.distancias)
 		self.resultado_path_loss=A+(B*np.log10(self.distancias))-E #+ self.desvanecimiento
 
 
@@ -428,7 +428,7 @@ class Modelo_Canal:
 		#segmento_rx=self.rx_g-self.rx_loss
 		#self.resultado_balance=segmento_tx+segmento_rx-self.resultado_path_loss
 		self.configurar_desvanecimiento()
-		print("CUSTOM7,\n",self.balance_simplificado.copy()[:10])
+		#print("CUSTOM7,\n",self.balance_simplificado.copy()[:10])
 		self.resultado_balance=self.cfg_bal["ptx"]-np.maximum(self.balance_simplificado.copy(), self.cfg_bal["mcl"])
 		#self.resultado_margen=self.resultado_balance-self.cfg_bal["sensibilidad"]
 
