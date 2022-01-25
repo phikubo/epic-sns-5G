@@ -14,9 +14,11 @@ from .forms import FormCompacto
 import os
 import json
 #
+import pyfiglet
+#
 #from .static.simulador import top_pruebas
 print("From django.views:")
-from .static.simulador import simulador as samiv1
+from .static.simulador import MAIN_simulador as samiv1
 from .static.simulador.utilidades import config as cfg
 
 
@@ -79,6 +81,8 @@ def futuro(request):
 
 def iniciar_simulacion(request):
     '''Inicia la simulacion''' 
+    ascii_banner = pyfiglet.figlet_format("SAMI-5G")
+    print(ascii_banner)
     cfg_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
     configuracion=cfg.cargar_json_full(target_path=cfg_sim["ruta_activa"])
     #configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")

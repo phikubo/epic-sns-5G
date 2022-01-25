@@ -1,0 +1,130 @@
+{
+    "cfg_simulador": {
+        "params_general": {
+            "debug": false,
+            "iteracion": 300,
+            "n_celdas": 3,
+            "portadora": [
+                24000,
+                "mhz"
+            ],
+            "isd": 200,
+            "distribucion": [
+                "ppp",
+                100.0
+            ],
+            "geometria": "autoajustable",
+            "radio_cel": 115.47005383792514,
+            "nf": [
+                13.0,
+                "dB"
+            ],
+            "ber_sinr": 1.0,
+            "imagen": {
+                "display": [
+                    false,
+                    false
+                ],
+                "resolucion": 20
+            }
+        },
+        "params_propagacion": {
+            "self_debug": false,
+            "modelo_perdidas": "umi_ci",
+            "params_modelo": [
+                15.0,
+                0.0,
+                1.5,
+                0.0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "params_desv": {
+                "display": false,
+                "tipo": "none",
+                "params": [
+                    3.1,
+                    8.1,
+                    0.0,
+                    0.0,
+                    0
+                ]
+            }
+        },
+        "params_balance": {
+            "ptx": 44.0,
+            "gtx": 15.0,
+            "ltx": 1.0,
+            "lrx": 1.0,
+            "grx": 1.0,
+            "sensibilidad": "none",
+            "mcl": 53.0
+        },
+        "params_antena": {
+            "self_debug": false,
+            "tipo": "5g",
+            "hpbw": 65,
+            "atmin": 20.0,
+            "apuntamiento": [
+                30,
+                120
+            ],
+            "params_ant": [
+                [
+                    30,
+                    150,
+                    270
+                ],
+                15.0,
+                0
+            ]
+        },
+        "params_asignacion": {
+            "self_debug": false,
+            "tipo": "rr_hard",
+            "pbch": false,
+            "bw": [
+                400,
+                "mhz"
+            ],
+            "ofdm_cp": "normal",
+            "numerologia": 3.0,
+            "bw_guarda": [
+                9860,
+                "khz"
+            ],
+            "nrb_sin_gbw": 264,
+            "sub_ofdm": 12.0,
+            "caso_de_uso": [
+                "eMBB",
+                "mMTC",
+                "URRLC"
+            ],
+            "trama_total": 14.0,
+            "simbolo_ofdm_dl": 12.0,
+            "frame": 10.0
+        }
+    },
+    "cfg_gui": {
+        "presim_graphs": {
+            "ESCENARIO: POTENCIA RECIBIDA": "simulador/base_datos/imagenes/presim/imagen_potencia.png",
+            "ESCENARIO: PATR\u00d3N DE RADIACI\u00d3N TRISECTORIZADO": "simulador/base_datos/imagenes/presim/patron_radiacion.png",
+            "P\u00c9RDIDAS DE PROPAGACI\u00d3N": "simulador/base_datos/imagenes/presim/perdidas.png",
+            "BALANCE DEL ENLACE (SIN DESVANECIMIENTO)": "simulador/base_datos/imagenes/presim/balance_sin.png",
+            "ESCENARIO DE SIMULACI\u00d3N": "simulador/base_datos/imagenes/presim/base-sim.png"
+        },
+        "histograma_cfg": {
+            "numero_barras": 30
+        }
+    },
+    "cfg_path": {
+        "path_heatmap": "/base_datos/imagenes/heatmap",
+        "path_coordendas_celdas": "/base_datos/datos/celdas_y.txt",
+        "path_coordenadas_unitaria": "/base_datos/datos/unit_y.txt",
+        "path_coordendas_malla": "/base_datos/datos/malla_yy.txt"
+    }
+}
