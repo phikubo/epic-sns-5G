@@ -18,7 +18,7 @@ import pyfiglet
 #
 #from .static.simulador import top_pruebas
 print("From django.views:")
-from .static.simulador import simulador as samiv1
+from .static.simulador import MAIN_simulador as samiv1
 from .static.simulador.utilidades import config as cfg
 
 

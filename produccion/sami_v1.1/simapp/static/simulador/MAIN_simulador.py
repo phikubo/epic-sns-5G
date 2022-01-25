@@ -131,6 +131,7 @@ class Simulador:
         (3000, 'Ultra [!!!]'))
 		densidad_dict=dict(densidad_choices)
 		titulo="Escenario: intensidad {}".format(densidad_dict[int(self.configuracion["cfg_simulador"]["params_general"]["distribucion"][1])])
+		
 		#ruta_img="simulador/base_datos/imagenes/presim/base-sim.png"
 		#self.graficas_disponibles.append(ruta_img)
 		ruta=ruta_img_presim+nombre+".png"
@@ -204,6 +205,10 @@ class Simulador:
 		ruta=ruta_img_presim+nombre+".png"
 		self.graficas_disponibles_dic.update({titulo.upper():ruta})
 		'''
+<<<<<<< HEAD:produccion/sami_v1.1/simapp/static/simulador/simulador.py
+=======
+
+>>>>>>> 8123689525139e30ed7f4870b62d7c8b68203129:produccion/sami_v1.1/simapp/static/simulador/MAIN_simulador.py
 		#guardar los nombres de graficas disponibles para desplegar despues.
 		#self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles
 		

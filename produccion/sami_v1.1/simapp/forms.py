@@ -57,10 +57,10 @@ modelo_perdidas_choices=(
     )
 
 desvancimiento_choices=(
-        (False, 'Desactivado'),
-        ('normal', 'Normal'),
-        ('rayl', 'Rayleight'),
-        ('mixto', 'Normal+Rayleight'),
+        (False, 'Desactivado'), #NA
+        ('normal', 'Normal'), #lento
+        ('rayl', 'Rayleight'), #rapido
+        ('mixto', 'Normal+Rayleight'), #mixto
         
     )
 

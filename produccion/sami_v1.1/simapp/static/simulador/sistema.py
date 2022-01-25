@@ -503,7 +503,8 @@ class Sistema_Celular:
 	--------------------------------------------------------------------------------------------'''
 
 	def calcular_medida_margen(self):
-		'''Permite calcular el valor de conexion del margen del balance del enlace'''
+		'''DEPLETED
+		Permite calcular el valor de conexion del margen del balance del enlace'''
 
 		margen_dB=self.hiperc_modelo_canal.resultado_margen
 		#obtenengo las dimensiones del arreglo cluster, pues esta segmentado en 3D
@@ -1143,8 +1144,8 @@ class Sistema_Celular:
 			print("\n[info_potencia]")
 			#print(self.hiperc_modelo_canal.resultado_balance)
 
-			print("\n[info_margen]")
-			#print(self.hiperc_modelo_canal.resultado_margen)
+			#print("\n[info_margen]")
+			#print(self.hiperc_modelo_canal.resultado_margen) #DEPLETED
 			print("-----[info_arreglos]:")
 
 			#todos

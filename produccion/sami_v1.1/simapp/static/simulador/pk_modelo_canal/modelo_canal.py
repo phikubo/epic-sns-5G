@@ -53,7 +53,8 @@ class Modelo_Canal:
 		#SALIDA
 		self.resultado_path_loss=0
 		self.resultado_balance=0
-		self.resultado_margen=0
+
+		self.resultado_margen=0 #DEPLETED
 
 		self.resultado_balance_v=0
 
@@ -90,6 +91,7 @@ class Modelo_Canal:
 			elif self.cfg_prop["params_desv"]["tipo"]=="rayl":
 				if self.cfg_gen['debug']:
 					print("[ok]-----configurar_desv, rayleight")
+					#plt.plot(self.distancias, -self.balance_simplificado, 'r', label="sin desva, sin ptx")
 				bal_simpl_desva=10**((self.cfg_bal["ptx"]-self.balance_simplificado)/10)
 				bal_simpl_desva_r=np.sqrt(bal_simpl_desva)
 				b=bal_simpl_desva_r/np.sqrt(np.pi/2)
@@ -120,6 +122,7 @@ class Modelo_Canal:
 				bray=np.random.rayleigh(b)#
 				bray=np.power(bray,2)
 				self.desvanecimiento=10*np.log10(bray) #bray_dB
+				print("CUSTOm5\n", self.desvanecimiento[:10])
 				self.balance_simplificado=-(self.desvanecimiento-self.cfg_bal["ptx"])
 		else:
 			pass
@@ -270,9 +273,9 @@ class Modelo_Canal:
 		#se guarda en un valor aparte, no es necesario, pero sirve de debug.
 
 		if self.cfg_prop["params_desv"]["display"]:
-			print("\n\n!!!!!!!!!!!!!desvanecimiento.dist\n\n",self.distancias)
+			#print("\n\n!!!!!!!!!!!!!desvanecimiento.dist\n\n",self.distancias)
 			self.resultado_path_loss_antes=A+B*np.log10(self.distancias)-E
-		print("\n\n!!!!!!!!!!!!!desvanecimiento.dist2\n\n",self.distancias)
+		#print("\n\n!!!!!!!!!!!!!desvanecimiento.dist2\n\n",self.distancias)
 		self.resultado_path_loss=A+(B*np.log10(self.distancias))-E #+ self.desvanecimiento
 
 
@@ -438,14 +441,15 @@ class Modelo_Canal:
 		#segmento_rx=self.rx_g-self.rx_loss
 		#self.resultado_balance=segmento_tx+segmento_rx-self.resultado_path_loss
 		self.configurar_desvanecimiento()
-		print("CUSTOM7,\n",self.balance_simplificado.copy()[:10])
+		#print("CUSTOM7,\n",self.balance_simplificado.copy()[:10])
 		self.resultado_balance=self.cfg_bal["ptx"]-np.maximum(self.balance_simplificado.copy(), self.cfg_bal["mcl"])
 		#self.resultado_margen=self.resultado_balance-self.cfg_bal["sensibilidad"]
 
 
 
 	def balance_del_enlace_simple(self):
-		'''Funcion que calcula un balance del enlace sencillo:
+		'''DEPLETED
+		Funcion que calcula un balance del enlace sencillo:
 		Potencia recibida ( dB ) = potencia transmitida (dB) + Ganancias (dB) - Pérdidas (dB)'''
 		#segemento=ptx-perdidas+ganancia
 		#ATENCION, DOCUMENTAR UNIDADES
