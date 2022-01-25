@@ -440,7 +440,7 @@ class Modelo_Canal:
 		self.configurar_desvanecimiento()
 		print("CUSTOM7,\n",self.balance_simplificado.copy()[:10])
 		self.resultado_balance=self.cfg_bal["ptx"]-np.maximum(self.balance_simplificado.copy(), self.cfg_bal["mcl"])
-		self.resultado_margen=self.resultado_balance-self.cfg_bal["sensibilidad"]
+		#self.resultado_margen=self.resultado_balance-self.cfg_bal["sensibilidad"]
 
 
 
