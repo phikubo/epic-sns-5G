@@ -594,11 +594,11 @@ class Modelo_Canal:
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
 		plt.xlabel("Distancia [m]")
-		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			plt.xlabel("Distancia [m]")
+		if self.cfg_prop["params_desv"]["tipo"]=="normal":
+			plt.ylabel("Ganancia del Sistema [dB]")
 		else:
-			plt.xlabel("Distancia [m]") 
-		plt.ylabel("Potencia Recibida [dBm]")
+			plt.ylabel("Potencia Recibida [dBm]")
+		#plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
 
@@ -627,9 +627,9 @@ class Modelo_Canal:
 		plt.grid(True)
 		#obtengo resutlados
 		#negativo por que aun no tiene en cuenta el mcl
-		plt.plot(self.custom_dist, -self.balance_simplificado_antes,  label="balance antes")
+		#plt.plot(self.custom_dist, -self.balance_simplificado_antes,  label="balance antes")
 		#plt.plot(self.custom_dist, self.balance_simplificado, label="balance después")
-		plt.plot(self.custom_dist, -self.balance_simplificado, label="balance después *-1")
+		#plt.plot(self.custom_dist, -self.balance_simplificado, label="balance después *-1")
 		#positivo por que tiene encuenta el mcl.
 		plt.plot(self.custom_dist, self.resultado_balance, label="balance final")
 		plt.legend(loc="lower right")
@@ -638,11 +638,6 @@ class Modelo_Canal:
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
 		plt.xlabel("Distancia [m]")
-		
-		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			plt.xlabel("Distancia [m]")
-		else:
-			plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
