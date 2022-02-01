@@ -12,12 +12,28 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="-1" />
     <title>SAMI</title>
+
+
+    <!-- Styles for data export -->
+    <link href="{% static 'simapp/js/data-table-extensions/css/lib/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'simapp/js/data-table-extensions/css/lib/themify-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'simapp/js/data-table-extensions/css/lib/data-table/buttons.bootstrap.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'simapp/js/data-table-extensions/css/lib/menubar/sidebar.css' %}" rel="stylesheet">
+    <link href="{% static 'simapp/js/data-table-extensions/css/lib/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'simapp/js/data-table-extensions/css/lib/helper.css' %}" rel="stylesheet">
+    <!-- Afecta la barra superior -->
+    <link href="{% static 'simapp/js/data-table-extensions/css/style.css' %}" rel="stylesheet">
+
+    
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'simapp/images/logo-s.png' %}">
     <link rel="stylesheet" href="{% static 'simapp/vendor/owl-carousel/css/owl.carousel.min.css' %}">
     <link rel="stylesheet" href="{% static 'simapp/vendor/owl-carousel/css/owl.theme.default.min.css' %}">
     <link href="{% static 'simapp/vendor/jqvmap/css/jqvmap.min.css' %}" rel="stylesheet">
     <link href="{% static 'simapp/css/style.css' %}" rel="stylesheet">
+
+
+     
 </head>
 
 
@@ -185,6 +201,7 @@
                             <!--
                             <li><a href="./form-element.html">Form Elements</a></li>
                             -->
+                            <li><a href="{% url 'simapp:lista_parametros' %}">Escenario Activo</a></li>
                             <li><a href="{% url 'simapp:sim_form_compacto' %}">Nuevo Escenario</a></li>
                             <li><a href="{% url 'simapp:sim_form_escenarios' %}">Seleccionar Escenario</a></li>
                             <li><a href="{% url 'simapp:parametros' %}">Ejecutar Ultimo Escenario</a></li>
@@ -331,6 +348,31 @@
 
 
     <script src="{% static 'simapp/js/dashboard/dashboard-1.js' %}"></script>
+
+
+
+     <!-- jquery vendor -->
+     <script src="{% static 'simapp/js/data-table-extensions/jquery.min.js' %}"></script>
+     <script src="{% static 'simapp/js/data-table-extensions/jquery.nanoscroller.min.js' %}"></script>
+     <!-- nano scroller -->
+     <script src="{% static 'simapp/js/data-table-extensions/menubar/sidebar.js' %}"></script>
+     <script src="{% static 'simapp/js/data-table-extensions/preloader/pace.min.js' %}"></script>
+     <!-- sidebar -->
+     
+     <!-- bootstrap -->
+ 
+     <script src="{% static 'simapp/js/data-table-extensions/bootstrap.min.js' %}"></script>
+     <script src="{% static 'simapp/js/data-table-extensions/scripts.js' %}"></script>
+     <!-- scripit init-->
+     <script src="{% static 'simapp/js/data-table/datatables.min.js' %}"></script>
+     <script src="{% static 'simapp/js/data-table/dataTables.buttons.min.js' %}"></script>
+     <script src="{% static 'simapp/js/data-table/buttons.flash.min.js' %}"></script>
+     <script src="{% static 'simapp/js/data-table/jszip.min.js' %}"></script>
+     <script src="{% static 'simapp/js/data-table/pdfmake.min.js' %}"></script>
+     <script src="{% static 'simapp/js/data-table/vfs_fonts.js' %}"></script>
+     <script src="{% static 'simapp/js/data-table/buttons.html5.min.js' %}"></script>
+     <script src="{% static 'simapp/js/data-table/buttons.print.min.js' %}"></script>
+     <script src="{% static 'simapp/js/data-table/datatables-init.js' %}"></script>
 
 </body>
 
