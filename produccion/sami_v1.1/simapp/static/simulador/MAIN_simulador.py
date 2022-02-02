@@ -339,12 +339,12 @@ class Simulador:
 		#histograma
 		fig, ax = plt.subplots()
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma SINR > 1 dB', "SINR mayor a {} dBs".format(ber_sinr), 
-			'Sinr>1 dB', 'Numero de Ocurrencia', 'pic_sys_sinr_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma SINR > 1 dB', "SINR mayor a {} dB".format(ber_sinr), 
+			'Porcentaje de Usuarios con Sinr>1 dB', 'Numero de Ocurrencia', 'pic_sys_sinr_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		#cdf, no normalizado
 		fig, ax = plt.subplots()
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras, cumulative=True)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF SINR > 1 dB', "SINR mayor a {} dBs".format(ber_sinr), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF SINR > 1 dB', "SINR mayor a {} dB".format(ber_sinr), 
 			'Porcentaje Acumulativo', 'Numero de Ocurrencia', 'pic_sys_sinr_hist_acomulativo', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 
