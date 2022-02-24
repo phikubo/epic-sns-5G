@@ -315,7 +315,14 @@ class Simulador:
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios', 'Usuarios por Celda', 
 			'Usuarios', 'Numero de Ocurrencia', 'pic_users_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
-		
+					
+		#grafica de distribucion de usuarios
+		fig, ax = plt.subplots()
+		data,bins=np.histogram(col_cob_conexion,bins=numero_barras)
+		ax.stem(bins[:-1],data, use_line_collection=True)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios Conectados ', 'Usuarios: Pr-Sens>0', 
+			'Porcentaje de Conexión', 'Frecuencia de Ocurrencia', 'pic_users_hist_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
+
 		#grafica de distribucion de usuarios
 		fig, ax = plt.subplots()
 		data,bins=np.histogram(col_cob_conexion,bins=numero_barras)
@@ -323,15 +330,7 @@ class Simulador:
 		ancho=bins[1]-bins[0]
 		ax.bar(centros, width=ancho, height=np.cumsum(data),ec='black')
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Acumulativo de Usuarios Conectados', 'Usuarios: Pr-Sens>0', 
-			'Porcentaje de Conexión', 'Numero de Ocurrencia', 'pic_users_cumsum_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
-		
-		#grafica de distribucion de usuarios
-		fig, ax = plt.subplots()
-		data,bins=np.histogram(col_cob_conexion,bins=numero_barras)
-		ax.stem(bins[:-1],data, use_line_collection=True)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios Conectados ', 'Usuarios: Pr-Sens>0', 
-			'Porcentaje de Conexión', 'Numero de Ocurrencia', 'pic_users_hist_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
-
+			'Porcentaje de Conexión', 'Frecuencia de Ocurrencia', 'pic_users_cumsum_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 		#grafica conexion sinr
 		#sinr > target
@@ -340,12 +339,12 @@ class Simulador:
 		fig, ax = plt.subplots()
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma SINR > 1 dB', "SINR mayor a {} dB".format(ber_sinr), 
-			'Porcentaje de Usuarios con Sinr>1 dB', 'Numero de Ocurrencia', 'pic_sys_sinr_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
+			'Porcentaje de Usuarios con SINR>1 dB', 'Frecuencia de Ocurrencia', 'pic_sys_sinr_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		#cdf, no normalizado
 		fig, ax = plt.subplots()
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras, cumulative=True)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF SINR > 1 dB', "SINR mayor a {} dB".format(ber_sinr), 
-			'Porcentaje Acumulativo', 'Numero de Ocurrencia', 'pic_sys_sinr_hist_acomulativo', ruta_img_montecarlo, self.graficas_disponibles_dic)
+			'Porcentaje Acumulativo', '	', 'pic_sys_sinr_hist_acomulativo', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 
 
@@ -357,14 +356,14 @@ class Simulador:
 			#grafica de tp montecarlo
 			fig, ax = plt.subplots()
 			ax.plot(np.arange(1,len(col_throughput_promedio)+1),np.cumsum(col_throughput_promedio)/np.arange(1,len(col_throughput_promedio)+1))
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '7 Throughput', 'Throughput', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '7 Valor medio de Throughput', 'Throughput', 
 				'Realizaciones', 'Throughput [Mbps]', 'pic_sys_tp_mc', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		else:
 			#muestra todas las graficas.
 			fig, ax = plt.subplots()
 			ax.hist(col_throughput_promedio,numero_barras)
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '1 Histograma de Throughput Promedio', 'Histograma de Throughput Promedio', 
-				'Throughput [Mbps]', 'Numero de Ocurrencia', 'pic_sys_tp_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
+				'Throughput [Mbps]', 'Frecuencia de Ocurrencia', 'pic_sys_tp_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 			#grafica de tp comulativa
 			#histograma acomulativo
@@ -380,23 +379,16 @@ class Simulador:
 			#self.graficas_disponibles_dic=formatear_grafica_simple(ax, '3 Densidad de Throughput', 'Densidad Throughput', 
 			#	'Throughput', 'Densidad', 'pic_sys_tp_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
-			#grafica de tp comulativa
-			fig, ax = plt.subplots()
-			#acomulativo densidad
-			ax.hist(col_throughput_promedio, numero_barras, cumulative=True, density=True)
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '4 CDF de Throughput', 'CDF de Throughput', 
-				'Throughput [Mbps]', '', 'pic_sys_tp_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
-
-
+			
 			#grafica de tp probabilidad
 			fig, ax = plt.subplots()
 			y_prob,x_prob,ancho=estats.calcular_probabilidad(np.array(col_throughput_promedio),numero_barras)
 			ax.bar(x_prob, width=ancho, height=y_prob,ec='black')
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '5 Probabilidad Throughput', 'PDF', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '4 PDF Throughput', 'PDF', 
 				'Throughput [Mbps]', 'Probabilidad', 'pic_sys_tp_pdf', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 			#grafica de tp probabilidad
-			fig, ax = plt.subplots()
+			'''fig, ax = plt.subplots()
 			x_prob=x_prob/max(x_prob)
 			y_prob=np.cumsum(y_prob)
 			ancho=x_prob[1]-x_prob[0]
@@ -405,11 +397,18 @@ class Simulador:
 			#ax.plot(x_prob, y_prob, drawstyle='steps-pre')
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '6 CDF Throughput', 'CDF Throughput', 
 				'Throughput normalizado', '', 'pic_sys_tp_cdf', ruta_img_montecarlo, self.graficas_disponibles_dic)
-			
+			'''
+			#grafica de tp comulativa
+			fig, ax = plt.subplots()
+			#acomulativo densidad
+			ax.hist(col_throughput_promedio, numero_barras, cumulative=True, density=True)
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '5 CDF de Throughput', 'CDF de Throughput', 
+				'Throughput [Mbps]', '', 'pic_sys_tp_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
+
 			#grafica de tp montecarlo
 			fig, ax = plt.subplots()
 			ax.plot(np.arange(1,len(col_throughput_promedio)+1),np.cumsum(col_throughput_promedio)/np.arange(1,len(col_throughput_promedio)+1))
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '7 Throughput', ' Throughput', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '7 Valor medio de Throughput', ' Throughput', 
 				'Realizaciones', ' Throughput [Mbps]', 'pic_sys_tp_mc', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 
