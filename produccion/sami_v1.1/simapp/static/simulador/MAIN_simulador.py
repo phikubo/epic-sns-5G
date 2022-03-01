@@ -313,7 +313,7 @@ class Simulador:
 		fig, ax = plt.subplots()
 		ax.hist(col_cobertura_usuarios, bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios', 'Usuarios por Celda', 
-			'Usuarios', 'Numero de Ocurrencia', 'pic_users_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
+			'Usuarios', 'Número de Ocurrencia', 'pic_users_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
 					
 		#grafica de distribucion de usuarios
@@ -344,7 +344,7 @@ class Simulador:
 		fig, ax = plt.subplots()
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras, cumulative=True)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF SINR > 1 dB', "SINR mayor a {} dB".format(ber_sinr), 
-			'Porcentaje Acumulativo', '	', 'pic_sys_sinr_hist_acomulativo', ruta_img_montecarlo, self.graficas_disponibles_dic)
+			'Porcentaje Acumulativo', '', 'pic_sys_sinr_hist_acomulativo', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 
 
@@ -384,7 +384,7 @@ class Simulador:
 			fig, ax = plt.subplots()
 			y_prob,x_prob,ancho=estats.calcular_probabilidad(np.array(col_throughput_promedio),numero_barras)
 			ax.bar(x_prob, width=ancho, height=y_prob,ec='black')
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '4 PDF Throughput', 'PDF', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '4 PDF Throughput', 'PDF de Throughput', 
 				'Throughput [Mbps]', 'Probabilidad', 'pic_sys_tp_pdf', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 			#grafica de tp probabilidad
