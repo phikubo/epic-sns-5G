@@ -338,14 +338,25 @@ class Simulador:
 		#histograma
 		fig, ax = plt.subplots()
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma SINR > 1 dB', "SINR mayor a {} dB".format(ber_sinr), 
-			'Porcentaje de Usuarios con SINR>1 dB', 'Frecuencia de Ocurrencia', 'pic_sys_sinr_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma SINR > {} dB'.format(ber_sinr), "SINR mayor a {} dB".format(ber_sinr), 
+			'Porcentaje de Usuarios con SINR>1 dB', 'Número de Ocurrencia', 'pic_sys_sinr_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		#cdf, no normalizado
 		fig, ax = plt.subplots()
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras, cumulative=True)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF SINR > 1 dB', "SINR mayor a {} dB".format(ber_sinr), 
-			'Porcentaje Acumulativo', '', 'pic_sys_sinr_hist_acomulativo', ruta_img_montecarlo, self.graficas_disponibles_dic)
-
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF No normalizada SINR > {} dB'.format(ber_sinr), "SINR mayor a {} dB".format(ber_sinr), 
+		'Porcentaje de Usuarios con SINR>1 dB', '', 'pic_sys_sinr_hist_acomulativo', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		#PDF, normalizada
+		fig, ax = plt.subplots()
+		y_prob,x_prob,ancho=estats.calcular_probabilidad(np.array(col_cob_conexion_sinr),numero_barras)
+		ax.bar(x_prob, width=ancho, height=y_prob,ec='black')
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'PDF SINR > {} dB'.format(ber_sinr), 'SINR mayor a {} dB'.format(ber_sinr), 
+		'SINR>1dB [dB]', 'Frecuencia de Ocurrencia', 'pic_sys_sinr_pdf', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		#CDF normalizada
+		fig, ax = plt.subplots()
+		#acomulativo densidad
+		ax.hist(col_cob_conexion_sinr, bins=numero_barras, cumulative=True, density=True)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF SINR > {} dB'.format(ber_sinr), 'SINR mayor a {} dB'.format(ber_sinr), 
+		'SINR>1 dB [dB]', '', 'pic_sys_sinr_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 
 		#grafica de tp
@@ -363,7 +374,7 @@ class Simulador:
 			fig, ax = plt.subplots()
 			ax.hist(col_throughput_promedio,numero_barras)
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '1 Histograma de Throughput Promedio', 'Histograma de Throughput Promedio', 
-				'Throughput [Mbps]', 'Frecuencia de Ocurrencia', 'pic_sys_tp_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
+				'Throughput [Mbps]', 'Número de Ocurrencia', 'pic_sys_tp_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 			#grafica de tp comulativa
 			#histograma acomulativo
@@ -385,7 +396,7 @@ class Simulador:
 			y_prob,x_prob,ancho=estats.calcular_probabilidad(np.array(col_throughput_promedio),numero_barras)
 			ax.bar(x_prob, width=ancho, height=y_prob,ec='black')
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '4 PDF Throughput', 'PDF de Throughput', 
-				'Throughput [Mbps]', 'Probabilidad', 'pic_sys_tp_pdf', ruta_img_montecarlo, self.graficas_disponibles_dic)
+				'Throughput [Mbps]', 'Frecuencia de Ocurrencia', 'pic_sys_tp_pdf', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 			#grafica de tp probabilidad
 			'''fig, ax = plt.subplots()
