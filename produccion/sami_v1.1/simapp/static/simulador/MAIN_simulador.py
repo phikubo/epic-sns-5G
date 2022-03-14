@@ -321,16 +321,22 @@ class Simulador:
 		data,bins=np.histogram(col_cob_conexion,bins=numero_barras)
 		ax.stem(bins[:-1],data, use_line_collection=True)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios Conectados ', 'Usuarios: Pr-Sens>0', 
-			'Porcentaje de Conexión', 'Frecuencia de Ocurrencia', 'pic_users_hist_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
+			'Porcentaje de Conexión', 'Número de Ocurrencia', 'pic_users_hist_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 		#grafica de distribucion de usuarios
+		#fig, ax = plt.subplots()
+		#data,bins=np.histogram(col_cob_conexion,bins=numero_barras)
+		#centros=estats.calcular_centros(bins)
+		#ancho=bins[1]-bins[0]
+		#ax.bar(centros, width=ancho, height=np.cumsum(data),ec='black')
+		#self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Acumulativo de Usuarios Conectados', 'Usuarios: Pr-Sens>0', 
+		#	'Porcentaje de Conexión', '', 'pic_users_cumsum_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		#CDF normalizada
 		fig, ax = plt.subplots()
-		data,bins=np.histogram(col_cob_conexion,bins=numero_barras)
-		centros=estats.calcular_centros(bins)
-		ancho=bins[1]-bins[0]
-		ax.bar(centros, width=ancho, height=np.cumsum(data),ec='black')
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Acumulativo de Usuarios Conectados', 'Usuarios: Pr-Sens>0', 
-			'Porcentaje de Conexión', 'Frecuencia de Ocurrencia', 'pic_users_cumsum_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		#acomulativo densidad
+		ax.hist(col_cob_conexion, bins=numero_barras, cumulative=True, density=True)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF Usuarios con Pr-Sens>0 dB', 'Usuarios: Pr-Sens>0', 
+		'Pr-Sens>0 [dB]', '', 'pic_users_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 		#grafica conexion sinr
 		#sinr > target
@@ -350,13 +356,13 @@ class Simulador:
 		y_prob,x_prob,ancho=estats.calcular_probabilidad(np.array(col_cob_conexion_sinr),numero_barras)
 		ax.bar(x_prob, width=ancho, height=y_prob,ec='black')
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'PDF SINR > {} dB'.format(ber_sinr), 'SINR mayor a {} dB'.format(ber_sinr), 
-		'SINR>1dB [dB]', 'Frecuencia de Ocurrencia', 'pic_sys_sinr_pdf', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		'SINR>1 [dB]', 'Frecuencia de Ocurrencia', 'pic_sys_sinr_pdf', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		#CDF normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras, cumulative=True, density=True)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF SINR > {} dB'.format(ber_sinr), 'SINR mayor a {} dB'.format(ber_sinr), 
-		'SINR>1 dB [dB]', '', 'pic_sys_sinr_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		'SINR>1 [dB]', '', 'pic_sys_sinr_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 
 		#grafica de tp
