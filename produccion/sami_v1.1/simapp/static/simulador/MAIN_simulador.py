@@ -318,8 +318,13 @@ class Simulador:
 					
 		#grafica de distribucion de usuarios
 		fig, ax = plt.subplots()
-		data,bins=np.histogram(col_cob_conexion,bins=numero_barras)
-		ax.stem(bins[:-1],data, use_line_collection=True)
+		#data,bins=np.histogram(col_cob_conexion,bins=numero_barras)
+		ax.hist(col_cob_conexion, bins=numero_barras)
+		#ax.stem(np.diff(bins),data, use_line_collection=True)
+		if min(col_cob_conexion)==1:
+			ax.set_xlim([0.8, 1.01])
+		else:
+			pass
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios Conectados ', 'Usuarios: Pr-Sens>0', 
 			'Porcentaje de Conexión', 'Número de Ocurrencia', 'pic_users_hist_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
@@ -335,11 +340,19 @@ class Simulador:
 		fig, ax = plt.subplots()
 		#acomulativo densidad
 		ax.hist(col_cob_conexion, bins=numero_barras, cumulative=True, density=True)
+		if min(col_cob_conexion)==1:
+			ax.set_xlim([0.8, 1.01])
+		else:
+			pass
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF Usuarios con Pr-Sens>0 dB', 'Usuarios: Pr-Sens>0', 
 		'Pr-Sens>0 [dB]', '', 'pic_users_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 		#grafica conexion sinr
 		#sinr > target
+		if min(col_cob_conexion)==1:
+			ax.set_xlim([0.8, 1.01])
+		else:
+			pass
 		ber_sinr=self.configuracion["cfg_simulador"]["params_general"]["ber_sinr"]
 		#histograma
 		fig, ax = plt.subplots()
