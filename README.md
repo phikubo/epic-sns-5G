@@ -6,6 +6,7 @@ Requisitos:
 2. Python 3.x instalado
 3. Pip actualizado
   >>pip install --upgrade pip
+4. (Opcional) Entorno virtual instalado y activo.
 
 Para instalar, 
 
