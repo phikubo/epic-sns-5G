@@ -238,6 +238,30 @@ class Modelo_Canal:
 				self.portadora=self.cfg_gen["portadora"][0]/1000
 
 			self.perdidas_uma_3gpp()
+
+		elif self.cfg_prop["modelo_perdidas"] =="uma_3gpp_opcional":
+			#km, mhz
+			#m, Ghz
+			
+			if self.arreglos[0][1]=="m":
+
+				if self.custom_dist_flag==True:
+					self.distancias=np.vstack(self.custom_dist)
+				else:
+					#las distancias debe estar en [m]
+					self.distancias=self.arreglos[0][0]
+
+			else:
+				pass #opcion kilometro, no cambia.
+			if self.cfg_gen["portadora"][1]=="ghz":
+				#convierto a megaherz, por la ecuacion, si ya esta en megaherz, pass
+				self.portadora=self.cfg_gen["portadora"][0]
+			else:
+				#pass #opcion megaherz, no cambia.
+				self.portadora=self.cfg_gen["portadora"][0]/1000
+
+			self.uma_3gpp_opcional()
+		
 		else:
 			pass
 
@@ -338,7 +362,7 @@ class Modelo_Canal:
 		#fc debe estar en Ghz, por eso FC/1000
 		'''evalua que funcion debe seleccionar dependiendo el parametro de entrada.
 		bp_p breakpoint prima.'''
-		path_l=28+40*np.log10(dist_3d)+20*np.log10(self.portadora)-9*np.log10((bp_p**2)+(hbs-hut)**2)
+		path_l=28+40*np.log10(dist_3d)+20*np.log10(self.portadora)-9*np.log10((bp_p)**2+(hbs-hut)**2)
 		return path_l
 	
 	def evaular_pl0(distancias, bp):
@@ -384,7 +408,8 @@ class Modelo_Canal:
 		hbs_p=hbs-he
 		hut_p=hut-he
 		#portadora esta en MHz, la necesitamos en HZ de acuerdo a la documentacion.
-		dist_breakpoint_prima=4*hbs_p*hut_p*((self.portadora)/300)#portadora en GHz
+		dist_breakpoint_prima=4*hbs_p*hut_p*((self.portadora)/30)#portadora en GHz
+		print(dist_breakpoint_prima)
 		#3. evaular PLuma_los (tr138901)
 		'''evaluar para cada distancia de la siguiente manera
 		PL1 si 10m < self.distancias < dist_breakpoint.
@@ -400,7 +425,7 @@ class Modelo_Canal:
 		self.distancias=np.where(self.distancias>5000, 5000,self.distancias)
 
 		'''encontramos los indices donde 1 pl1 y 2 pl2'''
-		map_pl1=np.where((10 <= self.distancias) & (self.distancias <= dist_breakpoint_prima), 1, self.distancias)
+		map_pl1=np.where((self.distancias >= 10) & (self.distancias <= dist_breakpoint_prima), 1, self.distancias)
 		#map_pl2=np.where((dist_breakpoint <= self.distancias) & (self.distancias <= 5000), 2, 0)
 		#map_pl2 toma la referncia de map_pl1 y modifica sus valores.
 		map_pl2=np.where((dist_breakpoint_prima <= map_pl1) & (map_pl1 <= 5000), 2, map_pl1)
@@ -410,7 +435,31 @@ class Modelo_Canal:
 		referencia=np.where(map_pl2==2, self.evaluar_pl2(dist_3d, dist_breakpoint_prima, hbs, hut), referencia)
 		self.resultado_path_loss=referencia
 
+	def evaluar_3gpp_opcional(self, dist_3d ):
+		path_l=32.4+20*np.log10(self.portadora)+30*np.log10(dist_3d)
+		return path_l
 
+	def uma_3gpp_opcional(self):
+		hbs=self.cfg_prop["params_modelo"][0]
+		hut=self.cfg_prop["params_modelo"][2]
+		he=1
+		hbs_p=hbs-he
+		hut_p=hut-he
+		#portadora esta en MHz, la necesitamos en HZ de acuerdo a la documentacion.
+		dist_breakpoint_prima=4*hbs_p*hut_p*((self.portadora)/0.3)#portadora en GHz
+		#3. evaular PLuma_los (tr138901)
+		self.distancias=np.where(self.distancias<=10, 10,self.distancias)
+		self.distancias=np.where(self.distancias>=5000, 5000,self.distancias)
+
+		map_pl1=np.where((self.distancias >= 10) & (self.distancias <= dist_breakpoint_prima), 1, self.distancias)
+		#map_pl2=np.where((dist_breakpoint <= self.distancias) & (self.distancias <= 5000), 2, 0)
+		#map_pl2 toma la referncia de map_pl1 y modifica sus valores.
+		map_pl2=np.where((dist_breakpoint_prima <= map_pl1) & (map_pl1 <= 5000), 2, map_pl1)
+		#convertir de 2D a 3D antes de generar las perdidas
+		dist_3d=np.sqrt(self.distancias**2 +(hbs-hut)**2)
+		referencia=np.where(map_pl2==1,self.evaluar_3gpp_opcional(dist_3d), map_pl2)
+		referencia=np.where(map_pl2==2, self.evaluar_3gpp_opcional(dist_3d), referencia)
+		self.resultado_path_loss=referencia
 
 	def balance_del_enlace_mcl(self):
 		'''Funcion que calcula un balance del enlace, teniendo en cuenta el mcl.
@@ -535,6 +584,8 @@ class Modelo_Canal:
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
 			self.custom_dist=np.arange(1,999,1)
+		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp_opcional":
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
 			self.custom_dist=np.arange(1,999,1)
@@ -570,6 +621,8 @@ class Modelo_Canal:
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
+			self.custom_dist=np.arange(1,999,1)
+		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp_opcional":
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
@@ -614,6 +667,8 @@ class Modelo_Canal:
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
 			self.custom_dist=np.arange(1,999,1)
+		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp_opcional":
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
 			self.custom_dist=np.arange(1,999,1)
@@ -653,6 +708,8 @@ class Modelo_Canal:
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
 			self.custom_dist=np.arange(1,999,1)
+		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp_opcional":
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
 			self.custom_dist=np.arange(1,999,1)
@@ -683,6 +740,8 @@ class Modelo_Canal:
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
+			self.custom_dist=np.arange(1,999,1)
+		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp_opcional":
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
