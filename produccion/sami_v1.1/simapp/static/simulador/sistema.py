@@ -290,7 +290,9 @@ class Sistema_Celular:
 					self.cfg_gen['debug'])
 				#shape es (n_celdas, n_usuarios en cada una)
 				if self.cfg_gen["imagen"]["display"][0]: #si true, genera el mapa de calor.
+
 					#[!!!!] mapa_calor_x, mapa_calor_y se produce y se guarda en simulador.
+					
 					with open('simapp/static/simulador/base_datos/datos/mapa_calor_x.npy', 'rb') as archivo_npy:
 						self.malla_x=np.load(archivo_npy)
 
@@ -1003,7 +1005,7 @@ class Sistema_Celular:
 		#self.sinr_db=np.zeros(self.mapa_conexion_usuario.shape)
 		#self.throughput_users=np.zeros(self.mapa_conexion_usuario.shape)
 		print("-----------")
-		#print("[info_data] {}".format(args))
+		print("[info_data] {}".format(args))
 		if self.cfg_gen['debug']:
 			print("\n-----[debug.calcular_sinr]:")
 		print("\n------------------------------------------[info_data]:")
@@ -1029,38 +1031,38 @@ class Sistema_Celular:
 	def info_distancia(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_distancia]")
-		#print(self.hiperc_distancias)
+		print(self.hiperc_distancias)
 		print("**************************************************\n")
 
 
 	def info_angulos(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_angulos]")
-		#print(self.hiperc_angulos)
+		print(self.hiperc_angulos)
 		print("**************************************************\n")
 
 	def info_ganancia(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_ganancia]")
-		#print(self.hiperc_ganancia_relativa)
+		print(self.hiperc_ganancia_relativa)
 		print("**************************************************\n")
 
 	def info_potencia(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_potencia_con_desv]")
-		#print(self.hiperc_modelo_canal.balance_simplificado)
+		print(self.hiperc_modelo_canal.balance_simplificado)
 		print("**************************************************\n")
 
 	def info_potencia_sin(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_potencia_sin_desv]")
-		#print(self.hiperc_modelo_canal.balance_simplificado_antes)
+		print(self.hiperc_modelo_canal.balance_simplificado_antes)
 		print("**************************************************\n")
 
 	def info_balance(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_balance]")
-		#print(self.hiperc_modelo_canal.resultado_balance)
+		print(self.hiperc_modelo_canal.resultado_balance)
 		print("**************************************************\n")
 
 	def info_planificador(self,*args):
@@ -1074,33 +1076,33 @@ class Sistema_Celular:
 	def info_general(self, *target):
 		'''Permite observar parametros generales de cada simulacion.'''
 		print("------------")
-		#print("info_general: {}".format(target))
+		print("info_general: {}".format(target))
 		target=target[0]
 		if target =="potencia":
 			print("[info_potencia]")
-			#print(self.hiperc_modelo_canal.resultado_balance)
+			print(self.hiperc_modelo_canal.resultado_balance)
 		elif target=="distancia":
 			print("[info_distancia]")
-			#print(self.hiperc_distancias)
+			print(self.hiperc_distancias)
 		elif target=="angulos":
 			print("[info_angulos]")
-			#print(self.hiperc_angulos)
+			print(self.hiperc_angulos)
 		elif target=="ganancia":
 			print("[info_ganancia]")
-			#print(self.hiperc_ganancia_relativa)
+			print(self.hiperc_ganancia_relativa)
 		elif target=="general":
-			#print("\n------------------------------------------[info_general]:")
-			#print("Celdas:",self.cfg_gen["n_celdas"])
-			#print("Usuarios por Conexion Sinr, supera {} dB un {}% celda".format(self.cfg_gen['ber_sinr'],self.no_usuarios_celda))
-			#print("Semilla inicial de usuarios por celda: {}". format(self.no_usuarios_celda))
-			#print("Usuarios totales por sistema",self.no_usuarios_total)
-			#print("Ancho de banda por usuario:",self.bw_usuario, "[Hz]")
-			#print("Margen de conexion (Usuarios: Pr-Sensibilidad>0): {}%".format(np.round(self.medida_conexion_margen*100,4)))
-			#print("Porcentaje de usuaios cuya SINR supera {} dB, {} %".format(self.cfg_gen["ber_sinr"] ,np.round(self.medida_conexion_sinr*100,4)))
-			#print("De {} usuarios, {} cumplen BER objetivo.".format(self.no_usuarios_total, self.conexion_total_sinr))
-			#print("Distribucion Celular, original: ", self.planificador.mapa_conexion_celda)
-			#print("Distribucion Celular, con desconexion: ", self.planificador.mapa_estacion_descon)
-			#print("Probabilidad de desconexión: {}%".format(np.round(self.no_usuarios_total/np.sum(self.planificador.mapa_estacion_descon),4)))
+			print("\n------------------------------------------[info_general]:")
+			print("Celdas:",self.cfg_gen["n_celdas"])
+			print("Usuarios por Conexion Sinr, supera {} dB un {}% celda".format(self.cfg_gen['ber_sinr'],self.no_usuarios_celda))
+			print("Semilla inicial de usuarios por celda: {}". format(self.no_usuarios_celda))
+			print("Usuarios totales por sistema",self.no_usuarios_total)
+			print("Ancho de banda por usuario:",self.bw_usuario, "[Hz]")
+			print("Margen de conexion (Usuarios: Pr-Sensibilidad>0): {}%".format(np.round(self.medida_conexion_margen*100,4)))
+			print("Porcentaje de usuaios cuya SINR supera {} dB, {} %".format(self.cfg_gen["ber_sinr"] ,np.round(self.medida_conexion_sinr*100,4)))
+			print("De {} usuarios, {} cumplen BER objetivo.".format(self.no_usuarios_total, self.conexion_total_sinr))
+			print("Distribucion Celular, original: ", self.planificador.mapa_conexion_celda)
+			print("Distribucion Celular, con desconexion: ", self.planificador.mapa_estacion_descon)
+			print("Probabilidad de desconexión: {}%".format(np.round(self.no_usuarios_total/np.sum(self.planificador.mapa_estacion_descon),4)))
 			'''
 			Las siguientes variables se repiten, averiguar por que!
 
@@ -1170,26 +1172,3 @@ if __name__=="__main__":
 	#pass
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")
-
-	'''Definicion de la implementacion:
-	COBERTURA:
-	A. Usuario como entidad principal.
-
-	0. Definir el número de usuarios en cada celda.
-	1. Obtener posicion de usuarios del cluster: self.usuario_x, self.usuario_y [[cel1], [cel2],...,[celn]]
-	2. Relacionar posicion cluster celdas, con posicion cluster usuarios:
-		a. En cada celda iterar en cada usuario
-		b. En cada usuario calcular el balance del enlace (potencia recibida)
-			1. Reutilizar inicializar_modelo_canal()
-		c. En variable: mejor celda servida, seleccionar id de celda con mejor potencia recibida.
-		d. Reorganizar de acuerdo al id de mejor celda servida * requerimiento para +++ capacidad.
-			1. Reutilizar inicializar_cluster_usuarios() para este proposito
-	3. Dimensionar el número de usuarios en cada celda. ****Ejemplo 5-10-15.
-		1. Contar cuantos usuarios se han asignado
-		2. Rellenar usuarios faltantes con parametros nulos.
-
-	4. CAPACIDAD:
-		B. Celdas como elemento principal.
-			a. Iterar sobre los valores de las celdas.
-	nota: crear cuando instancia de usuario al generar las coordenadas de distribucion o luego
-	de este evento, crear los usuarios'''

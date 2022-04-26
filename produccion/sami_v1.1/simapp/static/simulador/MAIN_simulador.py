@@ -68,7 +68,7 @@ class Simulador:
 		resolucion=self.configuracion["cfg_simulador"]["params_general"]["imagen"]["resolucion"]
 		radio_cel=self.configuracion["cfg_simulador"]["params_general"]["isd"]
 		#radio de la celda fijo.
-		radio_cel=(2/3)*radio_cel*math.sqrt(3)/2
+		#radio_cel=(2/3)*radio_cel*math.sqrt(3)/2
 		#reactivo la generacion de imagenes, asi se haya desactivado antes.
 		self.configuracion["cfg_simulador"]["params_general"]["imagen"]["display"][0]=True
 		#siempre es True por que es presimulacion.
@@ -76,9 +76,13 @@ class Simulador:
 		#configuracion de imagen de potencia
 		display_pic=True
 		if display_pic:
-			if n_cel>7:
+			if n_cel<=1:
+				mul=1
+			elif n_cel>1 and n_cel<=7:
+				mul=2
+			elif n_cel>7 and n_cel <=19:
 				#tamaño del canvas
-				mul=4.6
+				mul=3
 			else:
 				#tamaño del canvas
 				mul=3
