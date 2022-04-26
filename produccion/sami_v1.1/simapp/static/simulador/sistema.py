@@ -1003,7 +1003,7 @@ class Sistema_Celular:
 		#self.sinr_db=np.zeros(self.mapa_conexion_usuario.shape)
 		#self.throughput_users=np.zeros(self.mapa_conexion_usuario.shape)
 		print("-----------")
-		print("[info_data] {}".format(args))
+		#print("[info_data] {}".format(args))
 		if self.cfg_gen['debug']:
 			print("\n-----[debug.calcular_sinr]:")
 		print("\n------------------------------------------[info_data]:")
@@ -1029,38 +1029,38 @@ class Sistema_Celular:
 	def info_distancia(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_distancia]")
-		print(self.hiperc_distancias)
+		#print(self.hiperc_distancias)
 		print("**************************************************\n")
 
 
 	def info_angulos(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_angulos]")
-		print(self.hiperc_angulos)
+		#print(self.hiperc_angulos)
 		print("**************************************************\n")
 
 	def info_ganancia(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_ganancia]")
-		print(self.hiperc_ganancia_relativa)
+		#print(self.hiperc_ganancia_relativa)
 		print("**************************************************\n")
 
 	def info_potencia(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_potencia_con_desv]")
-		print(self.hiperc_modelo_canal.balance_simplificado)
+		#print(self.hiperc_modelo_canal.balance_simplificado)
 		print("**************************************************\n")
 
 	def info_potencia_sin(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_potencia_sin_desv]")
-		print(self.hiperc_modelo_canal.balance_simplificado_antes)
+		#print(self.hiperc_modelo_canal.balance_simplificado_antes)
 		print("**************************************************\n")
 
 	def info_balance(self,*args):
 		'''Permite observar la potencia recibida por usuario, y de diferentes fuentes.'''
 		print("[info_balance]")
-		print(self.hiperc_modelo_canal.resultado_balance)
+		#print(self.hiperc_modelo_canal.resultado_balance)
 		print("**************************************************\n")
 
 	def info_planificador(self,*args):
@@ -1074,31 +1074,31 @@ class Sistema_Celular:
 	def info_general(self, *target):
 		'''Permite observar parametros generales de cada simulacion.'''
 		print("------------")
-		print("info_general: {}".format(target))
+		#print("info_general: {}".format(target))
 		target=target[0]
 		if target =="potencia":
 			print("[info_potencia]")
-			print(self.hiperc_modelo_canal.resultado_balance)
+			#print(self.hiperc_modelo_canal.resultado_balance)
 		elif target=="distancia":
 			print("[info_distancia]")
-			print(self.hiperc_distancias)
+			#print(self.hiperc_distancias)
 		elif target=="angulos":
 			print("[info_angulos]")
-			print(self.hiperc_angulos)
+			#print(self.hiperc_angulos)
 		elif target=="ganancia":
 			print("[info_ganancia]")
-			print(self.hiperc_ganancia_relativa)
+			#print(self.hiperc_ganancia_relativa)
 		elif target=="general":
-			print("\n------------------------------------------[info_general]:")
-			print("Celdas:",self.cfg_gen["n_celdas"])
+			#print("\n------------------------------------------[info_general]:")
+			#print("Celdas:",self.cfg_gen["n_celdas"])
 			#print("Usuarios por Conexion Sinr, supera {} dB un {}% celda".format(self.cfg_gen['ber_sinr'],self.no_usuarios_celda))
-			print("Semilla inicial de usuarios por celda: {}". format(self.no_usuarios_celda))
-			print("Usuarios totales por sistema",self.no_usuarios_total)
+			#print("Semilla inicial de usuarios por celda: {}". format(self.no_usuarios_celda))
+			#print("Usuarios totales por sistema",self.no_usuarios_total)
 			#print("Ancho de banda por usuario:",self.bw_usuario, "[Hz]")
 			#print("Margen de conexion (Usuarios: Pr-Sensibilidad>0): {}%".format(np.round(self.medida_conexion_margen*100,4)))
-			print("Porcentaje de usuaios cuya SINR supera {} dB, {} %".format(self.cfg_gen["ber_sinr"] ,np.round(self.medida_conexion_sinr*100,4)))
-			print("De {} usuarios, {} cumplen BER objetivo.".format(self.no_usuarios_total, self.conexion_total_sinr))
-			print("Distribucion Celular, original: ", self.planificador.mapa_conexion_celda)
+			#print("Porcentaje de usuaios cuya SINR supera {} dB, {} %".format(self.cfg_gen["ber_sinr"] ,np.round(self.medida_conexion_sinr*100,4)))
+			#print("De {} usuarios, {} cumplen BER objetivo.".format(self.no_usuarios_total, self.conexion_total_sinr))
+			#print("Distribucion Celular, original: ", self.planificador.mapa_conexion_celda)
 			#print("Distribucion Celular, con desconexion: ", self.planificador.mapa_estacion_descon)
 			#print("Probabilidad de desconexión: {}%".format(np.round(self.no_usuarios_total/np.sum(self.planificador.mapa_estacion_descon),4)))
 			'''
@@ -1109,7 +1109,7 @@ class Sistema_Celular:
 			#print("Mapa de conexion por estacion final: ", self.mapa_conexion_estacion_no_con)
 
 			
-			print("El sistema en promedio ha alcanzado {} Mbps".format(np.round(self.throughput_sistema,4)))
+			#print("El sistema en promedio ha alcanzado {} Mbps".format(np.round(self.throughput_sistema,4)))
 			'''
 			if self.planificador.mapa_conexion==self.planificador.mapa_estacion_descon:
 				print("-->No hubo desconexión")
@@ -1122,27 +1122,27 @@ class Sistema_Celular:
 			print("\n-----[info_arreglos]:")
 
 			print("\n[info_distancia]")
-			print(self.hiperc_distancias)
+			#print(self.hiperc_distancias)
 
 			print("\n[info_angulos]")
-			print(self.hiperc_angulos)
+			#print(self.hiperc_angulos)
 
 			print("\n[info_ganancia]")
-			print(self.hiperc_antena.hiper_ganancias)
+			#print(self.hiperc_antena.hiper_ganancias)
 
 			if self.cfg_prop["params_desv"]["display"]:
 				print("\n[info_balance_simplificado_antes]")
-				print(self.hiperc_modelo_canal.balance_simplificado_antes)
+				#print(self.hiperc_modelo_canal.balance_simplificado_antes)
 				print("\n[info_balance_simplificado]")
-				print(self.hiperc_modelo_canal.balance_simplificado)
+				#print(self.hiperc_modelo_canal.balance_simplificado)
 			else:
 				pass
 
 			print("\n[info_perdidas]")
-			print(self.hiperc_modelo_canal.resultado_path_loss)
+			#print(self.hiperc_modelo_canal.resultado_path_loss)
 
 			print("\n[info_potencia]")
-			print(self.hiperc_modelo_canal.resultado_balance)
+			#print(self.hiperc_modelo_canal.resultado_balance)
 
 			#print("\n[info_margen]")
 			#print(self.hiperc_modelo_canal.resultado_margen) #DEPLETED

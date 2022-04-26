@@ -168,16 +168,16 @@ def asignar_tasa_modulacion(sinr_in):
 
         res = sinr_-sinr_in
         if res > 0:
-            print("comparar", sinr_)
-            print("con ", sinr_in)
-            print("resta", sinr_-sinr_in)
-            print("---")
+            #print("comparar", sinr_)
+            #print("con ", sinr_in)
+            #print("resta", sinr_-sinr_in)
+            #print("---")
             inferior = ind-1
             superior = ind
             sinr_inferior = sinr_tar[inferior]
             sinr_superior = sinr_tar[superior]
-            print("indice down {}, up {}".format(inferior, superior))
-            print("valores: ", sinr_inferior, sinr_superior)
+            #print("indice down {}, up {}".format(inferior, superior))
+            #print("valores: ", sinr_inferior, sinr_superior)
             break
     # verificamos que se encuentra en el limite superior de la tabla, por tanto obtiene el mayor valor de tasa.
     if verificar_superior:
@@ -198,7 +198,7 @@ def asignar_tasa_modulacion(sinr_in):
         sinr_inferior = -300
     else:
         pass
-    print(mod_inferior, tasa_inferior)
+    #print(mod_inferior, tasa_inferior)
 
     return sinr_inferior, sinr_superior, tasa_inferior, mod_inferior
 
@@ -297,7 +297,7 @@ def calcular_throughput(n_rb,modulacion,tasa,arreglo_mimo,numerologia):
     v_oh=(1-oh[1])
 
     # [!!!]: por que se selecciona scaling_factor[1]?
-    print(arreglo_mimo, modulacion, scaling_factor[0], tasa, n_rb, sub_ofdm, trama, v_oh)
+    #print(arreglo_mimo, modulacion, scaling_factor[0], tasa, n_rb, sub_ofdm, trama, v_oh)
     throughput_user=10**(-6)*arreglo_mimo*modulacion*scaling_factor[0]*(tasa/1024)*(n_rb*sub_ofdm/trama)*v_oh
     return throughput_user
 

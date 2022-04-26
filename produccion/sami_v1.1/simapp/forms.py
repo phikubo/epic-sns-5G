@@ -51,6 +51,7 @@ imagen_choices=(
 modelo_perdidas_choices=(
         ('okumura_hata', 'Modelo Okumura Hata'),
         ('uma_3gpp', 'Modelo 3GPP UMa'),
+        ('uma_3gpp_opcional','Modelo 3GPP UMa Opc'),
         ('umi_ci', 'Modelo CI-UMi'),
         ('umi_abg', 'Modelo ABG-UMi'),
         

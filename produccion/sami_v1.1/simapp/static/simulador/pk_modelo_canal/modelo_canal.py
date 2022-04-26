@@ -83,8 +83,8 @@ class Modelo_Canal:
 			if self.cfg_prop["params_desv"]["tipo"]=="normal":
 				mu=self.cfg_prop["params_desv"]["params"][2]
 				sigma_xn=self.cfg_prop["params_desv"]["params"][1]
-				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.balance_simplificado.shape)
-				self.balance_simplificado=self.balance_simplificado+np.vstack(self.desvanecimiento)
+				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.balance_simplificado.copy().shape)
+				self.balance_simplificado=self.balance_simplificado.copy()+self.desvanecimiento
 				if self.cfg_gen['debug']:
 					print("[ok]-----configurar_desv,  normal")
 
@@ -97,8 +97,10 @@ class Modelo_Canal:
 				b=bal_simpl_desva_r/np.sqrt(np.pi/2)
 				bray=np.random.rayleigh(b)
 				bray=np.power(bray,2)
-				self.desvanecimiento=10*np.log10(bray) #bray_dB
-				self.balance_simplificado=-(self.desvanecimiento-self.cfg_bal["ptx"])
+				self.desvanecimiento=10*np.log10(bray) #bray_dBm
+				self.balance_simplificado=-(self.desvanecimiento-self.cfg_bal["ptx"])#balance_simplificado [dB] es el balance del enlace (Ptx/Prx) 
+
+			
 
 			elif self.cfg_prop["params_desv"]["tipo"]=="mixto":
 				if self.cfg_gen['debug']:
@@ -108,16 +110,16 @@ class Modelo_Canal:
 				sigma_xn=self.cfg_prop["params_desv"]["params"][1]
 				#if true, el desvanecimiento deja de ser 0 y se integra a las perdidas.
 				#print("bal sim\n",self.balance_simplificado)
-				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.balance_simplificado.copy().shape)
-				self.balance_simplificado=self.balance_simplificado.copy()+np.vstack(self.desvanecimiento)
+				self.desvanecimiento=np.random.normal(mu,sigma_xn,self.balance_simplificado.copy().shape)#Desvanecimiento lento [dB], tipo=normal 
+				self.balance_simplificado=self.balance_simplificado.copy()+np.vstack(self.desvanecimiento)#la potencia mas alta permitida, para condicion NLOS=6dB,LOS=NA
 				#print("CUSTOM3\n", self.desvanecimiento)
 				#print("CUSTOM4\n",self.balance_simplificado)
 				#rayleigh
 				#correccion de signos desvanecimiento
-				bal_simpl_desva=10**((self.cfg_bal["ptx"]-self.balance_simplificado)/10)
-				bal_simpl_desva_r=np.sqrt(bal_simpl_desva)
-				b=bal_simpl_desva_r/np.sqrt(np.pi/2)
-				bray=np.random.rayleigh(b)
+				bal_simpl_desva=10**((self.cfg_bal["ptx"]-self.balance_simplificado)/10)#Potencia de recepcion [mWatts] [V^2/R]	P[X]=E[X]^2			bal_simpl_desva_r=np.sqrt(bal_simpl_desva)
+				bal_simpl_desva_r=np.sqrt(bal_simpl_desva)# E[x] valor esperado -Voltaje [V] 
+				b=bal_simpl_desva_r/np.sqrt(np.pi/2)#E[x] para distribucion de Rayleigh
+				bray=np.random.rayleigh(b)#
 				bray=np.power(bray,2)
 				self.desvanecimiento=10*np.log10(bray) #bray_dB
 				print("CUSTOm5\n", self.desvanecimiento[:10])
@@ -236,6 +238,30 @@ class Modelo_Canal:
 				self.portadora=self.cfg_gen["portadora"][0]/1000
 
 			self.perdidas_uma_3gpp()
+
+		elif self.cfg_prop["modelo_perdidas"] =="uma_3gpp_opcional":
+			#km, mhz
+			#m, Ghz
+			
+			if self.arreglos[0][1]=="m":
+
+				if self.custom_dist_flag==True:
+					self.distancias=np.vstack(self.custom_dist)
+				else:
+					#las distancias debe estar en [m]
+					self.distancias=self.arreglos[0][0]
+
+			else:
+				pass #opcion kilometro, no cambia.
+			if self.cfg_gen["portadora"][1]=="ghz":
+				#convierto a megaherz, por la ecuacion, si ya esta en megaherz, pass
+				self.portadora=self.cfg_gen["portadora"][0]
+			else:
+				#pass #opcion megaherz, no cambia.
+				self.portadora=self.cfg_gen["portadora"][0]/1000
+
+			self.uma_3gpp_opcional()
+		
 		else:
 			pass
 
@@ -336,7 +362,7 @@ class Modelo_Canal:
 		#fc debe estar en Ghz, por eso FC/1000
 		'''evalua que funcion debe seleccionar dependiendo el parametro de entrada.
 		bp_p breakpoint prima.'''
-		path_l=28+40*np.log10(dist_3d)+20*np.log10(self.portadora)-9*np.log10((bp_p**2)+(hbs-hut)**2)
+		path_l=28+40*np.log10(dist_3d)+20*np.log10(self.portadora)-9*np.log10((bp_p)**2+(hbs-hut)**2)
 		return path_l
 	
 	def evaular_pl0(distancias, bp):
@@ -382,7 +408,8 @@ class Modelo_Canal:
 		hbs_p=hbs-he
 		hut_p=hut-he
 		#portadora esta en MHz, la necesitamos en HZ de acuerdo a la documentacion.
-		dist_breakpoint_prima=4*hbs_p*hut_p*((self.portadora*10)/3)#portadora en GHz
+		dist_breakpoint_prima=4*hbs_p*hut_p*((self.portadora)/30)#portadora en GHz
+		print(dist_breakpoint_prima)
 		#3. evaular PLuma_los (tr138901)
 		'''evaluar para cada distancia de la siguiente manera
 		PL1 si 10m < self.distancias < dist_breakpoint.
@@ -398,7 +425,7 @@ class Modelo_Canal:
 		self.distancias=np.where(self.distancias>5000, 5000,self.distancias)
 
 		'''encontramos los indices donde 1 pl1 y 2 pl2'''
-		map_pl1=np.where((10 <= self.distancias) & (self.distancias <= dist_breakpoint_prima), 1, self.distancias)
+		map_pl1=np.where((self.distancias >= 10) & (self.distancias <= dist_breakpoint_prima), 1, self.distancias)
 		#map_pl2=np.where((dist_breakpoint <= self.distancias) & (self.distancias <= 5000), 2, 0)
 		#map_pl2 toma la referncia de map_pl1 y modifica sus valores.
 		map_pl2=np.where((dist_breakpoint_prima <= map_pl1) & (map_pl1 <= 5000), 2, map_pl1)
@@ -408,7 +435,31 @@ class Modelo_Canal:
 		referencia=np.where(map_pl2==2, self.evaluar_pl2(dist_3d, dist_breakpoint_prima, hbs, hut), referencia)
 		self.resultado_path_loss=referencia
 
+	def evaluar_3gpp_opcional(self, dist_3d ):
+		path_l=32.4+20*np.log10(self.portadora)+30*np.log10(dist_3d)
+		return path_l
 
+	def uma_3gpp_opcional(self):
+		hbs=self.cfg_prop["params_modelo"][0]
+		hut=self.cfg_prop["params_modelo"][2]
+		he=1
+		hbs_p=hbs-he
+		hut_p=hut-he
+		#portadora esta en MHz, la necesitamos en HZ de acuerdo a la documentacion.
+		dist_breakpoint_prima=4*hbs_p*hut_p*((self.portadora)/0.3)#portadora en GHz
+		#3. evaular PLuma_los (tr138901)
+		self.distancias=np.where(self.distancias<=10, 10,self.distancias)
+		self.distancias=np.where(self.distancias>=5000, 5000,self.distancias)
+
+		map_pl1=np.where((self.distancias >= 10) & (self.distancias <= dist_breakpoint_prima), 1, self.distancias)
+		#map_pl2=np.where((dist_breakpoint <= self.distancias) & (self.distancias <= 5000), 2, 0)
+		#map_pl2 toma la referncia de map_pl1 y modifica sus valores.
+		map_pl2=np.where((dist_breakpoint_prima <= map_pl1) & (map_pl1 <= 5000), 2, map_pl1)
+		#convertir de 2D a 3D antes de generar las perdidas
+		dist_3d=np.sqrt(self.distancias**2 +(hbs-hut)**2)
+		referencia=np.where(map_pl2==1,self.evaluar_3gpp_opcional(dist_3d), map_pl2)
+		referencia=np.where(map_pl2==2, self.evaluar_3gpp_opcional(dist_3d), referencia)
+		self.resultado_path_loss=referencia
 
 	def balance_del_enlace_mcl(self):
 		'''Funcion que calcula un balance del enlace, teniendo en cuenta el mcl.
@@ -530,8 +581,10 @@ class Modelo_Canal:
 		self.custom_dist_flag=True
 		#EN KILOMETROS
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			self.custom_dist=np.arange(1,20,.3)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
+			self.custom_dist=np.arange(1,999,1)
+		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp_opcional":
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
@@ -549,7 +602,7 @@ class Modelo_Canal:
 		plt.xlabel("Distancia [Km]")
 
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			plt.xlabel("Distancia [Km]")
+			plt.xlabel("Distancia [m]")
 		else:
 			plt.xlabel("Distancia [m]")
 
@@ -566,8 +619,10 @@ class Modelo_Canal:
 		self.custom_dist_flag=True
 		#EN KILOMETROS
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			self.custom_dist=np.arange(1,20,.3)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
+			self.custom_dist=np.arange(1,999,1)
+		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp_opcional":
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
@@ -591,8 +646,12 @@ class Modelo_Canal:
 		#si rayl-mixto, no sumar
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
-		plt.xlabel("Distancia [Km]")
-		plt.ylabel("Potencia Recibida [dBm]")
+		plt.xlabel("Distancia [m]")
+		if self.cfg_prop["params_desv"]["tipo"]=="normal":
+			plt.ylabel("Ganancia del Sistema [dB]")
+		else:
+			plt.ylabel("Potencia Recibida [dBm]")
+		#plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
 
@@ -605,8 +664,10 @@ class Modelo_Canal:
 		self.custom_dist_flag=True
 		#EN KILOMETROS
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			self.custom_dist=np.arange(1,20,.3)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
+			self.custom_dist=np.arange(1,999,1)
+		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp_opcional":
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
@@ -621,9 +682,9 @@ class Modelo_Canal:
 		plt.grid(True)
 		#obtengo resutlados
 		#negativo por que aun no tiene en cuenta el mcl
-		plt.plot(self.custom_dist, -self.balance_simplificado_antes,  label="balance antes")
+		#plt.plot(self.custom_dist, -self.balance_simplificado_antes,  label="balance antes")
 		#plt.plot(self.custom_dist, self.balance_simplificado, label="balance después")
-		plt.plot(self.custom_dist, -self.balance_simplificado, label="balance después *-1")
+		#plt.plot(self.custom_dist, -self.balance_simplificado, label="balance después *-1")
 		#positivo por que tiene encuenta el mcl.
 		plt.plot(self.custom_dist, self.resultado_balance, label="balance final")
 		plt.legend(loc="lower right")
@@ -631,7 +692,7 @@ class Modelo_Canal:
 		#si rayl-mixto, no sumar
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
-		plt.xlabel("Distancia [Km]")
+		plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
@@ -644,8 +705,10 @@ class Modelo_Canal:
 		self.custom_dist_flag=True
 		#EN KILOMETROS
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			self.custom_dist=np.arange(1,20,.3)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
+			self.custom_dist=np.arange(1,999,1)
+		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp_opcional":
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
@@ -662,7 +725,7 @@ class Modelo_Canal:
 		plt.plot(self.custom_dist, self.resultado_balance, label="balance final")
 		plt.legend(loc="lower right")
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
-		plt.xlabel("Distancia [Km]")
+		plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
@@ -675,8 +738,10 @@ class Modelo_Canal:
 		self.custom_dist_flag=True
 		#EN KILOMETROS
 		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
-			self.custom_dist=np.arange(1,20,.3)
+			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp":
+			self.custom_dist=np.arange(1,999,1)
+		elif self.cfg_prop["modelo_perdidas"]=="uma_3gpp_opcional":
 			self.custom_dist=np.arange(1,999,1)
 		elif self.cfg_prop["modelo_perdidas"]=="umi_ci":
 			#metros
@@ -706,7 +771,11 @@ class Modelo_Canal:
 		#si rayl-mixto, no sumar
 		#label="normal+sin ptx, simplificado"
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
-		plt.xlabel("Distancia [km]")
+		plt.xlabel("Distancia [m]")
+		if self.cfg_prop["modelo_perdidas"]=="okumura_hata":
+			plt.xlabel("Distancia [m]")
+		else:
+			plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
@@ -723,7 +792,7 @@ def prueba_interna_resultado_path_loss():
 	modelo_simple=Modelo_Canal(freq, distancias_km)
 	modelo_simple.perdidas_espacio_libre_ghz()
 	l_bs=modelo_simple.resultado_path_loss
-	print(l_bs)
+	#print(l_bs)
 
 def prueba_interna_desvanecimiento_normal():
 	'''Funcion que prueba el concepto de tipos desvanecimiento con numpy'''
