@@ -1,23 +1,23 @@
 {
     "cfg_simulador": {
         "params_general": {
-            "Iteracion": [
-                0,
+            "Iteración": [
+                300,
                 "simulaciones",
                 "Número de simulaciones a ejecutar"
             ],
             "Número de celdas": [
-                0,
+                3,
                 "celdas",
                 "Número de celdas por simulación"
             ],
             "Portadora": [
-                0,
+                900,
                 "Mhz",
                 "Frecuencia central"
             ],
             "Distancia entre celdas": [
-                0,
+                500,
                 "m",
                 "Distancia entre celdas"
             ],
@@ -53,7 +53,7 @@
             ]
         },
         "params_propagacion": {
-            "Modelo Perdidas de Propagación": [
+            "Modelo Pérdidas de Propagación": [
                 "okumura_hata",
                 "NA",
                 "Modelo de perdidas de propagacion"
@@ -73,16 +73,15 @@
             ],
             "Párametros desvanecimiento": [
                 [
-                0,
-                0,
-                0,
-                0,
-                0
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
                 ],
                 "NA",
                 "u, mu, ..."
             ]
-            
         },
         "params_balance": {
             "ptx": [
@@ -134,13 +133,11 @@
             ]
         },
         "params_asignacion": {
-
             "Tipo": [
                 "rr",
                 "NA",
                 "Algoritmo repartición de recursos"
             ],
-
             "BW": [
                 0,
                 "Mhz",
@@ -151,7 +148,7 @@
                 "NA",
                 "Tipo de prefijo cíclico por defecto"
             ],
-            "Numerologia": [
+            "Numerología": [
                 0,
                 "u",
                 "Valor de numerología"

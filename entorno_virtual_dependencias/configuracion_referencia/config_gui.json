@@ -1,1 +1,19 @@
-{"presim_graphs": {"ESCENARIO: POTENCIA RECIBIDA": "simulador/base_datos/imagenes/presim/imagen_potencia.png", "ESCENARIO: PATR\u00d3N DE RADIACI\u00d3N TRISECTORIZADO": "simulador/base_datos/imagenes/presim/patron_radiacion.png", "P\u00c9RDIDAS DE PROPAGACI\u00d3N": "simulador/base_datos/imagenes/presim/perdidas.png", "BALANCE DEL ENLACE (SIN DESVANECIMIENTO)": "simulador/base_datos/imagenes/presim/balance_sin.png", "ESCENARIO DE SIMULACI\u00d3N": "simulador/base_datos/imagenes/presim/base-sim.png"}, "sim_graphs": 0, "montecarlo_graphs": {"USUARIOS, PROCESO PUNTUAL POISSON": "simulador/base_datos/imagenes/montecarlo/pic_dist_users_all.png", "HISTOGRAMA DE USUARIOS": "simulador/base_datos/imagenes/montecarlo/pic_dist_users_hist.png", "HISTOGRAMA DE USUARIOS CONECTADOS": "simulador/base_datos/imagenes/montecarlo/pic_on_users_hist.png", "HISTOGRAMA SINR > X DBS": "simulador/base_datos/imagenes/montecarlo/pic_sys_sinr_hist.png", "PROMEDIO DE THROUGHPUT": "simulador/base_datos/imagenes/montecarlo/pic_sys_tp_hist.png", "PROMEDIO DE THROUGHPUT ACUMULADO": "simulador/base_datos/imagenes/montecarlo/pic_sys_tp_cumsum.png", "THROUGHPUT MONTECARLO": "simulador/base_datos/imagenes/montecarlo/pic_mc_tp_sistema.png"}}
+{
+    "presim_graphs": {
+        "ESCENARIO: POTENCIA RECIBIDA": "simulador/base_datos/imagenes/presim/imagen_potencia.png",
+        "ESCENARIO: PATRÓN DE RADIACIÓN TRISECTORIZADO": "simulador/base_datos/imagenes/presim/patron_radiacion.png",
+        "PÉRDIDAS DE PROPAGACIÓN": "simulador/base_datos/imagenes/presim/perdidas.png",
+        "BALANCE DEL ENLACE (SIN DESVANECIMIENTO)": "simulador/base_datos/imagenes/presim/balance_sin.png",
+        "ESCENARIO DE SIMULACIÓN": "simulador/base_datos/imagenes/presim/base-sim.png"
+    },
+    "sim_graphs": 0,
+    "montecarlo_graphs": {
+        "USUARIOS, PROCESO PUNTUAL POISSON": "simulador/base_datos/imagenes/montecarlo/pic_dist_users_all.png",
+        "HISTOGRAMA DE USUARIOS": "simulador/base_datos/imagenes/montecarlo/pic_dist_users_hist.png",
+        "HISTOGRAMA DE USUARIOS CONECTADOS": "simulador/base_datos/imagenes/montecarlo/pic_on_users_hist.png",
+        "HISTOGRAMA SINR > X DBS": "simulador/base_datos/imagenes/montecarlo/pic_sys_sinr_hist.png",
+        "PROMEDIO DE THROUGHPUT": "simulador/base_datos/imagenes/montecarlo/pic_sys_tp_hist.png",
+        "PROMEDIO DE THROUGHPUT ACUMULADO": "simulador/base_datos/imagenes/montecarlo/pic_sys_tp_cumsum.png",
+        "THROUGHPUT MONTECARLO": "simulador/base_datos/imagenes/montecarlo/pic_mc_tp_sistema.png"
+    }
+}
