@@ -1,0 +1,196 @@
+{
+    "cfg_simulador": {
+        "params_general": {
+            "Iteracion": [
+                0,
+                "simulaciones",
+                "Número de simulaciones a ejecutar"
+            ],
+            "Número de celdas": [
+                0,
+                "celdas",
+                "Número de celdas por simulación"
+            ],
+            "Portadora": [
+                0,
+                "Mhz",
+                "Frecuencia central"
+            ],
+            "Distancia entre celdas": [
+                0,
+                "m",
+                "Distancia entre celdas"
+            ],
+            "Distribución": [
+                "Proceso Puntual Poisson",
+                0,
+                "Parámetros para distribuir usuarios"
+            ],
+            "Geometría": [
+                "autoajustable",
+                "NA",
+                "Fijar ISD o Radio"
+            ],
+            "Radio de Celda": [
+                0,
+                "m",
+                "Radio de la celda final"
+            ],
+            "Figura de Ruido": [
+                0,
+                "dB",
+                "NF"
+            ],
+            "Umbral SINR": [
+                0,
+                "dB",
+                "Umbral SINR objetivo"
+            ],
+            "Imagen Potencia": [
+                0,
+                "u",
+                "Resolución Imagen Presimulación"
+            ]
+        },
+        "params_propagacion": {
+            "Modelo Perdidas de Propagación": [
+                "okumura_hata",
+                "NA",
+                "Modelo de perdidas de propagacion"
+            ],
+            "Párametros Modelo": [
+                [
+                    0,
+                    0
+                ],
+                "m",
+                "Altura de la antena, Altura del Movil"
+            ],
+            "Desvanecimiento": [
+                "none",
+                "NA",
+                "Modelo de desvanecimiento"
+            ],
+            "Párametros desvanecimiento": [
+                [
+                0,
+                0,
+                0,
+                0,
+                0
+                ],
+                "NA",
+                "u, mu, ..."
+            ]
+            
+        },
+        "params_balance": {
+            "ptx": [
+                0,
+                "dBm",
+                "Potencia de transmisión"
+            ],
+            "gtx": [
+                0,
+                "dB",
+                "Ganancia en transmisión"
+            ],
+            "ltx": [
+                0,
+                "dB",
+                "Pérdidas en transmisión"
+            ],
+            "lrx": [
+                0,
+                "dB",
+                "Pérdidas en recepción"
+            ],
+            "grx": [
+                0,
+                "dB",
+                "Ganancia en recepción"
+            ],
+            "mcl": [
+                0,
+                "dB",
+                "Mínimas pérdidas de acomplamiento"
+            ]
+        },
+        "params_antena": {
+            "Tipo de Antena": [
+                "4g",
+                "NA",
+                "Modelo de antena"
+            ],
+            "hpbw": [
+                0,
+                "grados",
+                "Ancho del haz de potencia mitad"
+            ],
+            "Atenuación Mínima": [
+                0,
+                "dB",
+                "Atenuación mínima"
+            ]
+        },
+        "params_asignacion": {
+
+            "Tipo": [
+                "rr",
+                "NA",
+                "Algoritmo repartición de recursos"
+            ],
+
+            "BW": [
+                0,
+                "Mhz",
+                "Ancho de banda del sistema"
+            ],
+            "Prefijo OFDM": [
+                "normal",
+                "NA",
+                "Tipo de prefijo cíclico por defecto"
+            ],
+            "Numerologia": [
+                0,
+                "u",
+                "Valor de numerología"
+            ],
+            "BW guarda": [
+                0,
+                "Khz",
+                "Banda de guarda"
+            ],
+            "NRB sin guarda": [
+                0,
+                "bloques",
+                "NRBs sin banda de guarda por defecto"
+            ],
+            "Subportadora OFDM": [
+                0,
+                "Subp",
+                "Número de Subportadoras por defecto"
+            ],
+            "Caso de uso": [
+                "eMBB",
+                "NA",
+                "Caso de uso por defecto"
+            ],
+            "TRAMA OFDM": [
+                0,
+                "u",
+                "Número de tramas totales del sistema por defecto"
+            ],
+            "Símbolo OFDM DL": [
+                0,
+                "u",
+                "Número de simbolos OFDM"
+            ],
+            "Frame": [
+                0,
+                "NA",
+                "Valor por defecto"
+            ]
+        }
+    }
+}

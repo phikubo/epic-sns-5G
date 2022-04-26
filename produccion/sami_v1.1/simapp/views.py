@@ -192,14 +192,14 @@ def ver_parametros(request):
     o corregirlos con las opciones disponibles.'''
     #configuracion=cfg.cargar_cfg(target_path="simapp/static/simulador/base_datos")
     #simapp/static/simulador/base_datos/escenarios/test_ci_1.json
-    cfg_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
-    configuracion=cfg.cargar_json_full(target_path=cfg_sim["ruta_activa"])
+    vnfd_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/vnfd_mapping")
+    #configuracion=cfg.cargar_json_full(target_path=cfg_sim["ruta_activa"])
 
-    config1=configuracion["cfg_simulador"]["params_general"]
-    config2=configuracion["cfg_simulador"]["params_propagacion"]
-    config3=configuracion["cfg_simulador"]["params_balance"]
-    config4=configuracion["cfg_simulador"]["params_antena"]
-    config5=configuracion["cfg_simulador"]["params_asignacion"]
+    config1=vnfd_sim["cfg_simulador"]["params_general"]
+    config2=vnfd_sim["cfg_simulador"]["params_propagacion"]
+    config3=vnfd_sim["cfg_simulador"]["params_balance"]
+    config4=vnfd_sim["cfg_simulador"]["params_antena"]
+    config5=vnfd_sim["cfg_simulador"]["params_asignacion"]
 
     return render(request,'simapp/sami-parametros.html', {"cfg1":config1, 
     "cfg2":config2, "cfg3":config3, "cfg4":config4, "cfg5":config5 })
