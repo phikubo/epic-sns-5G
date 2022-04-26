@@ -81,13 +81,14 @@ def configurar_vnfd(archivo_config):
     #
     #
     vnfd_sim["cfg_simulador"]["params_propagacion"]["Modelo Pérdidas de Propagación"][0]=archivo_config["cfg_simulador"]["params_propagacion"]["modelo_perdidas"]
-    vnfd_sim["cfg_simulador"]["params_propagacion"]["Párametros Modelo"][0]=archivo_config["cfg_simulador"]["params_propagacion"]["params_modelo"]
+    vnfd_sim["cfg_simulador"]["params_propagacion"]["Parámetros Modelo"][0]=archivo_config["cfg_simulador"]["params_propagacion"]["params_modelo"]
     #[float(archivo_config["cfg_simulador"]["params_propagacion"]["mp1"]), float(archivo_config["cfg_simulador"]["params_general"]["mp2"]), float(archivo_config["cfg_simulador"]["params_general"]["mp3"]),float(archivo_config["cfg_simulador"]["params_general"]["mp4"])]
 
 
     flag_desv, tipo_desv=validar_desvanecimiento(archivo_config["cfg_simulador"]["params_propagacion"]["params_desv"])
-    vnfd_sim["cfg_simulador"]["params_propagacion"]["Desvanecimiento"][0]=tipo_desv
-    vnfd_sim["cfg_simulador"]["params_propagacion"]["Párametros desvanecimiento"][0]=archivo_config["cfg_simulador"]["params_propagacion"]["params_desv"]["params"]
+    #print("check..",tipo_desv)
+    vnfd_sim["cfg_simulador"]["params_propagacion"]["Desvanecimiento"][0]=tipo_desv["tipo"]
+    vnfd_sim["cfg_simulador"]["params_propagacion"]["Parámetros desvanecimiento"][0]=archivo_config["cfg_simulador"]["params_propagacion"]["params_desv"]["params"]
     #[float(archivo_config["cfg_simulador"]["params_general"]["dp1"]),float(archivo_config["cfg_simulador"]["params_general"]["dp2"]),float(archivo_config["cfg_simulador"]["params_general"]["dp3"]),float(archivo_config["cfg_simulador"]["params_general"]["dp4"])]
     
 
@@ -106,7 +107,7 @@ def configurar_vnfd(archivo_config):
     #antenas
     vnfd_sim["cfg_simulador"]["params_antena"]["Tipo de Antena"][0]=archivo_config["cfg_simulador"]["params_antena"]["tipo"]
     vnfd_sim["cfg_simulador"]["params_antena"]["hpbw"][0]=archivo_config["cfg_simulador"]["params_antena"]["hpbw"]
-    vnfd_sim["cfg_simulador"]["params_antena"]["Atenuación Mínima"]=float(archivo_config["cfg_simulador"]["params_antena"]["atmin"])
+    vnfd_sim["cfg_simulador"]["params_antena"]["Atenuación Mínima"][0]=float(archivo_config["cfg_simulador"]["params_antena"]["atmin"])
     #vnfd_sim["cfg_simulador"]["params_antena"]["apuntamiento"][0]=int(archivo_config["cfg_simulador"]["params_general"]["apuntamiento"])
 
     #
