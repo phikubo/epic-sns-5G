@@ -101,7 +101,7 @@ class Antena:
 		'''Modela tipo de antena omnidireccional, emulando altisima directividad'''
 		self.hiper_ganancias=self.ganancia_tx+self.hiper_angulos*0
 		self.patron_radiacion=self.ganancia_tx+self.angulos*0
-		print("antenas.py: inicializar ts 5g\n",self.hiper_ganancias)
+		#print("antenas.py: inicializar ts 5g\n",self.hiper_ganancias)
 		#print(5555555555555555555, len(self.patron_radiacion))
 
 
@@ -156,7 +156,7 @@ class Antena:
 			plt.title("[POL] Patron de Radiación Tipo: {}, Hbpw:{}.".format(self.local_cfg_ant["tipo"], self.local_cfg_ant["hpbw"]))
 		elif self.local_cfg_ant["tipo"]=="5g":
 			a = self.local_cfg_bal["gtx"]
-			n = 12
+			n = 2
 			rads = np.arange(0, 2 * np.pi, 0.01)
 			for rad in rads:
 				r = a * np.cos(n*rad)

@@ -247,7 +247,7 @@ def seleccionar_escenario(request):
             cfg.guardar_json(config_sim, target_path="simapp/static/simulador/base_datos/config_sim")
         else:
             print("Error")
-        return redirect('parametros/')
+        return redirect('ejecutar_parametros/')
     return render(request,'simapp/form_v1/sami-form-escenarios.html', {"form_data":form})
 
 
@@ -345,7 +345,7 @@ def form_compacto(request):
                 os.utime(fname, None)  # Set access/modified times to now
             except OSError:
                 pass  # File does not exist (or no permission)
-        return redirect('parametros/')
+        return redirect('ejecutar_parametros/')
     return render(request,'simapp/form_v1/sami-form-compacto.html', {"form_data":form})
     #return render(request,'simapp/form_v1/sami-form-a4.html', {"form_data":form} )
 
