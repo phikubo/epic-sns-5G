@@ -834,7 +834,7 @@ class Sistema_Celular:
 		z_min,z_max=-np.abs(pr_max).max(), np.abs(pr_max).max()
 		fig,ax=plt.subplots()
 
-		c=ax.pcolormesh(np.vstack(self.malla_x),np.vstack(self.malla_y),final_pr_max, cmap='plasma', vmin=z_min, vmax=-42)
+		c=ax.pcolormesh(np.vstack(self.malla_x),np.vstack(self.malla_y),final_pr_max, cmap='plasma', vmin=z_min, vmax=-20)
 		fig.colorbar(c,ax=ax, label="Potencia Recibida [dBm]")
 		titulo="{}, Ptx:{}, Desvanecimiento:{}.".format(str(self.cfg_prop["modelo_perdidas"]), self.cfg_bal["ptx"], self.cfg_prop["params_desv"]["tipo"])
 		plt.title(titulo)
