@@ -56,6 +56,78 @@ def validar_desvanecimiento(check):
     return flag, tipo
 
 
+
+def configurar_vnfd(archivo_config):
+    """Copia los archivos de configuración dado al archivo de configuracion local para ver sus parametros activos"""
+    vnfd_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/vnfd_mapping")
+
+    vnfd_sim["cfg_simulador"]["params_general"]["Iteración"]=archivo_config["iteraciones"]
+    vnfd_sim["cfg_simulador"]["params_general"]["Número de celdas"]=archivo_config["n_celdas"]
+    vnfd_sim["cfg_simulador"]["params_general"]["Portadora"][0]=archivo_config["portadora"]
+    vnfd_sim["cfg_simulador"]["params_general"]["Distancia entre celdas"]=archivo_config["isd"]
+    """
+
+    vnfd_sim["cfg_simulador"]["params_general"]["geometria"]=contenido["geometria_usuarios"]
+    vnfd_sim["cfg_simulador"]["params_general"]["radio_cel"]=contenido["radio_cel"] 
+
+    vnfd_sim["cfg_simulador"]["params_general"]["distribucion"][0]=contenido["tipo_distribucion"]
+    vnfd_sim["cfg_simulador"]["params_general"]["distribucion"][1]=float(contenido["densidad"])
+
+    flag_imagen=convertir_str_2_bool(contenido["imagen"])
+    vnfd_sim["cfg_simulador"]["params_general"]["imagen"]["display"][0]=flag_imagen
+    if flag_imagen:
+        print("imagen activado, desactivar iteraciones.")
+        #vnfd_sim["cfg_simulador"]["params_general"]["iteracion"]=1
+    vnfd_sim["cfg_simulador"]["params_general"]["imagen"]["resolucion"]=contenido["pixeles"]
+    #
+    #
+    vnfd_sim["cfg_simulador"]["params_propagacion"]["modelo_perdidas"]=contenido["modelo_perdidas"]
+    vnfd_sim["cfg_simulador"]["params_propagacion"]["params_modelo"][0]=float(contenido["mp1"])
+    vnfd_sim["cfg_simulador"]["params_propagacion"]["params_modelo"][1]=float(contenido["mp2"])
+    vnfd_sim["cfg_simulador"]["params_propagacion"]["params_modelo"][2]=float(contenido["mp3"])
+    vnfd_sim["cfg_simulador"]["params_propagacion"]["params_modelo"][3]=float(contenido["mp4"])
+
+    flag_desv, tipo_desv=validar_desvanecimiento(contenido["params_desv"])
+    vnfd_sim["cfg_simulador"]["params_propagacion"]["params_desv"]["display"]=flag_desv
+    vnfd_sim["cfg_simulador"]["params_propagacion"]["params_desv"]["tipo"]=tipo_desv
+    vnfd_sim["cfg_simulador"]["params_propagacion"]["params_desv"]["params"][0]=float(contenido["dp1"])
+    vnfd_sim["cfg_simulador"]["params_propagacion"]["params_desv"]["params"][1]=float(contenido["dp2"])
+    vnfd_sim["cfg_simulador"]["params_propagacion"]["params_desv"]["params"][2]=float(contenido["dp3"])
+    vnfd_sim["cfg_simulador"]["params_propagacion"]["params_desv"]["params"][3]=float(contenido["dp4"])
+
+    vnfd_sim["cfg_simulador"]["params_general"]["nf"][0]=float(contenido["nf"])
+    vnfd_sim["cfg_simulador"]["params_general"]["ber_sinr"]=float(contenido["ber_sinr"])
+    #
+    #
+    print("views.py: potencias")
+    vnfd_sim["cfg_simulador"]["params_balance"]["ptx"]=float(contenido["ptx"])
+    vnfd_sim["cfg_simulador"]["params_balance"]["gtx"]=float(contenido["gtx"])
+    vnfd_sim["cfg_simulador"]["params_balance"]["ltx"]=float(contenido["ltx"])
+    vnfd_sim["cfg_simulador"]["params_balance"]["lrx"]=float(contenido["lrx"])
+    vnfd_sim["cfg_simulador"]["params_balance"]["grx"]=float(contenido["grx"])
+    #vnfd_sim["cfg_simulador"]["params_balance"]["sensibilidad"]=float(contenido["sensibilidad"])
+    vnfd_sim["cfg_simulador"]["params_balance"]["mcl"]=float(contenido["mcl"])
+    #antenas
+    vnfd_sim["cfg_simulador"]["params_antena"]["tipo"]=contenido["tipo_antena"]
+    vnfd_sim["cfg_simulador"]["params_antena"]["hpbw"]=contenido["hpbw"]
+    vnfd_sim["cfg_simulador"]["params_antena"]["atmin"]=float(contenido["atmin"])
+    vnfd_sim["cfg_simulador"]["params_antena"]["apuntamiento"][0]=int(contenido["apuntamiento"])
+
+    #
+    #
+    print("views.py: asignacion")
+    config["cfg_simulador"]["params_asignacion"]["tipo"]=contenido["tipo_asignacion"]
+    config["cfg_simulador"]["params_asignacion"]["bw"][0]=int(contenido["bw"])
+    #config["cfg_simulador"]["params_asignacion"]["numerologia"]=float(contenido["numerologia"])
+    #config["cfg_simulador"]["params_asignacion"]["bw_guarda"][0]=int(contenido["banda_guarda"])
+    config["cfg_simulador"]["params_asignacion"]["sub_ofdm"]=float(contenido["subportadora"])
+    config["cfg_simulador"]["params_asignacion"]["trama_total"]=float(contenido["trama"])
+    config["cfg_simulador"]["params_asignacion"]["simbolo_ofdm_dl"]=float(contenido["simbolos"])
+    config["cfg_simulador"]["params_asignacion"]["frame"]=float(contenido["frame"])
+    """
+    #cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos")
+    cfg.guardar_json(vnfd_sim, target_path="simapp/static/simulador/base_datos/vnfd_mapping")
+
 #----------------------------END
 
 #--------------------------------------
@@ -231,6 +303,8 @@ def ver_sim(request):
 def seleccionar_escenario(request):
     '''Selecciona un escenario para simular'''
     config_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
+    vnfd_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/vnfd_mapping")
+
     rutas_disponibles=config_sim["rutas_configuracion"]    
     form=FormSeleccion()
 
@@ -243,7 +317,10 @@ def seleccionar_escenario(request):
             print("clase django", contenido)
 
             config_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
-            config_sim["ruta_activa"]="{}".format(contenido["escenario_opciones"].replace(" ","_"))      
+            config_sim["ruta_activa"]="{}".format(contenido["escenario_opciones"].replace(" ","_"))
+            # 
+            configurar_vnfd(conf_sim)
+            #     
             cfg.guardar_json(config_sim, target_path="simapp/static/simulador/base_datos/config_sim")
         else:
             print("Error")
@@ -336,9 +413,11 @@ def form_compacto(request):
             config["cfg_simulador"]["params_asignacion"]["simbolo_ofdm_dl"]=float(contenido["simbolos"])
             config["cfg_simulador"]["params_asignacion"]["frame"]=float(contenido["frame"])
             #cfg.guardar_cfg(config, target_path="simapp/static/simulador/base_datos")
-
+            
+        
             cfg.guardar_json(config_sim, target_path="simapp/static/simulador/base_datos/config_sim")
             cfg.guardar_json_full(config, target_path=config_sim["ruta_activa"])
+            configurar_vnfd(config)
             #reload enviroment para poder ver la nueva entrada en seleccionar escenario.
             fname="sami/wsgi.py"
             try:
