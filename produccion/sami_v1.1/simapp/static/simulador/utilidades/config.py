@@ -25,7 +25,7 @@ def guardar_json(data,target_path):
 def cargar_json(target_path):
 	'''Abre el archivo json especificado y lo carga en el sistema.
 	Uso: cargar_json("path/name_of_file"'''
-	with open(target_path+".json") as json_data_file:
+	with open(target_path+".json", encoding='utf8') as json_data_file:
 		data = json.load(json_data_file)
 	return data
 
