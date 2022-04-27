@@ -156,12 +156,12 @@ class Antena:
 			plt.title("[POL] Patron de Radiación Tipo: {}, Hbpw:{}.".format(self.local_cfg_ant["tipo"], self.local_cfg_ant["hpbw"]))
 		elif self.local_cfg_ant["tipo"]=="5g":
 			a = self.local_cfg_bal["gtx"]
-			n = 2
+			n = 10
 			rads = np.arange(0, 2 * np.pi, 0.01)
 			for rad in rads:
 				r = a * np.cos(n*rad)
 				plt.polar(rad, r, 'r.')
-			plt.title("[POL] Patron de Radiación: {}, UEs equidistantes: 12. Gtx uniforme: {} dBi.".format(self.local_cfg_ant["tipo"],self.local_cfg_bal["gtx"]))
+			plt.title("[POL] Patron de Radiación: {}, UEs equidistantes: 10. Gtx uniforme: {} dBi.".format(self.local_cfg_ant["tipo"],self.local_cfg_bal["gtx"]))
 		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
 

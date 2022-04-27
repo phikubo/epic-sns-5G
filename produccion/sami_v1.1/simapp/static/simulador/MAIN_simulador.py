@@ -264,6 +264,7 @@ class Simulador:
 		col_cob_conexion=[]
 		#si supera sinr objetivo
 		col_cob_sinr=[]
+		col_cob_sinr_mean=[]
 		col_cob_modulacion=[]
 		col_cob_tasa=[]
 		col_cob_conexion_sinr=[]
@@ -301,6 +302,7 @@ class Simulador:
 			col_cob_conexion_sinr.append(simulacion.medida_conexion_sinr)
 			col_throughput_promedio.append(simulacion.throughput_sistema)
 			col_cob_sinr.append(simulacion.sinr_db)
+			col_cob_sinr_mean.append(np.mean(simulacion.sinr_db))
 			col_cob_modulacion.append(simulacion.modelo_modulacion.arr_modulacion)
 			col_cob_tasa.append(simulacion.modelo_modulacion.arr_tasa)
 			#libero memoria de los objetos recolectados.
@@ -316,13 +318,13 @@ class Simulador:
 		#grafica de distribucion de usuarios
 		fig, ax = plt.subplots()
 		ax.plot(np.linspace(1,len(col_cobertura_usuarios),len(col_cobertura_usuarios)), col_cobertura_usuarios, 'b-o')
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Usuarios, Proceso Puntual Poisson', 'Usuarios por Celda', 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 1. Usuarios, Proceso Puntual Poisson', 'Usuarios por Celda', 
 			'Realizaciones', 'Número de Usuarios', 'pic_users_all', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 		#grafica de distribucion de usuarios
 		fig, ax = plt.subplots()
 		ax.hist(col_cobertura_usuarios, bins=numero_barras)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios', 'Usuarios por Celda', 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 2. Histograma de Usuarios', 'Usuarios por Celda', 
 			'Usuarios', 'Número de Ocurrencia', 'pic_users_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
 					
@@ -335,7 +337,7 @@ class Simulador:
 			ax.set_xlim([0.8, 1.01])
 		else:
 			pass
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma de Usuarios Conectados ', 'Usuarios: Pr-Sens>0', 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 3. Histograma de Usuarios Conectados ', 'Usuarios: Pr-Sens>0', 
 			'Porcentaje de Conexión', 'Número de Ocurrencia', 'pic_users_hist_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 		#grafica de distribucion de usuarios
@@ -355,7 +357,7 @@ class Simulador:
 			ax.set_xlim([0.8, 1.01])
 		else:
 			pass
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF Usuarios con Pr-Sens>0 dB', 'Usuarios: Pr-Sens>0', 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 4. CDF Usuarios con Pr-Sens>0 dB', 'Usuarios: Pr-Sens>0', 
 		'Pr-Sens>0 [dB]', '', 'pic_users_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 		#grafica conexion sinr
@@ -368,35 +370,62 @@ class Simulador:
 		#histograma
 		fig, ax = plt.subplots()
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma SINR > {} dB'.format(ber_sinr), "SINR mayor a {} dB".format(ber_sinr), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 5. Histograma SINR > {} dB'.format(ber_sinr), "SINR mayor a {} dB".format(ber_sinr), 
 			'Porcentaje de Usuarios con SINR>1 dB', 'Número de Ocurrencia', 'pic_sys_sinr_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
 		#cdf, no normalizado
 		fig, ax = plt.subplots()
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras, cumulative=True)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF No normalizada SINR > {} dB'.format(ber_sinr), "SINR mayor a {} dB".format(ber_sinr), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 6. CDF No normalizada SINR > {} dB'.format(ber_sinr), "SINR mayor a {} dB".format(ber_sinr), 
 		'Porcentaje de Usuarios con SINR>1 dB', '', 'pic_sys_sinr_hist_acomulativo', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
 		#PDF, normalizada
 		fig, ax = plt.subplots()
 		y_prob,x_prob,ancho=estats.calcular_probabilidad(np.array(col_cob_conexion_sinr),numero_barras)
 		ax.bar(x_prob, width=ancho, height=y_prob,ec='black')
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'PDF SINR > {} dB'.format(ber_sinr), 'SINR mayor a {} dB'.format(ber_sinr), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 7. PDF SINR > {} dB'.format(ber_sinr), 'SINR mayor a {} dB'.format(ber_sinr), 
 		'SINR>1 [dB]', 'Frecuencia de Ocurrencia', 'pic_sys_sinr_pdf', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
 		#CDF normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras, cumulative=True, density=True)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF SINR > {} dB'.format(ber_sinr), 'SINR mayor a {} dB'.format(ber_sinr), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 8. CDF SINR > {} dB'.format(ber_sinr), 'SINR mayor a {} dB'.format(ber_sinr), 
 		'SINR>1 [dB]', '', 'pic_sys_sinr_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
+
+		#CDF no normalizada
+		fig, ax = plt.subplots()
+		#acomulativo densidad
+		print(np.vstack(np.array(col_cob_sinr)).shape)
+		ax.hist(np.vstack(np.array(col_cob_sinr)), bins=numero_barras)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 9. CDF SINR total', 'SINR', 
+		'SINR', 'Ocurrencia', 'pic_sys_sinr_total', ruta_img_montecarlo, self.graficas_disponibles_dic)
+
+
+		#CDF no normalizada
+		fig, ax = plt.subplots()
+		#acomulativo densidad
+		#print(np.vstack(np.array(col_cob_sinr)).shape)
+		ax.hist(col_cob_sinr_mean, bins=numero_barras)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 10. CDF SINR promedio', 'SINR', 
+		'SINR', 'Ocurrencia', 'pic_sys_sinr_mean', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 		#CDF normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
+		#print(np.vstack(np.array(col_cob_sinr)).shape)
 		ax.hist(np.vstack(np.array(col_cob_sinr)), bins=numero_barras, cumulative=True, density=True)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF SINR', 'SINR', 
-		'SINR', '', 'pic_sys_sinr_total_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 11. CDF SINR total acomulativo', 'SINR', 
+		'SINR', 'Ocurrencia', 'pic_sys_sinr_total_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
+
+		#CDF normalizada
+		fig, ax = plt.subplots()
+		#acomulativo densidad
+		#print(np.vstack(np.array(col_cob_sinr)).shape)
+		ax.hist(col_cob_sinr_mean, bins=numero_barras, cumulative=True, density=True)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 12. CDF SINR promedio acomulativo', 'SINR', 
+		'SINR', 'Ocurrencia', 'pic_sys_sinr_mean_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
+
 
 
 		#grafica de tp
