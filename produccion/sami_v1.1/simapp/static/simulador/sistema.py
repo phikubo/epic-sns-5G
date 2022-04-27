@@ -743,6 +743,7 @@ class Sistema_Celular:
 
 
 	def calcular_throughput(self):
+		#DEPLETED
 		'''Dado un sinr calcula el throughput de un arreglo, usando un modulo externo y no una clase.'''
 		#calcular tasa y modulacion.
 		self.modelo_modulacion.arreglos_tasa_modulacion(self.sinr_db)

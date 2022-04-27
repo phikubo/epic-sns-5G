@@ -263,6 +263,9 @@ class Simulador:
 		#margen, si supera margen
 		col_cob_conexion=[]
 		#si supera sinr objetivo
+		col_cob_sinr=[]
+		col_cob_modulacion=[]
+		col_cob_tasa=[]
 		col_cob_conexion_sinr=[]
 		#debe calcularse como 1-cob_conexion
 		col_cob_desconexion=[]
@@ -297,11 +300,14 @@ class Simulador:
 			col_cob_conexion.append(simulacion.medida_conexion_margen)
 			col_cob_conexion_sinr.append(simulacion.medida_conexion_sinr)
 			col_throughput_promedio.append(simulacion.throughput_sistema)
+			col_cob_sinr.append(simulacion.sinr_db)
+			col_cob_modulacion.append(simulacion.modelo_modulacion.arr_modulacion)
+			col_cob_tasa.append(simulacion.modelo_modulacion.arr_tasa)
 			#libero memoria de los objetos recolectados.
 			coleccion_simulacion[borrar]=0
 		print("[simulador]: Terminado Coleccion...\n")
 
-		print("[simulador]: Ejecuntando Almacenamiento...\n")
+		print("[simulador]: Ejecuntando Almacenamiento...\n") #opcional
 		raw_datos.guardar_data(ruta_datos,"col_cobertura_usuarios",col_cobertura_usuarios, "Coleccion de usuarios por celda original")
 		raw_datos.guardar_data(ruta_datos,"col_cob_conexion",col_cob_conexion, "Coleccion de usuarios cuya potencia es mayor a la sensibilidad.")
 		raw_datos.guardar_data(ruta_datos,"col_cob_conexion_sinr",col_cob_conexion_sinr,"""Coleccion de usuarios cuya SINR es mayor a un target espcificado en self.configuracion["cfg_simulador"]["params_general"]["ber_sinr"] """)
@@ -341,6 +347,7 @@ class Simulador:
 		#self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Acumulativo de Usuarios Conectados', 'Usuarios: Pr-Sens>0', 
 		#	'Porcentaje de Conexión', '', 'pic_users_cumsum_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		#CDF normalizada
+
 		fig, ax = plt.subplots()
 		#acomulativo densidad
 		ax.hist(col_cob_conexion, bins=numero_barras, cumulative=True, density=True)
@@ -363,23 +370,33 @@ class Simulador:
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Histograma SINR > {} dB'.format(ber_sinr), "SINR mayor a {} dB".format(ber_sinr), 
 			'Porcentaje de Usuarios con SINR>1 dB', 'Número de Ocurrencia', 'pic_sys_sinr_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		
 		#cdf, no normalizado
 		fig, ax = plt.subplots()
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras, cumulative=True)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF No normalizada SINR > {} dB'.format(ber_sinr), "SINR mayor a {} dB".format(ber_sinr), 
 		'Porcentaje de Usuarios con SINR>1 dB', '', 'pic_sys_sinr_hist_acomulativo', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		
 		#PDF, normalizada
 		fig, ax = plt.subplots()
 		y_prob,x_prob,ancho=estats.calcular_probabilidad(np.array(col_cob_conexion_sinr),numero_barras)
 		ax.bar(x_prob, width=ancho, height=y_prob,ec='black')
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'PDF SINR > {} dB'.format(ber_sinr), 'SINR mayor a {} dB'.format(ber_sinr), 
 		'SINR>1 [dB]', 'Frecuencia de Ocurrencia', 'pic_sys_sinr_pdf', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		
 		#CDF normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras, cumulative=True, density=True)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF SINR > {} dB'.format(ber_sinr), 'SINR mayor a {} dB'.format(ber_sinr), 
 		'SINR>1 [dB]', '', 'pic_sys_sinr_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
+
+		#CDF normalizada
+		fig, ax = plt.subplots()
+		#acomulativo densidad
+		ax.hist(np.vstack(np.array(col_cob_sinr)), bins=numero_barras, cumulative=True, density=True)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'CDF SINR', 'SINR', 
+		'SINR', '', 'pic_sys_sinr_total_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 
 		#grafica de tp
