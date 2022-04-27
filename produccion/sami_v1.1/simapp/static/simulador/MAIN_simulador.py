@@ -275,6 +275,7 @@ class Simulador:
 		#
 		#colecion de throughput
 		col_cap_throughput_promedio=[]
+		col_cap_throughput_total=[]
 		#contador de iteracion
 		it=0
 		print("[simulador]: Generando simulaciones...")
@@ -300,12 +301,16 @@ class Simulador:
 			#col_cobertura_usuarios.append(simulacion.no_usuarios_total)
 			col_cobertura_usuarios.append(simulacion.no_usuarios_celda)
 			col_cob_conexion.append(simulacion.medida_conexion_margen)
+
 			col_cob_conexion_sinr.append(simulacion.medida_conexion_sinr)
-			col_cap_throughput_promedio.append(simulacion.throughput_sistema)
 			col_cob_sinr.append(simulacion.sinr_db)
 			col_cob_sinr_mean.append(np.mean(simulacion.sinr_db))
 			col_cap_modulacion.append(simulacion.modelo_modulacion.arr_modulacion)
 			col_cap_tasa.append(simulacion.modelo_modulacion.arr_tasa)
+
+			col_cap_throughput_promedio.append(simulacion.throughput_sistema)
+			col_cap_throughput_total.append(simulacion.throughput_users)
+			
 			#libero memoria de los objetos recolectados.
 			coleccion_simulacion[borrar]=0
 		print("[simulador]: Terminado Coleccion...\n")
@@ -441,24 +446,26 @@ class Simulador:
 		#CDF no normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
-		#print(np.vstack(np.array(col_cap_tasa)).shape)
-		'''
-		ax.hist(np.vstack(np.array(col_cap_tasa)), bins=numero_barras)
+		proccessed_tasa=np.vstack(np.concatenate(np.array([np.array(xi) for xi in col_cap_tasa])))
+		ax.hist(proccessed_tasa,bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 13. CDF TASA total', 'TASA', 
 		'TASA', 'Ocurrencia', 'pic_sys_tasa_total', ruta_img_montecarlo, self.graficas_disponibles_dic)
-		'''
+
 
 		#CDF no normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
 		#print(np.vstack(np.array(col_cap_modulacion)).shape)
-		'''
-		ax.hist(np.vstack(np.array(col_cap_modulacion)), bins=numero_barras)
+		proccessed_tasa=np.vstack(np.concatenate(np.array([np.array(xi) for xi in col_cap_modulacion])))
+		ax.hist(proccessed_tasa,bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 14. CDF MODULACION total', 'TASA', 
 		'TASA', 'Ocurrencia', 'pic_sys_modulacion_total', ruta_img_montecarlo, self.graficas_disponibles_dic)
-		'''
+		
 
-		#grafica de tp
+		#........................................................................
+		#............................. THROUGHTPUT ...............................
+		#........................................................................
+
 		#histograma
 		verificar_tp=sum(col_cap_throughput_promedio[0:20])
 		if verificar_tp<1:
@@ -494,7 +501,7 @@ class Simulador:
 			fig, ax = plt.subplots()
 			y_prob,x_prob,ancho=estats.calcular_probabilidad(np.array(col_cap_throughput_promedio),numero_barras)
 			ax.bar(x_prob, width=ancho, height=y_prob,ec='black')
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 17. PDF Throughput', 'PDF de Throughput', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 17. PDF Throughput promedio', 'PDF de Throughput', 
 				'Throughput [Mbps]', 'Frecuencia de Ocurrencia', 'pic_sys_tp_pdf', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 			#grafica de tp probabilidad
@@ -512,16 +519,32 @@ class Simulador:
 			fig, ax = plt.subplots()
 			#acomulativo densidad
 			ax.hist(col_cap_throughput_promedio, numero_barras, cumulative=True, density=True)
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 18. CDF de Throughput', 'CDF de Throughput', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 18. CDF de Throughput promedio', 'CDF de Throughput', 
 				'Throughput [Mbps]', '', 'pic_sys_tp_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 			#grafica de tp montecarlo
 			fig, ax = plt.subplots()
 			ax.plot(np.arange(1,len(col_cap_throughput_promedio)+1),np.cumsum(col_cap_throughput_promedio)/np.arange(1,len(col_cap_throughput_promedio)+1))
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 19. Valor medio de Throughput', ' Throughput', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 19. Valor medio de Throughput promedio', ' Throughput', 
 				'Realizaciones', ' Throughput [Mbps]', 'pic_sys_tp_mc', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 
+
+			#grafica de tp comulativa
+			fig, ax = plt.subplots()
+			#acomulativo densidad
+			processed_tp=np.vstack(np.array(np.concatenate(col_cap_throughput_total)))
+			ax.hist(processed_tp, bins=numero_barras)
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 20. Histograma de Throughput total', 'Throughput total', 
+				'Throughput [Mbps]', '', 'pic_sys_tp_total_1_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
+
+			#grafica de tp comulativa
+			fig, ax = plt.subplots()
+			#acomulativo densidad
+			processed_tp=np.vstack(np.array(np.concatenate(col_cap_throughput_total)))
+			ax.hist(processed_tp, bins=numero_barras, cumulative=True, density=True)
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 20. CDF de Throughput total', 'CDF de Throughput', 
+				'Throughput [Mbps]', '', 'pic_sys_tp_total_2_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 
 		#GUARDAR DATOS
