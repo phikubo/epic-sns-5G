@@ -2,16 +2,16 @@
     "cfg_simulador": {
         "params_general": {
             "debug": false,
-            "iteracion": 300,
+            "iteracion": 2000,
             "n_celdas": 3,
             "portadora": [
-                900,
+                3500,
                 "mhz"
             ],
             "isd": 500,
             "distribucion": [
                 "ppp",
-                100.0
+                10.0
             ],
             "geometria": "autoajustable",
             "radio_cel": 288.67513459481285,
@@ -25,12 +25,12 @@
                     false,
                     false
                 ],
-                "resolucion": 20
+                "resolucion": 10
             }
         },
         "params_propagacion": {
             "self_debug": false,
-            "modelo_perdidas": "okumura_hata",
+            "modelo_perdidas": "uma_3gpp",
             "params_modelo": [
                 25.0,
                 0.0,
@@ -56,12 +56,12 @@
             }
         },
         "params_balance": {
-            "ptx": 49.0,
+            "ptx": 44.0,
             "gtx": 15.0,
             "ltx": 1.0,
             "lrx": 1.0,
             "grx": 1.0,
-            "sensibilidad": "none",
+            "sensibilidad": -98.0,
             "mcl": 70.0
         },
         "params_antena": {
@@ -100,9 +100,8 @@
             "nrb_sin_gbw": 273,
             "sub_ofdm": 12.0,
             "caso_de_uso": [
-                "eMBB",
-                "URLLC",
-                "mMTC"
+                "urllc",
+                "mmtc"
             ],
             "trama_total": 14.0,
             "simbolo_ofdm_dl": 12.0,

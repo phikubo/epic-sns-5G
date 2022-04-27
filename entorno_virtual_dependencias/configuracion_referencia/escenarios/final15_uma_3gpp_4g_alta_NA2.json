@@ -100,11 +100,9 @@
             "nrb_sin_gbw": 273,
             "sub_ofdm": 12.0,
             "caso_de_uso": [
-		"eMBB",                
-		"URLLC",
+                "eMBB",
+                "URLLC",
                 "mMTC"
-		
-
             ],
             "trama_total": 14.0,
             "simbolo_ofdm_dl": 12.0,
