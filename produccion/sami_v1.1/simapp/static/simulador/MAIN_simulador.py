@@ -436,13 +436,13 @@ class Simulador:
 			#grafica de tp montecarlo
 			fig, ax = plt.subplots()
 			ax.plot(np.arange(1,len(col_throughput_promedio)+1),np.cumsum(col_throughput_promedio)/np.arange(1,len(col_throughput_promedio)+1))
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '7 Valor medio de Throughput', 'Throughput', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 13. Valor medio de Throughput', 'Throughput', 
 				'Realizaciones', 'Throughput [Mbps]', 'pic_sys_tp_mc', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		else:
 			#muestra todas las graficas.
 			fig, ax = plt.subplots()
 			ax.hist(col_throughput_promedio,numero_barras)
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '1 Histograma de Throughput Promedio', 'Histograma de Throughput Promedio', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 14. Histograma de Throughput Promedio', 'Histograma de Throughput Promedio', 
 				'Throughput [Mbps]', 'Número de Ocurrencia', 'pic_sys_tp_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 			#grafica de tp comulativa
@@ -464,7 +464,7 @@ class Simulador:
 			fig, ax = plt.subplots()
 			y_prob,x_prob,ancho=estats.calcular_probabilidad(np.array(col_throughput_promedio),numero_barras)
 			ax.bar(x_prob, width=ancho, height=y_prob,ec='black')
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '4 PDF Throughput', 'PDF de Throughput', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 15. PDF Throughput', 'PDF de Throughput', 
 				'Throughput [Mbps]', 'Frecuencia de Ocurrencia', 'pic_sys_tp_pdf', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 			#grafica de tp probabilidad
@@ -482,13 +482,13 @@ class Simulador:
 			fig, ax = plt.subplots()
 			#acomulativo densidad
 			ax.hist(col_throughput_promedio, numero_barras, cumulative=True, density=True)
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '5 CDF de Throughput', 'CDF de Throughput', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 16. CDF de Throughput', 'CDF de Throughput', 
 				'Throughput [Mbps]', '', 'pic_sys_tp_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 			#grafica de tp montecarlo
 			fig, ax = plt.subplots()
 			ax.plot(np.arange(1,len(col_throughput_promedio)+1),np.cumsum(col_throughput_promedio)/np.arange(1,len(col_throughput_promedio)+1))
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, '7 Valor medio de Throughput', ' Throughput', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 17. Valor medio de Throughput', ' Throughput', 
 				'Realizaciones', ' Throughput [Mbps]', 'pic_sys_tp_mc', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 
