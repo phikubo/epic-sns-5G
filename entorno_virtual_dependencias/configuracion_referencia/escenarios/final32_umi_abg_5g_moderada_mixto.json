@@ -2,7 +2,7 @@
     "cfg_simulador": {
         "params_general": {
             "debug": false,
-            "iteracion": 300,
+            "iteracion": 2000,
             "n_celdas": 3,
             "portadora": [
                 44000,
@@ -25,7 +25,7 @@
                     false,
                     false
                 ],
-                "resolucion": 9
+                "resolucion": 7
             }
         },
         "params_propagacion": {
@@ -100,7 +100,7 @@
             "nrb_sin_gbw": 264,
             "sub_ofdm": 12.0,
             "caso_de_uso": [
-                "URRLC",
+                "URLLC",
                 "mMTC",
                 "eMBB"
             ],

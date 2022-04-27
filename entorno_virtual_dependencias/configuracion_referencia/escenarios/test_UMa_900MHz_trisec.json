@@ -25,7 +25,7 @@
                     false,
                     false
                 ],
-                "resolucion": 20
+                "resolucion": 30
             }
         },
         "params_propagacion": {
@@ -61,7 +61,7 @@
             "ltx": 1.0,
             "lrx": 1.0,
             "grx": 1.0,
-            "sensibilidad": "none",
+            "sensibilidad": -116.22,
             "mcl": 70.0
         },
         "params_antena": {
@@ -100,9 +100,9 @@
             "nrb_sin_gbw": 273,
             "sub_ofdm": 12.0,
             "caso_de_uso": [
-                "eMBB",
                 "URLLC",
-                "mMTC"
+                "mMTC",
+                "eMBB"
             ],
             "trama_total": 14.0,
             "simbolo_ofdm_dl": 12.0,

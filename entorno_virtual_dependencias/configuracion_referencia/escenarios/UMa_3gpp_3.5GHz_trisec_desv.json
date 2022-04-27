@@ -2,10 +2,10 @@
     "cfg_simulador": {
         "params_general": {
             "debug": false,
-            "iteracion": 300,
+            "iteracion": 100,
             "n_celdas": 3,
             "portadora": [
-                900,
+                3500,
                 "mhz"
             ],
             "isd": 500,
@@ -25,12 +25,12 @@
                     false,
                     false
                 ],
-                "resolucion": 20
+                "resolucion": 30
             }
         },
         "params_propagacion": {
             "self_debug": false,
-            "modelo_perdidas": "okumura_hata",
+            "modelo_perdidas": "uma_3gpp_opcional",
             "params_modelo": [
                 25.0,
                 0.0,
@@ -44,11 +44,11 @@
                 0
             ],
             "params_desv": {
-                "display": false,
-                "tipo": "none",
+                "display": true,
+                "tipo": "mixto",
                 "params": [
                     3.1,
-                    4.0,
+                    6.0,
                     0.0,
                     0.0,
                     0
@@ -61,12 +61,12 @@
             "ltx": 1.0,
             "lrx": 1.0,
             "grx": 1.0,
-            "sensibilidad": "none",
+            "sensibilidad": -116.22,
             "mcl": 70.0
         },
         "params_antena": {
             "self_debug": false,
-            "tipo": "4g",
+            "tipo": "5g",
             "hpbw": 65,
             "atmin": 20.0,
             "apuntamiento": [
