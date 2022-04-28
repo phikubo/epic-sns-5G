@@ -62,8 +62,14 @@ class Simulador:
 		#
 		ascii_banner = pyfiglet.figlet_format("PRESIM")
 		print(ascii_banner)
-		ruta_img_presim="simulador/base_datos/imagenes/presim/"
+		
+		
 		#
+		cfg_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
+		self.ruta_activa_presim=cfg_sim["ruta_activa"].split("/")[-1].split(".")[0]
+
+		ruta_img_presim="simulador/base_datos/imagenes/presim/{}/".format(self.ruta_activa_presim)
+
 		n_cel=self.configuracion["cfg_simulador"]["params_general"]["n_celdas"]
 		resolucion=self.configuracion["cfg_simulador"]["params_general"]["imagen"]["resolucion"]
 		radio_cel=self.configuracion["cfg_simulador"]["params_general"]["isd"]
@@ -254,10 +260,12 @@ class Simulador:
 		#self.ruta_activa=self.ruta_activa.split(".")[-1]
 		ruta_relativa=os.getcwd().replace("\\", "/")
 		ruta_directorio="{}/simapp/static/simulador/base_datos/imagenes/montecarlo/{}".format(ruta_relativa,self.ruta_activa)
+		ruta_directorio_presim="{}/simapp/static/simulador/base_datos/imagenes/presim/{}".format(ruta_relativa,self.ruta_activa)
 		if os.path.exists(ruta_directorio):
 			pass
 		else:
 			os.mkdir(ruta_directorio)
+			os.mkdir(ruta_directorio_presim)
 		#ruta_completa=ruta_relativa+"simapp/static/simulador/base_datos/imagenes/montecarlo"
 
 		#la logitud de las rutas depende de donde se almacena los datos. Las imagenes se producen una capa mas alta por lo que la ruta es menor.
