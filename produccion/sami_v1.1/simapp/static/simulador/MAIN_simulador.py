@@ -329,13 +329,13 @@ class Simulador:
 		fig, ax = plt.subplots()
 		ax.plot(np.linspace(1,len(col_cobertura_usuarios),len(col_cobertura_usuarios)), col_cobertura_usuarios, 'b-o')
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 1. Usuarios, Proceso Puntual Poisson', 'Usuarios por Celda', 
-			'Realizaciones', 'Número de Usuarios', 'pic_users_all', ruta_img_montecarlo, self.graficas_disponibles_dic)
+			'Realizaciones', 'Número de Usuarios', 'pic_1', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 		#grafica de distribucion de usuarios
 		fig, ax = plt.subplots()
 		ax.hist(col_cobertura_usuarios, bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 2. Histograma de Usuarios', 'Usuarios por Celda', 
-			'Usuarios', 'Número de Ocurrencia', 'pic_users_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
+			'Usuarios', 'Número de Ocurrencia', 'pic_2', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
 					
 		#grafica de distribucion de usuarios
@@ -348,7 +348,7 @@ class Simulador:
 		else:
 			pass
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 3. Histograma de Usuarios Conectados ', 'Usuarios: Pr-Sens>0', 
-			'Porcentaje de Conexión', 'Número de Ocurrencia', 'pic_users_hist_on', ruta_img_montecarlo, self.graficas_disponibles_dic)
+			'Porcentaje de Conexión', 'Número de Ocurrencia', 'pic_3', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 		#grafica de distribucion de usuarios
 		#fig, ax = plt.subplots()
@@ -368,7 +368,7 @@ class Simulador:
 		else:
 			pass
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 4. CDF Usuarios con Pr-Sens>0 dB', 'Usuarios: Pr-Sens>0', 
-		'Pr-Sens>0 [dB]', '', 'pic_users_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		'Pr-Sens>0 [dB]', '', 'pic_4', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 		#........................................................................
 		#............................. SINR ...............................
@@ -383,27 +383,27 @@ class Simulador:
 		fig, ax = plt.subplots()
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 5. Histograma SINR > {} dB'.format(ber_sinr), "SINR mayor a {} dB".format(ber_sinr), 
-			'Porcentaje de Usuarios con SINR>1 dB', 'Número de Ocurrencia', 'pic_sys_sinr_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
+			'Porcentaje de Usuarios con SINR>1 dB', 'Número de Ocurrencia', 'pic_5', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
 		#cdf, no normalizado
 		fig, ax = plt.subplots()
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras, cumulative=True)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 6. CDF No normalizada SINR > {} dB'.format(ber_sinr), "SINR mayor a {} dB".format(ber_sinr), 
-		'Porcentaje de Usuarios con SINR>1 dB', '', 'pic_sys_sinr_hist_acomulativo', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		'Porcentaje de Usuarios con SINR>1 dB', '', 'pic_6', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
 		#PDF, normalizada
 		fig, ax = plt.subplots()
 		y_prob,x_prob,ancho=estats.calcular_probabilidad(np.array(col_cob_conexion_sinr),numero_barras)
 		ax.bar(x_prob, width=ancho, height=y_prob,ec='black')
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 7. PDF SINR > {} dB'.format(ber_sinr), 'SINR mayor a {} dB'.format(ber_sinr), 
-		'SINR>1 [dB]', 'Frecuencia de Ocurrencia', 'pic_sys_sinr_pdf', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		'SINR>1 [dB]', 'Frecuencia de Ocurrencia', 'pic_7', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
 		#CDF normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
 		ax.hist(col_cob_conexion_sinr, bins=numero_barras, cumulative=True, density=True)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 8. CDF SINR > {} dB'.format(ber_sinr), 'SINR mayor a {} dB'.format(ber_sinr), 
-		'SINR>1 [dB]', '', 'pic_sys_sinr_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		'SINR>1 [dB]', '', 'pic_8', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 		#-------------------sinr total y promedio por simulacion
 		#CDF no normalizada
@@ -412,7 +412,7 @@ class Simulador:
 		print(np.vstack(np.array(col_cob_sinr)).shape)
 		ax.hist(np.vstack(np.array(col_cob_sinr)), bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 9. CDF SINR total', 'SINR', 
-		'SINR', 'Ocurrencia', 'pic_sys_sinr_total', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		'SINR', 'Ocurrencia', 'pic_9', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 
 		#CDF no normalizada
@@ -421,7 +421,7 @@ class Simulador:
 		#print(np.vstack(np.array(col_cob_sinr)).shape)
 		ax.hist(col_cob_sinr_mean, bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 10. CDF SINR promedio', 'SINR', 
-		'SINR', 'Ocurrencia', 'pic_sys_sinr_mean', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		'SINR', 'Ocurrencia', 'pic_10', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 		#CDF normalizada
 		fig, ax = plt.subplots()
@@ -429,7 +429,7 @@ class Simulador:
 		#print(np.vstack(np.array(col_cob_sinr)).shape)
 		ax.hist(np.vstack(np.array(col_cob_sinr)), bins=numero_barras, cumulative=True, density=True)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 11. CDF SINR total acomulativo', 'SINR', 
-		'SINR', 'Ocurrencia', 'pic_sys_sinr_total_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		'SINR', 'Ocurrencia', 'pic_11', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 		#CDF normalizada
 		fig, ax = plt.subplots()
@@ -437,7 +437,7 @@ class Simulador:
 		#print(np.vstack(np.array(col_cob_sinr)).shape)
 		ax.hist(col_cob_sinr_mean, bins=numero_barras, cumulative=True, density=True)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 12. CDF SINR promedio acomulativo', 'SINR', 
-		'SINR', 'Ocurrencia', 'pic_sys_sinr_mean_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		'SINR', 'Ocurrencia', 'pic_12', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 		#........................................................................
 		#............................. TASA Y MOD ...............................
@@ -448,8 +448,8 @@ class Simulador:
 		#acomulativo densidad
 		proccessed_tasa=np.vstack(np.concatenate(np.array([np.array(xi) for xi in col_cap_tasa])))
 		ax.hist(proccessed_tasa,bins=numero_barras)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 13. CDF TASA total', 'TASA', 
-		'TASA', 'Ocurrencia', 'pic_sys_tasa_total', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 13. CDF TASA total', 'Tasa Máxima', 
+		'TASA', 'Ocurrencia', 'pic_13', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 
 		#CDF no normalizada
@@ -458,8 +458,8 @@ class Simulador:
 		#print(np.vstack(np.array(col_cap_modulacion)).shape)
 		proccessed_tasa=np.vstack(np.concatenate(np.array([np.array(xi) for xi in col_cap_modulacion])))
 		ax.hist(proccessed_tasa,bins=numero_barras)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 14. CDF MODULACION total', 'TASA', 
-		'TASA', 'Ocurrencia', 'pic_sys_modulacion_total', ruta_img_montecarlo, self.graficas_disponibles_dic)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 14. CDF MODULACION total', 'Índice de Modulación', 
+		'TASA', 'Ocurrencia', 'pic_14', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		
 
 		#........................................................................
@@ -474,13 +474,13 @@ class Simulador:
 			fig, ax = plt.subplots()
 			ax.plot(np.arange(1,len(col_cap_throughput_promedio)+1),np.cumsum(col_cap_throughput_promedio)/np.arange(1,len(col_cap_throughput_promedio)+1))
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 15. Valor medio de Throughput', 'Throughput', 
-				'Realizaciones', 'Throughput [Mbps]', 'pic_sys_tp_mc', ruta_img_montecarlo, self.graficas_disponibles_dic)
+				'Realizaciones', 'Throughput [Mbps]', 'pic_15', ruta_img_montecarlo, self.graficas_disponibles_dic)
 		else:
 			#muestra todas las graficas.
 			fig, ax = plt.subplots()
 			ax.hist(col_cap_throughput_promedio,numero_barras)
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 16. Histograma de Throughput Promedio', 'Histograma de Throughput Promedio', 
-				'Throughput [Mbps]', 'Número de Ocurrencia', 'pic_sys_tp_hist', ruta_img_montecarlo, self.graficas_disponibles_dic)
+				'Throughput [Mbps]', 'Número de Ocurrencia', 'pic_16', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 			#grafica de tp comulativa
 			#histograma acomulativo
@@ -502,7 +502,7 @@ class Simulador:
 			y_prob,x_prob,ancho=estats.calcular_probabilidad(np.array(col_cap_throughput_promedio),numero_barras)
 			ax.bar(x_prob, width=ancho, height=y_prob,ec='black')
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 17. PDF Throughput promedio', 'PDF de Throughput', 
-				'Throughput [Mbps]', 'Frecuencia de Ocurrencia', 'pic_sys_tp_pdf', ruta_img_montecarlo, self.graficas_disponibles_dic)
+				'Throughput [Mbps]', 'Frecuencia de Ocurrencia', 'pic_17', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 			#grafica de tp probabilidad
 			'''fig, ax = plt.subplots()
@@ -520,13 +520,13 @@ class Simulador:
 			#acomulativo densidad
 			ax.hist(col_cap_throughput_promedio, numero_barras, cumulative=True, density=True)
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 18. CDF de Throughput promedio', 'CDF de Throughput', 
-				'Throughput [Mbps]', '', 'pic_sys_tp_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
+				'Throughput [Mbps]', '', 'pic_18', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 			#grafica de tp montecarlo
 			fig, ax = plt.subplots()
 			ax.plot(np.arange(1,len(col_cap_throughput_promedio)+1),np.cumsum(col_cap_throughput_promedio)/np.arange(1,len(col_cap_throughput_promedio)+1))
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 19. Valor medio de Throughput promedio', ' Throughput', 
-				'Realizaciones', ' Throughput [Mbps]', 'pic_sys_tp_mc', ruta_img_montecarlo, self.graficas_disponibles_dic)
+				'Realizaciones', ' Throughput [Mbps]', 'pic_19', ruta_img_montecarlo, self.graficas_disponibles_dic)
 			
 
 
@@ -536,7 +536,7 @@ class Simulador:
 			processed_tp=np.vstack(np.array(np.concatenate(col_cap_throughput_total)))
 			ax.hist(processed_tp, bins=numero_barras)
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 20. Histograma de Throughput total', 'Throughput total', 
-				'Throughput [Mbps]', '', 'pic_sys_tp_total_1_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
+				'Throughput [Mbps]', '', 'pic_20', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 			#grafica de tp comulativa
 			fig, ax = plt.subplots()
@@ -544,7 +544,7 @@ class Simulador:
 			processed_tp=np.vstack(np.array(np.concatenate(col_cap_throughput_total)))
 			ax.hist(processed_tp, bins=numero_barras, cumulative=True, density=True)
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 20. CDF de Throughput total', 'CDF de Throughput', 
-				'Throughput [Mbps]', '', 'pic_sys_tp_total_2_cumsum_density', ruta_img_montecarlo, self.graficas_disponibles_dic)
+				'Throughput [Mbps]', '', 'pic_21', ruta_img_montecarlo, self.graficas_disponibles_dic)
 
 
 		#GUARDAR DATOS
