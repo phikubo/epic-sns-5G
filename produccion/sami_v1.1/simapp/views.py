@@ -267,6 +267,7 @@ def ver_parametros(request):
     #simapp/static/simulador/base_datos/escenarios/test_ci_1.json
     vnfd_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/vnfd_mapping")
     #configuracion=cfg.cargar_json_full(target_path=cfg_sim["ruta_activa"])
+    cfg_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
 
     config1=vnfd_sim["cfg_simulador"]["params_general"]
     config2=vnfd_sim["cfg_simulador"]["params_propagacion"]
@@ -274,8 +275,9 @@ def ver_parametros(request):
     config4=vnfd_sim["cfg_simulador"]["params_antena"]
     config5=vnfd_sim["cfg_simulador"]["params_asignacion"]
 
+    ruta_activa=cfg_sim["ruta_activa"].split("/")[-1]
     return render(request,'simapp/sami-parametros.html', {"cfg1":config1, 
-    "cfg2":config2, "cfg3":config3, "cfg4":config4, "cfg5":config5 })
+    "cfg2":config2, "cfg3":config3, "cfg4":config4, "cfg5":config5, "ruta_act":ruta_activa })
 
 def ver_presim(request):
     #se separa el archivo de path debido a que genera problemas en modo debug
