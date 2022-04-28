@@ -96,7 +96,7 @@ class FormSeleccion(forms.Form):
     '''De una lista de escenarios, configura la variable escenario activo que es el archivo de configuración que se simula'''
     escenario_choices=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
     #escenario_choices=(tuple(escenario_choices["rutas_configuracion"].items()))
-    print("opciones\n",escenario_choices)
+    #print("opciones\n",escenario_choices)
     reversed_dict = dict(map(reversed, escenario_choices["rutas_configuracion"].items()))
     escenario_choices=tuple(reversed_dict.items())
     escenario_opciones=forms.ChoiceField(label='Escenarios Disponibles',choices=escenario_choices)
