@@ -25,12 +25,12 @@
                     false,
                     false
                 ],
-                "resolucion": 7
+                "resolucion": 10
             }
         },
         "params_propagacion": {
             "self_debug": false,
-            "modelo_perdidas": "uma_3gpp_opc",
+            "modelo_perdidas": "uma_3gpp_opcional",
             "params_modelo": [
                 25.0,
                 0.0,

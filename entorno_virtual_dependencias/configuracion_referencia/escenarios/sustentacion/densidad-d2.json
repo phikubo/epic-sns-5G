@@ -8,7 +8,7 @@
                 6000,
                 "mhz"
             ],
-            "isd": 4000,
+            "isd": 500,
             "distribucion": [
                 "ppp",
                 1000.0
@@ -25,12 +25,12 @@
                     false,
                     false
                 ],
-                "resolucion": 7
+                "resolucion": 10
             }
         },
         "params_propagacion": {
             "self_debug": false,
-            "modelo_perdidas": "uma_3gpp_opc",
+            "modelo_perdidas": "uma_3gpp_opcional",
             "params_modelo": [
                 25.0,
                 0.0,
@@ -44,8 +44,8 @@
                 0
             ],
             "params_desv": {
-                "display": true,
-                "tipo": "mixto",
+                "display": false,
+                "tipo": "none",
                 "params": [
                     3.1,
                     4.0,
@@ -66,7 +66,7 @@
         },
         "params_antena": {
             "self_debug": false,
-            "tipo": "4g",
+            "tipo": "5g",
             "hpbw": 65,
             "atmin": 20.0,
             "apuntamiento": [

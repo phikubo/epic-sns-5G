@@ -25,14 +25,14 @@
                     false,
                     false
                 ],
-                "resolucion": 7
+                "resolucion": 10
             }
         },
         "params_propagacion": {
             "self_debug": false,
             "modelo_perdidas": "umi_abg",
             "params_modelo": [
-                15.0,
+                25.0,
                 0.0,
                 1.5,
                 0.0,

@@ -25,7 +25,7 @@
                     false,
                     false
                 ],
-                "resolucion": 7
+                "resolucion": 10
             }
         },
         "params_propagacion": {
@@ -44,8 +44,8 @@
                 0
             ],
             "params_desv": {
-                "display": true,
-                "tipo": "mixto",
+                "display": false,
+                "tipo": "none",
                 "params": [
                     3.1,
                     4.0,
