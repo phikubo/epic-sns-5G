@@ -250,7 +250,8 @@ class Simulador:
 		#
 		cfg_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
 
-		self.ruta_activa=cfg_sim["ruta_activa"].split("/")[-1]
+		self.ruta_activa=cfg_sim["ruta_activa"].split("/")[-1].split(".")[0]
+		#self.ruta_activa=self.ruta_activa.split(".")[-1]
 		ruta_relativa=os.getcwd().replace("\\", "/")
 		ruta_directorio="{}/simapp/static/simulador/base_datos/imagenes/montecarlo/{}".format(ruta_relativa,self.ruta_activa)
 		if os.path.exists(ruta_directorio):
