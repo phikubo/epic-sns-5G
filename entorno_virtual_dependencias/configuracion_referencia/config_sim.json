@@ -1,15 +1,15 @@
 {
     "ruta_activa": "simapp/static/simulador/base_datos/escenarios/final01_uma_okumura_4g_media_NA.json",
     "rutas_configuracion": {
-        "Esc 1 - UMA okumura-media NA.json":"simapp/static/simulador/base_datos/escenarios/final01_uma_okumura_4g_media_NA.json" ,
-        "Esc 2 - UMA okumura-moderada NA.json":"simapp/static/simulador/base_datos/escenarios/final02_uma_okumura_4g_moderada_NA.json" ,
-        "Esc 3 - UMA okumura-alta NA.json":"simapp/static/simulador/base_datos/escenarios/final03_uma_okumura_4g_alta_NA.json" ,
-        "Esc 4 - UMA okumura-media lento.json":"simapp/static/simulador/base_datos/escenarios/final04_uma_okumura_4g_media_lento.json" ,
-        "Esc 5 - UMA okumura-moderada lento.json":"simapp/static/simulador/base_datos/escenarios/final05_uma_okumura_4g_moderada_lento.json" ,
-        "Esc 6 - UMA okumura-alta lento.json":"simapp/static/simulador/base_datos/escenarios/final06_uma_okumura_4g_alta_lento.json" ,
-        "Esc 7 - UMA 3gpp-media NA.json":"simapp/static/simulador/base_datos/escenarios/final07_uma_3gpp_4g_media_NA.json" ,
-        "Esc 8 - UMA 3gpp-moderada NA.json":"simapp/static/simulador/base_datos/escenarios/final08_uma_3gpp_4g_moderada_NA.json" ,
-        "Esc 9 - UMA 3gpp-alta NA.json":"simapp/static/simulador/base_datos/escenarios/final09_uma_3gpp_4g_alta_NA.json" ,
+        "Esc 01 - UMA okumura-media NA.json":"simapp/static/simulador/base_datos/escenarios/final01_uma_okumura_4g_media_NA.json" ,
+        "Esc 02 - UMA okumura-moderada NA.json":"simapp/static/simulador/base_datos/escenarios/final02_uma_okumura_4g_moderada_NA.json" ,
+        "Esc 03 - UMA okumura-alta NA.json":"simapp/static/simulador/base_datos/escenarios/final03_uma_okumura_4g_alta_NA.json" ,
+        "Esc 04 - UMA okumura-media lento.json":"simapp/static/simulador/base_datos/escenarios/final04_uma_okumura_4g_media_lento.json" ,
+        "Esc 05 - UMA okumura-moderada lento.json":"simapp/static/simulador/base_datos/escenarios/final05_uma_okumura_4g_moderada_lento.json" ,
+        "Esc 06 - UMA okumura-alta lento.json":"simapp/static/simulador/base_datos/escenarios/final06_uma_okumura_4g_alta_lento.json" ,
+        "Esc 07 - UMA 3gpp-media NA.json":"simapp/static/simulador/base_datos/escenarios/final07_uma_3gpp_4g_media_NA.json" ,
+        "Esc 08 - UMA 3gpp-moderada NA.json":"simapp/static/simulador/base_datos/escenarios/final08_uma_3gpp_4g_moderada_NA.json" ,
+        "Esc 09 - UMA 3gpp-alta NA.json":"simapp/static/simulador/base_datos/escenarios/final09_uma_3gpp_4g_alta_NA.json" ,
         "Esc 10 - UMA 3gpp-media lento.json":"simapp/static/simulador/base_datos/escenarios/final10_uma_3gpp_4g_media_lento.json" ,
         "Esc 11 - UMA 3gpp-moderada lento.json":"simapp/static/simulador/base_datos/escenarios/final11_uma_3gpp_4g_moderada_lento.json" ,
         "Esc 12 - UMA 3gpp-alta lento.json":"simapp/static/simulador/base_datos/escenarios/final12_uma_3gpp_4g_alta_lento.json" ,
@@ -33,6 +33,7 @@
         "Esc 30 - UMI abg-alta rapido.json":"simapp/static/simulador/base_datos/escenarios/final30_umi_abg_5g_alta_rapido.json" ,
         "Esc 31 - UMI abg-media mixto.json":"simapp/static/simulador/base_datos/escenarios/final31_umi_abg_5g_media_mixto.json" ,
         "Esc 32 - UMI abg-moderada mixto.json":"simapp/static/simulador/base_datos/escenarios/final32_umi_abg_5g_moderada_mixto.json" ,
-        "Esc 33 - UMI abg-alta mixto.json":"simapp/static/simulador/base_datos/escenarios/final33_umi_abg_5g_alta_mixto.json"
+        "Esc 33 - UMI abg-alta mixto.json":"simapp/static/simulador/base_datos/escenarios/final33_umi_abg_5g_alta_mixto.json",
+        "Esc 34 - UMI CI-alta mixto.json":"simapp/static/simulador/base_datos/escenarios/final34_umi_CI_5g_media_mixto"
     }
 }
