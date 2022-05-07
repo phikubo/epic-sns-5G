@@ -270,10 +270,10 @@ class Simulador:
 		#margen, si supera margen
 		col_cob_conexion=[]
 		#si supera sinr objetivo
-		col_cob_sinr=[]
-		col_cob_sinr_mean=[]
-		col_cap_modulacion=[]
-		col_cap_tasa=[]
+		col_cob_sinr_total=[]
+		#depleted_col_cob2_sinr_mean=[]
+		col_cap_modulacion_total=[]
+		col_cap_tasa_total=[]
 		#
 		col_cob_conexion_sinr=[]
 		#debe calcularse como 1-cob_conexion
@@ -310,10 +310,10 @@ class Simulador:
 			col_cob_conexion.append(simulacion.medida_conexion_margen)
 
 			col_cob_conexion_sinr.append(simulacion.medida_conexion_sinr)
-			col_cob_sinr.append(simulacion.sinr_db)
-			col_cob_sinr_mean.append(np.mean(simulacion.sinr_db))
-			col_cap_modulacion.append(simulacion.modelo_modulacion.arr_modulacion)
-			col_cap_tasa.append(simulacion.modelo_modulacion.arr_tasa)
+			col_cob_sinr_total.append(simulacion.sinr_db)
+			#depleted_col_cob2_sinr_mean.append(np.mean(simulacion.sinr_db))
+			col_cap_modulacion_total.append(simulacion.modelo_modulacion.arr_modulacion)
+			col_cap_tasa_total.append(simulacion.modelo_modulacion.arr_tasa)
 
 			col_cap_throughput_promedio.append(simulacion.throughput_sistema)
 			col_cap_throughput_total.append(simulacion.throughput_users)
@@ -326,7 +326,7 @@ class Simulador:
 		raw_datos.guardar_data(ruta_datos,"col_cobertura_usuarios",col_cobertura_usuarios, "Coleccion de usuarios por celda original")
 		raw_datos.guardar_data(ruta_datos,"col_cob_conexion",col_cob_conexion, "Coleccion de usuarios cuya potencia es mayor a la sensibilidad.")
 		raw_datos.guardar_data(ruta_datos,"col_cob_conexion_sinr",col_cob_conexion_sinr,"""Coleccion de usuarios cuya SINR es mayor a un target espcificado en self.configuracion["cfg_simulador"]["params_general"]["ber_sinr"] """)
-		raw_datos.guardar_data(ruta_datos,"col_cap_throughput_promedio",col_cap_throughput_promedio,"Coleccion de TP por simulacion. El valor por simulacion es el promedio de TP entre todas las celdas disponibles.")
+		#raw_datos.guardar_data(ruta_datos,"col_cap_throughput_promedio",col_cap_throughput_promedio,"Coleccion de TP por simulacion. El valor por simulacion es el promedio de TP entre todas las celdas disponibles.")
 
 		#........................................................................
 		#............................. COBERTURA ...............................
@@ -418,8 +418,8 @@ class Simulador:
 		#CDF no normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
-		print(np.vstack(np.array(col_cob_sinr)).shape)
-		ax.hist(np.vstack(np.array(col_cob_sinr)), bins=numero_barras)
+		print(np.vstack(np.array(col_cob_sinr_total)).shape)
+		ax.hist(np.vstack(np.array(col_cob_sinr_total)), bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 9. CDF SINR total', 'SINR', 
 		'SINR', 'Ocurrencia', 'pic_9', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
@@ -427,8 +427,8 @@ class Simulador:
 		#CDF no normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
-		#print(np.vstack(np.array(col_cob_sinr)).shape)
-		ax.hist(col_cob_sinr_mean, bins=numero_barras)
+		#print(np.vstack(np.array(col_cob_sinr_total)).shape)
+		ax.hist(depleted_col_cob2_sinr_mean, bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 10. CDF SINR promedio', 'SINR', 
 		'SINR', 'Ocurrencia', 'pic_10', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 		'''
@@ -436,8 +436,8 @@ class Simulador:
 		#CDF normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
-		#print(np.vstack(np.array(col_cob_sinr)).shape)
-		ax.hist(np.vstack(np.array(col_cob_sinr)), bins=numero_barras, cumulative=True, density=True)
+		#print(np.vstack(np.array(col_cob_sinr_total)).shape)
+		ax.hist(np.vstack(np.array(col_cob_sinr_total)), bins=numero_barras, cumulative=True, density=True)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 11. CDF SINR total acomulativo', 'SINR', 
 		'SINR', 'Ocurrencia', 'pic_11', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
@@ -445,8 +445,8 @@ class Simulador:
 		#CDF normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
-		#print(np.vstack(np.array(col_cob_sinr)).shape)
-		ax.hist(col_cob_sinr_mean, bins=numero_barras, cumulative=True, density=True)
+		#print(np.vstack(np.array(col_cob_sinr_total)).shape)
+		ax.hist(depleted_col_cob2_sinr_mean, bins=numero_barras, cumulative=True, density=True)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 12. CDF SINR promedio acomulativo', 'SINR', 
 		'SINR', 'Ocurrencia', 'pic_12', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 		'''
@@ -457,7 +457,7 @@ class Simulador:
 		#CDF no normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
-		proccessed_tasa=np.vstack(np.concatenate(np.array([np.array(xi) for xi in col_cap_tasa])))
+		proccessed_tasa=np.vstack(np.concatenate(np.array([np.array(xi) for xi in col_cap_tasa_total])))
 		ax.hist(proccessed_tasa,bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 13. CDF TASA total', 'Tasa Máxima', 
 		'TASA', 'Ocurrencia', 'pic_13', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
@@ -466,8 +466,8 @@ class Simulador:
 		#CDF no normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
-		#print(np.vstack(np.array(col_cap_modulacion)).shape)
-		proccessed_tasa=np.vstack(np.concatenate(np.array([np.array(xi) for xi in col_cap_modulacion])))
+		#print(np.vstack(np.array(col_cap_modulacion_total)).shape)
+		proccessed_tasa=np.vstack(np.concatenate(np.array([np.array(xi) for xi in col_cap_modulacion_total])))
 		ax.hist(proccessed_tasa,bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 14. CDF MODULACION total', 'Índice de Modulación', 
 		'TASA', 'Ocurrencia', 'pic_14', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
@@ -536,14 +536,14 @@ class Simulador:
 			ax.hist(col_cap_throughput_promedio, numero_barras, cumulative=True, density=True)
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 18. CDF de Throughput promedio', 'CDF de Throughput', 
 				'Throughput [Mbps]', '', 'pic_18', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
-
+			'''
 			#grafica de tp montecarlo
 			fig, ax = plt.subplots()
 			ax.plot(np.arange(1,len(col_cap_throughput_promedio)+1),np.cumsum(col_cap_throughput_promedio)/np.arange(1,len(col_cap_throughput_promedio)+1))
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 19. Valor medio de Throughput promedio', ' Throughput', 
 				'Realizaciones', ' Throughput [Mbps]', 'pic_19', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 			
-			'''
+			
 
 			#grafica de tp comulativa
 			fig, ax = plt.subplots()
