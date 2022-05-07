@@ -2,7 +2,7 @@
     "cfg_simulador": {
         "params_general": {
             "debug": false,
-            "iteracion": 300,
+            "iteracion": 2000,
             "n_celdas": 3,
             "portadora": [
                 3500,
@@ -19,7 +19,7 @@
                 9.0,
                 "dB"
             ],
-            "ber_sinr": 1.0,
+            "ber_sinr": 2.4,
             "imagen": {
                 "display": [
                     false,
@@ -30,7 +30,7 @@
         },
         "params_propagacion": {
             "self_debug": false,
-            "modelo_perdidas": "uma_3gpp",
+            "modelo_perdidas": "uma_3gpp_opcional",
             "params_modelo": [
                 25.0,
                 0.0,
@@ -44,8 +44,8 @@
                 0
             ],
             "params_desv": {
-                "display": true,
-                "tipo": "normal",
+                "display": false,
+                "tipo": "none",
                 "params": [
                     3.1,
                     4.0,
