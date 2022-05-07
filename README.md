@@ -13,10 +13,11 @@ Para instalar,
 1. Acceder mediante terminal a la carpeta: **entorno_virtual_dependencias**, y ejecutar:
 >>pip install -r requirements.txt --upgrade
 
-  *Nota: provisionalmente hacer un cambio a la rama fusion-master, la rama master se encuentra en desarrollo para su depuracion de bugs*
-  >>git checkout fusion-master
+  *Nota: todos los cambios se deben realizar sobre una rama dev_*, la rama master se encuentra en producción y no debe cabiarse sin revisión.
+  Para crear una nueva rama:
+  >>git checkout -b dev_<nombre_desarrollador>
 
-2. Copiar todos los archivos de configuración del directorio **entorno_virtual_dependencias/configuracion_referencia/** al siguiente directorio **produccion/sami_v1.1/simapp/static/simulador/base_datos/**. Nota: La carpeta "escenarios" en la direccion de destino se remplaza completamente. 
+2. Ejecutar el script CONFIGURACION_INICIAL.py, para ello hacer doble click sobre el archivo y esperar que finalice. 
 
 3. Acceder a la carpeta **produccion/sami_v1** y ejecutar:
 >>python manage.py runserver
