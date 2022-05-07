@@ -148,7 +148,7 @@ class Antena:
 	#							VISUALIZACION
 	#---------------------------------------------------------------------------
 	#---------------------------------------------------------------------------
-	def ver_patron_local(self, nombre):
+	def ver_patron_presim(self, nombre, ruta_global):
 		'''Unicamente para la presimulacion'''
 		plt.figure()
 		if self.local_cfg_ant["tipo"]=="4g":
@@ -157,12 +157,13 @@ class Antena:
 		elif self.local_cfg_ant["tipo"]=="5g":
 			a = self.local_cfg_bal["gtx"]
 			n = 10
-			rads = np.arange(0, 2 * np.pi, 0.01)
+			rads = np.arange(0, 2 * np.pi, 0.02)
 			for rad in rads:
 				r = a * np.cos(n*rad)
 				plt.polar(rad, r, 'r.')
 			plt.title("[POL] Patron de Radiación: {}, UEs equidistantes: 10. Gtx uniforme: {} dBi.".format(self.local_cfg_ant["tipo"],self.local_cfg_bal["gtx"]))
-		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
+		#ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
+		ruta="simapp/static/"+ruta_global+"{}.png".format(nombre)
 		plt.savefig(ruta)
 
 	def observar_patron(self):

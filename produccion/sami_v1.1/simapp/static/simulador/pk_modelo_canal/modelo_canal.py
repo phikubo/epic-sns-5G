@@ -574,7 +574,7 @@ class Modelo_Canal:
 		plt.legend(loc="upper left")
 		#en el plot es negativo por aquello de la ecuacion mcl.
 	
-	def ver_perdidas_local(self, nombre):
+	def ver_perdidas_presim(self, nombre, ruta_global):
 		'''Funcion para ver las perdidas por trayectoria'''
 		#cambio a un array custom
 		plt.figure()
@@ -608,11 +608,12 @@ class Modelo_Canal:
 
 		plt.ylabel("Pérdidas [dB]")
 		plt.grid(True)
-		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
+		#ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
+		ruta="simapp/static/"+ruta_global+"{}.png".format(nombre)
 		plt.savefig(ruta)
 
 	
-	def ver_desvanecimiento_local(self, nombre):
+	def ver_desvanecimiento_presim(self, nombre, ruta_global):
 		'''Funcion para ver las perdidas por trayectoria'''
 		#cambio a un array custom
 		plt.figure()
@@ -652,12 +653,13 @@ class Modelo_Canal:
 		else:
 			plt.ylabel("Potencia Recibida [dBm]")
 		#plt.ylabel("Potencia Recibida [dBm]")
-		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
+		#ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
+		ruta="simapp/static/"+ruta_global+"{}.png".format(nombre)
 		plt.savefig(ruta)
 
 
 	
-	def ver_balance_local(self, nombre):
+	def ver_balance_presim(self, nombre, ruta_global):
 		'''Funcion para ver las perdidas por trayectoria'''
 		#cambio a un array custom
 		plt.figure()
@@ -694,11 +696,12 @@ class Modelo_Canal:
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
 		plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
-		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
+		#ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
+		ruta="simapp/static/"+ruta_global+"{}.png".format(nombre)
 		plt.savefig(ruta)
 	
 	#ADICIONAR02
-	def ver_balance_sin_local(self, nombre):
+	def ver_balance_sin_presim(self, nombre, ruta_global):
 		'''Funcion para ver las perdidas por trayectoria'''
 		#cambio a un array custom
 		plt.figure()
@@ -727,11 +730,12 @@ class Modelo_Canal:
 		plt.title("Desvanecimiento: {}".format(self.cfg_prop["params_desv"]["tipo"]))
 		plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
-		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
+		#ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
+		ruta="simapp/static/"+ruta_global+"{}.png".format(nombre)
 		plt.savefig(ruta)
 
 	
-	def ver_relaciones_local(self, nombre):
+	def ver_relaciones_presim(self, nombre, ruta_global):
 		'''Funcion para ver las perdidas por trayectoria'''
 		#cambio a un array custom
 		plt.figure()
@@ -777,7 +781,8 @@ class Modelo_Canal:
 		else:
 			plt.xlabel("Distancia [m]")
 		plt.ylabel("Potencia Recibida [dBm]")
-		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
+		#ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
+		ruta="simapp/static/"+ruta_global+"{}.png".format(nombre)
 		plt.savefig(ruta)
 
 
