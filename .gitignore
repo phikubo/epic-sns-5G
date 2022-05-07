@@ -4,6 +4,8 @@ col_*.txt
 *.npy
 /produccion/sami_v1.1/simapp/static/simulador/base_datos/imagenes/montecarlo/*.png
 /produccion/sami_v1.1/simapp/static/simulador/base_datos/imagenes/montecarlo/*/.png
+/produccion/sami_v1.1/simapp/static/simulador/base_datos/imagenes/montecarlo/*
 /produccion/sami_v1.1/simapp/static/simulador/base_datos/imagenes/presim/*.png
+/produccion/sami_v1.1/simapp/static/simulador/base_datos/imagenes/presim/*/*.png
 /produccion/**/*.json
 
