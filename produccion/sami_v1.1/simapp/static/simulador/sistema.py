@@ -812,7 +812,7 @@ class Sistema_Celular:
 	--------------------------------------------------------------------------------------------'''
 
 
-	def ver_imagen_potencia(self, nombre):
+	def ver_imagen_potencia(self, nombre, ruta_global):
 		'''Permite ver la imagen creada a partir de una malla de puntos'''
 		#el primer valor
 		pr_max=self.hiperc_malla_modelo_canal.resultado_balance.copy()
@@ -843,7 +843,8 @@ class Sistema_Celular:
 		plt.ylabel("Distancia [m]")
 		 
 		plt.grid(True)
-		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
+		ruta="simapp/static/"+ruta_global+"{}.png".format(nombre)
+		#ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
 		plt.savefig(ruta)
 		#plt.savefig("simapp/static/simulador/base_datos/imagenes/mapa_calor.png")
 
@@ -949,7 +950,7 @@ class Sistema_Celular:
 			self.cels_ax.plot(cx,cy, 'b')
 
 
-	def ver_todo(self, *args):
+	def ver_todo(self, *args, nombre, ruta_global):
 		"Funcion que retorna todas las graficas."
 		self.cel_fig, self.cels_ax=plt.subplots(1)
 		#args: i, k, i:{1,0},k:{1,0}
@@ -971,7 +972,7 @@ class Sistema_Celular:
 				if args[1]==True:
 					self.ver_relacion_usuarios_originales()
 		else:
-			 self.ver_usuarios_colores()
+			self.ver_usuarios_colores()
 		self.ver_celdas()
 		self.ver_estaciones_base()
 		self.ver_sectores()
@@ -984,8 +985,7 @@ class Sistema_Celular:
 		#plt.savefig("simapp/static/simulador/base_datos/imagenes/simulacion.png")
 		#plt.show()
 		#plt.grid(True)
-		nombre="base-sim"
-		ruta="simapp/static/simulador/base_datos/imagenes/presim/{}.png".format(nombre)
+		ruta="simapp/static/"+ruta_global+"{}.png".format(nombre)
 		plt.savefig(ruta)
 
 
