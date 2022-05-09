@@ -1,8 +1,6 @@
 # epic-sns-5G: SAMI
 Simulador a Nivel de Sistema 5G.
 
-SIMULACIÓN EN ENTORNO VIRTUAL DE COLABORATORY GOOGLE
-https://colab.research.google.com/drive/1AaUcfTzDZOxy9wGxqEtUFUPAi56ZDUFX#scrollTo=iONVMmSMMgD5
 
 Requisitos:
 1. Conexión a internet
