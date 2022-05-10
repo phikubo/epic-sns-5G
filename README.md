@@ -10,7 +10,9 @@ Requisitos:
 
 Para instalar, 
 1. Descargar el simulador en GITHUB usando opción CODE>Download Zip.
+
   1.1 [OBLIGATORIO PARA UN DESARROLLADOR] Ejecutar un Fork, o solicitar colaboración al Desarrollador Lider.
+  
   1.2 Copiar enlace HTTPS, inicializar el repositorio local y descargar el simulador, usando la terminal y GIT.
   
 2. Acceder mediante terminal a la carpeta: **entorno_virtual_dependencias**, y ejecutar:
