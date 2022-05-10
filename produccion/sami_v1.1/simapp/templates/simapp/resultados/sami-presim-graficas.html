@@ -1,6 +1,8 @@
 {% extends 'base_sami.html' %}
 {% load static %}
-
+<!--
+CUANDO SE CUMPLE LAS ITERACIONES MINIMAS, SE PUEDE EJECUTAR PRESIMULACION Y MONTECARLO
+-->
 {% block titulo_block %}
 RESULTADOS DE PRESIMULACIÓN
 {% endblock %}
@@ -39,7 +41,7 @@ RESULTADOS DE PRESIMULACIÓN
             </div>
             <div class="card-body">
                  
-                <img width="450" height="350" src="{% static value %}" />
+                <img src="{% static value %}" />
             </div>
         </div>
     </div>

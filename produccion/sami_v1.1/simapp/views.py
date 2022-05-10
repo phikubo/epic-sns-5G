@@ -10,6 +10,7 @@ from .forms import *
 #from .forms import FormGeneral, FormPropagacion, FormBalanceAntenas,FormAsignacion
 from .forms import FormSeleccion
 from .forms import FormCompacto
+from .forms import FormComparacion
 #integracion simulador
 import os
 import json
@@ -139,7 +140,7 @@ def configurar_vnfd(archivo_config):
 # Create your views here.
 def home(request):
     '''Index: debe cambiarse a la version del simulador mas reciente'''
-    return render(request,'simapp/sami-index.html')
+    return render(request,'simapp/index/sami-index.html')
 
 
 def form_demo_sami_v1(request):
@@ -235,10 +236,17 @@ def iniciar_simulacion(request):
         elif iteracion>=10:
             print("[view.gui]:Montecarlo activado, porfavor espere...")
             montecarlo=samiv1.Simulador(tipo="montecarlo")
+        
+        #reload enviroment para poder ver la nueva entrada en seleccionar escenario.
+        fname="sami/wsgi.py"
+        try:
+            os.utime(fname, None)  # Set access/modified times to now
+        except OSError:
+            pass  # File does not exist (or no permission)
 
 
         
-    return render(request,'simapp/sami-iniciar-sim.html')
+    return render(request,'simapp/configuracion_datos/sami-iniciar-sim.html')
 
 
 
@@ -256,7 +264,7 @@ def ejecutar_parametros(request):
     config4=configuracion["cfg_simulador"]["params_antena"]
     config5=configuracion["cfg_simulador"]["params_asignacion"]
 
-    return render(request,'simapp/sami-ejecutar-parametros.html', {"cfg1":config1, 
+    return render(request,'simapp/configuracion_datos/sami-ejecutar-parametros.html', {"cfg1":config1, 
     "cfg2":config2, "cfg3":config3, "cfg4":config4, "cfg5":config5 })
 
 
@@ -276,7 +284,7 @@ def ver_parametros(request):
     config5=vnfd_sim["cfg_simulador"]["params_asignacion"]
 
     ruta_activa=cfg_sim["ruta_activa"].split("/")[-1]
-    return render(request,'simapp/sami-parametros.html', {"cfg1":config1, 
+    return render(request,'simapp/configuracion_datos/sami-parametros.html', {"cfg1":config1, 
     "cfg2":config2, "cfg3":config3, "cfg4":config4, "cfg5":config5, "ruta_act":ruta_activa })
 
 def ver_presim(request):
@@ -328,7 +336,7 @@ def seleccionar_escenario(request):
         else:
             print("Error")
         return redirect('ejecutar_parametros/')
-    return render(request,'simapp/form_v1/sami-form-escenarios.html', {"form_data":form})
+    return render(request,'simapp/configuracion_datos/sami-form-escenarios.html', {"form_data":form})
 
 
 
@@ -428,8 +436,80 @@ def form_compacto(request):
             except OSError:
                 pass  # File does not exist (or no permission)
         return redirect('ejecutar_parametros/')
-    return render(request,'simapp/form_v1/sami-form-compacto.html', {"form_data":form})
+    return render(request,'simapp/configuracion_datos/sami-form-compacto.html', {"form_data":form})
     #return render(request,'simapp/form_v1/sami-form-a4.html', {"form_data":form} )
 
+
+
+def seleccionar_comparacion(request):
+    '''Selecciona dos escenarios simulados'''
+
+    form=FormComparacion()
+
+    if request.method == 'POST':
+        form=FormComparacion(request.POST)
+        print("\nHA OCURRIDO UN POST Seleccion de comparacion", request.POST)
+        if form.is_valid():
+            print("[OK]-Formulario seleccion Aceptado")
+            contenido=form.cleaned_data
+            print("clase django", contenido)
+            
+            config_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
+            config_sim["rutas_comparacion"]["ruta_principal"]="{}".format(contenido["escenario_opcion_1"])
+            config_sim["rutas_comparacion"]["ruta_secundaria"]="{}".format(contenido["escenario_opcion_2"])
+            #    
+            cfg.guardar_json(config_sim, target_path="simapp/static/simulador/base_datos/config_sim")
+            
+        else:
+            print("Error")
+        return redirect('resultados_comparacion/')
+
+    return render(request,'simapp/estadisticas/sami-form-comparar-escenarios.html', {"form":form})
+
+
+
+def resultados_comparacion(request):
+    '''Muestra uno a uno, las imagenes renderizadas de simulacion'''
+    # _1 presimulacion
+    # _2 montecarlo
+    config_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
+
+    rutap_1=config_sim["rutas_comparacion"]["ruta_principal"]+"/presim/"
+    rutap_2=config_sim["rutas_comparacion"]["ruta_principal"]+"/montecarlo/"
+
+    imagenes_principal_1 = os.listdir(rutap_1)
+    imagenes_principal_1 = [rutap_1.replace('simapp/static/','')+i for i in imagenes_principal_1]
+
+    imagenes_principal_2 = os.listdir(rutap_2)
+    imagenes_principal_2 = [rutap_2.replace('simapp/static/','')+i for i in imagenes_principal_2]
+    
+    #
+    rutasec_1=config_sim["rutas_comparacion"]["ruta_secundaria"]+"/presim/"
+    rutasec_2=config_sim["rutas_comparacion"]["ruta_secundaria"]+"/montecarlo/"
+
+    imagenes_secundaria_1 = os.listdir(rutasec_1)
+    imagenes_secundaria_1 = [rutasec_1.replace('simapp/static/','')+i for i in imagenes_secundaria_1]
+    imagenes_secundaria_2 = os.listdir(rutasec_2)
+    imagenes_secundaria_2 = [rutasec_2.replace('simapp/static/','')+i for i in imagenes_secundaria_2]
+
+    #imagenes_principal=imagenes_principal_1+imagenes_principal_2
+    #imagenes_secundaria=imagenes_secundaria_1+imagenes_secundaria_2
+
+    imagenes_presim=[]
+    imagenes_montecarlo=[]
+    for prin, sec in zip(imagenes_principal_1,imagenes_secundaria_1):
+        imagenes_presim.append(prin)
+        imagenes_presim.append(sec)
+    
+    for pprin, ssec in zip(imagenes_principal_2,imagenes_secundaria_2):
+        imagenes_montecarlo.append(pprin)
+        imagenes_montecarlo.append(ssec)
+    
+    print("FROM DJANGO ...................")
+    print(imagenes_presim)
+    print("FROM DJANGO ...................")
+    print(imagenes_montecarlo)
+
+    return render(request,'simapp/estadisticas/sami-sim-graficas-comparacion.html',{"img_presim":imagenes_presim, "img_mont":imagenes_montecarlo})
 
 #AUXILIAR Y PRUEBAS

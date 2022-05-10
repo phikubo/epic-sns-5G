@@ -2,10 +2,14 @@ __pycache__/
 col_*.txt
 *.pdf
 *.npy
+/produccion/**/*.json
 /produccion/sami_v1.1/simapp/static/simulador/base_datos/imagenes/montecarlo/*.png
 /produccion/sami_v1.1/simapp/static/simulador/base_datos/imagenes/montecarlo/*/.png
 /produccion/sami_v1.1/simapp/static/simulador/base_datos/imagenes/montecarlo/*
 /produccion/sami_v1.1/simapp/static/simulador/base_datos/imagenes/presim/*.png
 /produccion/sami_v1.1/simapp/static/simulador/base_datos/imagenes/presim/*/*.png
-/produccion/**/*.json
+
+/produccion/sami_v1.1/simapp/static/simulador/base_datos/imagenes/resultados/*/presim/*.png
+/produccion/sami_v1.1/simapp/static/simulador/base_datos/imagenes/resultados/*/montecarlo/*.png
+
 

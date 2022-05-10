@@ -35,5 +35,10 @@
         "Esc 32 - UMI abg-moderada mixto.json":"simapp/static/simulador/base_datos/escenarios/final32_umi_abg_5g_moderada_mixto.json" ,
         "Esc 33 - UMI abg-alta mixto.json":"simapp/static/simulador/base_datos/escenarios/final33_umi_abg_5g_alta_mixto.json",
         "Esc 34 - UMI CI-alta mixto.json":"simapp/static/simulador/base_datos/escenarios/final34_umi_CI_5g_media_mixto"
+    },
+    "rutas_comparacion":
+    {
+        "ruta_principal":"NA",
+        "ruta_secundaria":"NA"
     }
 }

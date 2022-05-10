@@ -56,6 +56,26 @@ class Simulador:
 		ascii_banner = pyfiglet.figlet_format("PRESIM")
 		print(ascii_banner)
 		ruta_img_presim="simulador/base_datos/imagenes/presim/"
+		#configuracion de ruta principal
+		cfg_sim=cfg.cargar_json(target_path="simapp/static/simulador/base_datos/config_sim")
+		self.ruta_activa=cfg_sim["ruta_activa"].split("/")[-1].split(".")[0]
+		ruta_relativa=os.getcwd().replace("\\", "/")
+		ruta_directorio="{}/simapp/static/simulador/base_datos/imagenes/resultados/{}/".format(ruta_relativa,self.ruta_activa)
+		if os.path.exists(ruta_directorio):
+			pass
+		else:
+			os.mkdir(ruta_directorio)
+
+		#configuracion de subruta
+		ruta_directorio="{}/simapp/static/simulador/base_datos/imagenes/resultados/{}/presim".format(ruta_relativa,self.ruta_activa)
+		if os.path.exists(ruta_directorio):
+			pass
+		else:
+			os.mkdir(ruta_directorio)
+
+		ruta_img_presim="simulador/base_datos/imagenes/resultados/{}/presim/".format(self.ruta_activa)
+		#print("Ruta presim", ruta_img_presim)
+
 		#
 		n_cel=self.configuracion["cfg_simulador"]["params_general"]["n_celdas"]
 		resolucion=self.configuracion["cfg_simulador"]["params_general"]["imagen"]["resolucion"]
@@ -106,7 +126,8 @@ class Simulador:
 		#display de imagen potencia
 		if display_pic:
 			nombre="imagen_potencia"
-			pre_sim.ver_imagen_potencia(nombre=nombre)
+			#[!]guardar imagen
+			pre_sim.ver_imagen_potencia(nombre=nombre, ruta_global=ruta_img_presim)
 			titulo="Escenario: Potencia Recibida"
 			#ruta_img="simulador/base_datos/imagenes/presim/imagen_potencia.png"
 			#self.graficas_disponibles.append(ruta_img)
@@ -116,8 +137,8 @@ class Simulador:
 			#plt.show()
 		else:
 			pass
-
-		pre_sim.ver_todo()
+		#[!]guardar imagen
+		pre_sim.ver_todo(nombre="base-sim", ruta_global=ruta_img_presim)
 		nombre="base-sim"
 		densidad_choices=(
         (1, 'Baja'),
@@ -136,7 +157,7 @@ class Simulador:
 
 		#display de antena
 		nombre="patron_radiacion"
-		pre_sim.hiperc_antena.ver_patron_local(nombre="patron_radiacion")
+		pre_sim.hiperc_antena.ver_patron_presim(nombre="patron_radiacion", ruta_global=ruta_img_presim)
 		titulo="Escenario: Patrón de Radiación"
 		#ruta_img="simulador/base_datos/imagenes/presim/patron_radiacion.png"
 		#self.graficas_disponibles.append(ruta_img)
@@ -146,9 +167,9 @@ class Simulador:
 		#sim=pre_sim
 
 		#display de perdidas por trayectoria
-			#ver_perdidas_local -> referencia a perdidas con muestra 20km.
+			#ver_perdidas_presim -> referencia a perdidas con muestra 20km.
 		nombre="perdidas"
-		pre_sim.hiperc_modelo_canal.ver_perdidas_local(nombre="perdidas")
+		pre_sim.hiperc_modelo_canal.ver_perdidas_presim(nombre="perdidas", ruta_global=ruta_img_presim)
 		titulo="Pérdidas de Propagación"
 		#ruta_img="simulador/base_datos/imagenes/presim/perdidas.png"
 		#self.graficas_disponibles.append(ruta_img)
@@ -159,7 +180,8 @@ class Simulador:
 		desva=self.configuracion["cfg_simulador"]["params_propagacion"]["params_desv"]["display"]
 		if desva:
 			nombre="desvanecimiento"
-			pre_sim.hiperc_modelo_canal.ver_desvanecimiento_local(nombre="desvanecimiento")
+			#solo funciona en presim, por eso esta mas relacionada en la instancia en lugar de la clase sistema.
+			pre_sim.hiperc_modelo_canal.ver_desvanecimiento_presim(nombre="desvanecimiento", ruta_global=ruta_img_presim)
 			titulo="Desvanecimiento"
 			#ruta_img="simulador/base_datos/imagenes/presim/desvanecimiento.png"
 			#self.graficas_disponibles.append(ruta_img)
@@ -167,7 +189,7 @@ class Simulador:
 			self.graficas_disponibles_dic.update({titulo.upper():ruta})
 			#
 			nombre="relaciones"
-			pre_sim.hiperc_modelo_canal.ver_relaciones_local(nombre="relaciones_debug")
+			pre_sim.hiperc_modelo_canal.ver_relaciones_presim(nombre="relaciones_debug", ruta_global=ruta_img_presim)
 			titulo="Relación de Gráficas (Debug)"
 			#ruta_img="simulador/base_datos/imagenes/presim/relaciones.png"
 			#self.graficas_disponibles.append(ruta_img)
@@ -178,7 +200,7 @@ class Simulador:
 				pass
 			#
 			nombre="balance"
-			pre_sim.hiperc_modelo_canal.ver_balance_local(nombre="balance")
+			pre_sim.hiperc_modelo_canal.ver_balance_presim(nombre="balance", ruta_global=ruta_img_presim)
 			titulo="Balance del Enlace con Desvanecimiento"
 			#ruta_img="simulador/base_datos/imagenes/presim/balance.png"
 			#self.graficas_disponibles.append(ruta_img)
@@ -187,21 +209,13 @@ class Simulador:
 		else:
 			print("[simulador]: desvanecimiento desactivado, la grafica no se genera")
 			nombre="balance_sin"
-			pre_sim.hiperc_modelo_canal.ver_balance_sin_local(nombre="balance_sin")
+			pre_sim.hiperc_modelo_canal.ver_balance_sin_presim(nombre="balance_sin", ruta_global=ruta_img_presim)
 			titulo="Balance del Enlace (Sin desvanecimiento)"
 			#ruta_img="simulador/base_datos/imagenes/presim/balance_sin.png"
 			#self.graficas_disponibles.append(ruta_img)
 			ruta=ruta_img_presim+nombre+".png"
 			self.graficas_disponibles_dic.update({titulo.upper():ruta})
-		'''
-		pre_sim.ver_todo()
-		nombre="base-sim"
-		titulo="Escenario de Simulación"
-		#ruta_img="simulador/base_datos/imagenes/presim/base-sim.png"
-		#self.graficas_disponibles.append(ruta_img)
-		ruta=ruta_img_presim+nombre+".png"
-		self.graficas_disponibles_dic.update({titulo.upper():ruta})
-		'''
+
 		#guardar los nombres de graficas disponibles para desplegar despues.
 		#self.configuracion["cfg_gui"]["presim_graphs"]=self.graficas_disponibles
 		
@@ -212,6 +226,7 @@ class Simulador:
 		
 		#cambio de ruta en el path
 		self.configuracion_gui["presim_graphs"]=self.graficas_disponibles_dic
+		
 		cfg.guardar_json(self.configuracion_gui, target_path="simapp/static/simulador/base_datos/config_gui")
 		#eliminar todo despues de pre-simular para desocupar la memoria.
 		pre_sim=0
@@ -246,7 +261,7 @@ class Simulador:
 		self.ruta_activa=cfg_sim["ruta_activa"].split("/")[-1].split(".")[0]
 		#self.ruta_activa=self.ruta_activa.split(".")[-1]
 		ruta_relativa=os.getcwd().replace("\\", "/")
-		ruta_directorio="{}/simapp/static/simulador/base_datos/imagenes/montecarlo/{}".format(ruta_relativa,self.ruta_activa)
+		ruta_directorio="{}/simapp/static/simulador/base_datos/imagenes/resultados/{}/montecarlo/".format(ruta_relativa,self.ruta_activa)
 		if os.path.exists(ruta_directorio):
 			pass
 		else:
@@ -255,7 +270,8 @@ class Simulador:
 
 		#la logitud de las rutas depende de donde se almacena los datos. Las imagenes se producen una capa mas alta por lo que la ruta es menor.
 		#en cambio los datos se guardan desde aqui por que la ruta debe ser completa. Similar con mapa_calor_x,y. Hint: buscar mapa_calor_x.
-		ruta_img_montecarlo="simulador/base_datos/imagenes/montecarlo"
+		#ruta_img_montecarlo="simulador/base_datos/imagenes/montecarlo"
+		ruta_img_montecarlo="simulador/base_datos/imagenes/resultados/{}/montecarlo/".format(self.ruta_activa)
 		#os.mkdir(ruta_img_montecarlo)
 
 		ruta_datos='simapp/static/simulador/base_datos/datos'
@@ -270,10 +286,10 @@ class Simulador:
 		#margen, si supera margen
 		col_cob_conexion=[]
 		#si supera sinr objetivo
-		col_cob_sinr=[]
-		col_cob_sinr_mean=[]
-		col_cap_modulacion=[]
-		col_cap_tasa=[]
+		col_cob_sinr_total=[]
+		#depleted_col_cob2_sinr_mean=[]
+		col_cap_modulacion_total=[]
+		col_cap_tasa_total=[]
 		#
 		col_cob_conexion_sinr=[]
 		#debe calcularse como 1-cob_conexion
@@ -310,10 +326,10 @@ class Simulador:
 			col_cob_conexion.append(simulacion.medida_conexion_margen)
 
 			col_cob_conexion_sinr.append(simulacion.medida_conexion_sinr)
-			col_cob_sinr.append(simulacion.sinr_db)
-			col_cob_sinr_mean.append(np.mean(simulacion.sinr_db))
-			col_cap_modulacion.append(simulacion.modelo_modulacion.arr_modulacion)
-			col_cap_tasa.append(simulacion.modelo_modulacion.arr_tasa)
+			col_cob_sinr_total.append(simulacion.sinr_db)
+			#depleted_col_cob2_sinr_mean.append(np.mean(simulacion.sinr_db))
+			col_cap_modulacion_total.append(simulacion.modelo_modulacion.arr_modulacion)
+			col_cap_tasa_total.append(simulacion.modelo_modulacion.arr_tasa)
 
 			col_cap_throughput_promedio.append(simulacion.throughput_sistema)
 			col_cap_throughput_total.append(simulacion.throughput_users)
@@ -326,7 +342,7 @@ class Simulador:
 		raw_datos.guardar_data(ruta_datos,"col_cobertura_usuarios",col_cobertura_usuarios, "Coleccion de usuarios por celda original")
 		raw_datos.guardar_data(ruta_datos,"col_cob_conexion",col_cob_conexion, "Coleccion de usuarios cuya potencia es mayor a la sensibilidad.")
 		raw_datos.guardar_data(ruta_datos,"col_cob_conexion_sinr",col_cob_conexion_sinr,"""Coleccion de usuarios cuya SINR es mayor a un target espcificado en self.configuracion["cfg_simulador"]["params_general"]["ber_sinr"] """)
-		raw_datos.guardar_data(ruta_datos,"col_cap_throughput_promedio",col_cap_throughput_promedio,"Coleccion de TP por simulacion. El valor por simulacion es el promedio de TP entre todas las celdas disponibles.")
+		#raw_datos.guardar_data(ruta_datos,"col_cap_throughput_promedio",col_cap_throughput_promedio,"Coleccion de TP por simulacion. El valor por simulacion es el promedio de TP entre todas las celdas disponibles.")
 
 		#........................................................................
 		#............................. COBERTURA ...............................
@@ -418,8 +434,8 @@ class Simulador:
 		#CDF no normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
-		print(np.vstack(np.array(col_cob_sinr)).shape)
-		ax.hist(np.vstack(np.array(col_cob_sinr)), bins=numero_barras)
+		print(np.vstack(np.array(col_cob_sinr_total)).shape)
+		ax.hist(np.vstack(np.array(col_cob_sinr_total)), bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 9. CDF SINR total', 'SINR', 
 		'SINR', 'Ocurrencia', 'pic_9', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
@@ -427,8 +443,8 @@ class Simulador:
 		#CDF no normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
-		#print(np.vstack(np.array(col_cob_sinr)).shape)
-		ax.hist(col_cob_sinr_mean, bins=numero_barras)
+		#print(np.vstack(np.array(col_cob_sinr_total)).shape)
+		ax.hist(depleted_col_cob2_sinr_mean, bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 10. CDF SINR promedio', 'SINR', 
 		'SINR', 'Ocurrencia', 'pic_10', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 		'''
@@ -436,8 +452,8 @@ class Simulador:
 		#CDF normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
-		#print(np.vstack(np.array(col_cob_sinr)).shape)
-		ax.hist(np.vstack(np.array(col_cob_sinr)), bins=numero_barras, cumulative=True, density=True)
+		#print(np.vstack(np.array(col_cob_sinr_total)).shape)
+		ax.hist(np.vstack(np.array(col_cob_sinr_total)), bins=numero_barras, cumulative=True, density=True)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 11. CDF SINR total acomulativo', 'SINR', 
 		'SINR', 'Ocurrencia', 'pic_11', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
@@ -445,8 +461,8 @@ class Simulador:
 		#CDF normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
-		#print(np.vstack(np.array(col_cob_sinr)).shape)
-		ax.hist(col_cob_sinr_mean, bins=numero_barras, cumulative=True, density=True)
+		#print(np.vstack(np.array(col_cob_sinr_total)).shape)
+		ax.hist(depleted_col_cob2_sinr_mean, bins=numero_barras, cumulative=True, density=True)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 12. CDF SINR promedio acomulativo', 'SINR', 
 		'SINR', 'Ocurrencia', 'pic_12', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 		'''
@@ -457,7 +473,7 @@ class Simulador:
 		#CDF no normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
-		proccessed_tasa=np.vstack(np.concatenate(np.array([np.array(xi) for xi in col_cap_tasa])))
+		proccessed_tasa=np.vstack(np.concatenate(np.array([np.array(xi) for xi in col_cap_tasa_total])))
 		ax.hist(proccessed_tasa,bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 13. CDF TASA total', 'Tasa Máxima', 
 		'TASA', 'Ocurrencia', 'pic_13', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
@@ -466,8 +482,8 @@ class Simulador:
 		#CDF no normalizada
 		fig, ax = plt.subplots()
 		#acomulativo densidad
-		#print(np.vstack(np.array(col_cap_modulacion)).shape)
-		proccessed_tasa=np.vstack(np.concatenate(np.array([np.array(xi) for xi in col_cap_modulacion])))
+		#print(np.vstack(np.array(col_cap_modulacion_total)).shape)
+		proccessed_tasa=np.vstack(np.concatenate(np.array([np.array(xi) for xi in col_cap_modulacion_total])))
 		ax.hist(proccessed_tasa,bins=numero_barras)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 14. CDF MODULACION total', 'Índice de Modulación', 
 		'TASA', 'Ocurrencia', 'pic_14', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
@@ -536,14 +552,14 @@ class Simulador:
 			ax.hist(col_cap_throughput_promedio, numero_barras, cumulative=True, density=True)
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 18. CDF de Throughput promedio', 'CDF de Throughput', 
 				'Throughput [Mbps]', '', 'pic_18', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
-
+			'''
 			#grafica de tp montecarlo
 			fig, ax = plt.subplots()
 			ax.plot(np.arange(1,len(col_cap_throughput_promedio)+1),np.cumsum(col_cap_throughput_promedio)/np.arange(1,len(col_cap_throughput_promedio)+1))
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig 19. Valor medio de Throughput promedio', ' Throughput', 
 				'Realizaciones', ' Throughput [Mbps]', 'pic_19', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 			
-			'''
+			
 
 			#grafica de tp comulativa
 			fig, ax = plt.subplots()
@@ -575,7 +591,7 @@ def formatear_grafica_simple(ax, titulo_web, titulo_graf, xlab,ylab, nombre_arch
 	ax.set_xlabel(xlab)
 	ax.set_ylabel(ylab)
 	plt.grid(True)
-	ruta=ruta_img_montecarlo+'/'+ruta_activa+'/'+nombre_archivo+".png"
+	ruta=ruta_img_montecarlo+nombre_archivo+".png"
 	print("_---formato ruta---_", ruta)
 	plt.savefig("simapp/static/"+ruta)
 	diccionario.update({titulo_web.upper():ruta})

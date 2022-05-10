@@ -10,15 +10,38 @@ Requisitos:
 4. (Opcional) Entorno virtual instalado y activo.
 
 Para instalar, 
+1. Descargar el simulador en GITHUB usando opción CODE>Download Zip.
 
-1. Acceder mediante terminal a la carpeta: **entorno_virtual_dependencias**, y ejecutar:
+  1.1 [OBLIGATORIO PARA UN DESARROLLADOR] Ejecutar un Fork, o solicitar colaboración al Desarrollador Lider.
+  
+  1.2 Copiar enlace HTTPS, inicializar el repositorio local y descargar el simulador, usando la terminal y GIT.
+  
+2. Acceder mediante terminal a la carpeta: **entorno_virtual_dependencias**, y ejecutar:
 >>pip install -r requirements.txt --upgrade
 
-  *Nota: provisionalmente hacer un cambio a la rama fusion-master, la rama master se encuentra en desarrollo para su depuracion de bugs*
-  >>git checkout fusion-master
+3. Ejecutar el script CONFIGURACION_INICIAL.py, para ello hacer doble click sobre el archivo y esperar que finalice. 
 
-2. Copiar todos los archivos de configuración del directorio **entorno_virtual_dependencias/configuracion_referencia/** al siguiente directorio **produccion/sami_v1.1/simapp/static/simulador/base_datos/**. Nota: La carpeta "escenarios" en la direccion de destino se remplaza completamente. 
-
-3. Acceder a la carpeta **produccion/sami_v1** y ejecutar:
+4. Acceder a la carpeta **produccion/sami_v1** y ejecutar:
 >>python manage.py runserver
+
+5. Operaciones GIT
+*Nota: todos los cambios se deben realizar sobre una rama dev_*, la rama master se encuentra en producción y no debe cambiarse sin revisión.
+
+  Para crear una nueva rama [_en terminal o cmd_]:
+  >>git checkout -b dev_<nombre_desarrollador>
+  
+  Para guardar cambios localmente [_en terminal o cmd_]:
+  >>git add .
+  >>git commit -m "Descripcion del cambio"
+  
+  Para guardar cambios en rama del desarrollador [_en terminal o cmd_]:
+  >>git push origin dev_<nombre_desarrollador>
+
+  Para guardar cambios en rama de produccion [_EN GITHUB_]:
+  1. Abrir un pull request con una breve descripción del cambio.
+  2. Par revisor confirma que los cambios son efectivos y no alteran negativamente el funcionamiento del programa.
+  3. Par revisor ejecuta un _MERGE_ y todos los cambios quedan guardados en master.
+
+  Para actualizar rama del desarrollador con nuevos cambios de _MASTER_ [_en terminal o cmd_]:
+  >>git pull origin master
 

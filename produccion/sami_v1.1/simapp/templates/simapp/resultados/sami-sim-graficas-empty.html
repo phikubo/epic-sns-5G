@@ -1,6 +1,8 @@
 {% extends 'base_sami.html' %}
 {% load static %}
-
+<!--
+CUANDO NO SE CUMPLE LAS ITERACIONES MINIMAS, SE DEBE MOSTRAR UNA PAGINA QUE INDICA QUE NO SE PUEDE EJECUTAR MONTECARLO
+-->
 {% block titulo_block %}
 RESULTADOS DE SIMULACIÓN
 {% endblock %}
@@ -13,7 +15,7 @@ RESULTADOS DE SIMULACIÓN
             <h4>¡Gráficas de Simulación!</h4>
             <p class="mb-0">Los siguientes resultados de simulación, se realizan sobre una muestra aleatoria de usuarios distribuidos mediante el método de distribución correspondiente [agregar informacion de distribucion]</p>
             <hr>
-            <a class="btn btn-info" href="{% url 'simapp:futuro' %}">Siguiente</a>
+            <a class="btn btn-info" href="{% url 'simapp:sim_form_comparar_escenarios' %}">Siguiente</a>
              
         </div>
     </div>
