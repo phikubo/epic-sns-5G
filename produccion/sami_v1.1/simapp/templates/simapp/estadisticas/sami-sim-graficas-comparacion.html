@@ -1,7 +1,7 @@
 {% extends 'base_sami.html' %}
 {% load static %}
 <!--
-RESULTADOS DE SIMULACION, PRESIMULACION.
+CUANDO NO SE CUMPLE LAS ITERACIONES MINIMAS, SE DEBE MOSTRAR UNA PAGINA QUE INDICA QUE NO SE PUEDE EJECUTAR MONTECARLO
 -->
 {% block titulo_block %}
 RESULTADOS DE SIMULACIÓN
@@ -15,34 +15,33 @@ RESULTADOS DE SIMULACIÓN
             <h4>¡Gráficas de Simulación!</h4>
             <p class="mb-0">Los siguientes resultados de simulación, se realizan sobre una muestra aleatoria de usuarios distribuidos mediante el método de distribución correspondiente [agregar informacion de distribucion]</p>
             <hr>
-            <a class="btn btn-info" href="{% url 'simapp:sim_form_comparar_escenarios' %}">Siguiente</a>
+            <a class="btn btn-info" href="{% url 'simapp:futuro' %}">Siguiente</a>
              
         </div>
     </div>
 </div>
 
 
-<!--
+
 <div class="row page-titles mx-0">
     <div class="col-sm-6 p-md-0">
         <div class="welcome-text">
-            <h4>¡Gráficas de Capacidad!</h4>
-            <p class="mb-0">A continuación las gráficas. Si el simulador no ha concluido su ejecución, por favor recargar la página.</p>
+            <h5>¡Gráficas de Presimulación!</h5>
         </div>
     </div>
 </div>
--->
+
 
 <div class="row">
-    {% for key, value in img_disp.items %}
+    {% for key in img_presim %}
     <div class="col-lg-6">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">{{ key }}</h4>
+                <h4 class="card-title"> </h4>
             </div>
             <div class="card-body">
                  
-                <img width="450" height="350" src="{% static value %}" />
+                <img width="450" height="350" src="{% static key %}" />
             </div>
         </div>
     </div>
@@ -51,6 +50,33 @@ RESULTADOS DE SIMULACIÓN
     
 </div>
 
+<hr>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h5>¡Gráficas de Montecarlo!</h5>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% for key in img_mont %}
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title"> </h4>
+            </div>
+            <div class="card-body">
+                 
+                <img width="450" height="350" src="{% static key %}" />
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    
+</div>
 
 <hr>
 

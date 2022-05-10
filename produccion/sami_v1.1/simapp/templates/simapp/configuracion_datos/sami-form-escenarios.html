@@ -20,7 +20,7 @@ SIMULADOR A NIVEL DE SISTEMA
         </div>
         
     </div>
-    <p class="mb-0">Use la combinacion de teclas <strong>Alt+flecha izquierda</strong> y <strong>Alt+flecha derecha</strong> para modificar los formularios. El botón <strong>siguiente</strong> guarda la configuración.</p>
+    
 </div>
 
 
@@ -52,43 +52,17 @@ SIMULADOR A NIVEL DE SISTEMA
                              
                                 <div class="col-4 col-sm-3 mb-4">
                                     <div class="form-group">
-                                        <!--
-                                        <label class="text-label">Tipo de espliegue de Usuarios</label>
-                                        -->
+                                        
                                         <div class="input-group">
                                             {{ form_data.escenario_opciones|as_crispy_field }}
-                                            <!--
-                                            <select class="form-control" id="distribucion" name="distribucion">
-                                                <option >Proceso Puntual Poisson</option>
-                                                <option >Futuro</option>
-                                            </select>
-                                            -->
+
                                         </div>
                                     </div>
                                 </div>                             
 
-                                
-                                <!--
-                                <div class="col-lg-6 mb-4">
-                                    
-                                        <div class="form-group">
-                                            <label class="form-check-label">Debug &nbsp; &nbsp; &nbsp; &nbsp;</label> 
-                                            
-                                            <input type="checkbox"  name="realdebug"  class="form-check-input">
-                                            
-                                        </div>
-
-                                </div>
-                                -->
-
 
                             </div>
 
-                       
-
-
-
-                        
                         <input type="submit" class="btn btn-primary" value="siguiente" href="{% url 'simapp:parametros' %}"/>
                         
                         
