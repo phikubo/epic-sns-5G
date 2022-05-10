@@ -2,6 +2,9 @@
 <!-- https://demo.themefisher.com/focus/ -->
 
 <!DOCTYPE html>
+<!--
+TEMPLATE BASE: PERMITE MODIFICAR LAS OPCIONES DE LA IZQUIERDA. LAS MODIFICACIONES DEBEN MODIFICAR: BASE, URLS.PY, VIEWS.PY Y TEMPLATES HTMLS.
+-->
 <html lang="en">
 
 <head>
@@ -17,14 +20,15 @@
     <!-- Styles for data export -->
     <link href="{% static 'simapp/js/data-table-extensions/css/lib/font-awesome.min.css' %}" rel="stylesheet">
     <link href="{% static 'simapp/js/data-table-extensions/css/lib/themify-icons.css' %}" rel="stylesheet">
-    <link href="{% static 'simapp/js/data-table-extensions/css/lib/data-table/buttons.bootstrap.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'simapp/js/data-table-extensions/css/lib/data-table/buttons.bootstrap.min.css' %}"
+        rel="stylesheet" />
     <link href="{% static 'simapp/js/data-table-extensions/css/lib/menubar/sidebar.css' %}" rel="stylesheet">
     <link href="{% static 'simapp/js/data-table-extensions/css/lib/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'simapp/js/data-table-extensions/css/lib/helper.css' %}" rel="stylesheet">
     <!-- Afecta la barra superior -->
     <link href="{% static 'simapp/js/data-table-extensions/css/style.css' %}" rel="stylesheet">
 
-    
+
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'simapp/images/logo-s.png' %}">
     <link rel="stylesheet" href="{% static 'simapp/vendor/owl-carousel/css/owl.carousel.min.css' %}">
@@ -33,7 +37,7 @@
     <link href="{% static 'simapp/css/style.css' %}" rel="stylesheet">
 
 
-     
+
 </head>
 
 
@@ -114,7 +118,7 @@
                                 class="icon-badge menu-icon"></i><span class="nav-text">Características</span></a>
                         <ul aria-expanded="false">
                             <li><a href="{% url 'simapp:presentacion_v1' %}">Sami v1</a></li>
-                            <li><a href="{% url 'simapp:futuro' %}">Sami v [futuro]</a></li>
+                            <li><a href="{% url 'simapp:futuro' %}">[Futuro]</a></li>
                         </ul>
                     </li>
 
@@ -192,35 +196,31 @@
                     -->
                     <li class="nav-label">Configuración de Datos</li>
                     <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon-speedometer menu-icon"></i><span class="nav-text">Simuladores</span></a>
+                                class="icon-speedometer menu-icon"></i><span class="nav-text">Simulador SAMI</span></a>
                         <ul aria-expanded="false">
-                            <!---->
-                            <!---->
-                            <!---->
 
-                            <!--
-                            <li><a href="./form-element.html">Form Elements</a></li>
-                            -->
                             <li><a href="{% url 'simapp:lista_parametros' %}">Escenario Activo</a></li>
                             <li><a href="{% url 'simapp:sim_form_compacto' %}">Nuevo Escenario</a></li>
                             <li><a href="{% url 'simapp:sim_form_escenarios' %}">Seleccionar Escenario</a></li>
                             <li><a href="{% url 'simapp:parametros' %}">Ejecutar Ultimo Escenario</a></li>
-                            <!--
-                            <li><a href="{% url 'simapp:futuro' %}">Dev [futuro]</a></li>
-                            -->
-                            <li><a href="{% url 'simapp:demo_form_sami_v1' %}">Demo</a></li>
-                            <!--
-                            <li><a href="./form-editor-summernote.html">Summernote</a></li>
-                            <li><a href="form-pickers.html">Pickers</a></li>
-                            <li><a href="form-validation-jquery.html">Jquery Validate</a></li>
-                            -->
+
                         </ul>
                     </li>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                                class="icon-speedometer menu-icon"></i><span class="nav-text">Simulador [Futuro]</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="{% url 'simapp:futuro' %}">[Futuro]</a></li>
+                        </ul>
+                    </li>
+
+
+
+
 
                     <!--NUEVO BLOQUE, CONSIDERAR BANDERAS-->
                     <li class="nav-label">Resultados</li>
                     <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon-graph menu-icon"></i><span class="nav-text">Gráficas</span></a>
+                                class="icon-graph menu-icon"></i><span class="nav-text">Simulaciones</span></a>
                         <ul aria-expanded="false">
                             <li><a href="{% url 'simapp:pre_sim' %}">Presimulación</a></li>
                             <li><a href="{% url 'simapp:sim' %}">Simulación y Sistema</a></li>
@@ -235,8 +235,10 @@
                     <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
                                 class="icon icon-chart-bar-33"></i><span class="nav-text">Estadisticas</span></a>
                         <ul aria-expanded="false">
-                            <li><a href="{% url 'simapp:futuro' %}">Información General</a></li>
-                            <li><a href="{% url 'simapp:futuro' %}">Información de Recursos</a></li>
+                            <li><a href="{% url 'simapp:sim_form_comparar_escenarios' %}">Selecionar Escenarios</a></li>
+                            <li><a href="{% url 'simapp:sim_resultados_comparacion_escenarios' %}">Resultados de Comparación</a></li>
+                             
+                            <li><a href="{% url 'simapp:futuro' %}">[Futuro]</a></li>
                         </ul>
                     </li>
 
@@ -351,34 +353,29 @@
 
 
 
-     <!-- jquery vendor -->
-     <script src="{% static 'simapp/js/data-table-extensions/jquery.min.js' %}"></script>
-     <script src="{% static 'simapp/js/data-table-extensions/jquery.nanoscroller.min.js' %}"></script>
-     <!-- nano scroller -->
-     <script src="{% static 'simapp/js/data-table-extensions/menubar/sidebar.js' %}"></script>
-     <script src="{% static 'simapp/js/data-table-extensions/preloader/pace.min.js' %}"></script>
-     <!-- sidebar -->
-     
-     <!-- bootstrap -->
- 
-     <script src="{% static 'simapp/js/data-table-extensions/bootstrap.min.js' %}"></script>
-     <script src="{% static 'simapp/js/data-table-extensions/scripts.js' %}"></script>
-     <!-- scripit init-->
-     <script src="{% static 'simapp/js/data-table/datatables.min.js' %}"></script>
-     <script src="{% static 'simapp/js/data-table/dataTables.buttons.min.js' %}"></script>
-     <script src="{% static 'simapp/js/data-table/buttons.flash.min.js' %}"></script>
-     <script src="{% static 'simapp/js/data-table/jszip.min.js' %}"></script>
-     <script src="{% static 'simapp/js/data-table/pdfmake.min.js' %}"></script>
-     <script src="{% static 'simapp/js/data-table/vfs_fonts.js' %}"></script>
-     <script src="{% static 'simapp/js/data-table/buttons.html5.min.js' %}"></script>
-     <script src="{% static 'simapp/js/data-table/buttons.print.min.js' %}"></script>
-     <script src="{% static 'simapp/js/data-table/datatables-init.js' %}"></script>
+    <!-- jquery vendor -->
+    <script src="{% static 'simapp/js/data-table-extensions/jquery.min.js' %}"></script>
+    <script src="{% static 'simapp/js/data-table-extensions/jquery.nanoscroller.min.js' %}"></script>
+    <!-- nano scroller -->
+    <script src="{% static 'simapp/js/data-table-extensions/menubar/sidebar.js' %}"></script>
+    <script src="{% static 'simapp/js/data-table-extensions/preloader/pace.min.js' %}"></script>
+    <!-- sidebar -->
+
+    <!-- bootstrap -->
+
+    <script src="{% static 'simapp/js/data-table-extensions/bootstrap.min.js' %}"></script>
+    <script src="{% static 'simapp/js/data-table-extensions/scripts.js' %}"></script>
+    <!-- scripit init-->
+    <script src="{% static 'simapp/js/data-table/datatables.min.js' %}"></script>
+    <script src="{% static 'simapp/js/data-table/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'simapp/js/data-table/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'simapp/js/data-table/jszip.min.js' %}"></script>
+    <script src="{% static 'simapp/js/data-table/pdfmake.min.js' %}"></script>
+    <script src="{% static 'simapp/js/data-table/vfs_fonts.js' %}"></script>
+    <script src="{% static 'simapp/js/data-table/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'simapp/js/data-table/buttons.print.min.js' %}"></script>
+    <script src="{% static 'simapp/js/data-table/datatables-init.js' %}"></script>
 
 </body>
 
 </html>
-
-
-
-
-

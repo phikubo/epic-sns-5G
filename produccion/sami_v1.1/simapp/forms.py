@@ -1,6 +1,9 @@
 from django import forms
-
 from .static.simulador.utilidades import config as cfg
+#auxiliares
+import os
+from itertools import zip_longest
+
 #https://simpleisbetterthancomplex.com/tutorial/2018/11/28/advanced-form-rendering-with-django-crispy-forms.html
 
 #------------------------------SIMAPP
@@ -91,6 +94,17 @@ bw_choices=(
 
 #----------------------------------------------
 #end
+
+class FormComparacion(forms.Form):
+    '''De una lista de escenarios, configura los parametros de resultados disponibles'''
+    contenido = os.listdir('simapp/static/simulador/base_datos/imagenes/resultados')
+    contenido.remove('leeme')
+    contenido_rutas=["simapp/static/simulador/base_datos/imagenes/resultados/"+i for i in contenido]
+    escenario_choices = dict(zip_longest(contenido_rutas, contenido))
+    escenario_choices=tuple(escenario_choices.items())
+    escenario_opcion_1=forms.ChoiceField(label='Escenario 1 a comparar:',choices=escenario_choices)
+    escenario_opcion_2=forms.ChoiceField(label='Escenario 2 a comparar:',choices=escenario_choices)
+
 
 class FormSeleccion(forms.Form):
     '''De una lista de escenarios, configura la variable escenario activo que es el archivo de configuración que se simula'''
