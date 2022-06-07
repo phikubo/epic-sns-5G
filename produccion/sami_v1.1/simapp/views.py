@@ -478,23 +478,32 @@ def resultados_comparacion(request):
     rutap_2=config_sim["rutas_comparacion"]["ruta_principal"]+"/montecarlo/"
 
     imagenes_principal_1 = os.listdir(rutap_1)
+    print("FROM DJANGO 1---------------------")
+    print(imagenes_principal_1)
     imagenes_principal_1 = [rutap_1.replace('simapp/static/','')+i for i in imagenes_principal_1]
 
     imagenes_principal_2 = os.listdir(rutap_2)
+    print("FROM DJANGO 2---------------------")
+    print(imagenes_principal_2)
     imagenes_principal_2 = [rutap_2.replace('simapp/static/','')+i for i in imagenes_principal_2]
+    
     
     #
     rutasec_1=config_sim["rutas_comparacion"]["ruta_secundaria"]+"/presim/"
     rutasec_2=config_sim["rutas_comparacion"]["ruta_secundaria"]+"/montecarlo/"
 
     imagenes_secundaria_1 = os.listdir(rutasec_1)
+    print("FROM DJANGO 3---------------------")
+    print(imagenes_secundaria_1)
     imagenes_secundaria_1 = [rutasec_1.replace('simapp/static/','')+i for i in imagenes_secundaria_1]
     imagenes_secundaria_2 = os.listdir(rutasec_2)
+    print("FROM DJANGO 4---------------------")
+    print(imagenes_secundaria_2)
     imagenes_secundaria_2 = [rutasec_2.replace('simapp/static/','')+i for i in imagenes_secundaria_2]
 
     #imagenes_principal=imagenes_principal_1+imagenes_principal_2
     #imagenes_secundaria=imagenes_secundaria_1+imagenes_secundaria_2
-
+    
     imagenes_presim=[]
     imagenes_montecarlo=[]
     for prin, sec in zip(imagenes_principal_1,imagenes_secundaria_1):
@@ -505,9 +514,9 @@ def resultados_comparacion(request):
         imagenes_montecarlo.append(pprin)
         imagenes_montecarlo.append(ssec)
     
-    print("FROM DJANGO ...................")
+    print("FROM DJANGO 5...................")
     print(imagenes_presim)
-    print("FROM DJANGO ...................")
+    print("FROM DJANGO 6...................")
     print(imagenes_montecarlo)
 
     return render(request,'simapp/estadisticas/sami-sim-graficas-comparacion.html',{"img_presim":imagenes_presim, "img_mont":imagenes_montecarlo})
