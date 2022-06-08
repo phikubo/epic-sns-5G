@@ -389,7 +389,7 @@ class Simulador:
 		#acomulativo densidad
 		#data,bins=np.histogram(col_cob_conexion,bins=numero_barras)
 		unique, counts = np.unique(col_cob_conexion, return_counts=True)
-		ax.stem(int(unique),counts)
+		ax.stem(unique,counts)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig04. Histograma de Usuarios con Pr-Sens>0 dB', 'Pulso: Usuarios: Pr-Sens>0', 
 		'Pr-Sens > 0 [dB]', '', 'Fig04', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 			
