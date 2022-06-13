@@ -28,6 +28,18 @@ def calcular_centros(bins):
 	return np.array(lista)
 
 
+
+def normalizar_arreglo(data):
+	'''Normaliza un arreglo numerico, a 0,1. [lineal]''' 
+	return (data - np.min(data)) / (np.max(data) - np.min(data))
+
+
+def normalizar_arreglo_a_b(data):
+	'''Normaliza un arreglo numerico, a 1. [lineal]''' 
+	return (data) / (np.max(data))
+
+
+
 def test_calculo_prob6():
 	'''calculo de probabilidad a partir de un histograma de tp'''
 	arr_tp=np.array([59.334335156250006, 52.124325, 58.445371875000006, 53.224098749999996, 72.76188, 95.9808975, 75.067515, 67.989710625, 262.036125, 39.611227500000005, 90.79911249999999])

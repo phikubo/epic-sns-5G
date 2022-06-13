@@ -7,3 +7,4 @@ django
 pyfiglet
 django-crispy-forms
 django-formtools
+seaborn
