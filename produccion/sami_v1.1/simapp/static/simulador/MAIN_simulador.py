@@ -454,7 +454,7 @@ class Simulador:
 		#acomulativo densidad
 		#
 		ax.hist(np.vstack(np.array(col_cob_sinr_total)), cumulative=True, bins=numero_barras)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig11. CDF SINR', 'CDF SINR. Mínimo {}, Máximo {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig11. SINR Acumulativa', 'SINR Acumulativa. Mínimo {}, Máximo {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
 		'SINR [dB]', 'Número Ocurrencia', 'Fig11', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 
@@ -514,8 +514,8 @@ class Simulador:
 		fig, ax = plt.subplots()
 		unique, counts = np.unique(proccessed_tasa, return_counts=True)
 		ax.stem(unique,counts)
-		ax.legend(['2 = QPSK \n4 = 16-QAM\n6 = 64-QAM\n8 = 256-QAM'])#,'4= 16-QAM','6= 64-QAM','8 = 256-QAM'
-		##############################formatear_grafica_simple(ax, titulo_web,                            titulo_graf,
+		ax.legend(['2 = QPSK \n4 = 16-QAM\n6 = 64-QAM\n8 = 256-QAM'])
+		#formatear_grafica_simple(ax, titulo_web,                            titulo_graf,
 		#xlab,         ylab,    nombre_archivo, ruta_img_montecarlo,      diccionario,              ruta_activa)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig14_2. Histograma Índice de Modulación', 'Índice de Modulación', 
 		'Índice de Modulación', 'Número de Ocurrencia', 'Fig14_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
@@ -533,7 +533,7 @@ class Simulador:
 			processed_tp=np.vstack(np.array(np.concatenate(col_cap_throughput_total)))
 			ax.plot(np.arange(1,len(processed_tp)+1),np.cumsum(processed_tp)/np.arange(1,len(processed_tp)+1))
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig15. Histograma de Throughput', 'Throughput', 
-				'Throughput [Mbps]', 'Frecuencia de Ocurrencia', 'Fig15', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+				'Throughput [Mbps]', 'Número de Ocurrencia', 'Fig15', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 		else:
 			
 			#grafica de tp comulativa
@@ -572,7 +572,7 @@ class Simulador:
 			data_normal=estats.normalizar_arreglo_a_b(processed_tp)
 			ax.hist(processed_tp, bins=numero_barras, density=True, cumulative=True)
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig21_2. CDF de Throughput', 'CDF de Throughput. Mínimo {}, Máximo {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
-				'Throughput [Mbps]', 'Probabilidad acumulada', 'Fig21_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+				'Throughput [Mbps]', 'Probabilidad Acumulada', 'Fig21_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 			
 
@@ -583,7 +583,7 @@ class Simulador:
 			fig, ax = plt.subplots()
 			processed_tp=np.vstack(np.array(np.concatenate(col_cap_throughput_total)))
 			ax.plot(np.arange(1,len(processed_tp)+1),np.cumsum(processed_tp)/np.arange(1,len(processed_tp)+1))
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig19. Valor medio de Throughput promedio', 'Valor medio de Throughput Promedio', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig19. Valor medio de Throughput Promedio', 'Valor medio de Throughput Promedio', 
 				'Numero de Realizaciones', ' Throughput [Mbps]', 'Fig19', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 
