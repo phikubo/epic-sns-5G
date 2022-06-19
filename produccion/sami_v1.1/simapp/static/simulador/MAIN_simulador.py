@@ -363,7 +363,7 @@ class Simulador:
 		ax.hist(col_cobertura_usuarios, bins=numero_barras)
 		#formatear_grafica_simple(ax, titulo_web, titulo_graf, xlab,ylab, nombre_archivo, ruta_img_montecarlo, diccionario, ruta_activa)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig02. Histograma de Usuarios', 'Usuarios por Celda', 
-			'Usuarios', 'Número de Ocurrencia', 'Fig02', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+			'Usuarios', 'Número de Ocurrencias', 'Fig02', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 		
 		
 					
@@ -372,8 +372,8 @@ class Simulador:
 		#data,bins=np.histogram(col_cob_conexion,bins=numero_barras)
 		data, bins, patches=ax.hist(col_cob_conexion, bins=numero_barras)
 		
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig03. Histograma de Usuarios Conectados ', 'Escalon: Usuarios: Pr-Sens>0', 
-			'Porcentaje de Conexión', 'Número de Ocurrencia', 'Fig03', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig03. Histograma de Usuarios Conectados', 'Escalon: Usuarios: Pr-Sens>0', 
+			'Porcentaje de Conexión', 'Número de Ocurrencias', 'Fig03', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		#grafica de distribucion de usuarios
 		#fig, ax = plt.subplots()
@@ -436,7 +436,7 @@ class Simulador:
 		a,b,c=ax.hist(np.vstack(np.array(col_cob_sinr_total)), bins=numero_barras)
 		#formatear_grafica_simple(ax, titulo_web, titulo_graf, xlab,ylab, nombre_archivo, ruta_img_montecarlo, diccionario, ruta_activa)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig09. Histograma SINR', 'Histograma SINR. Mínimo {}, Máximo {}'.format(round(np.min(b),2), round(np.max(b),2)), 
-		'SINR [dB]', 'Número de Ocurrencia', 'Fig09', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+		'SINR [dB]', 'Número de Ocurrencias', 'Fig09', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		fig, ax = plt.subplots()
 		data=np.vstack(np.array(col_cob_sinr_total))
@@ -450,12 +450,12 @@ class Simulador:
 
 
 		#CDF normalizada
-		fig, ax = plt.subplots()
+		#fig, ax = plt.subplots()
 		#acomulativo densidad
 		#
-		ax.hist(np.vstack(np.array(col_cob_sinr_total)), cumulative=True, bins=numero_barras)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig11. SINR Acumulativa', 'SINR Acumulativa. Mínimo {}, Máximo {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
-		'SINR [dB]', 'Número Ocurrencia', 'Fig11', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+		#ax.hist(np.vstack(np.array(col_cob_sinr_total)), cumulative=True, bins=numero_barras)
+		#self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig11. SINR Acumulativa', 'SINR Acumulativa. Mínimo {}, Máximo {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
+		#'SINR [dB]', 'Número Ocurrencias', 'Fig11', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 
 		#CDF normalizada
@@ -493,14 +493,14 @@ class Simulador:
 		proccessed_tasa=np.vstack(np.concatenate(np.array([np.array(xi) for xi in col_cap_tasa_total])))
 		data, bins, patch=ax.hist(proccessed_tasa, bins=numero_barras+10)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig13. Histograma Tasa de Codificación', 'Tasa de Codificación', 
-		'Tasa Codificación', 'Número de Ocurrencia', 'Fig13', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+		'Tasa Codificación', 'Número de Ocurrencias', 'Fig13', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		fig, ax = plt.subplots()
 		unique, counts = np.unique(proccessed_tasa, return_counts=True)
 		ax.stem(unique,counts)
 		#formatear_grafica_simple(ax, titulo_web, titulo_graf, xlab,ylab, nombre_archivo, ruta_img_montecarlo, diccionario, ruta_activa)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig13_2. Histograma Tasa de Codificación', 'Tasa de Codificación', 
-		'Tasa Codificación', 'Número de Ocurrencia', 'Fig13_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+		'Tasa Codificación', 'Número de Ocurrencias', 'Fig13_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		#CDF no normalizada
 		fig, ax = plt.subplots()
@@ -509,7 +509,7 @@ class Simulador:
 		proccessed_tasa=np.vstack(np.concatenate(np.array([np.array(xi) for xi in col_cap_modulacion_total])))
 		ax.hist(proccessed_tasa)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig14. Histograma Índice de Modulación', 'Índice de Modulación', 
-		'Índice de Modulación', 'Número de Ocurrencia', 'Fig14', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+		'Índice de Modulación', 'Número de Ocurrencias', 'Fig14', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 		
 		fig, ax = plt.subplots()
 		unique, counts = np.unique(proccessed_tasa, return_counts=True)
@@ -518,7 +518,7 @@ class Simulador:
 		#formatear_grafica_simple(ax, titulo_web,                            titulo_graf,
 		#xlab,         ylab,    nombre_archivo, ruta_img_montecarlo,      diccionario,              ruta_activa)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig14_2. Histograma Índice de Modulación', 'Índice de Modulación', 
-		'Índice de Modulación', 'Número de Ocurrencia', 'Fig14_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+		'Índice de Modulación', 'Número de Ocurrencias', 'Fig14_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		#........................................................................
 		#............................. THROUGHTPUT ...............................
@@ -533,7 +533,7 @@ class Simulador:
 			processed_tp=np.vstack(np.array(np.concatenate(col_cap_throughput_total)))
 			ax.plot(np.arange(1,len(processed_tp)+1),np.cumsum(processed_tp)/np.arange(1,len(processed_tp)+1))
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig15. Histograma de Throughput', 'Throughput', 
-				'Throughput [Mbps]', 'Número de Ocurrencia', 'Fig15', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+				'Throughput [Mbps]', 'Número de Ocurrencias', 'Fig15', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 		else:
 			
 			#grafica de tp comulativa
@@ -544,7 +544,7 @@ class Simulador:
 			##############################formatear_grafica_simple(ax, titulo_web,                            titulo_graf,
 			#xlab,         ylab,    nombre_archivo, ruta_img_montecarlo,      diccionario,              ruta_activa)
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig20. Histograma de Throughput', 'Throughput. Mínimo {}, Máximo {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
-				'Throughput [Mbps]', 'Número de Ocurrencia', 'Fig20', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+			'Throughput [Mbps]', 'Número de Ocurrencias', 'Fig20', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 			#grafica de tp comulativa
 			fig, ax = plt.subplots()
@@ -558,12 +558,12 @@ class Simulador:
 			'Throughput [Mbps]', '', 'Fig20_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 			#grafica de tp comulativa
-			fig, ax = plt.subplots()
+			#fig, ax = plt.subplots()
 			#acomulativo densidad
-			processed_tp=np.vstack(np.array(np.concatenate(col_cap_throughput_total)))
-			a,b,c=ax.hist(processed_tp, bins=numero_barras, cumulative=True)
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig21. Throughput', 'Throughput. Mínimo {}, Máximo {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
-				'Throughput [Mbps]', 'Número de Ocurrencia', 'Fig21', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+			#processed_tp=np.vstack(np.array(np.concatenate(col_cap_throughput_total)))
+			#a,b,c=ax.hist(processed_tp, bins=numero_barras, cumulative=True)
+			#self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig21. Throughput', 'Throughput. Mínimo {}, Máximo {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
+			#'Throughput [Mbps]', 'Número de Ocurrencias', 'Fig21', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 			#grafica de tp comulativa
 			fig, ax = plt.subplots()
@@ -572,7 +572,7 @@ class Simulador:
 			data_normal=estats.normalizar_arreglo_a_b(processed_tp)
 			ax.hist(processed_tp, bins=numero_barras, density=True, cumulative=True)
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig21_2. CDF de Throughput', 'CDF de Throughput. Mínimo {}, Máximo {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
-				'Throughput [Mbps]', 'Probabilidad Acumulada', 'Fig21_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+			'Throughput [Mbps]', 'Probabilidad Acumulada', 'Fig21_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 			
 
@@ -583,8 +583,8 @@ class Simulador:
 			fig, ax = plt.subplots()
 			processed_tp=np.vstack(np.array(np.concatenate(col_cap_throughput_total)))
 			ax.plot(np.arange(1,len(processed_tp)+1),np.cumsum(processed_tp)/np.arange(1,len(processed_tp)+1))
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig19. Valor medio de Throughput Promedio', 'Valor medio de Throughput Promedio', 
-				'Numero de Realizaciones', ' Throughput [Mbps]', 'Fig19', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig19. Tendencia de Throughput Promedio', 'Tendencia de Throughput Promedio', 
+				'Número de MS Total', ' Throughput [Mbps]', 'Fig19', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 
 		#GUARDAR DATOS
