@@ -435,7 +435,7 @@ class Simulador:
 		#acomulativo densidad
 		a,b,c=ax.hist(np.vstack(np.array(col_cob_sinr_total)), bins=numero_barras)
 		#formatear_grafica_simple(ax, titulo_web, titulo_graf, xlab,ylab, nombre_archivo, ruta_img_montecarlo, diccionario, ruta_activa)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig09. Histograma SINR', 'Histograma SINR. Mínimo {}, Máximo {}'.format(round(np.min(b),2), round(np.max(b),2)), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig09. Histograma SINR', 'Histograma SINR. Mínimo: {}, Máximo: {}'.format(round(np.min(b),2), round(np.max(b),2)), 
 		'SINR [dB]', 'Número de Ocurrencias', 'Fig09', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		fig, ax = plt.subplots()
@@ -445,7 +445,7 @@ class Simulador:
 		ax.boxplot(data, vert=False)
 		ax.set_yticklabels([''])
 		#formatear_grafica_simple(ax, titulo_web, titulo_graf, xlab,ylab, nombre_archivo, ruta_img_montecarlo, diccionario, ruta_activa)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig10. Resumen de Distribución de SINR', 'Resumen de Distribución de SINR. Mínimo {}, Máximo {}'.format(round(np.min(b),2), round(np.max(b),2)), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig10. Resumen de Distribución de SINR', 'Resumen de Distribución de SINR. Mínimo: {}, Máximo: {}'.format(round(np.min(b),2), round(np.max(b),2)), 
 		'SINR [dB]', '', 'Fig10', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 
@@ -465,7 +465,7 @@ class Simulador:
 		data=np.vstack(np.vstack(np.array(col_cob_sinr_total)))
 		data_normal=estats.normalizar_arreglo_a_b(data)
 		a,b,c=ax.hist(data, cumulative=True, density=True, bins=numero_barras)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig12. CDF SINR', 'CDF SINR.Mínimo {}, Máximo {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig12. CDF SINR', 'CDF SINR.Mínimo: {}, Máximo: {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
 		'SINR [dB]', 'Probabilidad Acumulada', 'Fig12', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		
@@ -543,7 +543,7 @@ class Simulador:
 			a,b,c=ax.hist(processed_tp, bins=numero_barras)
 			##############################formatear_grafica_simple(ax, titulo_web,                            titulo_graf,
 			#xlab,         ylab,    nombre_archivo, ruta_img_montecarlo,      diccionario,              ruta_activa)
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig20. Histograma de Throughput', 'Throughput. Mínimo {}, Máximo {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig20. Histograma de Throughput', 'Throughput. Mínimo: {}, Máximo: {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
 			'Throughput [Mbps]', 'Número de Ocurrencias', 'Fig20', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 			#grafica de tp comulativa
@@ -571,7 +571,7 @@ class Simulador:
 			processed_tp=np.vstack(np.array(np.concatenate(col_cap_throughput_total)))
 			data_normal=estats.normalizar_arreglo_a_b(processed_tp)
 			ax.hist(processed_tp, bins=numero_barras, density=True, cumulative=True)
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig21_2. CDF de Throughput', 'CDF de Throughput. Mínimo {}, Máximo {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig21_2. CDF de Throughput', 'CDF de Throughput. Mínimo: {}, Máximo: {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
 			'Throughput [Mbps]', 'Probabilidad Acumulada', 'Fig21_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 			
