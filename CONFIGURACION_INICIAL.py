@@ -16,14 +16,16 @@ def instalar_librerias():
 	ruta_actual=os.path.dirname(os.path.abspath(__name__))
 	ruta_actual=ruta_actual.replace("\\",'/')+"/entorno_virtual_dependencias/"
 	os.system('pip install -r {}requirements.txt --upgrade'.format(ruta_actual))
-	print("[OK] Instalación de librerias.")
+	print("[PUNTO DE CONTROL 1] Si existe un ERROR, por favor verifique su conexión a internet, firewall, etc.")
+	print("[PUNTO DE CONTROL 2] Si los paquetes se han instalado exitosamente, por favor continúe con la instalación del simulador.")
+	time.sleep(3)
 
 if __name__=="__main__":
 	#Prototipo:
 	instalar_archivos_de_configuracion()
-	#instalar_librerias()
-	print("Configuración completa...")
-	time.sleep(3)
+	instalar_librerias()
+	print("[TERMINADO]")
+	time.sleep(10)
 	#shutil.copyfile(original, target)
 else:
 	print("Modulo Importado: [", os.path.basename(__file__), "]")
