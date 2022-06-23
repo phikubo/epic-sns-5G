@@ -19,16 +19,17 @@ EJECUTAR PARAMETROS CONFIGURADOS PREVIAMENTE
                     <h1 class="error-text font-weight-bold">Parámetros Configurados Correctamente.</h1>
                     <hr>
                     
-                    <p>Regrese a los formularios o <strong>inicie la simulación</strong> con los parámetros mostrados en las tablas, mediante los siguientes botones:</p>
+                    <p>Regrese a los formularios o <strong>inicie la simulación</strong> con los parámetros mostrados en las tablas ubicadas en la parte inferior.</p>
                     
                     
                     <div class="mb-5">
-                        <a class="btn btn-secondary btn-xs" href="{% url 'simapp:sim_form_compacto' %}">Crear Escenario</a>
-                        <a class="btn btn-secondary btn-xs" href="{% url 'simapp:sim_form_escenarios' %}">Seleccionar Escenarios</a>
-                        <br>
-                        <br>
+                        <!-- <a class="btn btn-secondary btn-xs" href="{% url 'simapp:sim_form_compacto' %}">Crear Escenario</a>
+                        <a class="btn btn-secondary btn-xs" href="{% url 'simapp:sim_form_escenarios' %}">Seleccionar Escenarios</a> 
+                        -->
+                       
                         
-                        <a class="btn btn-success" href="{% url 'simapp:iniciar_sim' %}">Iniciar Simulación</a>
+                        <a class="btn btn-success btn-lg" href="{% url 'simapp:iniciar_sim' %}">Iniciar Simulación  <span class="btn-icon-right"><i class="fa fa-check"></i></span></a>
+
                     </div>
                      
 

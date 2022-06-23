@@ -4,7 +4,7 @@
 CUANDO NO SE CUMPLE LAS ITERACIONES MINIMAS, SE DEBE MOSTRAR UNA PAGINA QUE INDICA QUE NO SE PUEDE EJECUTAR MONTECARLO
 -->
 {% block titulo_block %}
-<a class="btn btn-info btn-xs" href="#">RESULTADOS DE SIMULACIÓN</a>
+<a class="btn btn-info btn-xs" href="#">RESULTADOS DE COMPARACIÓN</a>
 {% endblock %}
 
 
@@ -13,9 +13,10 @@ CUANDO NO SE CUMPLE LAS ITERACIONES MINIMAS, SE DEBE MOSTRAR UNA PAGINA QUE INDI
     <div class="col-sm-6 p-md-0">
         <div class="welcome-text">
             <h4>¡Gráficas de Simulación!</h4>
-            <p class="mb-0">Los siguientes resultados de simulación, se realizan sobre una muestra aleatoria de usuarios distribuidos mediante el método de distribución correspondiente [agregar informacion de distribucion]</p>
+            <p class="mb-0">Las siguientes gráficas se han obtenido realizando simulaciones previamente. Para realizar una nueva simulación use el botón <strong>Nuevo Escenario</strong> o si la configuración ya existe, <strong> Seleccionar Escenario</strong>. </p>
             <hr>
-            <a class="btn btn-info" href="{% url 'simapp:futuro' %}">Siguiente</a>
+
+            <!-- <a class="btn btn-info" href="{% url 'simapp:futuro' %}">Siguiente</a> -->
              
         </div>
     </div>
