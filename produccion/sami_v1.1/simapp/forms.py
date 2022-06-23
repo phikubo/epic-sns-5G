@@ -17,7 +17,7 @@ geometria_choices=(
 distribucion_choices=(
         ('ppp', 'Proceso Puntual Poisson'),
         #('rand', 'Aleatorio'),
-        ('fijo', 'Fijo'),
+        #('fijo', 'Fijo'),
     )
 
 #indica porcentaje de area
@@ -72,16 +72,16 @@ desvancimiento_choices=(
 antena_choices=(
         ('4g', '38901 Trisectorizada'),
         ('5g', 'Mimo Masivo'),
-        ('futuro', 'Futuro**'), 
+        #('futuro', 'Futuro**'), 
     )
 
 
 asignacion_choices=(
         ('rr_hard', 'Round Robin Hard'),
         ('rr_soft', 'Round Robin Soft'),
-        ('genetico', 'Genético'),
-        ('quantico-g', 'Quántico Genético [no disponible sin un computador cuántico]'),
-        ('futuro', 'Futuro*') 
+        #('genetico', 'Genético'),
+        #('quantico-g', 'Quántico Genético [no disponible sin un computador cuántico]'),
+        #('futuro', 'Futuro*') 
     )
 
 bw_choices=(
@@ -117,15 +117,15 @@ class FormSeleccion(forms.Form):
 
 class FormCompacto(forms.Form):
     '''Formulario inicial. Configura parametros globales'''
-    nombre_archivo=forms.CharField(max_length=100)
+    nombre_archivo=forms.CharField(label='Nombre del Escenario',max_length=100)
     iteraciones=forms.IntegerField(label='Realizaciones',initial=1, min_value=1)
     n_celdas=forms.IntegerField(label='Cantidad de Celdas',initial=1, max_value=19, min_value=1)
     portadora=forms.IntegerField(label='Frecuencia Portadora [MHz]',initial=900, min_value=200, max_value=75000,)
     isd=forms.IntegerField(label='Distancia entre Celdas [m]',initial=1000, min_value=10)
-    geometria_usuarios=forms.ChoiceField(label='Distribución de Usuarios',choices=geometria_choices)
+    geometria_usuarios=forms.ChoiceField(label='Tipo de distribución de MS',choices=geometria_choices)
     radio_cel=forms.IntegerField(label='Radio de la Celda [m]', initial=1000, min_value=5)
-    tipo_distribucion=forms.ChoiceField(label='Usuarios por Realización',choices=distribucion_choices)
-    densidad=forms.ChoiceField(label='Densidad de Usuarios',choices=densidad_choices)
+    tipo_distribucion=forms.ChoiceField(label='Distribución de MS',choices=distribucion_choices)
+    densidad=forms.ChoiceField(label='Densidad de MS',choices=densidad_choices)
     imagen=forms.ChoiceField(required=False,label='Imagen de Potencia Recibida',choices=imagen_choices)
     pixeles=forms.IntegerField(required=False,initial=50, max_value=1000, min_value=10)
 
@@ -133,16 +133,16 @@ class FormCompacto(forms.Form):
     modelo_perdidas=forms.ChoiceField(label='Modelo de Pérdidas de Propagación',choices=modelo_perdidas_choices)
     #floats
     mp1=forms.DecimalField(label='Altura Antena',initial=25, min_value=0, max_digits=5, decimal_places=2)
-    mp2=forms.DecimalField(label='Parámero 2',initial=0, min_value=0, max_digits=5, decimal_places=2)
+    mp2=forms.DecimalField(label='Parámero 2',initial=0, min_value=0, max_digits=5, decimal_places=2, disabled=True)
     mp3=forms.DecimalField(label='Altura Terminal',initial=1.5, min_value=0, max_digits=5, decimal_places=2)
-    mp4=forms.DecimalField(label='Parámero 4',initial=0, min_value=0, max_digits=5, decimal_places=2)
+    mp4=forms.DecimalField(label='Parámero 4',initial=0, min_value=0, max_digits=5, decimal_places=2, disabled=True)
 
     params_desv=forms.ChoiceField(label='Tipo de Desvanecimiento',choices=desvancimiento_choices)
     #flats
     dp1=forms.DecimalField(label='Parámero 1',initial=3.1, min_value=0, max_digits=5, decimal_places=2)
     dp2=forms.DecimalField(label='Parámero 2',initial=8.1, min_value=0, max_digits=5, decimal_places=2)
-    dp3=forms.DecimalField(label='Parámero 3',initial=0, min_value=0, max_digits=5, decimal_places=2)
-    dp4=forms.DecimalField(label='Parámero 4',initial=0, min_value=0, max_digits=5, decimal_places=2)
+    dp3=forms.DecimalField(label='Parámero 3',initial=0, min_value=0, max_digits=5, decimal_places=2, disabled=True)
+    dp4=forms.DecimalField(label='Parámero 4',initial=0, min_value=0, max_digits=5, decimal_places=2, disabled=True)
 
     ber_sinr=forms.DecimalField(label='SINR Objetivo [dB]',initial=1, min_value=1, max_digits=5, decimal_places=2)
     nf=forms.DecimalField(label='Figura de Ruido en el Receptor [dB]',initial=6, min_value=1, max_digits=5, decimal_places=2)
@@ -169,10 +169,10 @@ class FormCompacto(forms.Form):
     #banda_guarda=forms.IntegerField(label='Banda de Guarda [KHz]',initial=845, min_value=1, disabled=True, widget=forms.HiddenInput())
     subportadora=forms.IntegerField(label='Número de Subportadoras (frecuencia)',initial=12, min_value=1, disabled=True)
     trama=forms.IntegerField(label='Número Total de Símbolos OFDM (tiempo)',initial=14,min_value=1, disabled=True)
-    simbolos=forms.IntegerField(label='Número de Símbolos OFDM',initial=12, min_value=1)
+    simbolos=forms.IntegerField(label='Número de Símbolos OFDM',initial=12, min_value=1, disabled=True)
     frame=forms.IntegerField(label='Número de Subtrama',initial=10, min_value=1, disabled=True)
     #
-    futuro1=forms.IntegerField(label='Futuro*',initial=0, min_value=0)
-    futuro2=forms.IntegerField(label='Futuro**',initial=0, min_value=0)
+    futuro1=forms.IntegerField(label='Futuro*',initial=0, min_value=0, disabled=True)
+    futuro2=forms.IntegerField(label='Futuro**',initial=0, min_value=0, disabled=True)
     
     
