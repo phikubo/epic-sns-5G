@@ -4,7 +4,7 @@
 CUANDO NO SE CUMPLE LAS ITERACIONES MINIMAS, SE DEBE MOSTRAR UNA PAGINA QUE INDICA QUE NO SE PUEDE EJECUTAR MONTECARLO
 -->
 {% block titulo_block %}
-RESULTADOS DE SIMULACIÓN
+<a class="btn btn-info btn-xs" href="#">RESULTADOS DE SIMULACIÓN DE MONTECARLO</a>
 {% endblock %}
 
 
@@ -12,7 +12,7 @@ RESULTADOS DE SIMULACIÓN
 <div class="row page-titles mx-0">
     <div class="col-sm-6 p-md-0">
         <div class="welcome-text">
-            <h4>¡Gráficas de Simulación!</h4>
+            <h4>¡Gráficas de Simulación de Montecarlo!</h4>
             <p class="mb-0">Los siguientes resultados de simulación, se realizan sobre una muestra aleatoria de usuarios distribuidos mediante el método de distribución correspondiente [agregar informacion de distribucion]</p>
             <hr>
             <a class="btn btn-info" href="{% url 'simapp:sim_form_comparar_escenarios' %}">Siguiente</a>
