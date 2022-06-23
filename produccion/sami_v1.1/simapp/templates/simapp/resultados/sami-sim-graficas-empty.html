@@ -13,9 +13,9 @@ CUANDO NO SE CUMPLE LAS ITERACIONES MINIMAS, SE DEBE MOSTRAR UNA PAGINA QUE INDI
     <div class="col-sm-6 p-md-0">
         <div class="welcome-text">
             <h4>¡Gráficas de Simulación de Montecarlo!</h4>
-            <p class="mb-0">Los siguientes resultados de simulación, se realizan sobre una muestra aleatoria de usuarios distribuidos mediante el método de distribución correspondiente [agregar informacion de distribucion]</p>
+            <p class="mb-0">Los siguientes resultados de simulación, se realizan sobre una muestra aleatoria de usuarios distribuidos mediante el método de distribución correspondiente.</p>
             <hr>
-            <a class="btn btn-info" href="{% url 'simapp:sim_form_comparar_escenarios' %}">Siguiente</a>
+            <a class="btn btn-warning" href="{% url 'simapp:lista_parametros' %}">Revisar configuraciones</a>
              
         </div>
     </div>
@@ -36,9 +36,7 @@ CUANDO NO SE CUMPLE LAS ITERACIONES MINIMAS, SE DEBE MOSTRAR UNA PAGINA QUE INDI
 <div class="row justify-content-center h-100 align-items-center">
     <div class="col-md-5">
         <div class="form-input-content text-center">
-            <div class="mb-5">
-                <a class="btn btn-primary" href="{% url 'simapp:sim_form_compacto' %}">Cambiar parámetros</a>
-            </div>
+           
             <h1 class="error-text font-weight-bold">Realizaciones Insuficientes</h1>
             <h4 class="mt-4"><i class="fa fa-exclamation-triangle text-warning"></i> ¡No hay sufientes simulaciones!</h4>
             <p>Realiza 10 simulaciones o más para obtener gráficas.</p>
