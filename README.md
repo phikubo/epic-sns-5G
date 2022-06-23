@@ -16,6 +16,9 @@ Para instalar,
   1.1 [OBLIGATORIO PARA UN DESARROLLADOR] Ejecutar un Fork, o solicitar colaboración al Desarrollador Lider.
   
   1.2 Copiar enlace HTTPS, inicializar el repositorio local y descargar el simulador, usando la terminal y GIT.
+  >>git init
+  >>git remote add origin https://github.com/phikubo/epic-sns-5G.git
+  >>git pull origin master
   
 2. Acceder mediante terminal a la carpeta: **entorno_virtual_dependencias**, y ejecutar:
 >>pip install -r requirements.txt --upgrade
@@ -27,6 +30,8 @@ Para instalar,
 
 5. Operaciones GIT
 *Nota: todos los cambios se deben realizar sobre una rama dev_*, la rama master se encuentra en producción y no debe cambiarse sin revisión.
+  **Previo a cada cambio, actualizar la rama dev con los cambios mas recientes en master** [_en terminal o cmd_]:
+  >>git pull origin master
 
   Para crear una nueva rama [_en terminal o cmd_]:
   >>git checkout -b dev_<nombre_desarrollador>
