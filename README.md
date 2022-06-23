@@ -1,4 +1,4 @@
-# epic-sns-5G: SAMI
+# Simulador a Nivel de Sistema 5G - SAMI
 Simulador a Nivel de Sistema 5G.
 
 ![uso1](https://user-images.githubusercontent.com/31525189/175200317-4015a753-c892-42eb-a0c3-c7353d2d91e0.png)
