@@ -1,5 +1,5 @@
 # Simulador a Nivel de Sistema 5G - SAMI
-Simulador a Nivel de Sistema 5G.
+
 
 ![uso1](https://user-images.githubusercontent.com/31525189/175200317-4015a753-c892-42eb-a0c3-c7353d2d91e0.png)
 
@@ -42,7 +42,4 @@ Para instalar,
   1. Abrir un pull request con una breve descripción del cambio.
   2. Par revisor confirma que los cambios son efectivos y no alteran negativamente el funcionamiento del programa.
   3. Par revisor ejecuta un _MERGE_ y todos los cambios quedan guardados en master.
-
-  Para actualizar rama del desarrollador con nuevos cambios de _MASTER_ [_en terminal o cmd_]:
-  >>git pull origin master
 
