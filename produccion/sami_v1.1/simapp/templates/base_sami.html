@@ -227,7 +227,7 @@ TEMPLATE BASE: PERMITE MODIFICAR LAS OPCIONES DE LA IZQUIERDA. LAS MODIFICACIONE
                     <!--NUEVO BLOQUE, CONSIDERAR BANDERAS-->
                     <li class="nav-label">Resultados de simulación</li>
                     <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon-graph menu-icon"></i><span class="nav-text">Simulaciones</span></a>
+                                class="icon-graph menu-icon"></i><span class="nav-text">Simulación</span></a>
                         <ul aria-expanded="false">
                             <li><a href="{% url 'simapp:pre_sim' %}">Simulación Básica</a></li>
                             <li><a href="{% url 'simapp:sim' %}">Simulación de Montecarlo</a></li>
@@ -240,9 +240,9 @@ TEMPLATE BASE: PERMITE MODIFICAR LAS OPCIONES DE LA IZQUIERDA. LAS MODIFICACIONE
                     </li>
 
                     <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-chart-bar-33"></i><span class="nav-text">Estadisticas</span></a>
+                                class="icon icon-chart-bar-33"></i><span class="nav-text">Comparar</span></a>
                         <ul aria-expanded="false">
-                            <li><a href="{% url 'simapp:sim_form_comparar_escenarios' %}">Comparar Escenarios</a></li>
+                            <li><a href="{% url 'simapp:sim_form_comparar_escenarios' %}">Seleccionar Escenarios</a></li>
                             <li><a href="{% url 'simapp:sim_resultados_comparacion_escenarios' %}">Resultados de Comparación</a></li>
                              
                             <li><a href="{% url 'simapp:futuro' %}">[Futuro]</a></li>
