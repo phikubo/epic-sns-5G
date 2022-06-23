@@ -30,6 +30,7 @@ Para instalar,
 
 5. Operaciones GIT
 *Nota: todos los cambios se deben realizar sobre una rama dev_*, la rama master se encuentra en producción y no debe cambiarse sin revisión.
+
   **Previo a cada cambio, actualizar la rama dev con los cambios mas recientes en master** [_en terminal o cmd_]:
   >>git pull origin master
 
