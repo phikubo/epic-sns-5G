@@ -94,8 +94,13 @@ TEMPLATE BASE: PERMITE MODIFICAR LAS OPCIONES DE LA IZQUIERDA. LAS MODIFICACIONE
 
                 <nav class="navbar navbar-expand">
                     <div class="welcome-text">
+                        
                         {% block titulo_block %}
                         {% endblock %}
+                        <a class="btn btn-secondary btn-xs" href="{% url 'simapp:sim_form_escenarios' %}">Ver Escenario Activo</a>
+                        <a class="btn btn-secondary btn-xs" href="{% url 'simapp:sim_form_compacto' %}">Nuevo Escenario</a>
+                        <a class="btn btn-secondary btn-xs" href="{% url 'simapp:sim_form_escenarios' %}">Seleccionar Escenario</a>
+                        <!--<a class="btn btn-success" href="{% url 'simapp:iniciar_sim' %}">Simular Escenario Configurado</a>-->
                     </div>
 
                 </nav>
@@ -194,15 +199,15 @@ TEMPLATE BASE: PERMITE MODIFICAR LAS OPCIONES DE LA IZQUIERDA. LAS MODIFICACIONE
                                 class="nav-text">Widget</span></a></li>
 
                     -->
-                    <li class="nav-label">Configuración de Datos</li>
+                    <li class="nav-label">Configuración de Parámetros</li>
                     <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
                                 class="icon-speedometer menu-icon"></i><span class="nav-text">Simulador SAMI</span></a>
                         <ul aria-expanded="false">
 
-                            <li><a href="{% url 'simapp:lista_parametros' %}">Escenario Activo</a></li>
+                            <li><a href="{% url 'simapp:lista_parametros' %}">Ver Escenario Activo</a></li>
                             <li><a href="{% url 'simapp:sim_form_compacto' %}">Nuevo Escenario</a></li>
                             <li><a href="{% url 'simapp:sim_form_escenarios' %}">Seleccionar Escenario</a></li>
-                            <li><a href="{% url 'simapp:parametros' %}">Ejecutar Ultimo Escenario</a></li>
+                            <li><a href="{% url 'simapp:parametros' %}">Simular Escenario Configurado</a></li>
 
                         </ul>
                     </li>
@@ -218,12 +223,12 @@ TEMPLATE BASE: PERMITE MODIFICAR LAS OPCIONES DE LA IZQUIERDA. LAS MODIFICACIONE
 
 
                     <!--NUEVO BLOQUE, CONSIDERAR BANDERAS-->
-                    <li class="nav-label">Resultados</li>
+                    <li class="nav-label">Resultados de simulación</li>
                     <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
                                 class="icon-graph menu-icon"></i><span class="nav-text">Simulaciones</span></a>
                         <ul aria-expanded="false">
-                            <li><a href="{% url 'simapp:pre_sim' %}">Presimulación</a></li>
-                            <li><a href="{% url 'simapp:sim' %}">Simulación y Sistema</a></li>
+                            <li><a href="{% url 'simapp:pre_sim' %}">Simulación Básica</a></li>
+                            <li><a href="{% url 'simapp:sim' %}">Simulación de Montecarlo</a></li>
                             <!--
                             <li><a href="{% url 'simapp:futuro' %}">Dispositivos Ideales (antena)</a></li>
                             <li><a href="{% url 'simapp:futuro' %}">Modelo Ideal de Pérdidas de Propagación</a></li>
@@ -235,7 +240,7 @@ TEMPLATE BASE: PERMITE MODIFICAR LAS OPCIONES DE LA IZQUIERDA. LAS MODIFICACIONE
                     <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
                                 class="icon icon-chart-bar-33"></i><span class="nav-text">Estadisticas</span></a>
                         <ul aria-expanded="false">
-                            <li><a href="{% url 'simapp:sim_form_comparar_escenarios' %}">Selecionar Escenarios</a></li>
+                            <li><a href="{% url 'simapp:sim_form_comparar_escenarios' %}">Comparar Escenarios</a></li>
                             <li><a href="{% url 'simapp:sim_resultados_comparacion_escenarios' %}">Resultados de Comparación</a></li>
                              
                             <li><a href="{% url 'simapp:futuro' %}">[Futuro]</a></li>
