@@ -83,10 +83,10 @@ class Modulacion:
 
 
         if verificar_inferior:
-            mod_inferior = -300
-            tasa_inferior = -300
-            sinr_superior = -300
-            sinr_inferior = -300
+            mod_inferior = -3
+            tasa_inferior = -3
+            sinr_superior = -3
+            sinr_inferior = -3
         else:
             pass
             
@@ -192,10 +192,10 @@ def asignar_tasa_modulacion(sinr_in):
 
 
     if verificar_inferior:
-        mod_inferior = -300
-        tasa_inferior = -300
-        sinr_superior = -300
-        sinr_inferior = -300
+        mod_inferior = -3
+        tasa_inferior = -3
+        sinr_superior = -3
+        sinr_inferior = -3
     else:
         pass
     #print(mod_inferior, tasa_inferior)
