@@ -370,10 +370,11 @@ class Simulador:
 		#grafica de distribucion de usuarios
 		fig, ax = plt.subplots()
 		#data,bins=np.histogram(col_cob_conexion,bins=numero_barras)
-		data, bins, patches=ax.hist(col_cob_conexion, bins=numero_barras)
-		
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig03. Histograma de Usuarios Conectados', 'Escalon: Usuarios: Pr-Sens>0', 
-			'Porcentaje de Conexión', 'Número de Ocurrencias', 'Fig03', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+		data, bins, patches=ax.hist(col_cob_conexion, cumulative=True, density=True, bins=numero_barras)
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig03. CDF de Usuarios Conectados', 'Usuarios con Pr-Sens>0', 
+			'Probabilidad de Conexión', 'Probabilidad Acumulativa', 'Fig03', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+		#self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig03. Histograma de Usuarios Conectados', 'Escalon: Usuarios: Pr-Sens>0', 
+		#	'Porcentaje de Conexión', 'Número de Ocurrencias', 'Fig03', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		#grafica de distribucion de usuarios
 		#fig, ax = plt.subplots()
