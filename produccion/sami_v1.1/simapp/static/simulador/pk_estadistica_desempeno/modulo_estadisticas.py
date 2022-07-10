@@ -57,6 +57,13 @@ def test_calculo_prob6():
 	plt.show()
 
 
+def media_desviacion_varianza(data):
+	"""Calcula la media, la desviacion y la varianza"""
+	media=np.mean(data)
+	desviacion=np.std(data)
+	varianza=np.var(data)
+	return media, desviacion, varianza #m,d,v
+
 
 if __name__=="__main__":
 	#Prototipo:

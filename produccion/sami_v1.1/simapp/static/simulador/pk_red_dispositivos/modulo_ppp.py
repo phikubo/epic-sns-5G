@@ -42,7 +42,7 @@ def distribuir_en_celdas(r, x_origen, y_origen, intensidad, debug):
 	for x,y in zip(x_origen,y_origen):
 		#print(x,y)
 		coordenada_x, coordenada_y = distribuir_usuarios(r, cantidad_de_puntos) #genera puntos en un circulo de origen 0,0
-		###################para trasladar el circullo a un lugar deseado, se suman los puntos cartesianos x,y a los del circulo
+		###################para trasladar el circulo a un lugar deseado, se suman los puntos cartesianos x,y a los del circulo
 		###########Ademas se hace dentro del for, para que genere puntos distintos en cada iteracion.
 		#print("antes: ", coordenada_x, "sumando ", x)
 		coordenada_x=coordenada_x + x
