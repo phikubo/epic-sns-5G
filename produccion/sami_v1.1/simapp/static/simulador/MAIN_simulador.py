@@ -375,7 +375,7 @@ class Simulador:
 		ax=sns.histplot(col_cobertura_usuarios,kde=True, bins=numero_barras)
 		m,d,v,md=estats.media_desviacion_varianza(col_cobertura_usuarios)
 		#formatear_grafica_simple(ax, titulo_web, titulo_graf, xlab,ylab, nombre_archivo, ruta_img_montecarlo, diccionario, ruta_activa)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig02. Histograma de Usuarios', 'Usuarios por Celda. \nMediana: {}, Media: {}, Desviación: {}, Varianza: {}'.format(round(md,2),round(m,2),round(d,2),round(v,2)), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig02. Histograma de Usuarios', 'Usuarios por Celda. \nMediana: {}, Media: {}, Desviación: {}.'.format(round(md,2),round(m,2),round(d,2)), 
 			'Usuarios', 'Número de Ocurrencias', 'Fig02', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 		#m=0;d=0;v=0;
 
@@ -386,7 +386,7 @@ class Simulador:
 		ax=sns.histplot(col_cobertura_usuarios,kde=True, cumulative=True, stat="density",bins=numero_barras)
 		#m,d,v,md=estats.media_desviacion_varianza(col_cobertura_usuarios)
 		#formatear_grafica_simple(ax, titulo_web, titulo_graf, xlab,ylab, nombre_archivo, ruta_img_montecarlo, diccionario, ruta_activa)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig02.2. CDF USUARIOS', 'CDF USUARIOS. Mínimo: {}, Máximo: {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig02.2. CDF Usuarios por Celda', 'CDF USUARIOS.\nMínimo: {}, Máximo: {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
 			'Usuarios', 'Probabilidad Acumulada', 'Fig02.2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 		#m=0;d=0;v=0;				
 		
@@ -396,7 +396,7 @@ class Simulador:
 		unique, counts = np.unique(col_cob_conexion, return_counts=True)
 		m,d,v,md=estats.media_desviacion_varianza(col_cob_conexion)
 		ax.stem(unique,counts)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig03. Histograma de Usuarios con Pr-Sens>0 dB', 'Pulso: Usuarios: Pr-Sens>0.\nMediana: {}, Media: {}, Desviación: {}, Varianza: {}'.format(round(md,2),round(m,2),round(d,2),round(v,2)), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig03. Histograma de Usuarios con Pr-Sens>0 dB', 'Pulso: Usuarios: Pr-Sens>0.\nMediana: {}, Media: {}, Desviación: {}.'.format(round(md,2),round(m,2),round(d,2)), 
 		'Pr-Sens > 0 [dB]', 'Número de Ocurrencias', 'Fig03', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		#grafica de distribucion de usuarios
@@ -404,7 +404,7 @@ class Simulador:
 		#data,bins=np.histogram(col_cob_conexion,bins=numero_barras)
 		a,b,c=ax.hist(col_cob_conexion, cumulative=True, density=True, bins=numero_barras,alpha=0.1)
 		ax=sns.histplot(col_cob_conexion, kde=True, cumulative=True, stat="density",bins=numero_barras)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig04. CDF de Usuarios Conectados', 'CDF Usuarios con Pr-Sens>0. Mínimo: {}, Máximo: {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig04. CDF de Usuarios Conectados', 'CDF Usuarios con Pr-Sens>0.\nMínimo: {}, Máximo: {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
 			'Probabilidad de Conexión', 'Probabilidad Acumulativa', 'Fig04', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 		#self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig03. Histograma de Usuarios Conectados', 'Escalon: Usuarios: Pr-Sens>0', 
 		#	'Porcentaje de Conexión', 'Número de Ocurrencias', 'Fig03', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
@@ -435,7 +435,7 @@ class Simulador:
 		ax.violinplot(data, vert=False)
 		ax.set_yticklabels([''])
 		#formatear_grafica_simple(ax, titulo_web, titulo_graf, xlab,ylab, nombre_archivo, ruta_img_montecarlo, diccionario, ruta_activa)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig06. Resumen de Distribución de SINR', 'Resumen de Distribución de SINR. Mediana: {} dB,\nMedia: {} dB, Desviación: {} dB, Varianza: {} dB.'.format(round(md,2),round(m,2),round(d,2),round(v,2)), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig06. Resumen de Distribución de SINR', 'Resumen de Distribución de SINR.\nMediana: {} dB, Media: {} dB, Desviación: {} dB'.format(round(md,2),round(m,2),round(d,2)), 
 		'SINR [dB]', '', 'Fig06', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 
@@ -447,7 +447,7 @@ class Simulador:
 		#data_normal=estats.normalizar_arreglo_a_b(data)
 		a,b,c=ax.hist(data, cumulative=True, density=True, bins=numero_barras,alpha=0.1)
 		ax=sns.histplot(data,kde=True, cumulative=True, stat="density",bins=numero_barras, legend=False)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig07. CDF SINR', 'CDF SINR. Mínimo: {} dB, Máximo: {} dB.'.format(round(np.min(b),2), round(np.max(b),2)), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig07. CDF SINR', 'CDF SINR.\nMínimo: {} dB, Máximo: {} dB.'.format(round(np.min(b),2), round(np.max(b),2)), 
 		'SINR [dB]', 'Probabilidad Acumulada', 'Fig07', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 
@@ -469,7 +469,7 @@ class Simulador:
 		ax.stem(unique,counts)
 		m,d,v,md=estats.media_desviacion_varianza(proccessed_tasa)
 		#formatear_grafica_simple(ax, titulo_web, titulo_graf, xlab,ylab, nombre_archivo, ruta_img_montecarlo, diccionario, ruta_activa)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig08_2. Histograma Tasa de Codificación', 'Tasa de Codificación. \nMediana: {}, Media: {}, Desviación: {}, Varianza: {}'.format(round(md,2),round(m,2),round(d,2),round(v,2)),
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig08_2. Histograma Tasa de Codificación', 'Tasa de Codificación. \nMediana: {}, Media: {}, Desviación: {}.'.format(round(md,2),round(m,2),round(d,2)),
 		'Tasa Codificación', 'Número de Ocurrencias', 'Fig08_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		#CDF no normalizada
@@ -489,7 +489,7 @@ class Simulador:
 		ax.legend(['2 = QPSK \n4 = 16-QAM\n6 = 64-QAM\n8 = 256-QAM'])
 		#formatear_grafica_simple(ax, titulo_web,                            titulo_graf,
 		#xlab,         ylab,    nombre_archivo, ruta_img_montecarlo,      diccionario,              ruta_activa)
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig09_2. Histograma Índice de Modulación', 'Índice de Modulación. \nMediana: {}, Media: {}, Desviación: {}, Varianza: {}'.format(round(md,2),round(m,2),round(d,2),round(v,2)), 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig09_2. Histograma Índice de Modulación', 'Índice de Modulación.\nMediana: {}, Media: {}, Desviación: {}, Varianza: {}'.format(round(md,2),round(m,2),round(d,2),round(v,2)), 
 		'Índice de Modulación', 'Número de Ocurrencias', 'Fig09_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		#........................................................................
@@ -516,7 +516,7 @@ class Simulador:
 			ax=sns.histplot(processed_tp,kde=True,bins=numero_barras,legend=False)
 			##############################formatear_grafica_simple(ax, titulo_web,                            titulo_graf,
 			#xlab,         ylab,    nombre_archivo, ruta_img_montecarlo,      diccionario,              ruta_activa)
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig10. Histograma de Throughput', 'Throughput. Mínimo: {} Mbps, Máximo: {} Mbps.'.format(round(np.min(b),2), round(np.max(b),2)), 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig10. Histograma de Throughput', 'Throughput.\nMínimo: {} Mbps, Máximo: {} Mbps.'.format(round(np.min(b),2), round(np.max(b),2)), 
 			'Throughput [Mbps]', 'Número de Ocurrencias', 'Fig10', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 			#grafica de tp comulativa
@@ -529,7 +529,7 @@ class Simulador:
 			ax.boxplot(processed_tp, vert=False, notch=True)
 			ax.violinplot(processed_tp, vert=False)
 			ax.set_yticklabels([''])
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig10_2. Resumen de distribución de Throughput', 'Resumen de distribución de Throughput. Mediana: {} Mbps.\nMedia: {} Mbps, Desviación: {} Mbps, Varianza: {} Mbps'.format(round(md,2),round(m,2),round(d,2),round(v,2)), 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig10_2. Resumen de distribución de Throughput', 'Resumen de distribución de Throughput.\nMediana: {} Mbps, Media: {} Mbps, Desviación: {} Mbps.'.format(round(md,2),round(m,2),round(d,2)), 
 			'Throughput [Mbps]', '', 'Fig10_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 
@@ -541,7 +541,7 @@ class Simulador:
 			#data_normal=estats.normalizar_arreglo_a_b(processed_tp)
 			a,b,c=ax.hist(processed_tp, cumulative=True, density=True, bins=numero_barras,alpha=0.1)
 			ax=sns.histplot(processed_tp,kde=True, cumulative=True, stat="density",bins=numero_barras,legend=False)
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig11. CDF de Throughput', 'CDF de Throughput. Mínimo: {} Mbps, Máximo: {} Mbps.'.format(round(np.min(b),2), round(np.max(b),2)), 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig11. CDF de Throughput', 'CDF de Throughput.\nMínimo: {} Mbps, Máximo: {} Mbps.'.format(round(np.min(b),2), round(np.max(b),2)), 
 			'Throughput [Mbps]', 'Probabilidad Acumulada', 'Fig11', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 			
 
