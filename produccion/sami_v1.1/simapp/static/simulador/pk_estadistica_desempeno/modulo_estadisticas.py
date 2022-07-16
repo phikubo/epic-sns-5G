@@ -62,7 +62,8 @@ def media_desviacion_varianza(data):
 	media=np.mean(data)
 	desviacion=np.std(data)
 	varianza=np.var(data)
-	return media, desviacion, varianza #m,d,v
+	mediana=np.median(data)
+	return media, desviacion, varianza ,mediana#m,d,v,md
 
 
 if __name__=="__main__":
