@@ -16,6 +16,8 @@ try:
 	from .pk_red_dispositivos import antenas as ant
 	from .pk_red_dispositivos import modulo_circulos as mcir
 	#
+	from .utilidades import modulo_almacenamiento as raw_datos #util en debug para guardar los datos y observar su estructura.
+	#
 	#import pk_modelo_canal.modelo_canal as moca
 	#import pk_gestion_recursos.planificador as plan
 	from .pk_modelo_canal import modelo_canal as moca
@@ -816,6 +818,8 @@ class Sistema_Celular:
 		'''Permite ver la imagen creada a partir de una malla de puntos'''
 		#el primer valor
 		pr_max=self.hiperc_malla_modelo_canal.resultado_balance.copy()
+		#ruta_datos='simapp/static/simulador/base_datos/datos'
+		#raw_datos.guardar_data(ruta_datos,"balance",pr_max, "Debug-balanceimagen {}".format(pr_max.shape))
 		#prmax no fue re configurado por que el procedimiento de calculo es diferente, los usuarios no pertenecen a una celda.
 		#en cambio se hace como si todos los usuarios pertenecieran a cada celda de manera independiente:
 		"""
@@ -832,12 +836,20 @@ class Sistema_Celular:
 			final_pr_max.append(np.max(line))
 		final_pr_max=np.transpose(np.reshape(final_pr_max, self.malla_x.shape))		
 		final_pr_max=np.reshape(final_pr_max,self.malla_x.shape)
-		z_min,z_max=-np.abs(pr_max).max(), np.abs(pr_max).max()
+		z_min,z_max=-np.abs(final_pr_max).max(), np.abs(final_pr_max).max()
 		fig,ax=plt.subplots()
+		#
+		#debug
+		#ruta_datos='simapp/static/simulador/base_datos/datos'
+		#raw_datos.guardar_data(ruta_datos,"pr_max",pr_max, "Debug-pr_max  {}. Minimo valor {}, Maximo valor {}".format(pr_max.shape, np.min(final_pr_max), np.max(final_pr_max)))
+		#raw_datos.guardar_data(ruta_datos,"final_pr_max",final_pr_max, "Debug-final_pr_max {} ".format(final_pr_max.shape))
+		#
+		#c=ax.pcolormesh(np.vstack(self.malla_x),np.vstack(self.malla_y),final_pr_max, cmap='plasma', vmin=z_min, vmax=-20) #deja la imagen a un rango semifijo.
 
-		c=ax.pcolormesh(np.vstack(self.malla_x),np.vstack(self.malla_y),final_pr_max, cmap='plasma', vmin=z_min, vmax=-20)
-		fig.colorbar(c,ax=ax, label="Potencia Recibida [dBm]")
-		titulo="{}, Ptx:{}, Desvanecimiento:{}.".format(str(self.cfg_prop["modelo_perdidas"]), self.cfg_bal["ptx"], self.cfg_prop["params_desv"]["tipo"])
+		c=ax.pcolormesh(np.vstack(self.malla_x),np.vstack(self.malla_y),final_pr_max, cmap='plasma', vmin=np.min(final_pr_max), vmax=np.max(final_pr_max))
+
+		fig.colorbar(c,ax=ax, label="Potencia Recibida [dBm]\nMínimo: {}, Máximo: {}".format(round(np.min(final_pr_max),2), round(np.max(final_pr_max),2)))
+		titulo="Modelo de pérdidas de propagación: {}.\nPtx: {}, Portadora: {} MHz, Desvanecimiento: {}.".format(str(self.cfg_prop["modelo_perdidas"]), self.cfg_bal["ptx"], self.cfg_gen["portadora"][0], self.cfg_prop["params_desv"]["tipo"])
 		plt.title(titulo)
 		plt.xlabel("Distancia [m]")
 		plt.ylabel("Distancia [m]")
@@ -977,7 +989,9 @@ class Sistema_Celular:
 		self.ver_estaciones_base()
 		self.ver_sectores()
 		self.ver_circulos()
-		titulo= "Esc:"+str(self.cfg_prop["modelo_perdidas"])+", F:"+str(self.cfg_gen["portadora"][0])+", Ues:"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
+		#titulo= "Modelo de pérdidas de propagación: "+str(self.cfg_prop["modelo_perdidas"])+"\nPortadora:"+str(self.cfg_gen["portadora"][0])+"MHz. MS (sinr):"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
+		#titulo= "\nPortadora:"+str()+"MHz. MS (sinr):"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
+		titulo= "Radio: {} m, Área por celda: {} m.\nIntensidad: {}, MS (sinr): {}/{}".format(round(self.cfg_gen["radio_cel"],2), round(np.pi*self.cfg_gen["radio_cel"]**2,2), round(np.pi*self.cfg_gen["distribucion"][1],2), self.conexion_total_sinr, self.no_usuarios_total)
 		plt.title(titulo)
 		plt.xlabel("Distancia [m]")
 		plt.ylabel("Distancia [m]")

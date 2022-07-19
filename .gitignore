@@ -1,7 +1,8 @@
 __pycache__/
-col_*.txt
 *.pdf
 *.npy
+col_*.txt
+/produccion/sami_v1.1/simapp/static/simulador/base_datos/*.txt
 /produccion/**/*.json
 /produccion/sami_v1.1/simapp/static/simulador/base_datos/imagenes/montecarlo/*.png
 /produccion/sami_v1.1/simapp/static/simulador/base_datos/imagenes/montecarlo/*/.png
