@@ -57,8 +57,8 @@ class Sistema_Celular:
 
 		#DECLARACION DE VARIABLES GLOBALES.
 		self.radio_distribucion=self.cfg_gen["radio_cel"]
-		self.cfg_gen["radio_cel"]=(2/3)*self.cfg_gen["isd"]*math.sqrt(3)/2
 		if self.cfg_gen["geometria"]=="autoajustable":
+			self.cfg_gen["radio_cel"]=(2/3)*self.cfg_gen["isd"]*math.sqrt(3)/2
 			self.radio_distribucion=self.cfg_gen["radio_cel"]
 		else:
 			#manual, se ajusta al parametro existente en radio_cel, antes de cambiar.
@@ -442,9 +442,8 @@ class Sistema_Celular:
 
 
 
-
 	def inicializar_asignacion_bw_nrbs(self):
-		'''Permite gestionar el recurso de ancho de banda sobre los usuarios en cada celda'''
+		
 		mapa_estaciones=self.mapa_conexion_estacion.copy()
 		dim_pr_v2D=self.potencia_recibida_v_2D.shape
 		mapa_usuarios=self.mapa_conexion_usuario.copy()
@@ -461,7 +460,6 @@ class Sistema_Celular:
 		#convierte la matriz de potencia recibida en matriz de interferencia.
 		self.matriz_interferente=self.potencia_recibida_v_2D*self.planificador.mapa_interf_distribuida
 
-	
 
 	def inicializar_asignacion_bw_nrbs_upgrade(self):
 		'''Asigna ancho de banda a los usuarios disponibles.
@@ -488,6 +486,7 @@ class Sistema_Celular:
 		#print("sistem.py: potencia_rec_2d",self.potencia_recibida_v_2D)
 		'''En este punto se considera que todos los usuarios generan interferencia unos con otros'''
 		self.matriz_interferente=self.potencia_recibida_v_2D*self.planificador.mapa_interf_distribuida
+		
 		
 		self.conexion_total_margen=np.count_nonzero(self.planificador.mapa_conexion_usuario_binario==1)
 		#calcula la probabilidad de conexion o probabilidad de exito de conexion.
@@ -687,7 +686,7 @@ class Sistema_Celular:
 		#self.sinr_db=np.where(self.mapa_conexion_desconexion_margen==0,-100, self.sinr_db)
 		#Reemplaza 1 donde sinr>,self.cfg_gen["ber_sinr"] 0 en caso contrario.
 		self.mapa_conexion_desconexion=np.where(self.sinr_db>self.cfg_gen["ber_sinr"],1,0) #escribe 1 si true, 0 si false.
-
+		 
 		#cuenta cuantos usuarios se conectaron.
 		self.conexion_total_sinr=np.count_nonzero(self.mapa_conexion_desconexion==1)
 		#calcula la probabilidad de conexion o probabilidad de exito de conexion.
@@ -904,26 +903,38 @@ class Sistema_Celular:
 			self.cels_ax.plot(self.usuario_x,self.usuario_y, 'go')
 
 
-	def ver_usuarios_conectados(self):
+	def ver_usuarios_conectados(self, *args, nombre, ruta_global):
 		'''Permite ver usuarios conectados y no conectados'''
 		coordendas_nuevas_x=self.configurar_disminuir_dim(self.usuario_x)
 		coordendas_nuevas_y=self.configurar_disminuir_dim(self.usuario_y)
-		for usuario, map in enumerate(self.mapa_conexion_usuario):
+		#print("sistema.py test01MS\n", self.mapa_conexion_usuario)
+		#print("\nsistema.py test02MS\n", self.mapa_celda_mayor_potencia)
+		#print("\nsistema.py test03MS\n", self.mapa_conexion_estacion) 
+		#print("\nsistema.py test04MS\n", self.mapa_conexion_desconexion)
+		for usuario, mapz in enumerate(self.mapa_conexion_desconexion):
 			thisx=coordendas_nuevas_x[usuario]
 			thisy=coordendas_nuevas_y[usuario]
-			if map==-1:
-				self.cels_ax.plot(thisx,thisy,'k+')
+			if mapz==0:
+				self.cels_ax.plot(thisx,thisy,'kx')
 			else:
 				self.cels_ax.plot(thisx,thisy,'go')
+		titulo= "MS (SINR): {}/{}".format(self.conexion_total_sinr, self.no_usuarios_total)
+		plt.title(titulo)
+		plt.xlabel("Distancia [m]")
+		plt.ylabel("Distancia [m]")
+		plt.grid(True)
+		ruta="simapp/static/"+ruta_global+"{}.png".format(nombre)
+		plt.savefig(ruta)
+	
 
 
 	def ver_usuarios_colores(self):
 		'''Permite ver los usuarios conectados a su estacion base, criterio de mayor potencia recibida'''
 		#fin, poner en otra funcion.
 		#[ 0 0 0 1 1 1 2 2 2]
-		self.mapa_conexion_estacion=self.planificador.mapa_conexion_celda
+		self.mapa_conexion_estacion=self.planificador.mapa_conexion_celda.copy()
 		#[1,2,3]
-		self.mapa_conexion_usuario=self.mapa_celda_mayor_potencia
+		self.mapa_conexion_usuario=self.mapa_celda_mayor_potencia.copy()
 		#for usuario, (bandera, mapa_conexion_usuario) in enumerate(zip(self.mapa_conexion_desconexion, self.mapa_conexion_usuario)):
 		for usuario, (bandera, mapa_conexion_usuario) in enumerate(zip(self.mapa_conexion_estacion, self.mapa_conexion_usuario)):
 			if bandera==0:
@@ -933,8 +944,8 @@ class Sistema_Celular:
 		coordendas_nuevas_x=self.configurar_disminuir_dim(self.usuario_x)
 		coordendas_nuevas_y=self.configurar_disminuir_dim(self.usuario_y)
 
-		self.mapa_conexion_desconexion=np.reshape(self.mapa_conexion_usuario, coordendas_nuevas_x.shape)
-		data=pd.DataFrame({"X value":coordendas_nuevas_x, "Y value":coordendas_nuevas_y, "Category":self.mapa_conexion_desconexion})
+		self.mapa_conexion_estacion_sinr=np.reshape(self.mapa_conexion_usuario, coordendas_nuevas_x.shape)
+		data=pd.DataFrame({"X value":coordendas_nuevas_x, "Y value":coordendas_nuevas_y, "Category":self.mapa_conexion_estacion_sinr})
 		grupos=data.groupby("Category")
 		for name, group in grupos:
 			self.cels_ax.plot(group["X value"], group["Y value"], marker="o", linestyle="", label=name)
@@ -987,11 +998,14 @@ class Sistema_Celular:
 			self.ver_usuarios_colores()
 		self.ver_celdas()
 		self.ver_estaciones_base()
-		self.ver_sectores()
+		if self.cfg_ant["tipo"]=="4g": #si es 4g es trisectorizado.
+			self.ver_sectores()
+		else:
+			pass
 		self.ver_circulos()
 		#titulo= "Modelo de pérdidas de propagación: "+str(self.cfg_prop["modelo_perdidas"])+"\nPortadora:"+str(self.cfg_gen["portadora"][0])+"MHz. MS (sinr):"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
 		#titulo= "\nPortadora:"+str()+"MHz. MS (sinr):"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
-		titulo= "Radio: {} m, Área por celda: {} m.\nIntensidad: {}, MS (sinr): {}/{}".format(round(self.cfg_gen["radio_cel"],2), round(np.pi*self.cfg_gen["radio_cel"]**2,2), round(np.pi*self.cfg_gen["distribucion"][1],2), self.conexion_total_sinr, self.no_usuarios_total)
+		titulo= "Radio: {} m, Área por celda: {} m.\nIntensidad: {}, MS (SINR): {}/{}".format(round(self.cfg_gen["radio_cel"],2), round(np.pi*self.cfg_gen["radio_cel"]**2,2), round(np.pi*self.cfg_gen["distribucion"][1],2), self.conexion_total_sinr, self.no_usuarios_total)
 		plt.title(titulo)
 		plt.xlabel("Distancia [m]")
 		plt.ylabel("Distancia [m]")
