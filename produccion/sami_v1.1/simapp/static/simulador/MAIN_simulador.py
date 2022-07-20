@@ -148,12 +148,19 @@ class Simulador:
         (2000, 'Masivo [!!]'),
         (3000, 'Ultra [!!!]'))
 		densidad_dict=dict(densidad_choices)
-		titulo="Densidad de usuarios: {}".format(densidad_dict[int(self.configuracion["cfg_simulador"]["params_general"]["distribucion"][1])])
-		
+		titulo="Densidad de MS: {}".format(densidad_dict[int(self.configuracion["cfg_simulador"]["params_general"]["distribucion"][1])])
+
 		#ruta_img="simulador/base_datos/imagenes/presim/base-sim.png"
 		#self.graficas_disponibles.append(ruta_img)
 		ruta=ruta_img_presim+nombre+".png"
 		self.graficas_disponibles_dic.update({titulo.upper():ruta})
+
+		titulo="Asignación de servicio MS, en función de la SINR"
+		nombre="Fig2_base-sim_on_off"
+		pre_sim.ver_usuarios_conectados(nombre=nombre, ruta_global=ruta_img_presim)
+		ruta=ruta_img_presim+nombre+".png"
+		self.graficas_disponibles_dic.update({titulo.upper():ruta})
+
 
 		#display de antena
 		nombre="Fig3_patron_radiacion"
