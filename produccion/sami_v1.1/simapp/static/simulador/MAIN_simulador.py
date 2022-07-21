@@ -290,25 +290,35 @@ class Simulador:
 		iteracion=self.configuracion["cfg_simulador"]["params_general"]["iteracion"]
 		coleccion_simulacion=[]
 		#poisson
-		col_cobertura_usuarios=[]
+		col_cobertura_MS=[]
+
 		#poisson celdas
-		col_cobertura_usuarios_celda=[] 
+		col_cobertura_MS_celda=[] 
+
 		#margen, si supera margen
 		col_cob_conexion=[]
+
 		#si supera sinr objetivo
 		col_cob_sinr_total=[]
-		#depleted_col_cob2_sinr_mean=[]
+
+		#modulacion
 		col_cap_modulacion_total=[]
+		#tasa
 		col_cap_tasa_total=[]
 		#
 		col_cob_conexion_sinr=[]
-		#debe calcularse como 1-cob_conexion
-		col_cob_desconexion=[]
+
+		#MS con SINR > 1. No porcentaje, numero de MS.
+		col_cob_probabilidad_servicio=[]
 
 		#
 		#colecion de throughput
 		col_cap_throughput_promedio=[]
 		col_cap_throughput_total=[]
+
+		#MS con SINR > 1. No porcentaje, numero de MS.
+		col_cap_throughput_servicio=[]
+
 		#contador de iteracion
 		it=0
 		print("[simulador]: Generando simulaciones...")
@@ -331,8 +341,8 @@ class Simulador:
 		for borrar, simulacion in enumerate(coleccion_simulacion):
 			
 			#no es un numero valido de poisson.
-			#col_cobertura_usuarios.append(simulacion.no_usuarios_total)
-			col_cobertura_usuarios.append(simulacion.no_usuarios_celda)
+			#col_cobertura_MS.append(simulacion.no_usuarios_total)
+			col_cobertura_MS.append(simulacion.no_usuarios_celda)
 			col_cob_conexion.append(simulacion.medida_conexion_margen)
 
 			col_cob_conexion_sinr.append(simulacion.medida_conexion_sinr)
@@ -344,23 +354,28 @@ class Simulador:
 			col_cap_throughput_promedio.append(simulacion.throughput_sistema)
 			col_cap_throughput_total.append(simulacion.throughput_users)
 			
+			#nuevas Figuras
+			col_cob_probabilidad_servicio.append(simulacion.mapa_conexion_desconexion)
+			col_cap_throughput_servicio.append(simulacion.mapa_throughput_minimo)
 			#libero memoria de los objetos recolectados.
 			coleccion_simulacion[borrar]=0
 		print("[simulador]: Terminado Coleccion...\n")
 
 		print("[simulador]: Ejecuntando Almacenamiento...\n") #opcional
-		raw_datos.guardar_data(ruta_datos,"col_cobertura_usuarios",col_cobertura_usuarios, "Coleccion de usuarios por celda original")
+		raw_datos.guardar_data(ruta_datos,"col_cobertura_MS",col_cobertura_MS, "Coleccion de usuarios por celda original")
 		raw_datos.guardar_data(ruta_datos,"col_cob_conexion",col_cob_conexion, "Coleccion de usuarios cuya potencia es mayor a la sensibilidad.")
-		raw_datos.guardar_data(ruta_datos,"col_cob_conexion_sinr",col_cob_conexion_sinr,"""Coleccion de usuarios cuya SINR es mayor a un target espcificado en self.configuracion["cfg_simulador"]["params_general"]["ber_sinr"] """)
+		raw_datos.guardar_data(ruta_datos,"col_cob_conexion_sinr",col_cob_conexion_sinr,"""Porcentaje de usuarios cuya SINR es mayor a un target espcificado en self.configuracion["cfg_simulador"]["params_general"]["ber_sinr"] """)
 		#raw_datos.guardar_data(ruta_datos,"col_cap_throughput_promedio",col_cap_throughput_promedio,"Coleccion de TP por simulacion. El valor por simulacion es el promedio de TP entre todas las celdas disponibles.")
-
+		
+		#raw_datos.guardar_data(ruta_datos,"col_cob_probabilidad_servicio",col_cob_probabilidad_servicio, "Probababilidad de SINR>1")
+		#raw_datos.guardar_data(ruta_datos,"col_cap_throughput_servicio",col_cap_throughput_servicio, "Probabilidad de TP > 100 mbps {}".format(col_cap_throughput_servicio[0].shape))
 		#........................................................................
 		#............................. COBERTURA ...............................
 		#........................................................................
 
 		#grafica de distribucion de usuarios
 		fig, ax = plt.subplots()
-		ax.plot(np.linspace(1,len(col_cobertura_usuarios),len(col_cobertura_usuarios)), col_cobertura_usuarios, 'b-o')
+		ax.plot(np.linspace(1,len(col_cobertura_MS),len(col_cobertura_MS)), col_cobertura_MS, 'b-o')
 		#formatear_grafica_simple(ax, titulo_web, titulo_graf, xlab,ylab, nombre_archivo, ruta_img_montecarlo, diccionario, ruta_activa)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig01. Histograma de MS', 'MS por Celda', 
 			'Realizacion', 'Número de MS', 'Fig01', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
@@ -368,8 +383,8 @@ class Simulador:
 		#grafica de distribucion de usuarios
 		#fig, ax = plt.subplots()
 		
-		#ax.hist(col_cobertura_usuarios, bins=numero_barras)
-		#m,d,v,md=estats.media_desviacion_varianza(col_cobertura_usuarios)
+		#ax.hist(col_cobertura_MS, bins=numero_barras)
+		#m,d,v,md=estats.media_desviacion_varianza(col_cobertura_MS)
 		#formatear_grafica_simple(ax, titulo_web, titulo_graf, xlab,ylab, nombre_archivo, ruta_img_montecarlo, diccionario, ruta_activa)
 		#self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig02. Histograma de MS', 'MS por Celda. \nMediana: {}, Media: {}, Desviación: {}, Varianza: {}'.format(round(md,2),round(m,2),round(d,2),round(v,2)), 
 			#'MS', 'Número de Ocurrencias', 'Fig02', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
@@ -377,17 +392,17 @@ class Simulador:
 		
 					
 		fig, ax = plt.subplots()
-		#ax=sns.kdeplot(col_cobertura_usuarios, shade=True, kde=True)
-		#ax.hist(col_cobertura_usuarios, bins=numero_barras)
-		ax=sns.histplot(col_cobertura_usuarios,kde=True, bins=numero_barras)
-		m,d,v,md=estats.media_desviacion_varianza(col_cobertura_usuarios)
+		#ax=sns.kdeplot(col_cobertura_MS, shade=True, kde=True)
+		#ax.hist(col_cobertura_MS, bins=numero_barras)
+		ax=sns.histplot(col_cobertura_MS,kde=True, bins=numero_barras)
+		m,d,v,md=estats.media_desviacion_varianza(col_cobertura_MS)
 		#formatear_grafica_simple(ax, titulo_web, titulo_graf, xlab,ylab, nombre_archivo, ruta_img_montecarlo, diccionario, ruta_activa)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig02. Histograma de MS', 'MS por Celda. \nMediana: {}, Media: {}, Desviación: {}'.format(round(md,2),round(m,2),round(d,2)), 
 			'MS', 'Número de Ocurrencias', 'Fig02', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 		#m=0;d=0;v=0;
 
 		fig, ax = plt.subplots()
-		data=np.vstack(col_cobertura_usuarios)
+		data=np.vstack(col_cobertura_MS)
 		m,d,v,md=estats.media_desviacion_varianza(data)
 		#data_normal=estats.normalizar_arreglo_a_b(data)
 		#ax.hist(data_normal, bins=numero_barras)
@@ -400,11 +415,11 @@ class Simulador:
 
 
 		fig, ax = plt.subplots()
-		#ax=sns.kdeplot(col_cobertura_usuarios, shade=True, kde=True)
-		#ax.hist(col_cobertura_usuarios, bins=numero_barras)
-		a,b,c=ax.hist(col_cobertura_usuarios, cumulative=True, density=True, bins=numero_barras,alpha=0.1)
-		ax=sns.histplot(col_cobertura_usuarios,kde=True, cumulative=True, stat="density",bins=numero_barras)
-		#m,d,v,md=estats.media_desviacion_varianza(col_cobertura_usuarios)
+		#ax=sns.kdeplot(col_cobertura_MS, shade=True, kde=True)
+		#ax.hist(col_cobertura_MS, bins=numero_barras)
+		a,b,c=ax.hist(col_cobertura_MS, cumulative=True, density=True, bins=numero_barras,alpha=0.1)
+		ax=sns.histplot(col_cobertura_MS,kde=True, cumulative=True, stat="density",bins=numero_barras)
+		#m,d,v,md=estats.media_desviacion_varianza(col_cobertura_MS)
 		#formatear_grafica_simple(ax, titulo_web, titulo_graf, xlab,ylab, nombre_archivo, ruta_img_montecarlo, diccionario, ruta_activa)
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig02.2. CDF MS por Celda', 'CDF MS.\nMínimo: {}, Máximo: {}.'.format(round(np.min(b),2), round(np.max(b),2)), 
 			'MS', 'Probabilidad Acumulada', 'Fig02.2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
@@ -469,6 +484,12 @@ class Simulador:
 		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig07. CDF SINR', 'CDF SINR.\nMínimo: {} dB, Máximo: {} dB.'.format(round(np.min(b),2), round(np.max(b),2)), 
 		'SINR [dB]', 'Probabilidad Acumulada', 'Fig07', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
+		fig, ax = plt.subplots()
+		#acomulativo densidad
+		processed_data=np.vstack(np.array(col_cob_probabilidad_servicio))
+		ax.plot(np.arange(1,len(processed_data)+1),np.cumsum(processed_data)/np.arange(1,len(processed_data)+1))
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig07_2. Histograma MS con SINR > SINR_min', 'Tendencia de probabilidad de servicio (SINR).', 
+		'Número de MS Total', 'Probabilidad de Servicio (SINR)', 'Fig07_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		#........................................................................
 		#............................. TASA Y MOD ...............................
@@ -572,6 +593,11 @@ class Simulador:
 			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig12. Tendencia de Throughput Promedio', 'Tendencia de Throughput Promedio', 
 				'Número de MS Total', ' Throughput [Mbps]', 'Fig12', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
+			fig, ax = plt.subplots()
+			processed_data=np.vstack(np.array(col_cap_throughput_servicio))
+			ax.plot(np.arange(1,len(processed_data)+1),np.cumsum(processed_data)/np.arange(1,len(processed_data)+1))
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig12_2. Tendencia de Throughput > Throughput_min (100 Mbps)', 'Tendencia de Probabilidad de Servicio', 
+			'Número de MS Total', 'Probabilidad de servicio (Throughput)', 'Fig12_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		#GUARDAR DATOS
 		self.configuracion_gui["montecarlo_graphs"]=self.graficas_disponibles_dic

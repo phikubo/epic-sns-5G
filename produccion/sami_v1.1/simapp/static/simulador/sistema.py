@@ -736,6 +736,16 @@ class Sistema_Celular:
 		#de lo contrario, cuando tasa<0, modulacion<0; throughput>0 para cuando el valor no debe contribuir.
 		#para evitar este error, se fija la modulacion siempre positiva independientemente de la contribuci[on] puesto que tasa ya contiene la informacion que representa los valores no contribuyentes
 		throughput_users=10**(-6)*arreglo_mimo*modulacion_0*factor_escala[0]*(tasa/1024)*(self.planificador.nrb_usuario.copy()*self.cfg_plan["sub_ofdm"]/trama_segundos)*completo_oh
+		
+		#test
+		test=throughput_users<0
+		if True in test:
+			print("systema.py-test ---->HAY VALORES NEGATIVOS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+		#endtest
+		self.mapa_throughput_minimo=np.where(throughput_users>100,1,0)
+		#print("systema.py-test ---->\n", self.mapa_throughput_minimo)
+		#print("systema.py-test ---->\n", throughput_users)
+
 		self.throughput_users=np.absolute(throughput_users)	
 		#promedio por sistema []
 		self.throughput_sistema=np.mean(self.throughput_users)
@@ -775,6 +785,9 @@ class Sistema_Celular:
 		#de lo contrario, cuando tasa<0, modulacion<0; throughput>0 para cuando el valor no debe contribuir.
 		#para evitar este error, se fija la modulacion siempre positiva independientemente de la contribuci[on] puesto que tasa ya contiene la informacion que representa los valores no contribuyentes
 		throughput_users=10**(-6)*arreglo_mimo*modulacion_0*factor_escala[0]*(tasa/1024)*(self.planificador.nrb_usuario*self.cfg_plan["sub_ofdm"]/trama_segundos)*completo_oh
+		
+
+
 		self.throughput_users=np.absolute(throughput_users)	
 		#promedio por sistema []
 		self.throughput_sistema=np.mean(self.throughput_users)
