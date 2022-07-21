@@ -488,7 +488,7 @@ class Simulador:
 		#acomulativo densidad
 		processed_data=np.vstack(np.array(col_cob_probabilidad_servicio))
 		ax.plot(np.arange(1,len(processed_data)+1),np.cumsum(processed_data)/np.arange(1,len(processed_data)+1))
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig07_2. Histograma MS con SINR > SINR_min', 'Tendencia de probabilidad de servicio (SINR).', 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig07_2. Tendencia de MS con SINR > SINR_min', 'Tendencia de probabilidad de servicio (SINR).', 
 		'Número de MS Total', 'Probabilidad de Servicio (SINR)', 'Fig07_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		#........................................................................
