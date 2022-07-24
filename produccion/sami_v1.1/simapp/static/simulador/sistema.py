@@ -861,7 +861,7 @@ class Sistema_Celular:
 		c=ax.pcolormesh(np.vstack(self.malla_x),np.vstack(self.malla_y),final_pr_max, cmap='plasma', vmin=np.min(final_pr_max), vmax=np.max(final_pr_max))
 
 		fig.colorbar(c,ax=ax, label="Potencia Recibida [dBm]\nMínimo: {}, Máximo: {}".format(round(np.min(final_pr_max),2), round(np.max(final_pr_max),2)))
-		titulo="Modelo de pérdidas de propagación: {}.\nPtx: {}, Portadora: {} MHz, Desvanecimiento: {}.".format(str(self.cfg_prop["modelo_perdidas"]), self.cfg_bal["ptx"], self.cfg_gen["portadora"][0], self.cfg_prop["params_desv"]["tipo"])
+		titulo="Modelo de pérdidas de propagación: {}.\nPtx: {} dBm, Portadora: {} MHz, Desvanecimiento: {}.".format(str(self.cfg_prop["modelo_perdidas"]), self.cfg_bal["ptx"], self.cfg_gen["portadora"][0], self.cfg_prop["params_desv"]["tipo"])
 		plt.title(titulo)
 		plt.xlabel("Distancia [m]")
 		plt.ylabel("Distancia [m]")
@@ -1018,7 +1018,7 @@ class Sistema_Celular:
 		self.ver_circulos()
 		#titulo= "Modelo de pérdidas de propagación: "+str(self.cfg_prop["modelo_perdidas"])+"\nPortadora:"+str(self.cfg_gen["portadora"][0])+"MHz. MS (sinr):"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
 		#titulo= "\nPortadora:"+str()+"MHz. MS (sinr):"+str(self.conexion_total_sinr)+"/"+str(self.no_usuarios_total)
-		titulo= "Radio: {} m, Área por celda: {} m.\nIntensidad: {}, MS (SINR): {}/{}".format(round(self.cfg_gen["radio_cel"],2), round(np.pi*self.cfg_gen["radio_cel"]**2,2), round(np.pi*self.cfg_gen["distribucion"][1],2), self.conexion_total_sinr, self.no_usuarios_total)
+		titulo= "Radio: {} m, ISD: {} m.\nIntensidad: {}, MS (SINR): {}/{}".format(round(self.cfg_gen["radio_cel"],2), round(self.cfg_gen["isd"],2), round(np.pi*self.cfg_gen["distribucion"][1],2), self.conexion_total_sinr, self.no_usuarios_total)
 		plt.title(titulo)
 		plt.xlabel("Distancia [m]")
 		plt.ylabel("Distancia [m]")

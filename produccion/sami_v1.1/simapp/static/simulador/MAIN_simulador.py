@@ -155,7 +155,7 @@ class Simulador:
 		ruta=ruta_img_presim+nombre+".png"
 		self.graficas_disponibles_dic.update({titulo.upper():ruta})
 
-		titulo="Asignación de servicio MS, en función de la SINR"
+		titulo="MS con servicio, en función de la SINR"
 		nombre="Fig2_base-sim_on_off"
 		pre_sim.ver_usuarios_conectados(nombre=nombre, ruta_global=ruta_img_presim)
 		ruta=ruta_img_presim+nombre+".png"
@@ -487,8 +487,9 @@ class Simulador:
 		fig, ax = plt.subplots()
 		#acomulativo densidad
 		processed_data=np.vstack(np.array(col_cob_probabilidad_servicio))
+		m,d,v,md=estats.media_desviacion_varianza(processed_data)
 		ax.plot(np.arange(1,len(processed_data)+1),np.cumsum(processed_data)/np.arange(1,len(processed_data)+1))
-		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig07_2. Tendencia de MS con SINR > SINR_min', 'Tendencia de probabilidad de servicio (SINR).', 
+		self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig07_2. Tendencia de MS con SINR > SINR_min', 'Tendencia de probabilidad de servicio : {}'.format(round(m,2)), 
 		'Número de MS Total', 'Probabilidad de Servicio (SINR)', 'Fig07_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		#........................................................................
@@ -589,14 +590,16 @@ class Simulador:
 			#grafica de tp montecarlo
 			fig, ax = plt.subplots()
 			processed_tp=np.vstack(np.array(np.concatenate(col_cap_throughput_total)))
+			m,d,v,md=estats.media_desviacion_varianza(processed_tp)
 			ax.plot(np.arange(1,len(processed_tp)+1),np.cumsum(processed_tp)/np.arange(1,len(processed_tp)+1))
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig12. Tendencia de Throughput Promedio', 'Tendencia de Throughput Promedio', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig12. Tendencia de Throughput Promedio', 'Tendencia de Throughput Promedio: {} Mbps'.format(round(m,2)), 
 				'Número de MS Total', ' Throughput [Mbps]', 'Fig12', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 			fig, ax = plt.subplots()
 			processed_data=np.vstack(np.array(col_cap_throughput_servicio))
+			m,d,v,md=estats.media_desviacion_varianza(processed_data)
 			ax.plot(np.arange(1,len(processed_data)+1),np.cumsum(processed_data)/np.arange(1,len(processed_data)+1))
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig12_2. Tendencia de Throughput > Throughput_min (100 Mbps)', 'Tendencia de Probabilidad de Servicio', 
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig12_2. Tendencia de Throughput > Throughput_min (100 Mbps)', 'Tendencia de Probabilidad de Servicio: {}'.format(round(m,2)), 
 			'Número de MS Total', 'Probabilidad de servicio (Throughput)', 'Fig12_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		#GUARDAR DATOS
