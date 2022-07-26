@@ -3,7 +3,7 @@
         "params_general": {
             "debug": false,
             "iteracion": 12000,
-            "n_celdas": 3,
+            "n_celdas": 2,
             "portadora": [
                 44000,
                 "mhz"

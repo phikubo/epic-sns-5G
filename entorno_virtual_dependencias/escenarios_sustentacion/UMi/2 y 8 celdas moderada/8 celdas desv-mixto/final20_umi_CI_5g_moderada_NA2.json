@@ -2,21 +2,21 @@
     "cfg_simulador": {
         "params_general": {
             "debug": false,
-            "iteracion": 11000,
-            "n_celdas": 3,
+            "iteracion": 1000,
+            "n_celdas": 8,
             "portadora": [
-                3500,
+                24000,
                 "mhz"
             ],
-            "isd": 500,
+            "isd": 200,
             "distribucion": [
                 "ppp",
                 100.0
             ],
             "geometria": "autoajustable",
-            "radio_cel": 288.67513459481285,
+            "radio_cel": 115.47005383792514,
             "nf": [
-                9.0,
+                13.0,
                 "dB"
             ],
             "ber_sinr": 2.4,
@@ -30,9 +30,9 @@
         },
         "params_propagacion": {
             "self_debug": false,
-            "modelo_perdidas": "uma_3gpp",
+            "modelo_perdidas": "umi_abg",
             "params_modelo": [
-                25.0,
+                15.0,
                 0.0,
                 1.5,
                 0.0,
@@ -45,10 +45,10 @@
             ],
             "params_desv": {
                 "display": true,
-                "tipo": "normal",
+                "tipo": "mixto",
                 "params": [
                     3.1,
-                    4.0,
+                    8.1,
                     0.0,
                     0.0,
                     0
@@ -56,17 +56,17 @@
             }
         },
         "params_balance": {
-            "ptx": 49.0,
+            "ptx": 44.0,
             "gtx": 15.0,
             "ltx": 1.0,
             "lrx": 1.0,
             "grx": 1.0,
             "sensibilidad": "none",
-            "mcl": 70.0
+            "mcl": 53.0
         },
         "params_antena": {
             "self_debug": false,
-            "tipo": "4g",
+            "tipo": "5g",
             "hpbw": 65,
             "atmin": 20.0,
             "apuntamiento": [
@@ -88,21 +88,21 @@
             "tipo": "rr_hard",
             "pbch": false,
             "bw": [
-                100,
+                400,
                 "mhz"
             ],
             "ofdm_cp": "normal",
-            "numerologia": 1.0,
+            "numerologia": 3.0,
             "bw_guarda": [
-                845,
+                9860,
                 "khz"
             ],
-            "nrb_sin_gbw": 273,
+            "nrb_sin_gbw": 264,
             "sub_ofdm": 12.0,
             "caso_de_uso": [
                 "eMBB",
-                "URLLC",
-                "mMTC"
+                "mMTC",
+                "URRLC"
             ],
             "trama_total": 14.0,
             "simbolo_ofdm_dl": 12.0,
