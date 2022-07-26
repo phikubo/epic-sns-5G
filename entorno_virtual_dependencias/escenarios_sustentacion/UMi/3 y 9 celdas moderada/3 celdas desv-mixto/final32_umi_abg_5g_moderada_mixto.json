@@ -2,7 +2,7 @@
     "cfg_simulador": {
         "params_general": {
             "debug": false,
-            "iteracion": 3000,
+            "iteracion": 12000,
             "n_celdas": 3,
             "portadora": [
                 44000,
