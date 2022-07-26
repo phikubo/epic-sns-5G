@@ -599,8 +599,8 @@ class Simulador:
 			processed_data=np.vstack(np.array(col_cap_throughput_servicio))
 			m,d,v,md=estats.media_desviacion_varianza(processed_data)
 			ax.plot(np.arange(1,len(processed_data)+1),np.cumsum(processed_data)/np.arange(1,len(processed_data)+1))
-			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig12_2. Tendencia de Throughput > Throughput_min (100 Mbps)', 'Tendencia de Probabilidad de Servicio: {}'.format(round(m,2)), 
-			'Número de MS Total', 'Probabilidad de servicio (Throughput)', 'Fig12_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
+			self.graficas_disponibles_dic=formatear_grafica_simple(ax, 'Fig12_2. Tendencia de Throughput > Throughput_min (100 Mbps)', 'Tendencia de la Probabilidad de Throughput>100 Mbps: {}'.format(round(m,2)), 
+			'Número de MS Total', 'Probabilidad de Throughput>100 Mbps', 'Fig12_2', ruta_img_montecarlo, self.graficas_disponibles_dic, self.ruta_activa)
 
 		#GUARDAR DATOS
 		self.configuracion_gui["montecarlo_graphs"]=self.graficas_disponibles_dic
