@@ -2,10 +2,10 @@
     "cfg_simulador": {
         "params_general": {
             "debug": false,
-            "iteracion": 3000,
-            "n_celdas": 3,
+            "iteracion": 1000,
+            "n_celdas": 8,
             "portadora": [
-                44000,
+                24000,
                 "mhz"
             ],
             "isd": 200,
@@ -48,7 +48,7 @@
                 "tipo": "mixto",
                 "params": [
                     3.1,
-                    8.0,
+                    8.1,
                     0.0,
                     0.0,
                     0
@@ -100,9 +100,9 @@
             "nrb_sin_gbw": 264,
             "sub_ofdm": 12.0,
             "caso_de_uso": [
-                "URLLC",
+                "eMBB",
                 "mMTC",
-                "eMBB"
+                "URRLC"
             ],
             "trama_total": 14.0,
             "simbolo_ofdm_dl": 12.0,
