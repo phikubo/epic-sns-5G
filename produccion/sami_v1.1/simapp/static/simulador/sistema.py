@@ -680,6 +680,13 @@ class Sistema_Celular:
 		#calculamos potencia de ruido en veces.
 		pn_v=self.configurar_unidades_veces(self.potencia_ruido)
 		pn=pn_v*fr_v
+
+		#si la antena es 5G se considera que el haz que apunta a un MS tiene una interferencia reducida en otros MS.
+		if self.cfg_ant["tipo"]=="5g":
+			suma_interf_v=suma_interf_v*0.2
+		else:
+			pass
+
 		#calculo sinr de acuerdo a la ecuacion
 		self.sinr_db=10*np.log10(prx_veces)-10*np.log10(suma_interf_v+pn)
 		#limpio los valores de sinr de los  usuarios sin conexion.
